@@ -13,6 +13,8 @@ dist/%.js: dist/%-dev.js
 		--mangle \
 		--no-copyright \
 		--compress 'warnings=false,drop_console' \
+		--in-source-map $<.map \
+		--source-map $@.map \
 		--output $@ $<
 
 all: check build
@@ -23,7 +25,8 @@ build: $(BUILD)
 
 # package.json is also using | derequire here
 $(BUILD): node_modules $(SRC) | node_modules
-	$(NODE_BIN)/browserify src/index.js --debug --standalone mapboxgl --outfile $(BUILD)
+	$(NODE_BIN)/browserify src/index.js --debug --standalone mapboxgl \
+	| $(NODE_BIN)/exorcist --base $(CURDIR)  $@.map > $@
 
 .DELETE_ON_ERROR: dist/$(PROJECT)-dev.js
 
