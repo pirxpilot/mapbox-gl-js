@@ -740,39 +740,6 @@ test('Map', (t) => {
         map.removeControl(control);
     });
 
-    t.test('#addClass', (t) => {
-        const map = createMap();
-        map.addClass('night');
-        t.ok(map.hasClass('night'));
-        t.end();
-    });
-
-    t.test('#removeClass', (t) => {
-        const map = createMap();
-        map.addClass('night');
-        map.removeClass('night');
-        t.ok(!map.hasClass('night'));
-        t.end();
-    });
-
-    t.test('#setClasses', (t) => {
-        const map = createMap();
-        map.addClass('night');
-        map.setClasses([]);
-        t.ok(!map.hasClass('night'));
-
-        map.setClasses(['night']);
-        t.ok(map.hasClass('night'));
-        t.end();
-    });
-
-    t.test('#getClasses', (t) => {
-        const map = createMap();
-        map.addClass('night');
-        t.deepEqual(map.getClasses(), ['night']);
-        t.end();
-    });
-
     t.test('#project', (t) => {
         const map = createMap();
         t.deepEqual(map.project([0, 0]), { x: 100, y: 100 });
