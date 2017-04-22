@@ -3412,10 +3412,6 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.3.6"
 
-kdbush@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/kdbush/-/kdbush-1.0.1.tgz#3cbd03e9dead9c0f6f66ccdb96450e5cecc640e0"
-
 kebab-case@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/kebab-case/-/kebab-case-1.0.0.tgz#3f9e4990adcad0c686c0e701f7645868f75f91eb"
@@ -5251,12 +5247,6 @@ subarg@^1.0.0:
   resolved "https://registry.yarnpkg.com/subarg/-/subarg-1.0.0.tgz#f62cf17581e996b48fc965699f54c06ae268b8d2"
   dependencies:
     minimist "^1.1.0"
-
-supercluster@^2.0.1:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/supercluster/-/supercluster-2.2.0.tgz#e66c3c02ae2026da142e236b6d19827af0823c76"
-  dependencies:
-    kdbush "^1.0.0"
 
 supports-color@^0.2.0:
   version "0.2.0"
