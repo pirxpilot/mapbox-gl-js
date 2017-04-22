@@ -203,11 +203,8 @@ class Map extends Camera {
             });
         }
 
-        this._classes = [];
-
         this.resize();
 
-        if (options.classes) this.setClasses(options.classes);
         if (options.style) this.setStyle(options.style);
 
         if (options.attributionControl) this.addControl(new AttributionControl());
@@ -259,103 +256,6 @@ class Map extends Camera {
     removeControl(control) {
         control.onRemove(this);
         return this;
-    }
-
-    /**
-     * Adds a Mapbox style class to the map.
-     *
-     * Keep in mind that these classes are used for controlling a style layer's paint properties, so are *not* reflected
-     * in an HTML element's `class` attribute. To learn more about Mapbox style classes, read about
-     * [Layers](https://www.mapbox.com/mapbox-gl-style-spec/#layers) in the style specification.
-     *
-     * **Note:** Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.
-     *
-     * @param {string} klass The style class to add.
-     * @param {Object} [options]
-     * @param {boolean} [options.transition] If `true`, property changes will smoothly transition.
-     * @fires change
-     * @returns {Map} `this`
-     */
-    addClass(klass, options) {
-        util.warnOnce('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
-        if (this._classes.indexOf(klass) >= 0 || klass === '') return this;
-        this._classes.push(klass);
-        this._classOptions = options;
-
-        if (this.style) this.style.updateClasses();
-        return this._update(true);
-    }
-
-    /**
-     * Removes a Mapbox style class from the map.
-     *
-     * **Note:** Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.
-     *
-     * @param {string} klass The style class to remove.
-     * @param {Object} [options]
-     * @param {boolean} [options.transition] If `true`, property changes will smoothly transition.
-     * @fires change
-     * @returns {Map} `this`
-     */
-    removeClass(klass, options) {
-        util.warnOnce('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
-        const i = this._classes.indexOf(klass);
-        if (i < 0 || klass === '') return this;
-        this._classes.splice(i, 1);
-        this._classOptions = options;
-
-        if (this.style) this.style.updateClasses();
-        return this._update(true);
-    }
-
-    /**
-     * Replaces the map's existing Mapbox style classes with a new array of classes.
-     *
-     * **Note:** Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.
-     *
-     * @param {Array<string>} klasses The style classes to set.
-     * @param {Object} [options]
-     * @param {boolean} [options.transition] If `true`, property changes will smoothly transition.
-     * @fires change
-     * @returns {Map} `this`
-     */
-    setClasses(klasses, options) {
-        util.warnOnce('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
-        const uniqueClasses = {};
-        for (let i = 0; i < klasses.length; i++) {
-            if (klasses[i] !== '') uniqueClasses[klasses[i]] = true;
-        }
-        this._classes = Object.keys(uniqueClasses);
-        this._classOptions = options;
-
-        if (this.style) this.style.updateClasses();
-        return this._update(true);
-    }
-
-    /**
-     * Returns a Boolean indicating whether the map has the
-     * specified Mapbox style class.
-     *
-     * **Note:** Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.
-     *
-     * @param {string} klass The style class to test.
-     * @returns {boolean} `true` if the map has the specified style class.
-     */
-    hasClass(klass) {
-        util.warnOnce('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
-        return this._classes.indexOf(klass) >= 0;
-    }
-
-    /**
-     * Returns the map's Mapbox style classes.
-     *
-     * **Note:** Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.
-     *
-     * @returns {Array<string>} The map's style classes.
-     */
-    getClasses() {
-        util.warnOnce('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
-        return this._classes;
     }
 
     /**
@@ -1371,8 +1271,6 @@ class Map extends Camera {
         //  - Recalculate zoom-dependent paint properties.
         if (this.style && this._styleDirty) {
             this._styleDirty = false;
-            this.style.update(this._classes, this._classOptions);
-            this._classOptions = null;
             this.style._recalculate(this.transform.zoom);
         }
 
