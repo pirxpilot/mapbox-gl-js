@@ -1,7 +1,6 @@
 'use strict';
 
 const Evented = require('../util/evented');
-const util = require('../util/util');
 const window = require('../util/window');
 const EXTENT = require('../data/extent');
 
