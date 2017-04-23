@@ -5,7 +5,9 @@ find = $(foreach dir,$(1),$(foreach d,$(wildcard $(dir)/*),$(call find,$(d),$(2)
 
 SRC = $(call find, src, *.js)
 DIST = dist/$(PROJECT).js
+DIST_WORKER = dist/$(PROJECT)-worker.js
 BUILD = $(DIST:%.js=%-dev.js)
+BUILD_WORKER = $(DIST_WORKER:%.js=%-dev.js)
 
 dist/%.js: dist/%-dev.js
 	$(NODE_BIN)/uglifyjs \
@@ -21,19 +23,21 @@ all: check build
 
 check: lint test
 
-build: $(BUILD)
+build: $(BUILD) $(BUILD_WORKER)
 
 $(BUILD): $(SRC) | node_modules
 	mkdir -p $(@D)
 	$(NODE_BIN)/browserify src/index.js --debug --standalone mapboxgl \
 	| $(NODE_BIN)/exorcist --base $(CURDIR)  $@.map > $@
 
-.DELETE_ON_ERROR: ${BUILD} ${BUILD}.map
+$(BUILD_WORKER): $(SRC) | node_modules
+	$(NODE_BIN)/browserify --entry src/source/worker.js --debug --standalone mapboxgl \
+	| $(NODE_BIN)/exorcist --base $(CURDIR)  $@.map > $@
 
 node_modules: package.json
 	yarn && touch $@
 
-dist: $(DIST)
+dist: $(DIST) $(DIST_WORKER)
 
 lint: | node_modules
 	$(NODE_BIN)/eslint --cache --ignore-path .gitignore src test bench docs/_posts/examples/*.html debug/*.html
