@@ -1,6 +1,6 @@
 'use strict';
-const ajax = require('../util/ajax');
 const vt = require('vector-tile');
+const loader = require('../util/loader');
 const Protobuf = require('pbf');
 const WorkerTile = require('./worker_tile');
 const util = require('../util/util');
@@ -15,14 +15,9 @@ const util = require('../util/util');
  * @private
  */
 class VectorTileWorkerSource {
-    /**
-     * @param {Function} [loadVectorData] Optional method for custom loading of a VectorTile object based on parameters passed from the main-thread Source.  See {@link VectorTileWorkerSource#loadTile}.  The default implementation simply loads the pbf at `params.url`.
-     */
-    constructor(actor, layerIndex, loadVectorData) {
+    constructor(actor, layerIndex) {
         this.actor = actor;
         this.layerIndex = layerIndex;
-
-        if (loadVectorData) { this.loadVectorData = loadVectorData; }
 
         this.loading = {};
         this.loaded = {};
@@ -167,8 +162,7 @@ class VectorTileWorkerSource {
      * @param {LoadVectorDataCallback} callback
      */
     loadVectorData(params, callback) {
-        const xhr = ajax.getArrayBuffer(params.url, done.bind(this));
-        return function abort () { xhr.abort(); };
+        return this.loader(params, done.bind(this));
         function done(err, response) {
             if (err) { return callback(err); }
             const vectorTile = new vt.VectorTile(new Protobuf(response.data));
