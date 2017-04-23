@@ -127,6 +127,10 @@ class VectorTileSource extends Evented {
     hasTransition() {
         return false;
     }
+
+    setLoaderStrategy(strategy) {
+        this.dispatcher.broadcast('vector.setLoaderStrategy', strategy);
+    }
 }
 
 module.exports = VectorTileSource;
