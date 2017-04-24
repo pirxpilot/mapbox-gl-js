@@ -1,5 +1,6 @@
 'use strict';
 
+const config = require('../util/config');
 const Evented = require('../util/evented');
 const util = require('../util/util');
 const loadTileJSON = require('./load_tilejson');
@@ -27,6 +28,8 @@ class VectorTileSource extends Evented {
         if (this.tileSize !== 512) {
             throw new Error('vector tile sources must have a tileSize of 512');
         }
+
+        config.on('change', c => this.setLoaderStrategy(c.LOADER_STRATEGY));
 
         this.setEventedParent(eventedParent);
     }
