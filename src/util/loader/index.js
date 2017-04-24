@@ -3,7 +3,7 @@
 const ajax = require('../ajax');
 const tileCache = require('tile-cache');
 
-module.exports = load;
+module.exports = selectStrategy;
 
 const strategies = {
     'network-only': networkOnly,
@@ -16,16 +16,11 @@ const strategies = {
 // 24 hours for cached tiles
 const cacheControl = 'max-age:86400';
 
-function select(strategy) {
+function selectStrategy(strategy) {
     if (!strategy) {
         strategy = 'network-only';
     }
     return strategies[strategy] || strategies['network-only'];
-}
-
-function load(params, fn) {
-    const strategy = select(params.strategy);
-    return strategy(params, fn);
 }
 
 function networkOnly(params, fn) {

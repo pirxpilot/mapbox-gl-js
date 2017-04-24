@@ -129,6 +129,10 @@ class VectorTileSource extends Evented {
         tile.unloadVectorData();
         this.dispatcher.send('removeTile', { uid: tile.uid, type: this.type, source: this.id }, null, tile.workerID);
     }
+
+    setLoaderStrategy(strategy) {
+        this.dispatcher.broadcast('vector.setLoaderStrategy', strategy);
+    }
 }
 
 module.exports = VectorTileSource;
