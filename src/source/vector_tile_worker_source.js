@@ -21,6 +21,7 @@ class VectorTileWorkerSource {
 
         this.loading = {};
         this.loaded = {};
+        this.loader = loader('network-first');
     }
 
     /**
@@ -187,6 +188,10 @@ class VectorTileWorkerSource {
         } else if (loading && loading[uid]) {
             loading[uid].angle = params.angle;
         }
+    }
+
+    setLoaderStrategy(strategy) {
+        this.loader = loader(strategy);
     }
 }
 
