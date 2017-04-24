@@ -1,16 +1,29 @@
 'use strict';
+
+const util = require('./util');
+const Evented = require('./evented');
+
 // @flow
 
 type Config = {|
   API_URL: string,
   REQUIRE_ACCESS_TOKEN: boolean,
-  ACCESS_TOKEN: ?string
+  ACCESS_TOKEN: ?string,
+  LOAD_STRATEGY: ?string
 |};
 
-const config: Config = {
+const config = Object.create(new Evented());
+
+config.set = function set(c: Config) {
+    util.extend(config, c);
+    config.fire('change', config);
+};
+
+config.set({
     API_URL: 'https://api.mapbox.com',
     REQUIRE_ACCESS_TOKEN: true,
-    ACCESS_TOKEN: null
-};
+    ACCESS_TOKEN: null,
+    LOADER_STRATEGY: 'network-only'
+});
 
 module.exports = config;
