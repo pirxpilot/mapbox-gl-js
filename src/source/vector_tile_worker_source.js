@@ -21,6 +21,7 @@ class VectorTileWorkerSource {
 
         this.loading = {};
         this.loaded = {};
+        this.loader = loader('network-first');
     }
 
     /**
@@ -160,7 +161,7 @@ class VectorTileWorkerSource {
      * @param {LoadVectorDataCallback} callback
      */
     loadVectorData(params, callback) {
-        const l = loader(params, done.bind(this));
+        const l = this.loader(params, done.bind(this));
         return function abort () { l.abort(); };
         function done(err, response) {
             if (err) { return callback(err); }
@@ -188,6 +189,10 @@ class VectorTileWorkerSource {
         } else if (loading && loading[uid]) {
             loading[uid].angle = params.angle;
         }
+    }
+
+    setLoaderStrategy(strategy) {
+        this.loader = loader(strategy);
     }
 }
 
