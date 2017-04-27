@@ -10,7 +10,8 @@ const strategies = {
     'network-first': networkFirst,
     'cache-only': cacheOnly,
     'cache-first': cacheFirst,
-    'network-and-cache': networkAndCache
+    'network-then-cache': networkThenCache,
+    'cache-first-then-cache': cacheFirstThenCache
 };
 
 // 24 hours for cached tiles
@@ -37,7 +38,11 @@ function cacheOnly(params, fn) {
         if (!err && !data) {
             err = new Error('Cache miss');
         }
-        fn(err, data && { data, cacheControl });
+        fn(err, data && {
+            data,
+            cacheControl,
+            _cacheHit: true
+        });
     }
 }
 
@@ -49,18 +54,25 @@ function cacheFirst(params, fn) {
     return first([cacheOnly, networkOnly], params, fn);
 }
 
-function networkAndCache(params, fn) {
-    return networkOnly(params, done);
-    function done(err, response) {
-        fn(err, response);
-        if (!err && response) {
-            tileCache.putTile(keyFromParams(params), response.data, () => {});
-        }
-    }
+function networkThenCache(params, fn) {
+    return networkOnly(params, cacheOnSuccessFn(params, fn));
+}
+
+function cacheFirstThenCache(params, fn) {
+    return cacheFirst(params, cacheOnSuccessFn(params, fn));
 }
 
 function keyFromParams({ coord, zoom }) {
     return [ coord.x, coord.y, zoom ];
+}
+
+function cacheOnSuccessFn(params, fn) {
+    return function(err, response) {
+        fn(err, response);
+        if (!err && response && !response._cacheHit) {
+            tileCache.putTile(keyFromParams(params), response.data, () => {});
+        }
+    };
 }
 
 function first(tasks, params, fn) {
