@@ -17,10 +17,7 @@ const strategies = {
 // 24 hours for cached tiles
 const cacheControl = 'max-age:86400';
 
-function selectStrategy(strategy) {
-    if (!strategy) {
-        strategy = 'network-only';
-    }
+function selectStrategy(strategy = 'network-only') {
     return strategies[strategy] || strategies['network-only'];
 }
 
@@ -31,18 +28,12 @@ function networkOnly(params, fn) {
 
 function cacheOnly(params, fn) {
     let aborted = false;
-    tileCache.getTile(keyFromParams(params), done);
+    fromCache(params, done);
     return function abort() { aborted = true; };
     function done(err, data) {
-        if (aborted) { return; }
-        if (!err && !data) {
-            err = new Error('Cache miss');
+        if (!aborted) {
+            return fn(err, data);
         }
-        fn(err, data && {
-            data,
-            cacheControl,
-            _cacheHit: true
-        });
     }
 }
 
@@ -62,17 +53,48 @@ function cacheFirstThenCache(params, fn) {
     return cacheFirst(params, cacheOnSuccessFn(params, fn));
 }
 
-function keyFromParams({ coord, zoom }) {
-    return [ coord.x, coord.y, zoom ];
+function keyFromParams({ coord, zoom, fontstack, range }) {
+    return fontstack ? {
+        put: tileCache.putFont,
+        get: tileCache.getFont,
+        key: [ fontstack, range ]
+    } : {
+        put: tileCache.putTile,
+        get: tileCache.getTile,
+        key: [ coord.x, coord.y, zoom ]
+    };
 }
 
 function cacheOnSuccessFn(params, fn) {
     return function(err, response) {
         fn(err, response);
-        if (!err && response && !response._cacheHit) {
-            tileCache.putTile(keyFromParams(params), response.data, () => {});
+        if (!err && response) {
+            updateCache(params, response);
         }
     };
+}
+
+function fromCache(params, fn) {
+    const { key, get } = keyFromParams(params);
+    get(key, done);
+    function done(err, data) {
+        if (!err && !data) {
+            err = new Error('Cache miss');
+        }
+        fn(err, data && {
+            data,
+            cacheControl,
+            _cacheHit: true
+        });
+    }
+}
+
+function updateCache(params, response, fn = noop) {
+    if (response._cacheHit) {
+        return fn();
+    }
+    const { key, put } = keyFromParams(params);
+    put(key, response.data, fn);
 }
 
 function first(tasks, params, fn) {
@@ -101,3 +123,5 @@ function first(tasks, params, fn) {
         if (abortFn) { abortFn(); }
     };
 }
+
+function noop() {}
