@@ -35,7 +35,6 @@ function addRandomMarker() {
 
     var lng = w + (e - w) * Math.random();
     var lat = s + (n - s) * Math.random();
-    var popup = new mapboxgl.Popup().setText('hello hi');
 
     var r = Math.round(Math.random() * 255);
     var g = Math.round(Math.random() * 255);
@@ -46,7 +45,6 @@ function addRandomMarker() {
         draggable: true
     })
         .setLngLat([lng, lat])
-        .setPopup(popup)
         .addTo(map);
 }
 

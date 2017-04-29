@@ -10,7 +10,6 @@ module.exports = {
     AttributionControl: require('./ui/control/attribution_control'),
     ScaleControl: require('./ui/control/scale_control'),
     FullscreenControl: require('./ui/control/fullscreen_control'),
-    Popup: require('./ui/popup'),
     Marker: require('./ui/marker'),
     Style: require('./style/style'),
     LngLat: require('./geo/lng_lat'),

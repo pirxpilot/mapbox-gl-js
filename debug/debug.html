@@ -117,14 +117,6 @@ map.on('load', function() {
 
 });
 
-map.on('click', function(e) {
-    if (e.originalEvent.shiftKey) return;
-    (new mapboxgl.Popup())
-        .setLngLat(map.unproject(e.point))
-        .setHTML("<h1>Hello World!</h1>")
-        .addTo(map);
-});
-
 document.getElementById('show-tile-boundaries-checkbox').onclick = function() {
     map.showTileBoundaries = !!this.checked;
 };
