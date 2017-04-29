@@ -5404,9 +5404,9 @@ through@~2.2.7:
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/through/-/through-2.2.7.tgz#6e8e21200191d4eb6a99f6f010df46aa1c6eb2bd"
 
-tile-cache@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/tile-cache/-/tile-cache-0.2.1.tgz#c08948db0ac8b10326ac32738c0059b6ac45e1f3"
+tile-cache@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/tile-cache/-/tile-cache-0.3.0.tgz#0811ce0695d5da9ab5b4ef70f1317bde5140199f"
   dependencies:
     run-first-only "^1.0.0"
     run-waterfall "^1.1.3"
