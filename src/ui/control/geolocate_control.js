@@ -113,7 +113,7 @@ class GeolocateControl extends Evented {
     }
 
     _onClickGeolocate() {
-        const positionOptions = util.extend(defaultGeoPositionOptions, this.options && this.options.positionOptions || {});
+        const positionOptions = Object.assign(defaultGeoPositionOptions, this.options && this.options.positionOptions || {});
 
         // toggle watching the device location
         if (this.options.watchPosition) {

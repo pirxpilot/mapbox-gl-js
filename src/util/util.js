@@ -129,27 +129,6 @@ exports.keysDifference = function (obj: Object, other: Object): Array<string> {
 };
 
 /**
- * Given a destination object and optionally many source objects,
- * copy all properties from the source objects into the destination.
- * The last source object given overrides properties from previous
- * source objects.
- *
- * @param dest destination object
- * @param {...Object} sources sources from which properties are pulled
- * @private
- */
-// eslint-disable-next-line no-unused-vars
-exports.extend = function (dest: Object, source0: Object, source1?: Object, source2?: Object): Object {
-    for (let i = 1; i < arguments.length; i++) {
-        const src = arguments[i];
-        for (const k in src) {
-            dest[k] = src[k];
-        }
-    }
-    return dest;
-};
-
-/**
  * Given an object and a number of properties as strings, return version
  * of that object with only those properties.
  *

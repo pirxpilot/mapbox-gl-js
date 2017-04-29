@@ -150,19 +150,19 @@ class SymbolBucket {
         // properties (specifically its text-size properties).
         const layer = this.layers[0];
         this.symbolInterfaces = {
-            glyph: util.extend({}, symbolInterfaces.glyph, {
+            glyph: Object.assign({}, symbolInterfaces.glyph, {
                 layoutAttributes: [].concat(
                     symbolInterfaces.glyph.layoutAttributes,
                     getSizeAttributeDeclarations(layer, 'text-size')
                 )
             }),
-            icon: util.extend({}, symbolInterfaces.icon, {
+            icon: Object.assign({}, symbolInterfaces.icon, {
                 layoutAttributes: [].concat(
                     symbolInterfaces.icon.layoutAttributes,
                     getSizeAttributeDeclarations(layer, 'icon-size')
                 )
             }),
-            collisionBox: util.extend({}, symbolInterfaces.collisionBox, {
+            collisionBox: Object.assign({}, symbolInterfaces.collisionBox, {
                 layoutAttributes: [].concat(
                     symbolInterfaces.collisionBox.layoutAttributes
                 )
@@ -268,7 +268,7 @@ class SymbolBucket {
     getPaintPropertyStatistics() {
         const statistics = {};
         for (const layer of this.layers) {
-            statistics[layer.id] = util.extend({},
+            statistics[layer.id] = Object.assign({},
                 this.arrays.icon.layerData[layer.id].paintPropertyStatistics,
                 this.arrays.glyph.layerData[layer.id].paintPropertyStatistics
             );
