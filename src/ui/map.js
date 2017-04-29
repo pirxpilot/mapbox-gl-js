@@ -11,7 +11,6 @@ const AnimationLoop = require('../style/animation_loop');
 const Painter = require('../render/painter');
 
 const Transform = require('../geo/transform');
-const Hash = require('./hash');
 
 const bindHandlers = require('./bind_handlers');
 
@@ -45,8 +44,6 @@ const defaultOptions = {
     touchZoomRotate: true,
 
     bearingSnap: 7,
-
-    hash: false,
 
     attributionControl: true,
 
@@ -92,8 +89,6 @@ const defaultOptions = {
  * Tilesets hosted with Mapbox can be style-optimized if you append `?optimize=true` to the end of your style URL, like `mapbox://styles/mapbox/streets-v9?optimize=true`.
  * Learn more about style-optimized vector tiles in our [API documentation](https://www.mapbox.com/api-documentation/#retrieve-tiles).
  *
- * @param {boolean} [options.hash=false] If `true`, the map's position (zoom, center latitude, center longitude, bearing, and pitch) will be synced with the hash fragment of the page's URL.
- *   For example, `http://path/to/my/page.html#2.59/39.26/53.07/-24.1/60`.
  * @param {boolean} [options.interactive=true] If `false`, no mouse, touch, or keyboard listeners will be attached to the map, so it will not respond to interaction.
  * @param {number} [options.bearingSnap=7] The threshold, measured in degrees, that determines when the map's
  *   bearing (rotation) will snap to north. For example, with a `bearingSnap` of 7, if the user rotates
@@ -129,7 +124,6 @@ const defaultOptions = {
  *   center: [-122.420679, 37.772537],
  *   zoom: 13,
  *   style: style_object,
- *   hash: true
  * });
  * @see [Display a map](https://www.mapbox.com/mapbox-gl-js/examples/)
  */
@@ -196,16 +190,12 @@ class Map extends Camera {
 
         bindHandlers(this, options);
 
-        this._hash = options.hash && (new Hash()).addTo(this);
-        // don't set position from options if set through hash
-        if (!this._hash || !this._hash._onHashChange()) {
-            this.jumpTo({
-                center: options.center,
-                zoom: options.zoom,
-                bearing: options.bearing,
-                pitch: options.pitch
-            });
-        }
+        this.jumpTo({
+            center: options.center,
+            zoom: options.zoom,
+            bearing: options.bearing,
+            pitch: options.pitch
+        });
 
         this._classes = [];
 
@@ -1462,7 +1452,6 @@ class Map extends Camera {
      * methods on the map.
      */
     remove() {
-        if (this._hash) this._hash.remove();
         browser.cancelFrame(this._frameId);
         this._frameId = null;
         this.setStyle(null);
