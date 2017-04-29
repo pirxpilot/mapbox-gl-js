@@ -1,10 +1,11 @@
 'use strict';
 
-const { getJSON, getImage } = require('../util/ajax');
-
+const { getJSON } = require('../util/ajax');
 const browser = require('../util/browser');
 const { normalizeSpriteURL } = require('../util/mapbox');
 const { RGBAImage } = require('../util/image');
+
+const loadImage = require('../util/loader/image');
 
 
 module.exports = function(baseURL,
@@ -20,7 +21,7 @@ module.exports = function(baseURL,
         }
     });
 
-    getImage({ url: normalizeSpriteURL(baseURL, format, '.png') }, (err, img) => {
+    loadImage(normalizeSpriteURL(baseURL, format, '.png'), (err, img) => {
         if (!error) {
             error = err;
             image = img;
