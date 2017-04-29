@@ -5,13 +5,12 @@ const proxyquire = require('proxyquire');
 const Style = require('../../../src/style/style');
 const SourceCache = require('../../../src/source/source_cache');
 const StyleLayer = require('../../../src/style/style_layer');
-const util = require('../../../src/util/util');
 const Evented = require('../../../src/util/evented');
 const window = require('../../../src/util/window');
 const rtlTextPlugin = require('../../../src/source/rtl_text_plugin');
 
 function createStyleJSON(properties) {
-    return util.extend({
+    return Object.assign({
         "version": 8,
         "sources": {},
         "layers": []
@@ -81,7 +80,7 @@ test('Style', (t) => {
     });
 
     t.test('creates sources', (t) => {
-        const style = new Style(util.extend(createStyleJSON(), {
+        const style = new Style(Object.assign(createStyleJSON(), {
             "sources": {
                 "mapbox": {
                     "type": "vector",
@@ -635,7 +634,7 @@ test('Style#addLayer', (t) => {
     });
 
     t.test('reloads source', (t) => {
-        const style = new Style(util.extend(createStyleJSON(), {
+        const style = new Style(Object.assign(createStyleJSON(), {
             "sources": {
                 "mapbox": {
                     "type": "vector",
@@ -661,7 +660,7 @@ test('Style#addLayer', (t) => {
     });
 
     t.test('#3895 reloads source (instead of clearing) if adding this layer with the same type, immediately after removing it', (t) => {
-        const style = new Style(util.extend(createStyleJSON(), {
+        const style = new Style(Object.assign(createStyleJSON(), {
             "sources": {
                 "mapbox": {
                     "type": "vector",
@@ -697,7 +696,7 @@ test('Style#addLayer', (t) => {
     });
 
     t.test('clears source (instead of reloading) if adding this layer with a different type, immediately after removing it', (t) => {
-        const style = new Style(util.extend(createStyleJSON(), {
+        const style = new Style(Object.assign(createStyleJSON(), {
             "sources": {
                 "mapbox": {
                     "type": "vector",
@@ -799,7 +798,7 @@ test('Style#addLayer', (t) => {
     });
 
     t.test('fires an error on non-existant source layer', (t) => {
-        const style = new Style(util.extend(createStyleJSON(), {
+        const style = new Style(Object.assign(createStyleJSON(), {
             sources: {
                 dummy: {
                     type: 'geojson',

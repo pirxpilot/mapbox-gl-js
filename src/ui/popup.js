@@ -55,7 +55,7 @@ const defaultOptions = {
 class Popup extends Evented {
     constructor(options) {
         super();
-        this.options = util.extend(Object.create(defaultOptions), options);
+        this.options = Object.assign(Object.create(defaultOptions), options);
         util.bindAll([
             '_update',
             '_onClickClose'],

@@ -108,7 +108,7 @@ Bucket.deserialize = function(input, style) {
             continue;
         }
 
-        const bucket = layers[0].createBucket(util.extend({layers}, serialized));
+        const bucket = layers[0].createBucket(Object.assign({layers}, serialized));
         for (const layer of layers) {
             output[layer.id] = bucket;
         }
