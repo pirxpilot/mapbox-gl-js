@@ -7,7 +7,8 @@ const browser = require('../util/browser');
 const window = require('../util/window');
 const { HTMLImageElement, HTMLElement } = window;
 const DOM = require('../util/dom');
-const { getImage } = require('../util/ajax');
+const loadImage = require('../util/loader/image');
+
 const Style = require('../style/style');
 const EvaluationParameters = require('../style/evaluation_parameters');
 const Painter = require('../render/painter');
@@ -178,6 +179,9 @@ class Map extends Camera {
 
         const transform = new Transform(options.minZoom, options.maxZoom, options.renderWorldCopies);
         super(transform, options);
+
+        // use global loadImage implementation
+        this.loadImage = loadImage;
 
         this._interactive = options.interactive;
         this._maxTileCacheSize = options.maxTileCacheSize;
@@ -1035,18 +1039,6 @@ class Map extends Camera {
      */
     removeImage(id) {
         this.style.removeImage(id);
-    }
-
-    /**
-     * Load an image from an external URL for use with `Map#addImage`. External
-     * domains must support [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS).
-     *
-     * @param {string} url The URL of the image file. Image file must be in png, webp, or jpg format.
-     * @param {Function} callback Expecting `callback(error, data)`. Called when the image has loaded or with an error argument if there is an error.
-     * @see [Add an icon to the map](https://www.mapbox.com/mapbox-gl-js/example/add-image/)
-     */
-    loadImage(url, callback) {
-        getImage({ url }, callback);
     }
 
     /**
