@@ -4,7 +4,6 @@ const jsdom = require('jsdom');
 
 const gl = require('gl');
 const sinon = require('sinon');
-const { extend } = require('./util');
 
 const { window: _window } = new jsdom.JSDOM('', {
     virtualConsole: new jsdom.VirtualConsole().sendTo(console)
@@ -67,7 +66,7 @@ function restore() {
     window.ImageData = window.ImageData || function() { return false; };
     window.ImageBitmap = window.ImageBitmap || function() { return false; };
     window.WebGLFramebuffer = window.WebGLFramebuffer || Object;
-    extend(_window, window);
+    Object.assign(_window, window);
 
     return window;
 }

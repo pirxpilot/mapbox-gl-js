@@ -7,7 +7,6 @@ const LineBucket = require('../../data/bucket/line_bucket');
 const { multiPolygonIntersectsBufferedMultiLine } = require('../../util/intersection_tests');
 const { getMaximumPaintValue, translateDistance, translate } = require('../query_utils');
 const properties = require('./line_style_layer_properties');
-const { extend } = require('../../util/util');
 const EvaluationParameters = require('../evaluation_parameters');
 const renderColorRamp = require('../../util/color_ramp');
 const { DataDrivenProperty } = require('../properties');
@@ -25,7 +24,7 @@ class LineFloorwidthProperty extends DataDrivenProperty {
     }
 
     evaluate(value, globals, feature, featureState) {
-        globals = extend({}, globals, {zoom: Math.floor(globals.zoom)});
+        globals = Object.assign({}, globals, {zoom: Math.floor(globals.zoom)});
         return super.evaluate(value, globals, feature, featureState);
     }
 }

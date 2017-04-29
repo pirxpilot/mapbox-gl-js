@@ -1,7 +1,7 @@
 'use strict';
 
 const DOM = require('../../util/dom');
-const { extend, bindAll } = require('../../util/util');
+const { bindAll } = require('../../util/util');
 const DragRotateHandler = require('../handler/drag_rotate');
 
 
@@ -27,7 +27,7 @@ const defaultOptions = {
 class NavigationControl {
 
     constructor(options) {
-        this.options = extend({}, defaultOptions, options);
+        this.options = Object.assign({}, defaultOptions, options);
 
         this._container = DOM.create('div', 'mapboxgl-ctrl mapboxgl-ctrl-group');
         this._container.addEventListener('contextmenu', (e) => e.preventDefault());

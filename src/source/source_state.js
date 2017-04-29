@@ -1,7 +1,5 @@
 'use strict';
 
-const { extend } = require('../util/util');
-
 /**
  * SourceFeatureState manages the state and state changes
  * to features in a source, separated by source layer.
@@ -19,14 +17,14 @@ class SourceFeatureState {
         feature = String(feature);
         this.stateChanges[sourceLayer] = this.stateChanges[sourceLayer] || {};
         this.stateChanges[sourceLayer][feature] = this.stateChanges[sourceLayer][feature] || {};
-        extend(this.stateChanges[sourceLayer][feature], state);
+        Object.assign(this.stateChanges[sourceLayer][feature], state);
     }
 
     getState(sourceLayer, feature) {
         feature = String(feature);
         const base = this.state[sourceLayer] || {};
         const changes = this.stateChanges[sourceLayer] || {};
-        return extend({}, base[feature], changes[feature]);
+        return Object.assign({}, base[feature], changes[feature]);
     }
 
     initializeTileState(tile, painter) {
@@ -42,7 +40,7 @@ class SourceFeatureState {
                 if (!this.state[sourceLayer][id]) {
                     this.state[sourceLayer][id] = {};
                 }
-                extend(this.state[sourceLayer][id], this.stateChanges[sourceLayer][id]);
+                Object.assign(this.state[sourceLayer][id], this.stateChanges[sourceLayer][id]);
                 layerStates[id] = this.state[sourceLayer][id];
             }
             changes[sourceLayer] = layerStates;

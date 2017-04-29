@@ -7,7 +7,6 @@ const Transform = require('../../../src/geo/transform');
 const LngLat = require('../../../src/geo/lng_lat');
 const Coordinate = require('../../../src/geo/coordinate');
 const { Event, ErrorEvent, Evented } = require('../../../src/util/evented');
-const { extend } = require('../../../src/util/util');
 const browser = require('../../../src/util/browser');
 
 // Add a mocked source type for use in these tests
@@ -20,7 +19,7 @@ function MockSourceType(id, sourceOptions, _dispatcher, eventedParent) {
             this.id = id;
             this.minzoom = 0;
             this.maxzoom = 22;
-            extend(this, sourceOptions);
+            Object.assign(this, sourceOptions);
             this.setEventedParent(eventedParent);
             if (sourceOptions.hasTile) {
                 this.hasTile = sourceOptions.hasTile;
@@ -54,7 +53,7 @@ function MockSourceType(id, sourceOptions, _dispatcher, eventedParent) {
 setType('mock-source-type', MockSourceType);
 
 function createSourceCache(options, used) {
-    const sc = new SourceCache('id', extend({
+    const sc = new SourceCache('id', Object.assign({
         tileSize: 512,
         minzoom: 0,
         maxzoom: 14,

@@ -3,7 +3,7 @@
 const { test } = require('mapbox-gl-js-test');
 
 const Coordinate = require('../../../src/geo/coordinate');
-const { easeCubicInOut, keysDifference, extend, pick, uniqueId, getCoordinatesCenter, bindAll, asyncAll, clamp, wrap, bezier, endsWith, mapObject, filterObject, deepEqual, clone, arraysIntersect, isCounterClockwise, isClosedPolygon, parseCacheControl } = require('../../../src/util/util');
+const { easeCubicInOut, keysDifference, pick, uniqueId, getCoordinatesCenter, bindAll, asyncAll, clamp, wrap, bezier, endsWith, mapObject, filterObject, deepEqual, clone, arraysIntersect, isCounterClockwise, isClosedPolygon, parseCacheControl } = require('../../../src/util/util');
 const Point = require('@mapbox/point-geometry');
 
 test('util', (t) => {
@@ -13,7 +13,6 @@ test('util', (t) => {
     t.equal(easeCubicInOut(1), 1, 'easeCubicInOut=1');
     t.deepEqual(keysDifference({a:1}, {}), ['a'], 'keysDifference');
     t.deepEqual(keysDifference({a:1}, {a:1}), [], 'keysDifference');
-    t.deepEqual(extend({a:1}, {b:2}), {a:1, b:2}, 'extend');
     t.deepEqual(pick({a:1, b:2, c:3}, ['a', 'c']), {a:1, c:3}, 'pick');
     t.deepEqual(pick({a:1, b:2, c:3}, ['a', 'c', 'd']), {a:1, c:3}, 'pick');
     t.ok(typeof uniqueId() === 'number', 'uniqueId');
