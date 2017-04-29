@@ -11,7 +11,6 @@ const GeolocateControl = require('./ui/control/geolocate_control');
 const AttributionControl = require('./ui/control/attribution_control');
 const ScaleControl = require('./ui/control/scale_control');
 const FullscreenControl = require('./ui/control/fullscreen_control');
-const Popup = require('./ui/popup');
 const Marker = require('./ui/marker');
 const Style = require('./style/style');
 const LngLat = require('./geo/lng_lat');
@@ -32,7 +31,6 @@ const exported = {
     AttributionControl,
     ScaleControl,
     FullscreenControl,
-    Popup,
     Marker,
     Style,
     LngLat,

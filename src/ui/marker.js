@@ -40,8 +40,7 @@ module.exports = class Marker extends Evented {
             '_update',
             '_onMove',
             '_onUp',
-            '_addDragHandler',
-            '_onMapClick'
+            '_addDragHandler'
         ], this);
 
         this._anchor = options && options.anchor || 'center';
@@ -157,8 +156,6 @@ module.exports = class Marker extends Evented {
         }
 
         this._element.classList.add('mapboxgl-marker');
-
-        this._popup = null;
     }
 
     /**
@@ -175,11 +172,6 @@ module.exports = class Marker extends Evented {
         this.setDraggable(this._draggable);
         this._update();
 
-        // If we attached the `click` listener to the marker element, the popup
-        // would close once the event propogated to `map` due to the
-        // `Popup#_onClickClose` listener.
-        this._map.on('click', this._onMapClick);
-
         return this;
     }
 
@@ -192,7 +184,6 @@ module.exports = class Marker extends Evented {
      */
     remove() {
         if (this._map) {
-            this._map.off('click', this._onMapClick);
             this._map.off('move', this._update);
             this._map.off('moveend', this._update);
             this._map.off('mousedown', this._addDragHandler);
@@ -200,7 +191,6 @@ module.exports = class Marker extends Evented {
             delete this._map;
         }
         DOM.remove(this._element);
-        if (this._popup) this._popup.remove();
         return this;
     }
 
@@ -224,7 +214,6 @@ module.exports = class Marker extends Evented {
     setLngLat(lnglat) {
         this._lngLat = LngLat.convert(lnglat);
         this._pos = null;
-        if (this._popup) this._popup.setLngLat(this._lngLat);
         this._update();
         return this;
     }
@@ -235,71 +224,6 @@ module.exports = class Marker extends Evented {
      */
     getElement() {
         return this._element;
-    }
-
-    /**
-     * Binds a Popup to the Marker
-     * @param popup an instance of the `Popup` class. If undefined or null, any popup
-     * set on this `Marker` instance is unset
-     * @returns {Marker} `this`
-     */
-    setPopup(popup) {
-        if (this._popup) {
-            this._popup.remove();
-            this._popup = null;
-        }
-
-        if (popup) {
-            if (!('offset' in popup.options)) {
-                const markerHeight = 41 - (5.8 / 2);
-                const markerRadius = 13.5;
-                const linearOffset = Math.sqrt(Math.pow(markerRadius, 2) / 2);
-                popup.options.offset = this._defaultMarker ? {
-                    'top': [0, 0],
-                    'top-left': [0, 0],
-                    'top-right': [0, 0],
-                    'bottom': [0, -markerHeight],
-                    'bottom-left': [linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
-                    'bottom-right': [-linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
-                    'left': [markerRadius, (markerHeight - markerRadius) * -1],
-                    'right': [-markerRadius, (markerHeight - markerRadius) * -1]
-                } : this._offset;
-            }
-            this._popup = popup;
-            if (this._lngLat) this._popup.setLngLat(this._lngLat);
-        }
-
-        return this;
-    }
-
-    _onMapClick(e) {
-        const targetElement = e.originalEvent.target;
-        const element = this._element;
-
-        if (this._popup && (targetElement === element || element.contains((targetElement)))) {
-            this.togglePopup();
-        }
-    }
-
-    /**
-     * Returns the Popup instance that is bound to the Marker
-     * @returns {Popup} popup
-     */
-    getPopup() {
-        return this._popup;
-    }
-
-    /**
-     * Opens or closes the bound popup, depending on the current state
-     * @returns {Marker} `this`
-     */
-    togglePopup() {
-        const popup = this._popup;
-
-        if (!popup) return this;
-        else if (popup.isOpen()) popup.remove();
-        else popup.addTo(this._map);
-        return this;
     }
 
     _update(e) {
