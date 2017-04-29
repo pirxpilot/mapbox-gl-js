@@ -1,7 +1,6 @@
 'use strict';
 
 const Evented = require('../util/evented');
-const util = require('../util/util');
 const window = require('../util/window');
 const EXTENT = require('../data/extent');
 
@@ -83,7 +82,7 @@ class GeoJSONSource extends Evented {
         // so that it can load/parse/index the geojson data
         // extending with `options.workerOptions` helps to make it easy for
         // third-party sources to hack/reuse GeoJSONSource.
-        this.workerOptions = util.extend({
+        this.workerOptions = Object.assign({
             source: this.id,
             cluster: options.cluster || false,
             geojsonVtOptions: {
@@ -144,7 +143,7 @@ class GeoJSONSource extends Evented {
      * using geojson-vt or supercluster as appropriate.
      */
     _updateWorkerData(callback) {
-        const options = util.extend({}, this.workerOptions);
+        const options = Object.assign({}, this.workerOptions);
         const data = this._data;
         if (typeof data === 'string') {
             options.url = resolveURL(data);

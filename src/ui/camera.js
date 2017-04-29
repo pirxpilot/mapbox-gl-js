@@ -94,7 +94,7 @@ class Camera extends Evented {
      */
     panBy(offset, options, eventData) {
         offset = Point.convert(offset).mult(-1);
-        return this.panTo(this.transform.center, util.extend({offset}, options), eventData);
+        return this.panTo(this.transform.center, Object.assign({offset}, options), eventData);
     }
 
     /**
@@ -109,7 +109,7 @@ class Camera extends Evented {
      * @returns {Map} `this`
      */
     panTo(lnglat, options, eventData) {
-        return this.easeTo(util.extend({
+        return this.easeTo(Object.assign({
             center: lnglat
         }, options), eventData);
     }
@@ -160,7 +160,7 @@ class Camera extends Evented {
      * @returns {Map} `this`
      */
     zoomTo(zoom, options, eventData) {
-        return this.easeTo(util.extend({
+        return this.easeTo(Object.assign({
             zoom: zoom
         }, options), eventData);
     }
@@ -242,7 +242,7 @@ class Camera extends Evented {
      * @returns {Map} `this`
      */
     rotateTo(bearing, options, eventData) {
-        return this.easeTo(util.extend({
+        return this.easeTo(Object.assign({
             bearing: bearing
         }, options), eventData);
     }
@@ -258,7 +258,7 @@ class Camera extends Evented {
      * @returns {Map} `this`
      */
     resetNorth(options, eventData) {
-        this.rotateTo(0, util.extend({duration: 1000}, options), eventData);
+        this.rotateTo(0, Object.assign({duration: 1000}, options), eventData);
         return this;
     }
 
@@ -332,7 +332,7 @@ class Camera extends Evented {
      */
     fitBounds(bounds, options, eventData) {
 
-        options = util.extend({
+        options = Object.assign({
             padding: {
                 top: 0,
                 bottom: 0,
@@ -488,7 +488,7 @@ class Camera extends Evented {
     easeTo(options, eventData) {
         this.stop();
 
-        options = util.extend({
+        options = Object.assign({
             offset: [0, 0],
             duration: 500,
             easing: util.ease
@@ -677,7 +677,7 @@ class Camera extends Evented {
 
         this.stop();
 
-        options = util.extend({
+        options = Object.assign({
             offset: [0, 0],
             speed: 1.2,
             curve: 1.42,

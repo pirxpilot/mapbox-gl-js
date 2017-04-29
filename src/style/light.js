@@ -28,7 +28,7 @@ class Light extends Evented {
         this._transitionOptions = {};
         this.calculated = {};
 
-        lightOpts = util.extend({
+        lightOpts = Object.assign({
             anchor: this._specifications.anchor.default,
             color: this._specifications.color.default,
             position: this._specifications.position.default,
@@ -110,7 +110,7 @@ class Light extends Evented {
 
         if (oldTransition && oldTransition.declaration.json === declaration.json) return;
 
-        const transitionOptions = util.extend({
+        const transitionOptions = Object.assign({
             duration: 300,
             delay: 0
         }, globalOptions, this.getLightProperty(property + TRANSITION_SUFFIX));
@@ -133,7 +133,7 @@ class Light extends Evented {
     }
 
     _validate(validate, value) {
-        return validateStyle.emitErrors(this, validate.call(validateStyle, util.extend({
+        return validateStyle.emitErrors(this, validate.call(validateStyle, Object.assign({
             value: value,
             // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/2407
             style: {glyphs: true, sprite: true},

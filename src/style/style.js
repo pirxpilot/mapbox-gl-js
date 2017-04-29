@@ -71,7 +71,7 @@ class Style extends Evented {
 
         this._resetUpdates();
 
-        options = util.extend({
+        options = Object.assign({
             validate: typeof stylesheet === 'string' ? !mapbox.isMapboxURL(stylesheet) : true
         }, options);
 
@@ -339,7 +339,7 @@ class Style extends Evented {
 
         if (validateStyle.emitErrors(this, validateStyle(nextState))) return false;
 
-        nextState = util.extend({}, nextState);
+        nextState = Object.assign({}, nextState);
         nextState.layers = deref(nextState.layers);
 
         const changes = diff(this.serialize(), nextState)
@@ -438,7 +438,7 @@ class Style extends Evented {
 
         if (typeof layerObject.source === 'object') {
             this.addSource(id, layerObject.source);
-            layerObject = util.extend(layerObject, { source: id });
+            layerObject = Object.assign(layerObject, { source: id });
         }
 
         // this layer is not in the style.layers array, so we pass an impossible array index
@@ -683,7 +683,7 @@ class Style extends Evented {
     }
 
     getTransition() {
-        return util.extend({ duration: 300, delay: 0 },
+        return Object.assign({ duration: 300, delay: 0 },
             this.stylesheet && this.stylesheet.transition);
     }
 
@@ -824,7 +824,7 @@ class Style extends Evented {
         if (options && options.validate === false) {
             return false;
         }
-        return validateStyle.emitErrors(this, validate.call(validateStyle, util.extend({
+        return validateStyle.emitErrors(this, validate.call(validateStyle, Object.assign({
             key: key,
             style: this.serialize(),
             value: value,

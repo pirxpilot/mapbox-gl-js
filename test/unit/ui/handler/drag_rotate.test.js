@@ -1,7 +1,6 @@
 'use strict';
 
 const test = require('mapbox-gl-js-test').test;
-const util = require('../../../../src/util/util');
 const window = require('../../../../src/util/window');
 const Map = require('../../../../src/ui/map');
 const DragRotateHandler = require('../../../../src/ui/handler/drag_rotate');
@@ -11,7 +10,7 @@ function createMap(options, callback) {
     Object.defineProperty(container, 'offsetWidth', {value: 200, configurable: true});
     Object.defineProperty(container, 'offsetHeight', {value: 200, configurable: true});
 
-    const map = new Map(util.extend({
+    const map = new Map(Object.assign({
         container: container,
         interactive: false,
         attributionControl: false,
