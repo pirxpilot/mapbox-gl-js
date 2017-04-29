@@ -5,7 +5,6 @@ const {getArrayBuffer} = require('../util/ajax');
 const vt = require('@mapbox/vector-tile');
 const Protobuf = require('pbf');
 const WorkerTile = require('./worker_tile');
-const { extend } = require('../util/util');
 const perf = require('../util/performance');
 
 
@@ -103,7 +102,7 @@ class VectorTileWorkerSource {
                 if (err || !result) return callback(err);
 
                 // Transferring a copy of rawTileData because the worker needs to retain its copy.
-                callback(null, extend({rawTileData: rawTileData.slice(0)}, result, cacheControl, resourceTiming));
+                callback(null, Object.assign({rawTileData: rawTileData.slice(0)}, result, cacheControl, resourceTiming));
             });
 
             this.loaded = this.loaded || {};

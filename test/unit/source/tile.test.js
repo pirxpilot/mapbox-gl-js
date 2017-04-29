@@ -7,7 +7,6 @@ const path = require('path');
 const vtpbf = require('vt-pbf');
 const FeatureIndex = require('../../../src/data/feature_index');
 const { CollisionBoxArray } = require('../../../src/data/array_types');
-const { extend } = require('../../../src/util/util');
 const Context = require('../../../src/gl/context');
 const { serialize, deserialize } = require('../../../src/util/web_worker_transfer');
 
@@ -310,7 +309,7 @@ function createRawTileData() {
 
 function createVectorData(options) {
     const collisionBoxArray = new CollisionBoxArray();
-    return extend({
+    return Object.assign({
         collisionBoxArray: deserialize(serialize(collisionBoxArray)),
         featureIndex: deserialize(serialize(new FeatureIndex(new OverscaledTileID(1, 0, 1, 1, 1)))),
         buckets: []

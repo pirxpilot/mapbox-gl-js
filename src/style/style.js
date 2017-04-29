@@ -9,7 +9,7 @@ const ImageManager = require('../render/image_manager');
 const GlyphManager = require('../render/glyph_manager');
 const Light = require('./light');
 const LineAtlas = require('../render/line_atlas');
-const { clone, extend, deepEqual, filterObject, mapObject } = require('../util/util');
+const { clone, deepEqual, filterObject, mapObject } = require('../util/util');
 const { getJSON, ResourceType } = require('../util/ajax');
 const { normalizeStyleURL } = require('../util/mapbox');
 const browser = require('../util/browser');
@@ -417,7 +417,7 @@ class Style extends Evented {
         if (typeof layerObject.source === 'object') {
             this.addSource(id, layerObject.source);
             layerObject = clone(layerObject);
-            layerObject = (extend(layerObject, {source: id}));
+            layerObject = Object.assign(layerObject, {source: id});
         }
 
         const layer = createStyleLayer(layerObject);
@@ -670,7 +670,7 @@ class Style extends Evented {
     }
 
     getTransition() {
-        return extend({ duration: 300, delay: 0 }, this.stylesheet && this.stylesheet.transition);
+        return Object.assign({ duration: 300, delay: 0 }, this.stylesheet && this.stylesheet.transition);
     }
 
     serialize() {
@@ -804,7 +804,7 @@ class Style extends Evented {
 
         const parameters = {
             now: browser.now(),
-            transition: extend({
+            transition: Object.assign({
                 duration: 300,
                 delay: 0
             }, this.stylesheet.transition)

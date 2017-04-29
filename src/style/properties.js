@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { clone, extend, easeCubicInOut } = require('../util/util');
+const { clone, easeCubicInOut } = require('../util/util');
 const interpolate = require('../style-spec/util/interpolate');
 const { normalizePropertyExpression } = require('../style-spec/expression');
 const { register } = require('../util/web_worker_transfer');
@@ -106,7 +106,7 @@ class TransitionablePropertyValue {
     transitioned(parameters,
                  prior) {
         return new TransitioningPropertyValue(this.property, this.value, prior, // eslint-disable-line no-use-before-define
-            extend({}, parameters.transition, this.transition), parameters.now);
+            Object.assign({}, parameters.transition, this.transition), parameters.now);
     }
 
     untransitioned() {

@@ -137,25 +137,6 @@ function keysDifference(obj, other) {
 }
 
 /**
- * Given a destination object and optionally many source objects,
- * copy all properties from the source objects into the destination.
- * The last source object given overrides properties from previous
- * source objects.
- *
- * @param dest destination object
- * @param sources sources from which properties are pulled
- * @private
- */
-function extend(dest, ...sources) {
-    for (const src of sources) {
-        for (const k in src) {
-            dest[k] = src[k];
-        }
-    }
-    return dest;
-}
-
-/**
  * Given an object and a number of properties as strings, return version
  * of that object with only those properties.
  *
@@ -447,7 +428,6 @@ module.exports = {
     asyncAll,
     values,
     keysDifference,
-    extend,
     pick,
     uniqueId,
     bindAll,

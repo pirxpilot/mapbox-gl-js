@@ -2,7 +2,7 @@
 
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 
-const { extend, pick } = require('../util/util');
+const { pick } = require('../util/util');
 const loadTileJSON = require('./load_tilejson');
 const { normalizeTileURL: normalizeURL } = require('../util/mapbox');
 const TileBounds = require('./tile_bounds');
@@ -26,8 +26,8 @@ class VectorTileSource extends Evented {
         this.reparseOverscaled = true;
         this.isTileClipped = true;
 
-        extend(this, pick(options, ['url', 'scheme', 'tileSize']));
-        this._options = extend({ type: 'vector' }, options);
+        Object.assign(this, pick(options, ['url', 'scheme', 'tileSize']));
+        this._options = Object.assign({ type: 'vector' }, options);
 
         this._collectResourceTiming = options.collectResourceTiming;
 
@@ -45,7 +45,7 @@ class VectorTileSource extends Evented {
             if (err) {
                 this.fire(new ErrorEvent(err));
             } else if (tileJSON) {
-                extend(this, tileJSON);
+                Object.assign(this, tileJSON);
                 if (tileJSON.bounds) this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
 
                 // `content` is included here to prevent a race condition where `Style#_updateSources` is called
@@ -67,7 +67,7 @@ class VectorTileSource extends Evented {
     }
 
     serialize() {
-        return extend({}, this._options);
+        return Object.assign({}, this._options);
     }
 
     loadTile(tile, callback) {

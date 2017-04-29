@@ -2,7 +2,6 @@
 
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 
-const { extend } = require('../util/util');
 const window = require('../util/window');
 const EXTENT = require('../data/extent');
 const { ResourceType } = require('../util/ajax');
@@ -80,7 +79,7 @@ class GeoJSONSource extends Evented {
         this.setEventedParent(eventedParent);
 
         this._data = (options.data);
-        this._options = extend({}, options);
+        this._options = Object.assign({}, options);
 
         this._collectResourceTiming = options.collectResourceTiming;
         this._resourceTiming = [];
@@ -94,7 +93,7 @@ class GeoJSONSource extends Evented {
         // so that it can load/parse/index the geojson data
         // extending with `options.workerOptions` helps to make it easy for
         // third-party sources to hack/reuse GeoJSONSource.
-        this.workerOptions = extend({
+        this.workerOptions = Object.assign({
             source: this.id,
             cluster: options.cluster || false,
             geojsonVtOptions: {
@@ -171,7 +170,7 @@ class GeoJSONSource extends Evented {
      * using geojson-vt or supercluster as appropriate.
      */
     _updateWorkerData(callback) {
-        const options = extend({}, this.workerOptions);
+        const options = Object.assign({}, this.workerOptions);
         const data = this._data;
         if (typeof data === 'string') {
             options.request = this.map._transformRequest(resolveURL(data), ResourceType.Source);
@@ -251,7 +250,7 @@ class GeoJSONSource extends Evented {
     }
 
     serialize() {
-        return extend({}, this._options, {
+        return Object.assign({}, this._options, {
             type: this.type,
             data: this._data
         });

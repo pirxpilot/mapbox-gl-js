@@ -4,7 +4,6 @@ const { OverscaledTileID } = require('../../../src/source/tile_id');
 const GeoJSONSource = require('../../../src/source/geojson_source');
 const Transform = require('../../../src/geo/transform');
 const LngLat = require('../../../src/geo/lng_lat');
-const { extend } = require('../../../src/util/util');
 
 const mockDispatcher = {
     send: function () {}
@@ -47,7 +46,7 @@ const hawkHill = {
 test('GeoJSONSource#setData', (t) => {
     function createSource(opts) {
         opts = opts || {};
-        opts = extend(opts, { data: {} });
+        opts = Object.assign(opts, { data: {} });
         return new GeoJSONSource('id', opts, {
             send: function (type, data, callback) {
                 if (callback) {

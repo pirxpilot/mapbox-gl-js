@@ -1,7 +1,6 @@
 const { test } = require('mapbox-gl-js-test');
 const createStyleLayer = require('../../../src/style/create_style_layer');
 const FillStyleLayer = require('../../../src/style/style_layer/fill_style_layer');
-const { extend } = require('../../../src/util/util');
 const Color = require('../../../src/style-spec/util/color');
 
 test('StyleLayer', (t) => {
@@ -218,7 +217,7 @@ test('StyleLayer#setLayoutProperty', (t) => {
 test('StyleLayer#serialize', (t) => {
 
     function createSymbolLayer(layer) {
-        return extend({
+        return Object.assign({
             id: 'symbol',
             type: 'symbol',
             paint: {
@@ -279,7 +278,7 @@ test('StyleLayer#serialize', (t) => {
 test('StyleLayer#serialize', (t) => {
 
     function createSymbolLayer(layer) {
-        return extend({
+        return Object.assign({
             id: 'symbol',
             type: 'symbol',
             paint: {

@@ -1,6 +1,6 @@
 'use strict';
 
-const { extend, bindAll, warnOnce } = require('../util/util');
+const { bindAll, warnOnce } = require('../util/util');
 
 const browser = require('../util/browser');
 const window = require('../util/window');
@@ -190,7 +190,7 @@ class Map extends Camera {
      */
 
     constructor(options) {
-        options = extend({}, defaultOptions, options);
+        options = Object.assign({}, defaultOptions, options);
 
         if (options.minZoom != null && options.maxZoom != null && options.minZoom > options.maxZoom) {
             throw new Error(`maxZoom must be greater than minZoom`);
@@ -1393,7 +1393,7 @@ class Map extends Camera {
     }
 
     _setupPainter() {
-        const attributes = extend({
+        const attributes = Object.assign({
             failIfMajorPerformanceCaveat: this._failIfMajorPerformanceCaveat,
             preserveDrawingBuffer: this._preserveDrawingBuffer
         }, isSupported.webGLContextAttributes);
