@@ -7,7 +7,6 @@ const browser = require('./util/browser');
 const { version } = require('../package.json');
 const Map = require('./ui/map');
 const NavigationControl = require('./ui/control/navigation_control');
-const GeolocateControl = require('./ui/control/geolocate_control');
 const AttributionControl = require('./ui/control/attribution_control');
 const ScaleControl = require('./ui/control/scale_control');
 const FullscreenControl = require('./ui/control/fullscreen_control');
@@ -27,7 +26,6 @@ const exported = {
     setRTLTextPlugin: setRTLTextPlugin,
     Map,
     NavigationControl,
-    GeolocateControl,
     AttributionControl,
     ScaleControl,
     FullscreenControl,
