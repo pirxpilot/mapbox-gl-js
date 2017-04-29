@@ -57,25 +57,3 @@ exports.getArrayBuffer = function(url, callback) {
     xhr.send();
     return xhr;
 };
-
-function sameOrigin(url) {
-    const a = window.document.createElement('a');
-    a.href = url;
-    return a.protocol === window.document.location.protocol && a.host === window.document.location.host;
-}
-
-exports.getVideo = function(urls, callback) {
-    const video = window.document.createElement('video');
-    video.onloadstart = function() {
-        callback(null, video);
-    };
-    for (let i = 0; i < urls.length; i++) {
-        const s = window.document.createElement('source');
-        if (!sameOrigin(urls[i])) {
-            video.crossOrigin = 'Anonymous';
-        }
-        s.src = urls[i];
-        video.appendChild(s);
-    }
-    return video;
-};
