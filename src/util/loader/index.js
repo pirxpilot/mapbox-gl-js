@@ -1,7 +1,7 @@
 'use strict';
 
 const ajax = require('../ajax');
-const tileCache = require('tile-cache');
+const cache = require('./cache');
 
 module.exports = selectStrategy;
 
@@ -13,9 +13,6 @@ const strategies = {
     'network-then-cache': networkThenCache,
     'cache-first-then-cache': cacheFirstThenCache
 };
-
-// 24 hours for cached tiles
-const cacheControl = 'max-age:86400';
 
 function selectStrategy(strategy = 'network-only') {
     return strategies[strategy] || strategies['network-only'];
@@ -29,7 +26,7 @@ function networkOnly({ url, _ilk }, fn) {
 
 function cacheOnly(params, fn) {
     let aborted = false;
-    fromCache(params, done);
+    cache.from(params, done);
     return function abort() { aborted = true; };
     function done(err, data) {
         if (!aborted) {
@@ -54,65 +51,17 @@ function cacheFirstThenCache(params, fn) {
     return cacheFirst(params, cacheOnSuccessFn(params, fn));
 }
 
-function keyFromParams({ coord, zoom, fontstack, range, url, _ilk }) {
-    if (_ilk === 'json') {
-        return {
-            put: tileCache.putJson,
-            get: tileCache.getJson,
-            key: url
-        };
-    }
-    if (_ilk === 'image') {
-        return {
-            put: tileCache.putImage,
-            get: tileCache.getImage,
-            key: url
-        };
-    }
-    return fontstack ? {
-        put: tileCache.putFont,
-        get: tileCache.getFont,
-        key: [ fontstack, range ]
-    } : {
-        put: tileCache.putTile,
-        get: tileCache.getTile,
-        key: [ coord.x, coord.y, zoom ]
-    };
-}
-
 function cacheOnSuccessFn(params, fn) {
     return function(err, response) {
         fn(err, response);
         if (!err && response) {
-            updateCache(params, response);
+            cache.update(params, response);
         }
     };
 }
 
-function fromCache(params, fn) {
-    const { key, get } = keyFromParams(params);
-    get(key, done);
-    function done(err, data) {
-        if (!err && !data) {
-            err = new Error('Cache miss');
-        }
-        fn(err, data && {
-            data,
-            cacheControl,
-            _cacheHit: true
-        });
-    }
-}
-
-function updateCache(params, response, fn = noop) {
-    if (response._cacheHit) {
-        return fn();
-    }
-    const { key, put } = keyFromParams(params);
-    put(key, response.data, fn);
-}
-
 function first(tasks, params, fn) {
+
     let abortFn;
 
     function doTask(task, next, done) {
@@ -138,5 +87,3 @@ function first(tasks, params, fn) {
         if (abortFn) { abortFn(); }
     };
 }
-
-function noop() {}
