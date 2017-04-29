@@ -6,7 +6,7 @@ const TileCoord = require('./tile_coord');
 const LngLat = require('../geo/lng_lat');
 const Point = require('point-geometry');
 const Evented = require('../util/evented');
-const ajax = require('../util/ajax');
+const loadImage = require('../util/loader/image');
 const EXTENT = require('../data/extent');
 const RasterBoundsArray = require('../data/raster_bounds_array');
 const Buffer = require('../data/buffer');
@@ -67,7 +67,7 @@ class ImageSource extends Evented {
 
         this.url = this.options.url;
 
-        ajax.getImage(this.options.url, (err, image) => {
+        loadImage(this.options.url, (err, image) => {
             if (err) return this.fire('error', {error: err});
 
             this.image = image;
