@@ -4,7 +4,7 @@ const util = require('../util/util');
 const browser = require('../util/browser');
 const window = require('../util/window');
 const DOM = require('../util/dom');
-const ajax = require('../util/ajax');
+const loadImage = require('../util/loader/image');
 
 const Style = require('../style/style');
 const AnimationLoop = require('../style/animation_loop');
@@ -143,6 +143,9 @@ class Map extends Camera {
 
         const transform = new Transform(options.minZoom, options.maxZoom, options.renderWorldCopies);
         super(transform, options);
+
+        // use global loadImage implementation
+        this.loadImage = loadImage;
 
         this._interactive = options.interactive;
         this._failIfMajorPerformanceCaveat = options.failIfMajorPerformanceCaveat;
@@ -1018,9 +1021,6 @@ class Map extends Camera {
      * @param {Function} callback Called when the image has loaded or with an error argument if there is an error.
      * @see [Add an icon to the map](https://www.mapbox.com/mapbox-gl-js/example/add-image/)
      */
-    loadImage(url, callback) {
-        ajax.getImage(url, callback);
-    }
 
     /**
      * Adds a [Mapbox style layer](https://www.mapbox.com/mapbox-gl-style-spec/#layers)

@@ -1,7 +1,7 @@
 'use strict';
 
 const util = require('../util/util');
-const ajax = require('../util/ajax');
+const loadImage = require('../util/loader/image');
 const Evented = require('../util/evented');
 const loadTileJSON = require('./load_tilejson');
 const normalizeURL = require('../util/mapbox').normalizeTileURL;
@@ -74,7 +74,7 @@ class RasterTileSource extends Evented {
     loadTile(tile, callback) {
         const url = normalizeURL(tile.coord.url(this.tiles, null, this.scheme), this.url, this.tileSize);
 
-        tile.request = ajax.getImage(url, done.bind(this));
+        tile.request = loadImage(url, done.bind(this));
 
         function done(err, img) {
             delete tile.request;
