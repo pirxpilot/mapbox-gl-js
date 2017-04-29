@@ -2,8 +2,6 @@
 
 const config = require('./config');
 
-const browser = require('./browser');
-
 const help = 'See https://www.mapbox.com/api-documentation/#access-tokens';
 
 module.exports = {
@@ -74,19 +72,10 @@ function normalizeSpriteURL(url, format, extension, accessToken) {
     return makeAPIURL(urlObject, accessToken);
 }
 
-const imageExtensionRe = /(\.(png|jpg)\d*)(?=$)/;
-
-function normalizeTileURL(tileURL, sourceURL, tileSize) {
+function normalizeTileURL(tileURL, sourceURL) {
     if (!sourceURL || !isMapboxURL(sourceURL)) return tileURL;
 
     const urlObject = parseUrl(tileURL);
-
-    // The v4 mapbox tile API supports 512x512 image tiles only when @2x
-    // is appended to the tile URL. If `tileSize: 512` is specified for
-    // a Mapbox raster source force the @2x suffix even if a non hidpi device.
-    const suffix = browser.devicePixelRatio >= 2 || tileSize === 512 ? '@2x' : '';
-    const extension = browser.supportsWebp ? '.webp' : '$1';
-    urlObject.path = urlObject.path.replace(imageExtensionRe, `${suffix}${extension}`);
 
     replaceTempAccessToken(urlObject.params);
     return formatUrl(urlObject);

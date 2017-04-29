@@ -47,16 +47,7 @@ const exported = {
     },
 
     hardwareConcurrency: window.navigator.hardwareConcurrency || 4,
-    get devicePixelRatio() { return window.devicePixelRatio; },
-    supportsWebp: false
+    get devicePixelRatio() { return window.devicePixelRatio; }
 };
 
 module.exports = exported;
-
-if (window.document) {
-    const webpImgTest = window.document.createElement('img');
-    webpImgTest.onload = function() {
-        exported.supportsWebp = true;
-    };
-    webpImgTest.src = 'data:image/webp;base64,UklGRh4AAABXRUJQVlA4TBEAAAAvAQAAAAfQ//73v/+BiOh/AAA=';
-}
