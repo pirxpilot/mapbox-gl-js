@@ -4,7 +4,6 @@ const test = require('mapbox-gl-js-test').test;
 const window = require('../../../src/util/window');
 const Map = require('../../../src/ui/map');
 const Marker = require('../../../src/ui/marker');
-const Popup = require('../../../src/ui/popup');
 
 function createMap() {
     const container = window.document.createElement('div');
@@ -35,25 +34,6 @@ test('Marker', (t) => {
         t.ok(marker.setLngLat([-76, 39]) instanceof Marker, 'marker.setLngLat() returns Marker instance');
         const markerLngLat = marker.getLngLat();
         t.ok(markerLngLat.lng === -76 &&  markerLngLat.lat === 39, 'marker\'s position can be updated');
-        t.end();
-    });
-
-    t.test('popups can be bound to marker instance', (t) => {
-        const map = createMap();
-        const popup = new Popup();
-        const marker = new Marker(window.document.createElement('div')).setLngLat([-77.01866, 38.888]).addTo(map);
-        marker.setPopup(popup);
-        t.ok(marker.getPopup() instanceof Popup, 'popup created with Popup instance');
-        t.end();
-    });
-
-    t.test('popups can be unbound from a marker instance', (t) => {
-        const map = createMap();
-        const marker = new Marker(window.document.createElement('div')).setLngLat([-77.01866, 38.888]).addTo(map);
-        marker.setPopup(new Popup());
-        t.ok(marker.getPopup() instanceof Popup);
-        t.ok(marker.setPopup() instanceof Marker, 'passing no argument to Marker.setPopup() is valid');
-        t.ok(!marker.getPopup(), 'Calling setPopup with no argument successfully removes Popup instance from Marker instance');
         t.end();
     });
 
