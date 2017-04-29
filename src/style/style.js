@@ -9,7 +9,7 @@ const GlyphSource = require('../symbol/glyph_source');
 const SpriteAtlas = require('../symbol/sprite_atlas');
 const LineAtlas = require('../render/line_atlas');
 const util = require('../util/util');
-const ajax = require('../util/ajax');
+const loadJSON = require('../util/loader/json');
 const mapbox = require('../util/mapbox');
 const browser = require('../util/browser');
 const Dispatcher = require('../util/dispatcher');
@@ -114,7 +114,7 @@ class Style extends Evented {
         };
 
         if (typeof stylesheet === 'string') {
-            ajax.getJSON(mapbox.normalizeStyleURL(stylesheet), stylesheetLoaded);
+            loadJSON(mapbox.normalizeStyleURL(stylesheet), stylesheetLoaded);
         } else {
             browser.frame(stylesheetLoaded.bind(this, null, stylesheet));
         }
