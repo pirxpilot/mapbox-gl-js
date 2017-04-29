@@ -105,7 +105,7 @@ class WorkerTile {
             // collect data-driven paint property statistics from each bucket
             featureIndex.paintPropertyStatistics = {};
             for (const id in buckets) {
-                util.extend(featureIndex.paintPropertyStatistics, buckets[id].getPaintPropertyStatistics());
+                Object.assign(featureIndex.paintPropertyStatistics, buckets[id].getPaintPropertyStatistics());
             }
 
             const transferables = [];

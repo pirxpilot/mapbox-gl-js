@@ -2,7 +2,6 @@
 
 const assert = require('assert');
 const createVertexArrayType = require('./vertex_array_type');
-const util = require('../util/util');
 
 /**
  * ProgramConfiguration contains the logic for binding style layer properties and tile
@@ -149,7 +148,7 @@ class ProgramConfiguration {
         const componentNames = [];
 
         if (attribute.components === 1) {
-            this.attributes.push(util.extend({}, attribute, {
+            this.attributes.push(Object.assign({}, attribute, {
                 components: 4,
                 zoomStops
             }));
@@ -161,7 +160,7 @@ class ProgramConfiguration {
                 const componentName = attribute.name + k;
                 componentNames.push(componentName);
 
-                this.attributes.push(util.extend({}, attribute, {
+                this.attributes.push(Object.assign({}, attribute, {
                     name: componentName,
                     zoomStops: [zoomStops[k]]
                 }));
@@ -257,7 +256,7 @@ function getPaintAttributeValue(attribute, layer, globalProperties, featurePrope
     }
     // add one multi-component value like color0, or pack multiple single-component values into a four component attribute
     const values = attribute.zoomStops.map((zoom) => layer.getPaintValue(
-            attribute.property, util.extend({}, globalProperties, {zoom}), featureProperties));
+            attribute.property, Object.assign({}, globalProperties, {zoom}), featureProperties));
 
     return values.length === 1 ? values[0] : values;
 }
@@ -272,7 +271,7 @@ function normalizePaintAttribute(attribute, layer) {
     }
     const isColor = layer._paintSpecifications[attribute.property].type === 'color';
 
-    return util.extend({
+    return Object.assign({
         name: `a_${name}`,
         components: isColor ? 4 : 1,
         multiplier: isColor ? 255 : 1,

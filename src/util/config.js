@@ -1,6 +1,5 @@
 'use strict';
 
-const util = require('./util');
 const Evented = require('./evented');
 
 // @flow
@@ -15,7 +14,7 @@ type Config = {|
 const config = Object.create(new Evented());
 
 config.set = function set(c: Config) {
-    util.extend(config, c);
+    Object.assign(config, c);
     config.fire('change', config);
 };
 

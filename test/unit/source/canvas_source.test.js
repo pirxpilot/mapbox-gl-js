@@ -4,7 +4,6 @@ const test = require('mapbox-gl-js-test').test;
 const CanvasSource = require('../../../src/source/canvas_source');
 const Transform = require('../../../src/geo/transform');
 const Evented = require('../../../src/util/evented');
-const util = require('../../../src/util/util');
 const window = require('../../../src/util/window');
 
 function createSource(options) {
@@ -14,7 +13,7 @@ function createSource(options) {
     c.width = 20;
     c.height = 20;
 
-    options = util.extend({
+    options = Object.assign({
         canvas: 'id',
         coordinates: [[0, 0], [1, 0], [1, 1], [0, 1]]
     }, options);

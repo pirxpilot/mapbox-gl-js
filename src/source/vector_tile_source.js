@@ -21,9 +21,9 @@ class VectorTileSource extends Evented {
         this.tileSize = 512;
         this.reparseOverscaled = true;
         this.isTileClipped = true;
-        util.extend(this, util.pick(options, ['url', 'scheme', 'tileSize']));
+        Object.assign(this, util.pick(options, ['url', 'scheme', 'tileSize']));
 
-        this._options = util.extend({ type: 'vector' }, options);
+        this._options = Object.assign({ type: 'vector' }, options);
 
         if (this.tileSize !== 512) {
             throw new Error('vector tile sources must have a tileSize of 512');
@@ -42,7 +42,7 @@ class VectorTileSource extends Evented {
                 this.fire('error', err);
                 return;
             }
-            util.extend(this, tileJSON);
+            Object.assign(this, tileJSON);
             this.setBounds(tileJSON.bounds);
 
              // `content` is included here to prevent a race condition where `Style#_updateSources` is called
@@ -71,7 +71,7 @@ class VectorTileSource extends Evented {
     }
 
     serialize() {
-        return util.extend({}, this._options);
+        return Object.assign({}, this._options);
     }
 
     loadTile(tile, callback) {

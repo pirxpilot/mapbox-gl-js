@@ -23,7 +23,7 @@ class RasterTileSource extends Evented {
         this.tileSize = 512;
         this._loaded = false;
         this.options = options;
-        util.extend(this, util.pick(options, ['url', 'scheme', 'tileSize']));
+        Object.assign(this, util.pick(options, ['url', 'scheme', 'tileSize']));
     }
 
     load() {
@@ -32,7 +32,7 @@ class RasterTileSource extends Evented {
             if (err) {
                 return this.fire('error', err);
             }
-            util.extend(this, tileJSON);
+            Object.assign(this, tileJSON);
             this.setBounds(tileJSON.bounds);
 
 

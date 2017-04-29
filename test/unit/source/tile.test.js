@@ -10,7 +10,6 @@ const vtpbf = require('vt-pbf');
 const FeatureIndex = require('../../../src/data/feature_index');
 const CollisionTile = require('../../../src/symbol/collision_tile');
 const CollisionBoxArray = require('../../../src/symbol/collision_box');
-const util = require('../../../src/util/util');
 
 test('querySourceFeatures', (t) => {
     const features = [{
@@ -264,7 +263,7 @@ function createRawTileData() {
 
 function createVectorData(options) {
     const collisionBoxArray = new CollisionBoxArray();
-    return util.extend({
+    return Object.assign({
         collisionBoxArray: collisionBoxArray.serialize(),
         collisionTile: (new CollisionTile(0, 0, 1, 1, collisionBoxArray)).serialize(),
         featureIndex: (new FeatureIndex(new TileCoord(1, 1, 1))).serialize(),

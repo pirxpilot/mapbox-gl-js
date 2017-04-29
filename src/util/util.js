@@ -133,25 +133,6 @@ exports.keysDifference = function (obj: {[key: string]: mixed}, other: {[key: st
 };
 
 /**
- * Given a destination object and optionally many source objects,
- * copy all properties from the source objects into the destination.
- * The last source object given overrides properties from previous
- * source objects.
- *
- * @param dest destination object
- * @param sources sources from which properties are pulled
- * @private
- */
-exports.extend = function (dest: Object, ...sources: Array<Object>): Object {
-    for (const src of sources) {
-        for (const k in src) {
-            dest[k] = src[k];
-        }
-    }
-    return dest;
-};
-
-/**
  * Given an object and a number of properties as strings, return version
  * of that object with only those properties.
  *

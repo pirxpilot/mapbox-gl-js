@@ -130,7 +130,7 @@ const defaultOptions = {
 class Map extends Camera {
 
     constructor(options) {
-        options = util.extend({}, defaultOptions, options);
+        options = Object.assign({}, defaultOptions, options);
 
         if (options.minZoom != null && options.maxZoom != null && options.minZoom > options.maxZoom) {
             throw new Error(`maxZoom must be greater than minZoom`);
@@ -551,7 +551,7 @@ class Map extends Camera {
                         mousein = false;
                     } else if (!mousein) {
                         mousein = true;
-                        listener.call(this, util.extend({features}, e, {type}));
+                        listener.call(this, Object.assign({features}, e, {type}));
                     }
                 };
                 const mouseout = () => {
@@ -566,13 +566,13 @@ class Map extends Camera {
                         mousein = true;
                     } else if (mousein) {
                         mousein = false;
-                        listener.call(this, util.extend({}, e, {type}));
+                        listener.call(this, Object.assign({}, e, {type}));
                     }
                 };
                 const mouseout = (e) => {
                     if (mousein) {
                         mousein = false;
-                        listener.call(this, util.extend({}, e, {type}));
+                        listener.call(this, Object.assign({}, e, {type}));
                     }
                 };
                 return {layer, listener, delegates: {mousemove, mouseout}};
@@ -580,7 +580,7 @@ class Map extends Camera {
                 const delegate = (e) => {
                     const features = this.queryRenderedFeatures(e.point, {layers: [layer]});
                     if (features.length) {
-                        listener.call(this, util.extend({features}, e));
+                        listener.call(this, Object.assign({features}, e));
                     }
                 };
                 return {layer, listener, delegates: {[type]: delegate}};
@@ -1292,7 +1292,7 @@ class Map extends Camera {
     }
 
     _setupPainter() {
-        const attributes = util.extend({
+        const attributes = Object.assign({
             failIfMajorPerformanceCaveat: this._failIfMajorPerformanceCaveat,
             preserveDrawingBuffer: this._preserveDrawingBuffer
         }, isSupported.webGLContextAttributes);

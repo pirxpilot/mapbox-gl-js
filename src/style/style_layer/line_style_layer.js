@@ -2,7 +2,6 @@
 
 const StyleLayer = require('../style_layer');
 const LineBucket = require('../../data/bucket/line_bucket');
-const util = require('../../util/util');
 
 class LineStyleLayer extends StyleLayer {
 
@@ -13,7 +12,7 @@ class LineStyleLayer extends StyleLayer {
         // width at the previous round zoom level.
         if (value && name === 'line-dasharray') {
             const width = this.getPaintValue('line-width',
-                    util.extend({}, globalProperties, {zoom: Math.floor(globalProperties.zoom)}), featureProperties);
+                    Object.assign({}, globalProperties, {zoom: Math.floor(globalProperties.zoom)}), featureProperties);
             value.fromScale *= width;
             value.toScale *= width;
         }

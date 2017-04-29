@@ -3,7 +3,6 @@ const vt = require('vector-tile');
 const loader = require('../util/loader');
 const Protobuf = require('pbf');
 const WorkerTile = require('./worker_tile');
-const util = require('../util/util');
 
 /**
  * The {@link WorkerSource} implementation that supports {@link VectorTileSource}.
@@ -65,7 +64,7 @@ class VectorTileWorkerSource {
 
                 // Not transferring rawTileData because the worker needs to retain its copy.
                 callback(null,
-                    util.extend({rawTileData: vectorTile.rawData}, result, cacheControl),
+                    Object.assign({rawTileData: vectorTile.rawData}, result, cacheControl),
                     transferrables);
             });
 

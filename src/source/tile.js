@@ -115,7 +115,7 @@ class Tile {
         }
 
         // Add new symbol buckets
-        util.extend(this.buckets, Bucket.deserialize(data.buckets, style));
+        Object.assign(this.buckets, Bucket.deserialize(data.buckets, style));
     }
 
     /**

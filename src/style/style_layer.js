@@ -226,9 +226,9 @@ class StyleLayer extends Evented {
     }
 
     updatePaintTransitions(classes, options, globalOptions, animationLoop, zoomHistory) {
-        const declarations = util.extend({}, this._paintDeclarations['']);
+        const declarations = Object.assign({}, this._paintDeclarations['']);
         for (let i = 0; i < classes.length; i++) {
-            util.extend(declarations, this._paintDeclarations[classes[i]]);
+            Object.assign(declarations, this._paintDeclarations[classes[i]]);
         }
 
         let name;
@@ -296,7 +296,7 @@ class StyleLayer extends Evented {
 
         if (oldTransition && oldTransition.declaration.json === declaration.json) return;
 
-        const transitionOptions = util.extend({
+        const transitionOptions = Object.assign({
             duration: 300,
             delay: 0
         }, globalOptions, this.getPaintProperty(name + TRANSITION_SUFFIX));

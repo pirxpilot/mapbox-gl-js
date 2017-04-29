@@ -3,9 +3,7 @@
 const jsdom = require('jsdom');
 const gl = require('gl');
 const sinon = require('sinon');
-const util = require('./util');
 const loaderCache =  require('./loader/cache');
-
 
 function restore() {
     // Remove previous window from module.exports
@@ -73,7 +71,7 @@ function restore() {
 
     window.ImageData = window.ImageData || sinon.stub().returns(false);
 
-    util.extend(module.exports, window);
+    Object.assign(module.exports, window);
 
     return window;
 }

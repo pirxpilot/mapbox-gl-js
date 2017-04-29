@@ -78,7 +78,7 @@ class Evented {
      */
     fire(type, data) {
         if (this.listens(type)) {
-            data = util.extend({}, data, {type: type, target: this});
+            data = Object.assign({}, data, {type: type, target: this});
 
             // make sure adding or removing listeners inside other listeners won't cause an infinite loop
             const listeners = this._listeners && this._listeners[type] ? this._listeners[type].slice() : [];
@@ -95,7 +95,7 @@ class Evented {
             }
 
             if (this._eventedParent) {
-                this._eventedParent.fire(type, util.extend({}, data, typeof this._eventedParentData === 'function' ? this._eventedParentData() : this._eventedParentData));
+                this._eventedParent.fire(type, Object.assign({}, data, typeof this._eventedParentData === 'function' ? this._eventedParentData() : this._eventedParentData));
             }
 
         // To ensure that no error events are dropped, print them to the
