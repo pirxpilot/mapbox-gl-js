@@ -53,7 +53,14 @@ function cacheFirstThenCache(params, fn) {
     return cacheFirst(params, cacheOnSuccessFn(params, fn));
 }
 
-function keyFromParams({ coord, zoom, fontstack, range }) {
+function keyFromParams({ coord, zoom, fontstack, range, url, _ilk }) {
+    if (_ilk === 'image') {
+        return {
+            put: tileCache.putImage,
+            get: tileCache.getImage,
+            key: url
+        };
+    }
     return fontstack ? {
         put: tileCache.putFont,
         get: tileCache.getFont,

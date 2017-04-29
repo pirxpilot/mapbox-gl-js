@@ -2,6 +2,7 @@
 
 const Evented = require('../util/evented');
 const ajax = require('../util/ajax');
+const loadImage = require('../util/loader/image');
 const browser = require('../util/browser');
 const normalizeURL = require('../util/mapbox').normalizeSpriteURL;
 
@@ -36,7 +37,7 @@ class ImageSprite extends Evented {
             if (this.imgData) this.fire('data', {dataType: 'style'});
         });
 
-        ajax.getImage(normalizeURL(base, format, '.png'), (err, img) => {
+        loadImage(normalizeURL(base, format, '.png'), (err, img) => {
             if (err) {
                 this.fire('error', {error: err});
                 return;
