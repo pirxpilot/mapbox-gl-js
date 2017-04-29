@@ -44,7 +44,7 @@ test('ajax', (t) => {
         });
         ajax.getJSON('', (error, body) => {
             t.error(error);
-            t.deepEqual(body, {foo: 'bar'});
+            t.deepEqual(body, {data: {foo: 'bar'}});
             t.end();
         });
         window.server.respond();
