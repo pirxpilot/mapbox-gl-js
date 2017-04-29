@@ -21,13 +21,10 @@ class Marker {
         this._offset = Point.convert(options && options.offset || [0, 0]);
 
         this._update = this._update.bind(this);
-        this._onMapClick = this._onMapClick.bind(this);
 
         if (!element) element = DOM.create('div');
         element.classList.add('mapboxgl-marker');
         this._element = element;
-
-        this._popup = null;
     }
 
     /**
@@ -43,11 +40,6 @@ class Marker {
         map.on('moveend', this._update);
         this._update();
 
-        // If we attached the `click` listener to the marker element, the popup
-        // would close once the event propogated to `map` due to the
-        // `Popup#_onClickClose` listener.
-        this._map.on('click', this._onMapClick);
-
         return this;
     }
 
@@ -60,13 +52,11 @@ class Marker {
      */
     remove() {
         if (this._map) {
-            this._map.off('click', this._onMapClick);
             this._map.off('move', this._update);
             this._map.off('moveend', this._update);
             this._map = null;
         }
         DOM.remove(this._element);
-        if (this._popup) this._popup.remove();
         return this;
     }
 
@@ -85,63 +75,12 @@ class Marker {
      */
     setLngLat(lnglat) {
         this._lngLat = LngLat.convert(lnglat);
-        if (this._popup) this._popup.setLngLat(this._lngLat);
         this._update();
         return this;
     }
 
     getElement() {
         return this._element;
-    }
-
-    /**
-     * Binds a Popup to the Marker
-     * @param {Popup=} popup an instance of the `Popup` class. If undefined or null, any popup
-     * set on this `Marker` instance is unset
-     * @returns {Marker} `this`
-     */
-
-    setPopup(popup) {
-        if (this._popup) {
-            this._popup.remove();
-            this._popup = null;
-        }
-
-        if (popup) {
-            this._popup = popup;
-            this._popup.setLngLat(this._lngLat);
-        }
-
-        return this;
-    }
-
-    _onMapClick(event) {
-        const targetElement = event.originalEvent.target;
-        const element = this._element;
-
-        if (this._popup && (targetElement === element || element.contains(targetElement))) {
-            this.togglePopup();
-        }
-    }
-
-    /**
-     * Returns the Popup instance that is bound to the Marker
-     * @returns {Popup} popup
-     */
-    getPopup() {
-        return this._popup;
-    }
-
-    /**
-     * Opens or closes the bound popup, depending on the current state
-     * @returns {Marker} `this`
-     */
-    togglePopup() {
-        const popup = this._popup;
-
-        if (!popup) return;
-        else if (popup.isOpen()) popup.remove();
-        else popup.addTo(this._map);
     }
 
     _update(e) {
