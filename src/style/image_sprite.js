@@ -1,8 +1,8 @@
 'use strict';
 
 const Evented = require('../util/evented');
-const ajax = require('../util/ajax');
 const loadImage = require('../util/loader/image');
+const loadJSON = require('../util/loader/json');
 const browser = require('../util/browser');
 const normalizeURL = require('../util/mapbox').normalizeSpriteURL;
 
@@ -27,7 +27,7 @@ class ImageSprite extends Evented {
 
         const format = this.retina ? '@2x' : '';
 
-        ajax.getJSON(normalizeURL(base, format, '.json'), (err, data) => {
+        loadJSON(normalizeURL(base, format, '.json'), (err, data) => {
             if (err) {
                 this.fire('error', {error: err});
                 return;

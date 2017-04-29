@@ -21,8 +21,9 @@ function selectStrategy(strategy = 'network-only') {
     return strategies[strategy] || strategies['network-only'];
 }
 
-function networkOnly(params, fn) {
-    const xhr = ajax.getArrayBuffer(params.url, fn);
+function networkOnly({ url, _ilk }, fn) {
+    const getFn = _ilk === 'json' ? ajax.getJSON : ajax.getArrayBuffer;
+    const xhr = getFn(url, fn);
     return function abort () { xhr.abort(); };
 }
 
@@ -54,6 +55,13 @@ function cacheFirstThenCache(params, fn) {
 }
 
 function keyFromParams({ coord, zoom, fontstack, range, url, _ilk }) {
+    if (_ilk === 'json') {
+        return {
+            put: tileCache.putJson,
+            get: tileCache.getJson,
+            key: url
+        };
+    }
     if (_ilk === 'image') {
         return {
             put: tileCache.putImage,

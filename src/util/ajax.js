@@ -24,7 +24,7 @@ exports.getJSON = function(url, callback) {
             } catch (err) {
                 return callback(err);
             }
-            callback(null, data);
+            callback(null, { data });
         } else {
             callback(new AJAXError(xhr.statusText, xhr.status));
         }
