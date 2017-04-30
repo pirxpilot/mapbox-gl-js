@@ -2,52 +2,15 @@
 
 const test = require('mapbox-gl-js-test').test;
 const Tile = require('../../../src/source/tile');
-const GeoJSONWrapper = require('../../../src/source/geojson_wrapper');
 const TileCoord = require('../../../src/source/tile_coord');
 const fs = require('fs');
 const path = require('path');
-const vtpbf = require('vt-pbf');
 const FeatureIndex = require('../../../src/data/feature_index');
 const CollisionTile = require('../../../src/symbol/collision_tile');
 const CollisionBoxArray = require('../../../src/symbol/collision_box');
 const util = require('../../../src/util/util');
 
 test('querySourceFeatures', (t) => {
-    const features = [{
-        type: 1,
-        geometry: [0, 0],
-        tags: { oneway: true }
-    }];
-
-
-    t.test('geojson tile', (t) => {
-        const tile = new Tile(new TileCoord(1, 1, 1));
-        let result;
-
-        result = [];
-        tile.querySourceFeatures(result, {});
-        t.equal(result.length, 0);
-
-        const geojsonWrapper = new GeoJSONWrapper(features);
-        geojsonWrapper.name = '_geojsonTileLayer';
-        tile.rawTileData = vtpbf({ layers: { '_geojsonTileLayer': geojsonWrapper }});
-
-        result = [];
-        tile.querySourceFeatures(result);
-        t.equal(result.length, 1);
-        result = [];
-        tile.querySourceFeatures(result, {});
-        t.equal(result.length, 1);
-        t.deepEqual(result[0].properties, features[0].tags);
-        result = [];
-        tile.querySourceFeatures(result, { filter: ['==', 'oneway', true]});
-        t.equal(result.length, 1);
-        result = [];
-        tile.querySourceFeatures(result, { filter: ['!=', 'oneway', true]});
-        t.equal(result.length, 0);
-        t.end();
-    });
-
     t.test('vector tile', (t) => {
         const tile = new Tile(new TileCoord(1, 1, 1));
         let result;
