@@ -390,33 +390,6 @@ test('Map', (t) => {
             });
         });
 
-        t.test('creates a new Style if diff fails', (t) => {
-            const style = createStyle();
-            const map = createMap({ style: style });
-            t.stub(map.style, 'setState').callsFake(() => {
-                throw new Error('Dummy error');
-            });
-            t.stub(console, 'warn');
-
-            const previousStyle = map.style;
-            map.setStyle(style);
-            t.ok(map.style && map.style !== previousStyle);
-            t.end();
-        });
-
-        t.test('creates a new Style if diff option is false', (t) => {
-            const style = createStyle();
-            const map = createMap({ style: style });
-            t.stub(map.style, 'setState').callsFake(() => {
-                t.fail();
-            });
-
-            const previousStyle = map.style;
-            map.setStyle(style, {diff: false});
-            t.ok(map.style && map.style !== previousStyle);
-            t.end();
-        });
-
         t.end();
     });
 

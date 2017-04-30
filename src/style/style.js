@@ -9,7 +9,7 @@ const ImageManager = require('../render/image_manager');
 const GlyphManager = require('../render/glyph_manager');
 const Light = require('./light');
 const LineAtlas = require('../render/line_atlas');
-const { pick, clone, extend, deepEqual, filterObject, mapObject } = require('../util/util');
+const { clone, extend, deepEqual, filterObject, mapObject } = require('../util/util');
 const { getJSON, ResourceType } = require('../util/ajax');
 const { isMapboxURL, normalizeStyleURL } = require('../util/mapbox');
 const browser = require('../util/browser');
@@ -24,8 +24,6 @@ const SourceCache = require('../source/source_cache');
 const styleSpec = require('../style-spec/reference/latest');
 const getWorkerPool = require('../util/global_worker_pool');
 const deref = require('../style-spec/deref');
-const diffStyles = require('../style-spec/diff');
-const { operations: diffOperations } = diffStyles;
 const {
     registerForPluginAvailability,
     evented: rtlTextPluginEvented
@@ -39,30 +37,6 @@ const CrossTileSymbolIndex = require('../symbol/cross_tile_symbol_index');
 // smart setStyle (see https://github.com/mapbox/mapbox-gl-js/pull/6424):
 const emitValidationErrors = (evented, errors) =>
     _emitValidationErrors(evented, errors && errors.filter(error => error.identifier !== 'source.canvas'));
-
-
-const supportedDiffOperations = pick(diffOperations, [
-    'addLayer',
-    'removeLayer',
-    'setPaintProperty',
-    'setLayoutProperty',
-    'setFilter',
-    'addSource',
-    'removeSource',
-    'setLayerZoomRange',
-    'setLight',
-    'setTransition',
-    'setGeoJSONSourceData'
-    // 'setGlyphs',
-    // 'setSprite',
-]);
-
-const ignoredDiffOperations = pick(diffOperations, [
-    'setCenter',
-    'setZoom',
-    'setBearing',
-    'setPitch'
-]);
 
 
 /**
@@ -336,50 +310,6 @@ class Style extends Evented {
 
         this._updatedSources = {};
         this._updatedPaintProps = {};
-    }
-
-    /**
-     * Update this style's state to match the given style JSON, performing only
-     * the necessary mutations.
-     *
-     * May throw an Error ('Unimplemented: METHOD') if the mapbox-gl-style-spec
-     * diff algorithm produces an operation that is not supported.
-     *
-     * @returns {boolean} true if any changes were made; false otherwise
-     * @private
-     */
-    setState(nextState) {
-        this._checkLoaded();
-
-        if (emitValidationErrors(this, validateStyle(nextState))) return false;
-
-        nextState = clone(nextState);
-        nextState.layers = deref(nextState.layers);
-
-        const changes = diffStyles(this.serialize(), nextState)
-            .filter(op => !(op.command in ignoredDiffOperations));
-
-        if (changes.length === 0) {
-            return false;
-        }
-
-        const unimplementedOps = changes.filter(op => !(op.command in supportedDiffOperations));
-        if (unimplementedOps.length > 0) {
-            throw new Error(`Unimplemented: ${unimplementedOps.map(op => op.command).join(', ')}.`);
-        }
-
-        changes.forEach((op) => {
-            if (op.command === 'setTransition') {
-                // `transition` is always read directly off of
-                // `this.stylesheet`, which we update below
-                return;
-            }
-            (this)[op.command].apply(this, op.args);
-        });
-
-        this.stylesheet = nextState;
-
-        return true;
     }
 
     addImage(id, image) {
