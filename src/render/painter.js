@@ -6,10 +6,8 @@ const { mat4 } = require('gl-matrix');
 const SourceCache = require('../source/source_cache');
 const EXTENT = require('../data/extent');
 const pixelsToTileUnits = require('../source/pixels_to_tile_units');
-const { filterObject } = require('../util/util');
 const VertexArrayObject = require('./vertex_array_object');
-const { RasterBoundsArray, PosArray } = require('../data/array_types');
-const rasterBoundsAttributes = require('../data/raster_bounds_attributes');
+const { PosArray } = require('../data/array_types');
 const posAttributes = require('../data/pos_attributes');
 const ProgramConfiguration = require('../data/program_configuration');
 const CrossTileSymbolIndex = require('../symbol/cross_tile_symbol_index');
@@ -19,7 +17,6 @@ const Context = require('../gl/context');
 const DepthMode = require('../gl/depth_mode');
 const StencilMode = require('../gl/stencil_mode');
 const ColorMode = require('../gl/color_mode');
-const updateTileMasks = require('./tile_mask');
 const Color = require('../style-spec/util/color');
 const symbol = require('./draw_symbol');
 const circle = require('./draw_circle');
@@ -27,10 +24,7 @@ const heatmap = require('./draw_heatmap');
 const line = require('./draw_line');
 const fill = require('./draw_fill');
 const fillExtrusion = require('./draw_fill_extrusion');
-const hillshade = require('./draw_hillshade');
-const raster = require('./draw_raster');
 const background = require('./draw_background');
-const debug = require('./draw_debug');
 
 const draw = {
     symbol,
@@ -39,14 +33,8 @@ const draw = {
     line,
     fill,
     'fill-extrusion': fillExtrusion,
-    hillshade,
-    raster,
     background,
-    debug
 };
-
-
-
 
 /**
  * Initialize a new painter object.
@@ -109,23 +97,6 @@ class Painter {
         this.tileExtentBuffer = context.createVertexBuffer(tileExtentArray, posAttributes.members);
         this.tileExtentVAO = new VertexArrayObject();
         this.tileExtentPatternVAO = new VertexArrayObject();
-
-        const debugArray = new PosArray();
-        debugArray.emplaceBack(0, 0);
-        debugArray.emplaceBack(EXTENT, 0);
-        debugArray.emplaceBack(EXTENT, EXTENT);
-        debugArray.emplaceBack(0, EXTENT);
-        debugArray.emplaceBack(0, 0);
-        this.debugBuffer = context.createVertexBuffer(debugArray, posAttributes.members);
-        this.debugVAO = new VertexArrayObject();
-
-        const rasterBoundsArray = new RasterBoundsArray();
-        rasterBoundsArray.emplaceBack(0, 0, 0, 0);
-        rasterBoundsArray.emplaceBack(EXTENT, 0, EXTENT, 0);
-        rasterBoundsArray.emplaceBack(0, EXTENT, 0, EXTENT);
-        rasterBoundsArray.emplaceBack(EXTENT, EXTENT, EXTENT, EXTENT);
-        this.rasterBoundsBuffer = context.createVertexBuffer(rasterBoundsArray, rasterBoundsAttributes.members);
-        this.rasterBoundsVAO = new VertexArrayObject();
 
         const viewportArray = new PosArray();
         viewportArray.emplaceBack(0, 0);
@@ -232,17 +203,6 @@ class Painter {
         }
 
         const layerIds = this.style._order;
-
-        const rasterSources = filterObject(
-            this.style.sourceCaches,
-            (sc) => { return sc.getSource().type === 'raster' || sc.getSource().type === 'raster-dem'; }
-        );
-        for (const key in rasterSources) {
-            const sourceCache = rasterSources[key];
-            const coords = sourceCache.getVisibleCoordinates();
-            const visibleTiles = coords.map((c)=>{ return sourceCache.getTile(c); });
-            updateTileMasks(visibleTiles, this.context);
-        }
 
         // Offscreen pass
         // We first do all rendering that requires rendering to a separate
