@@ -1126,42 +1126,6 @@ test('Map', (t) => {
         t.end();
     });
 
-    t.test('error event', (t) => {
-        t.test('logs errors to console when it has NO listeners', (t) => {
-            const map = createMap({ style: { version: 8, sources: {}, layers: [] } });
-
-            t.spy(map, 'fire');
-            t.stub(console, 'error').callsFake((error) => {
-                if (error.message === 'version: expected one of [8], 7 found') {
-                    t.notOk(map.fire.calledWith('error'));
-                    console.error.restore();
-                    map.fire.restore();
-                    t.end();
-                } else {
-                    console.log(error);
-                }
-            });
-
-            map.setStyle({ version: 7, sources: {}, layers: [] });
-        });
-
-        t.test('calls listeners', (t) => {
-            const map = createMap({ style: { version: 8, sources: {}, layers: [] } });
-
-            t.spy(console, 'error');
-            map.on('error', (event) => {
-                t.equal(event.error.message, 'version: expected one of [8], 7 found');
-                t.notOk(console.error.calledWith('version: expected one of [8], 7 found'));
-                console.error.restore();
-                t.end();
-            });
-
-            map.setStyle({ version: 7, sources: {}, layers: [] });
-        });
-
-        t.end();
-    });
-
     t.test('render stabilizes', (t) => {
         const style = createStyle();
         style.sources.mapbox = {
