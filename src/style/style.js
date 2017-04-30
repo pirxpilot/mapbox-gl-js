@@ -22,30 +22,7 @@ const styleSpec = require('../style-spec/reference/latest');
 const MapboxGLFunction = require('../style-spec/function');
 const getWorkerPool = require('../util/global_worker_pool');
 const deref = require('../style-spec/deref');
-const diff = require('../style-spec/diff');
 const rtlTextPlugin = require('../source/rtl_text_plugin');
-
-const supportedDiffOperations = util.pick(diff.operations, [
-    'addLayer',
-    'removeLayer',
-    'setPaintProperty',
-    'setLayoutProperty',
-    'setFilter',
-    'addSource',
-    'removeSource',
-    'setLayerZoomRange',
-    'setLight',
-    'setTransition'
-    // 'setGlyphs',
-    // 'setSprite',
-]);
-
-const ignoredDiffOperations = util.pick(diff.operations, [
-    'setCenter',
-    'setZoom',
-    'setBearing',
-    'setPitch'
-]);
 
 /**
  * @private
@@ -322,50 +299,6 @@ class Style extends Evented {
 
         this._updatedPaintProps = {};
         this._updatedAllPaintProps = false;
-    }
-
-    /**
-     * Update this style's state to match the given style JSON, performing only
-     * the necessary mutations.
-     *
-     * May throw an Error ('Unimplemented: METHOD') if the mapbox-gl-style-spec
-     * diff algorithm produces an operation that is not supported.
-     *
-     * @returns {boolean} true if any changes were made; false otherwise
-     * @private
-     */
-    setState(nextState) {
-        this._checkLoaded();
-
-        if (validateStyle.emitErrors(this, validateStyle(nextState))) return false;
-
-        nextState = Object.assign({}, nextState);
-        nextState.layers = deref(nextState.layers);
-
-        const changes = diff(this.serialize(), nextState)
-            .filter(op => !(op.command in ignoredDiffOperations));
-
-        if (changes.length === 0) {
-            return false;
-        }
-
-        const unimplementedOps = changes.filter(op => !(op.command in supportedDiffOperations));
-        if (unimplementedOps.length > 0) {
-            throw new Error(`Unimplemented: ${unimplementedOps.map(op => op.command).join(', ')}.`);
-        }
-
-        changes.forEach((op) => {
-            if (op.command === 'setTransition') {
-                // `transition` is always read directly off of
-                // `this.stylesheet`, which we update below
-                return;
-            }
-            this[op.command].apply(this, op.args);
-        });
-
-        this.stylesheet = nextState;
-
-        return true;
     }
 
     addSource(id, source, options) {
