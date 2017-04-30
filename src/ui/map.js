@@ -827,14 +827,7 @@ class Map extends Camera {
         const shouldTryDiff = (!options || options.diff !== false) && this.style && style &&
             !(style instanceof Style) && typeof style !== 'string';
         if (shouldTryDiff) {
-            try {
-                if (this.style.setState(style)) {
-                    this._update(true);
-                }
-                return this;
-            } catch (e) {
-                util.warnOnce(`Unable to perform style diff: ${e.message || e.error || e}.  Rebuilding the style from scratch.`);
-            }
+            console.log('Unable to perform style diff. Rebuilding the style from scratch.');
         }
 
         if (this.style) {
