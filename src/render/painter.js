@@ -21,9 +21,9 @@ const draw = {
     line: require('./draw_line'),
     fill: require('./draw_fill'),
     'fill-extrusion': require('./draw_fill_extrusion'),
-    raster: require('./draw_raster'),
-    background: require('./draw_background'),
-    debug: require('./draw_debug')
+    // raster: require('./draw_raster'),
+    background: require('./draw_background')
+    // debug: require('./draw_debug')
 };
 
 /**
