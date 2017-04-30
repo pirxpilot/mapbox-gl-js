@@ -222,15 +222,6 @@ exports.getCoordinatesCenter = function(coords: Array<Coordinate>): Coordinate {
 };
 
 /**
- * Determine if a string ends with a particular substring
- *
- * @private
- */
-exports.endsWith = function(string: string, suffix: string): boolean {
-    return string.indexOf(suffix, string.length - suffix.length) !== -1;
-};
-
-/**
  * Create an object by mapping all the values of an existing object while
  * preserving their keys.
  *

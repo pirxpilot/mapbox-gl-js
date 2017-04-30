@@ -123,12 +123,6 @@ test('util', (t) => {
         });
     });
 
-    t.test('endsWith', (t) => {
-        t.ok(util.endsWith('mapbox', 'box'));
-        t.notOk(util.endsWith('mapbox', 'map'));
-        t.end();
-    });
-
     t.test('mapObject', (t) => {
         t.plan(6);
         t.deepEqual(util.mapObject({}, () => { t.ok(false); }), {});

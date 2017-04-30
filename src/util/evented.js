@@ -1,7 +1,5 @@
 'use strict';
 
-const util = require('./util');
-
 function _addEventListener(type, listener, listenerList) {
     listenerList[type] = listenerList[type] || [];
     listenerList[type].push(listener);
@@ -100,7 +98,7 @@ class Evented {
 
         // To ensure that no error events are dropped, print them to the
         // console if they have no listeners.
-        } else if (util.endsWith(type, 'error')) {
+        } else if (type.endsWith('error')) {
             console.error((data && data.error) || data || 'Empty error event');
         }
 

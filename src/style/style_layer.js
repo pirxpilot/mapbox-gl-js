@@ -96,7 +96,7 @@ class StyleLayer extends Evented {
     setPaintProperty(name, value, klass, options) {
         const validateStyleKey = `layers.${this.id}${klass ? `["paint.${klass}"].` : '.paint.'}${name}`;
 
-        if (util.endsWith(name, TRANSITION_SUFFIX)) {
+        if (name.endsWith(TRANSITION_SUFFIX)) {
             if (!this._paintTransitionOptions[klass || '']) {
                 this._paintTransitionOptions[klass || ''] = {};
             }
@@ -121,7 +121,7 @@ class StyleLayer extends Evented {
 
     getPaintProperty(name, klass) {
         klass = klass || '';
-        if (util.endsWith(name, TRANSITION_SUFFIX)) {
+        if (name.endsWith(TRANSITION_SUFFIX)) {
             return (
                 this._paintTransitionOptions[klass] &&
                 this._paintTransitionOptions[klass][name]

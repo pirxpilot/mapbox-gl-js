@@ -52,7 +52,7 @@ class Light extends Evented {
     }
 
     getLightProperty(property) {
-        if (util.endsWith(property, TRANSITION_SUFFIX)) {
+        if (property.endsWith(TRANSITION_SUFFIX)) {
             return (
                 this._transitionOptions[property]
             );
@@ -84,7 +84,7 @@ class Light extends Evented {
         for (const key in options) {
             const value = options[key];
 
-            if (util.endsWith(key, TRANSITION_SUFFIX)) {
+            if (key.endsWith(TRANSITION_SUFFIX)) {
                 this._transitionOptions[key] = value;
             } else if (value === null || value === undefined) {
                 delete this._declarations[key];
