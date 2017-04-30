@@ -11,17 +11,15 @@ const Light = require('./light');
 const LineAtlas = require('../render/line_atlas');
 const { clone, extend, deepEqual, filterObject, mapObject } = require('../util/util');
 const { getJSON, ResourceType } = require('../util/ajax');
-const { isMapboxURL, normalizeStyleURL } = require('../util/mapbox');
+const { normalizeStyleURL } = require('../util/mapbox');
 const browser = require('../util/browser');
 const Dispatcher = require('../util/dispatcher');
-const { validateStyle, emitValidationErrors: _emitValidationErrors } = require('./validate_style');
 const {
     getType: getSourceType,
     setType: setSourceType,
 } = require('../source/source');
 const { queryRenderedFeatures, queryRenderedSymbols, querySourceFeatures } = require('../source/query_features');
 const SourceCache = require('../source/source_cache');
-const styleSpec = require('../style-spec/reference/latest');
 const getWorkerPool = require('../util/global_worker_pool');
 const deref = require('../style-spec/deref');
 const {
@@ -31,13 +29,6 @@ const {
 const PauseablePlacement = require('./pauseable_placement');
 const ZoomHistory = require('./zoom_history');
 const CrossTileSymbolIndex = require('../symbol/cross_tile_symbol_index');
-
-// We're skipping validation errors with the `source.canvas` identifier in order
-// to continue to allow canvas sources to be added at runtime/updated in
-// smart setStyle (see https://github.com/mapbox/mapbox-gl-js/pull/6424):
-const emitValidationErrors = (evented, errors) =>
-    _emitValidationErrors(evented, errors && errors.filter(error => error.identifier !== 'source.canvas'));
-
 
 /**
  * @private
@@ -101,9 +92,6 @@ class Style extends Evented {
     loadURL(url, options = {}) {
         this.fire(new Event('dataloading', {dataType: 'style'}));
 
-        const validate = typeof options.validate === 'boolean' ?
-            options.validate : !isMapboxURL(url);
-
         url = normalizeStyleURL(url, options.accessToken);
         const request = this.map._transformRequest(url, ResourceType.Style);
 
@@ -111,29 +99,25 @@ class Style extends Evented {
             if (error) {
                 this.fire(new ErrorEvent(error));
             } else if (json) {
-                this._load((json), validate);
+                this._load(json);
             }
         });
     }
 
-    loadJSON(json, options = {}) {
+    loadJSON(json) {
         this.fire(new Event('dataloading', {dataType: 'style'}));
 
         browser.frame(() => {
-            this._load(json, options.validate !== false);
+            this._load(json);
         });
     }
 
-    _load(json, validate) {
-        if (validate && emitValidationErrors(this, validateStyle(json))) {
-            return;
-        }
-
+    _load(json) {
         this._loaded = true;
         this.stylesheet = json;
 
         for (const id in json.sources) {
-            this.addSource(id, json.sources[id], {validate: false});
+            this.addSource(id, json.sources[id]);
         }
 
         if (json.sprite) {
@@ -338,7 +322,7 @@ class Style extends Evented {
         return this.imageManager.listImages();
     }
 
-    addSource(id, source, options) {
+    addSource(id, source) {
         this._checkLoaded();
 
         if (this.sourceCaches[id] !== undefined) {
@@ -348,10 +332,6 @@ class Style extends Evented {
         if (!source.type) {
             throw new Error(`The type property must be defined, but the only the following properties were given: ${Object.keys(source).join(', ')}.`);
         }
-
-        const builtIns = ['vector', 'raster', 'geojson', 'video', 'image'];
-        const shouldValidate = builtIns.indexOf(source.type) >= 0;
-        if (shouldValidate && this._validate(validateStyle.source, `sources.${id}`, source, null, options)) return;
 
         if (this.map && this.map._collectResourceTiming) (source).collectResourceTiming = true;
         const sourceCache = this.sourceCaches[id] = new SourceCache(id, source, this.dispatcher);
@@ -424,7 +404,7 @@ class Style extends Evented {
      * ID `before`, or appended if `before` is omitted.
      * @param {string} [before] ID of an existing layer to insert before
      */
-    addLayer(layerObject, before, options) {
+    addLayer(layerObject, before) {
         this._checkLoaded();
 
         const id = layerObject.id;
@@ -439,10 +419,6 @@ class Style extends Evented {
             layerObject = clone(layerObject);
             layerObject = (extend(layerObject, {source: id}));
         }
-
-        // this layer is not in the style.layers array, so we pass an impossible array index
-        if (this._validate(validateStyle.layer,
-            `layers.${id}`, layerObject, {arrayIndex: -1}, options)) return;
 
         const layer = createStyleLayer(layerObject);
         this._validateLayer(layer);
@@ -590,10 +566,6 @@ class Style extends Evented {
         if (filter === null || filter === undefined) {
             layer.filter = undefined;
             this._updateLayer(layer);
-            return;
-        }
-
-        if (this._validate(validateStyle.filter, `layers.${layer.id}.filter`, filter)) {
             return;
         }
 
@@ -745,10 +717,6 @@ class Style extends Evented {
     }
 
     queryRenderedFeatures(queryGeometry, params, transform) {
-        if (params && params.filter) {
-            this._validate(validateStyle.filter, 'queryRenderedFeatures.filter', params.filter);
-        }
-
         const includedSources = {};
         if (params && params.layers) {
             if (!Array.isArray(params.layers)) {
@@ -796,9 +764,6 @@ class Style extends Evented {
     }
 
     querySourceFeatures(sourceID, params) {
-        if (params && params.filter) {
-            this._validate(validateStyle.filter, 'querySourceFeatures.filter', params.filter);
-        }
         const sourceCache = this.sourceCaches[sourceID];
         return sourceCache ? querySourceFeatures(sourceCache, params) : [];
     }
@@ -847,18 +812,6 @@ class Style extends Evented {
 
         this.light.setLight(lightOptions);
         this.light.updateTransitions(parameters);
-    }
-
-    _validate(validate, key, value, props, options) {
-        if (options && options.validate === false) {
-            return false;
-        }
-        return emitValidationErrors(this, validate.call(validateStyle, extend({
-            key: key,
-            style: this.serialize(),
-            value: value,
-            styleSpec: styleSpec
-        }, props)));
     }
 
     _remove() {

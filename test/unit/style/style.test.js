@@ -133,35 +133,6 @@ test('Style#loadURL', (t) => {
         t.end();
     });
 
-    t.test('validates the style', (t) => {
-        const style = new Style(new StubMap());
-
-        style.on('error', ({error}) => {
-            t.ok(error);
-            t.match(error.message, /version/);
-            t.end();
-        });
-
-        style.loadURL('style.json');
-        window.server.respondWith(JSON.stringify(createStyleJSON({version: 'invalid'})));
-        window.server.respond();
-    });
-
-    t.test('skips validation for mapbox:// styles', (t) => {
-        const style = new Style(new StubMap())
-            .on('error', () => {
-                t.fail();
-            })
-            .on('style.load', () => {
-                t.end();
-            });
-
-        style.loadURL('mapbox://styles/test/test', {accessToken: 'none'});
-
-        window.server.respondWith(JSON.stringify(createStyleJSON({version: 'invalid'})));
-        window.server.respond();
-    });
-
     t.end();
 });
 
@@ -253,18 +224,6 @@ test('Style#loadJSON', (t) => {
 
             respond();
         });
-    });
-
-    t.test('validates the style', (t) => {
-        const style = new Style(new StubMap());
-
-        style.on('error', ({error}) => {
-            t.ok(error);
-            t.match(error.message, /version/);
-            t.end();
-        });
-
-        style.loadJSON(createStyleJSON({version: 'invalid'}));
     });
 
     t.test('creates sources', (t) => {
@@ -500,24 +459,6 @@ test('Style#addSource', (t) => {
         });
     });
 
-    t.test('emits on invalid source', (t) => {
-        const style = new Style(new StubMap());
-        style.loadJSON(createStyleJSON());
-        style.on('style.load', () => {
-            style.on('error', () => {
-                t.notOk(style.sourceCaches['source-id']);
-                t.end();
-            });
-            style.addSource('source-id', {
-                type: 'vector',
-                minzoom: '1', // Shouldn't be a string
-                maxzoom: 10,
-                attribution: 'Mapbox',
-                tiles: ['http://example.com/{z}/{x}/{y}.png']
-            });
-        });
-    });
-
     t.test('sets up source event forwarding', (t) => {
         const style = new Style(new StubMap());
         style.loadJSON(createStyleJSON({
@@ -740,42 +681,6 @@ test('Style#addLayer', (t) => {
             t.ok(err.toString().indexOf('-source-id-') !== -1);
             t.ok(err.toString().indexOf('-layer-id-') !== -1);
 
-            t.end();
-        });
-    });
-
-    t.test('emits error on invalid layer', (t) => {
-        const style = new Style(new StubMap());
-        style.loadJSON(createStyleJSON());
-        style.on('style.load', () => {
-            style.on('error', () => {
-                t.notOk(style.getLayer('background'));
-                t.end();
-            });
-            style.addLayer({
-                id: 'background',
-                type: 'background',
-                paint: {
-                    'background-opacity': 5
-                }
-            });
-        });
-    });
-
-    t.test('#4040 does not mutate source property when provided inline', (t) => {
-        const style = new Style(new StubMap());
-        style.loadJSON(createStyleJSON());
-        style.on('style.load', () => {
-            const source = {
-                "type": "geojson",
-                "data": {
-                    "type": "Point",
-                    "coordinates": [ 0, 0]
-                }
-            };
-            const layer = {id: 'inline-source-layer', type: 'circle', source: source };
-            style.addLayer(layer);
-            t.deepEqual(layer.source, source);
             t.end();
         });
     });
@@ -1461,17 +1366,6 @@ test('Style#setFilter', (t) => {
         });
     });
 
-    t.test('emits if invalid', (t) => {
-        const style = createStyle();
-        style.on('style.load', () => {
-            style.on('error', () => {
-                t.deepEqual(style.getLayer('symbol').serialize().filter, ['==', 'id', 0]);
-                t.end();
-            });
-            style.setFilter('symbol', ['==', '$type', 1]);
-        });
-    });
-
     t.test('fires an error if layer not found', (t) => {
         const style = createStyle();
 
@@ -1767,53 +1661,6 @@ test('Style defers expensive methods', (t) => {
 
         t.end();
     });
-});
-
-test('Style#query*Features', (t) => {
-
-    // These tests only cover filter validation. Most tests for these methods
-    // live in the integration tests.
-
-    let style;
-    let onError;
-    let transform;
-
-    t.beforeEach((callback) => {
-        transform = new Transform();
-        style = new Style(new StubMap());
-        style.loadJSON({
-            "version": 8,
-            "sources": {
-                "geojson": createGeoJSONSource()
-            },
-            "layers": [{
-                "id": "symbol",
-                "type": "symbol",
-                "source": "geojson"
-            }]
-        });
-
-        onError = t.spy();
-
-        style.on('error', onError)
-            .on('style.load', () => {
-                callback();
-            });
-    });
-
-    t.test('querySourceFeatures emits an error on incorrect filter', (t) => {
-        t.deepEqual(style.querySourceFeatures([10, 100], {filter: 7}, transform), []);
-        t.match(onError.args[0][0].error.message, /querySourceFeatures\.filter/);
-        t.end();
-    });
-
-    t.test('queryRenderedFeatures emits an error on incorrect filter', (t) => {
-        t.deepEqual(style.queryRenderedFeatures({ worldCoordinate: [10, 100] }, {filter: 7}, transform), []);
-        t.match(onError.args[0][0].error.message, /queryRenderedFeatures\.filter/);
-        t.end();
-    });
-
-    t.end();
 });
 
 test('Style#addSourceType', (t) => {

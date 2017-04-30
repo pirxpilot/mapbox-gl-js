@@ -5,7 +5,6 @@ const config = require('./config');
 const help = 'See https://www.mapbox.com/api-documentation/#access-tokens';
 
 module.exports = {
-    isMapboxURL,
     normalizeStyleURL,
     normalizeGlyphsURL,
     normalizeSourceURL,
