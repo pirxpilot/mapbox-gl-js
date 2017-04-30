@@ -1,6 +1,6 @@
 'use strict';
 
-const { endsWith, filterObject } = require('../util/util');
+const { filterObject } = require('../util/util');
 
 const { Evented } = require('../util/evented');
 const { Layout, Transitionable, PossiblyEvaluatedPropertyValue } = require('./properties');
@@ -63,7 +63,7 @@ class StyleLayer extends Evented {
     }
 
     getPaintProperty(name) {
-        if (endsWith(name, TRANSITION_SUFFIX)) {
+        if (name.endsWith(TRANSITION_SUFFIX)) {
             return this._transitionablePaint.getTransition(name.slice(0, -TRANSITION_SUFFIX.length));
         } else {
             return this._transitionablePaint.getValue(name);
@@ -71,7 +71,7 @@ class StyleLayer extends Evented {
     }
 
     setPaintProperty(name, value) {
-        if (endsWith(name, TRANSITION_SUFFIX)) {
+        if (name.endsWith(TRANSITION_SUFFIX)) {
             this._transitionablePaint.setTransition(name.slice(0, -TRANSITION_SUFFIX.length), (value) || undefined);
             return false;
         } else {

@@ -230,15 +230,6 @@ function getCoordinatesCenter(coords) {
 }
 
 /**
- * Determine if a string ends with a particular substring
- *
- * @private
- */
-function endsWith(string, suffix) {
-    return string.indexOf(suffix, string.length - suffix.length) !== -1;
-}
-
-/**
  * Create an object by mapping all the values of an existing object while
  * preserving their keys.
  *
@@ -432,7 +423,6 @@ module.exports = {
     uniqueId,
     bindAll,
     getCoordinatesCenter,
-    endsWith,
     mapObject,
     filterObject,
     deepEqual,

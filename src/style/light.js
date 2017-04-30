@@ -2,7 +2,7 @@
 
 const styleSpec = require('../style-spec/reference/latest');
 
-const { endsWith, sphericalToCartesian } = require('../util/util');
+const { sphericalToCartesian } = require('../util/util');
 const { Evented } = require('../util/evented');
 const { number: interpolate } = require('../style-spec/util/interpolate');
 
@@ -58,7 +58,7 @@ class Light extends Evented {
     setLight(options) {
         for (const name in options) {
             const value = options[name];
-            if (endsWith(name, TRANSITION_SUFFIX)) {
+            if (name.endsWith(TRANSITION_SUFFIX)) {
                 this._transitionable.setTransition(name.slice(0, -TRANSITION_SUFFIX.length), value);
             } else {
                 this._transitionable.setValue(name, value);
