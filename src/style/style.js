@@ -14,11 +14,9 @@ const mapbox = require('../util/mapbox');
 const browser = require('../util/browser');
 const Dispatcher = require('../util/dispatcher');
 const AnimationLoop = require('./animation_loop');
-const validateStyle = require('./validate_style');
 const Source = require('../source/source');
 const QueryFeatures = require('../source/query_features');
 const SourceCache = require('../source/source_cache');
-const styleSpec = require('../style-spec/reference/latest');
 const MapboxGLFunction = require('../style-spec/function');
 const getWorkerPool = require('../util/global_worker_pool');
 const deref = require('../style-spec/deref');
@@ -29,7 +27,7 @@ const rtlTextPlugin = require('../source/rtl_text_plugin');
  */
 class Style extends Evented {
 
-    constructor(stylesheet, map, options) {
+    constructor(stylesheet, map) {
         super();
         this.map = map;
         this.animationLoop = (map && map.animationLoop) || new AnimationLoop();
@@ -48,10 +46,6 @@ class Style extends Evented {
 
         this._resetUpdates();
 
-        options = Object.assign({
-            validate: typeof stylesheet === 'string' ? !mapbox.isMapboxURL(stylesheet) : true
-        }, options);
-
         this.setEventedParent(map);
         this.fire('dataloading', {dataType: 'style'});
 
@@ -69,15 +63,13 @@ class Style extends Evented {
                 return;
             }
 
-            if (options.validate && validateStyle.emitErrors(this, validateStyle(stylesheet))) return;
-
             this._loaded = true;
             this.stylesheet = stylesheet;
 
             this.updateClasses();
 
             for (const id in stylesheet.sources) {
-                this.addSource(id, stylesheet.sources[id], options);
+                this.addSource(id, stylesheet.sources[id]);
             }
 
             if (stylesheet.sprite) {
@@ -301,7 +293,7 @@ class Style extends Evented {
         this._updatedAllPaintProps = false;
     }
 
-    addSource(id, source, options) {
+    addSource(id, source) {
         this._checkLoaded();
 
         if (this.sourceCaches[id] !== undefined) {
@@ -311,10 +303,6 @@ class Style extends Evented {
         if (!source.type) {
             throw new Error(`The type property must be defined, but the only the following properties were given: ${Object.keys(source)}.`);
         }
-
-        const builtIns = ['vector', 'raster', 'geojson', 'video', 'image', 'canvas'];
-        const shouldValidate = builtIns.indexOf(source.type) >= 0;
-        if (shouldValidate && this._validate(validateStyle.source, `sources.${id}`, source, null, options)) return;
 
         const sourceCache = this.sourceCaches[id] = new SourceCache(id, source, this.dispatcher);
         sourceCache.style = this;
@@ -364,7 +352,7 @@ class Style extends Evented {
      * @param {StyleLayer|Object} layer
      * @param {string=} before  ID of an existing layer to insert before
      */
-    addLayer(layerObject, before, options) {
+    addLayer(layerObject, before) {
         this._checkLoaded();
 
         const id = layerObject.id;
@@ -373,10 +361,6 @@ class Style extends Evented {
             this.addSource(id, layerObject.source);
             layerObject = Object.assign(layerObject, { source: id });
         }
-
-        // this layer is not in the style.layers array, so we pass an impossible array index
-        if (this._validate(validateStyle.layer,
-                `layers.${id}`, layerObject, {arrayIndex: -1}, options)) return;
 
         const layer = StyleLayer.create(layerObject);
         this._validateLayer(layer);
@@ -531,8 +515,6 @@ class Style extends Evented {
             return;
         }
 
-        if (filter !== null && filter !== undefined && this._validate(validateStyle.filter, `layers.${layer.id}.filter`, filter)) return;
-
         if (util.deepEqual(layer.filter, filter)) return;
         layer.filter = util.clone(filter);
 
@@ -674,10 +656,6 @@ class Style extends Evented {
     }
 
     queryRenderedFeatures(queryGeometry, params, zoom, bearing) {
-        if (params && params.filter) {
-            this._validate(validateStyle.filter, 'queryRenderedFeatures.filter', params.filter);
-        }
-
         const includedSources = {};
         if (params && params.layers) {
             if (!Array.isArray(params.layers)) {
@@ -706,9 +684,6 @@ class Style extends Evented {
     }
 
     querySourceFeatures(sourceID, params) {
-        if (params && params.filter) {
-            this._validate(validateStyle.filter, 'querySourceFeatures.filter', params.filter);
-        }
         const sourceCache = this.sourceCaches[sourceID];
         return sourceCache ? QueryFeatures.source(sourceCache, params) : [];
     }
@@ -751,18 +726,6 @@ class Style extends Evented {
 
         this.light.setLight(lightOptions);
         this.light.updateLightTransitions(transitionOptions || {transition: true}, transition, this.animationLoop);
-    }
-
-    _validate(validate, key, value, props, options) {
-        if (options && options.validate === false) {
-            return false;
-        }
-        return validateStyle.emitErrors(this, validate.call(validateStyle, Object.assign({
-            key: key,
-            style: this.serialize(),
-            value: value,
-            styleSpec: styleSpec
-        }, props)));
     }
 
     _remove() {

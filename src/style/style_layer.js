@@ -4,7 +4,6 @@ const util = require('../util/util');
 const StyleTransition = require('./style_transition');
 const StyleDeclaration = require('./style_declaration');
 const styleSpec = require('../style-spec/reference/latest');
-const validateStyle = require('./validate_style');
 const parseColor = require('./../style-spec/util/parse_color');
 const Evented = require('../util/evented');
 
@@ -36,7 +35,6 @@ class StyleLayer extends Evented {
         this._layoutFunctions = {}; // {[propertyName]: Boolean}
 
         let paintName, layoutName;
-        const options = {validate: false};
 
         // Resolve paint declarations
         for (const key in layer) {
@@ -44,14 +42,14 @@ class StyleLayer extends Evented {
             if (match) {
                 const klass = match[1] || '';
                 for (paintName in layer[key]) {
-                    this.setPaintProperty(paintName, layer[key][paintName], klass, options);
+                    this.setPaintProperty(paintName, layer[key][paintName], klass);
                 }
             }
         }
 
         // Resolve layout declarations
         for (layoutName in layer.layout) {
-            this.setLayoutProperty(layoutName, layer.layout[layoutName], options);
+            this.setLayoutProperty(layoutName, layer.layout[layoutName]);
         }
 
         // set initial layout/paint values
@@ -63,13 +61,10 @@ class StyleLayer extends Evented {
         }
     }
 
-    setLayoutProperty(name, value, options) {
-
+    setLayoutProperty(name, value) {
         if (value == null) {
             delete this._layoutDeclarations[name];
         } else {
-            const key = `layers.${this.id}.layout.${name}`;
-            if (this._validate(validateStyle.layoutProperty, key, name, value, options)) return;
             this._layoutDeclarations[name] = new StyleDeclaration(this._layoutSpecifications[name], value);
         }
         this._updateLayoutValue(name);
@@ -94,8 +89,6 @@ class StyleLayer extends Evented {
     }
 
     setPaintProperty(name, value, klass, options) {
-        const validateStyleKey = `layers.${this.id}${klass ? `["paint.${klass}"].` : '.paint.'}${name}`;
-
         if (name.endsWith(TRANSITION_SUFFIX)) {
             if (!this._paintTransitionOptions[klass || '']) {
                 this._paintTransitionOptions[klass || ''] = {};
@@ -103,7 +96,6 @@ class StyleLayer extends Evented {
             if (value === null || value === undefined) {
                 delete this._paintTransitionOptions[klass || ''][name];
             } else {
-                if (this._validate(validateStyle.paintProperty, validateStyleKey, name, value, options)) return;
                 this._paintTransitionOptions[klass || ''][name] = value;
             }
         } else {
@@ -113,7 +105,6 @@ class StyleLayer extends Evented {
             if (value === null || value === undefined) {
                 delete this._paintDeclarations[klass || ''][name];
             } else {
-                if (this._validate(validateStyle.paintProperty, validateStyleKey, name, value, options)) return;
                 this._paintDeclarations[klass || ''][name] = new StyleDeclaration(this._paintSpecifications[name], value);
             }
         }
@@ -324,20 +315,6 @@ class StyleLayer extends Evented {
         }
     }
 
-    _validate(validate, key, name, value, options) {
-        if (options && options.validate === false) {
-            return false;
-        }
-        return validateStyle.emitErrors(this, validate.call(validateStyle, {
-            key: key,
-            layerType: this.type,
-            objectKey: name,
-            value: value,
-            styleSpec: styleSpec,
-            // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/2407
-            style: {glyphs: true, sprite: true}
-        }));
-    }
 }
 
 module.exports = StyleLayer;

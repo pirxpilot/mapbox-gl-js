@@ -94,45 +94,6 @@ test('Style', (t) => {
         });
     });
 
-    t.test('validates the style by default', (t) => {
-        const style = new Style(createStyleJSON({version: 'invalid'}));
-
-        style.on('error', (event) => {
-            t.ok(event.error);
-            t.match(event.error.message, /version/);
-            t.end();
-        });
-    });
-
-    t.test('skips validation for mapbox:// styles', (t) => {
-        const Style = proxyquire('../../../src/style/style', {
-            '../util/mapbox': {
-                isMapboxURL: function(url) {
-                    t.equal(url, 'mapbox://styles/test/test');
-                    return true;
-                },
-                normalizeStyleURL: function(url) {
-                    t.equal(url, 'mapbox://styles/test/test');
-                    return url;
-                }
-            }
-        });
-
-        window.useFakeXMLHttpRequest();
-
-        new Style('mapbox://styles/test/test')
-            .on('error', () => {
-                t.fail();
-            })
-            .on('style.load', () => {
-                window.restore();
-                t.end();
-            });
-
-        window.server.respondWith('mapbox://styles/test/test', JSON.stringify(createStyleJSON({version: 'invalid'})));
-        window.server.respond();
-    });
-
     t.test('emits an error on non-existant vector source layer', (t) => {
         const style = new Style(createStyleJSON({
             sources: {
