@@ -21,9 +21,9 @@ const draw = {
     line: require('./draw_line'),
     fill: require('./draw_fill'),
     'fill-extrusion': require('./draw_fill_extrusion'),
-    raster: require('./draw_raster'),
-    background: require('./draw_background'),
-    debug: require('./draw_debug')
+    // raster: require('./draw_raster'),
+    background: require('./draw_background')
+    // debug: require('./draw_debug')
 };
 
 /**
@@ -284,6 +284,8 @@ class Painter {
         if (layer.isHidden(this.transform.zoom)) return;
         if (layer.type !== 'background' && !coords.length) return;
         this.id = layer.id;
+
+        console.log('Render layer:', layer.type);
 
         draw[layer.type](painter, sourceCache, layer, coords);
     }
