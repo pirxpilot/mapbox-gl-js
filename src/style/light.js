@@ -3,7 +3,6 @@
 const styleSpec = require('../style-spec/reference/latest');
 const util = require('../util/util');
 const Evented = require('../util/evented');
-const validateStyle = require('./validate_style');
 const StyleDeclaration = require('./style_declaration');
 const StyleTransition = require('./style_transition');
 
@@ -22,7 +21,6 @@ class Light extends Evented {
     }
 
     set(lightOpts) {
-        if (this._validate(validateStyle.light, lightOpts)) return;
         this._declarations = {};
         this._transitions = {};
         this._transitionOptions = {};
@@ -79,8 +77,6 @@ class Light extends Evented {
     }
 
     setLight(options) {
-        if (this._validate(validateStyle.light, options)) return;
-
         for (const key in options) {
             const value = options[key];
 
@@ -132,14 +128,6 @@ class Light extends Evented {
         }
     }
 
-    _validate(validate, value) {
-        return validateStyle.emitErrors(this, validate.call(validateStyle, Object.assign({
-            value: value,
-            // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/2407
-            style: {glyphs: true, sprite: true},
-            styleSpec: styleSpec
-        })));
-    }
 }
 
 module.exports = Light;

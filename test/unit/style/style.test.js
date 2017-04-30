@@ -99,46 +99,6 @@ test('Style', (t) => {
         });
     });
 
-    t.test('validates the style by default', (t) => {
-        const style = new Style(createStyleJSON({version: 'invalid'}));
-
-        style.on('error', (event) => {
-            t.ok(event.error);
-            t.match(event.error.message, /version/);
-            t.end();
-        });
-    });
-
-    t.test('skips validation for mapbox:// styles', (t) => {
-        const Style = proxyquire('../../../src/style/style', {
-            '../util/mapbox': {
-                isMapboxURL: function(url) {
-                    t.equal(url, 'mapbox://styles/test/test');
-                    return true;
-                },
-                normalizeStyleURL: function(url) {
-                    t.equal(url, 'mapbox://styles/test/test');
-                    return url;
-                }
-            }
-        });
-
-        window.useFakeXMLHttpRequest();
-
-        new Style('mapbox://styles/test/test')
-            .on('error', () => {
-                t.fail();
-            })
-            .on('style.load', () => {
-                window.restore();
-
-                t.end();
-            });
-
-        window.server.respondWith('mapbox://styles/test/test', JSON.stringify(createStyleJSON({version: 'invalid'})));
-        window.server.respond();
-    });
-
     t.test('emits an error on non-existant vector source layer', (t) => {
         const style = new Style(createStyleJSON({
             sources: {
@@ -374,23 +334,6 @@ test('Style#addSource', (t) => {
         });
     });
 
-    t.test('emits on invalid source', (t) => {
-        const style = new Style(createStyleJSON());
-        style.on('style.load', () => {
-            style.on('error', () => {
-                t.notOk(style.sourceCaches['source-id']);
-                t.end();
-            });
-            style.addSource('source-id', {
-                type: 'vector',
-                minzoom: '1', // Shouldn't be a string
-                maxzoom: 10,
-                attribution: 'Mapbox',
-                tiles: ['http://example.com/{z}/{x}/{y}.png']
-            });
-        });
-    });
-
     t.test('sets up source event forwarding', (t) => {
         const style = new Style(createStyleJSON({
             layers: [{
@@ -462,16 +405,6 @@ test('Style#removeSource', (t) => {
             t.spy(sourceCache, 'clearTiles');
             style.removeSource('source-id');
             t.ok(sourceCache.clearTiles.calledOnce);
-            t.end();
-        });
-    });
-
-    t.test('emits errors for an invalid style', (t) => {
-        const stylesheet = createStyleJSON();
-        stylesheet.version =  'INVALID';
-        const style = new Style(stylesheet);
-        style.on('error', (e) => {
-            t.deepEqual(e.error.message, 'version: expected one of [8], INVALID found');
             t.end();
         });
     });
@@ -570,23 +503,6 @@ test('Style#addLayer', (t) => {
             t.ok(err.toString().indexOf('-layer-id-') !== -1);
 
             t.end();
-        });
-    });
-
-    t.test('emits error on invalid layer', (t) => {
-        const style = new Style(createStyleJSON());
-        style.on('style.load', () => {
-            style.on('error', () => {
-                t.notOk(style.getLayer('background'));
-                t.end();
-            });
-            style.addLayer({
-                id: 'background',
-                type: 'background',
-                paint: {
-                    'background-opacity': 5
-                }
-            });
         });
     });
 
@@ -1021,17 +937,6 @@ test('Style#setFilter', (t) => {
         t.end();
     });
 
-    t.test('emits if invalid', (t) => {
-        const style = createStyle();
-        style.on('style.load', () => {
-            style.on('error', () => {
-                t.deepEqual(style.getLayer('symbol').serialize().filter, ['==', 'id', 0]);
-                t.end();
-            });
-            style.setFilter('symbol', ['==', '$type', 1]);
-        });
-    });
-
     t.test('fires an error if layer not found', (t) => {
         const style = createStyle();
 
@@ -1340,18 +1245,6 @@ test('Style#query*Features', (t) => {
             .on('style.load', () => {
                 callback();
             });
-    });
-
-    t.test('querySourceFeatures emits an error on incorrect filter', (t) => {
-        t.deepEqual(style.querySourceFeatures([10, 100], {filter: 7}), []);
-        t.match(onError.args[0][0].error.message, /querySourceFeatures\.filter/);
-        t.end();
-    });
-
-    t.test('queryRenderedFeatures emits an error on incorrect filter', (t) => {
-        t.deepEqual(style.queryRenderedFeatures([10, 100], {filter: 7}), []);
-        t.match(onError.args[0][0].error.message, /queryRenderedFeatures\.filter/);
-        t.end();
     });
 
     t.end();
