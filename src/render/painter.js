@@ -9,7 +9,6 @@ const pixelsToTileUnits = require('../source/pixels_to_tile_units');
 const util = require('../util/util');
 const Buffer = require('../data/buffer');
 const VertexArrayObject = require('./vertex_array_object');
-const RasterBoundsArray = require('../data/raster_bounds_array');
 const PosArray = require('../data/pos_array');
 const ProgramConfiguration = require('../data/program_configuration');
 const shaders = require('./shaders');
@@ -100,23 +99,6 @@ class Painter {
         this.tileExtentBuffer = Buffer.fromStructArray(tileExtentArray, Buffer.BufferType.VERTEX);
         this.tileExtentVAO = new VertexArrayObject();
         this.tileExtentPatternVAO = new VertexArrayObject();
-
-        const debugArray = new PosArray();
-        debugArray.emplaceBack(0, 0);
-        debugArray.emplaceBack(EXTENT, 0);
-        debugArray.emplaceBack(EXTENT, EXTENT);
-        debugArray.emplaceBack(0, EXTENT);
-        debugArray.emplaceBack(0, 0);
-        this.debugBuffer = Buffer.fromStructArray(debugArray, Buffer.BufferType.VERTEX);
-        this.debugVAO = new VertexArrayObject();
-
-        const rasterBoundsArray = new RasterBoundsArray();
-        rasterBoundsArray.emplaceBack(0, 0, 0, 0);
-        rasterBoundsArray.emplaceBack(EXTENT, 0, 32767, 0);
-        rasterBoundsArray.emplaceBack(0, EXTENT, 0, 32767);
-        rasterBoundsArray.emplaceBack(EXTENT, EXTENT, 32767, 32767);
-        this.rasterBoundsBuffer = Buffer.fromStructArray(rasterBoundsArray, Buffer.BufferType.VERTEX);
-        this.rasterBoundsVAO = new VertexArrayObject();
 
         this.extTextureFilterAnisotropic = (
             gl.getExtension('EXT_texture_filter_anisotropic') ||
