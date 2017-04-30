@@ -3,7 +3,7 @@
 const { test } = require('mapbox-gl-js-test');
 
 const Coordinate = require('../../../src/geo/coordinate');
-const { easeCubicInOut, keysDifference, pick, uniqueId, getCoordinatesCenter, bindAll, asyncAll, clamp, wrap, bezier, endsWith, mapObject, filterObject, deepEqual, clone, arraysIntersect, isCounterClockwise, isClosedPolygon, parseCacheControl } = require('../../../src/util/util');
+const { easeCubicInOut, keysDifference, pick, uniqueId, getCoordinatesCenter, bindAll, asyncAll, clamp, wrap, bezier, mapObject, filterObject, deepEqual, clone, arraysIntersect, isCounterClockwise, isClosedPolygon, parseCacheControl } = require('../../../src/util/util');
 const Point = require('@mapbox/point-geometry');
 
 test('util', (t) => {
@@ -119,12 +119,6 @@ test('util', (t) => {
         }, () => {
             t.end();
         });
-    });
-
-    t.test('endsWith', (t) => {
-        t.ok(endsWith('mapbox', 'box'));
-        t.notOk(endsWith('mapbox', 'map'));
-        t.end();
     });
 
     t.test('mapObject', (t) => {

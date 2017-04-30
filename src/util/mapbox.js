@@ -34,7 +34,7 @@ function makeAPIURL(urlObject, accessToken) {
 }
 
 function isMapboxURL(url) {
-    return url.indexOf('mapbox:') === 0;
+    return url.startsWith('mapbox:');
 }
 
 function normalizeStyleURL(url, accessToken) {
@@ -82,7 +82,7 @@ function normalizeTileURL(tileURL, sourceURL) {
 
 function replaceTempAccessToken(params) {
     for (let i = 0; i < params.length; i++) {
-        if (params[i].indexOf('access_token=tk.') === 0) {
+        if (params[i].startsWith('access_token=tk.')) {
             params[i] = `access_token=${config.ACCESS_TOKEN || ''}`;
         }
     }
