@@ -2,6 +2,7 @@
 
 const object = require('../util/object');
 const util = require('../util/util');
+const warn = require('../util/warn');
 const interpolate = require('../style-spec/util/interpolate');
 const browser = require('../util/browser');
 const LngLat = require('../geo/lng_lat');
@@ -358,7 +359,7 @@ class Camera extends Evented {
             if (a > b) return 1;
             return 0;
         }), ["bottom", "left", "right", "top"])) {
-            util.warnOnce("options.padding must be a positive number, or an Object with keys 'bottom', 'left', 'right', 'top'");
+            warn.once("options.padding must be a positive number, or an Object with keys 'bottom', 'left', 'right', 'top'");
             return;
         }
 
@@ -382,7 +383,7 @@ class Camera extends Evented {
             scaleY = (tr.height - verticalPadding * 2 - Math.abs(offset.y) * 2) / size.y;
 
         if (scaleY < 0 || scaleX < 0) {
-            util.warnOnce('Map cannot fit within canvas with the given bounds, padding, and/or offset.');
+            warn.once('Map cannot fit within canvas with the given bounds, padding, and/or offset.');
             return;
         }
 

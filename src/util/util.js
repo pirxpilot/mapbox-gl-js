@@ -114,21 +114,6 @@ exports.getCoordinatesCenter = function(coords: Array<Coordinate>): Coordinate {
 };
 
 /**
- * Print a warning message to the console and ensure duplicate warning messages
- * are not printed.
- *
- * @private
- */
-const warnOnceHistory: {[key: string]: boolean} = {};
-exports.warnOnce = function(message: string): void {
-    if (!warnOnceHistory[message]) {
-        // console isn't defined in some WebWorkers, see #2558
-        if (typeof console !== "undefined") console.warn(message);
-        warnOnceHistory[message] = true;
-    }
-};
-
-/**
  * Indicates if the provided Points are in a counter clockwise (true) or clockwise (false) order
  *
  * @returns true for a counter clockwise set of points

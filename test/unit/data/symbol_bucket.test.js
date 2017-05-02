@@ -10,7 +10,7 @@ const Collision = require('../../../src/symbol/collision_tile');
 const CollisionBoxArray = require('../../../src/symbol/collision_box');
 const GlyphAtlas = require('../../../src/symbol/glyph_atlas');
 const StyleLayer = require('../../../src/style/style_layer');
-const util = require('../../../src/util/util');
+const warn = require('../../../src/util/warn');
 const featureFilter = require('../../../src/style-spec/feature_filter');
 const AnimationLoop = require('../../../src/style/animation_loop');
 
@@ -72,7 +72,7 @@ test('SymbolBucket', (t) => {
 
 
 test('SymbolBucket integer overflow', (t) => {
-    t.stub(util, 'warnOnce');
+    t.stub(warn, 'once');
     t.stub(SymbolBucket, 'MAX_INSTANCES', 5);
 
     const bucket = bucketSetup();
@@ -82,9 +82,9 @@ test('SymbolBucket integer overflow', (t) => {
     bucket.prepare(stacks, {});
     bucket.place(collision);
 
-    t.ok(util.warnOnce.calledTwice);
-    t.ok(util.warnOnce.getCall(0).calledWithMatch(/Too many (symbols|glyphs) being rendered in a tile./));
-    t.ok(util.warnOnce.getCall(1).calledWithMatch(/Too many (symbols|glyphs) being rendered in a tile./));
+    t.ok(warn.once.calledTwice);
+    t.ok(warn.once.getCall(0).calledWithMatch(/Too many (symbols|glyphs) being rendered in a tile./));
+    t.ok(warn.once.getCall(1).calledWithMatch(/Too many (symbols|glyphs) being rendered in a tile./));
     t.end();
 });
 
