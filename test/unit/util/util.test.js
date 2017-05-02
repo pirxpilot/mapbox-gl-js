@@ -11,8 +11,7 @@ const {
     wrap,
     bezier,
     isCounterClockwise,
-    isClosedPolygon,
-    parseCacheControl
+    isClosedPolygon
 } = require('../../../src/util/util');
 const Point = require('@mapbox/point-geometry');
 
@@ -97,24 +96,6 @@ test('util', (t) => {
             const polygon = [new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(0, 1), new Point(0, 0)];
 
             t.equal(isClosedPolygon(polygon), true);
-            t.end();
-        });
-
-        t.end();
-    });
-
-    t.test('parseCacheControl', (t) => {
-        t.test('max-age', (t) => {
-            t.deepEqual(parseCacheControl('max-age=123456789'), {
-                'max-age': 123456789
-            }, 'returns valid max-age header');
-
-            t.deepEqual(parseCacheControl('max-age=1000'), {
-                'max-age': 1000
-            }, 'returns valid max-age header');
-
-            t.deepEqual(parseCacheControl('max-age=null'), {}, 'does not return invalid max-age header');
-
             t.end();
         });
 

@@ -1,7 +1,8 @@
 'use strict';
 
+const cacheControl = require('../util/cache_control');
 const { deepEqual } = require('../util/object');
-const { uniqueId, parseCacheControl } = require('../util/util');
+const { uniqueId } = require('../util/util');
 const { deserialize: deserializeBucket } = require('../data/bucket');
 const GeoJSONFeature = require('../util/vectortile_to_geojson');
 const featureFilter = require('../style-spec/feature_filter');
@@ -293,7 +294,7 @@ class Tile {
         const prior = this.expirationTime;
 
         if (data.cacheControl) {
-            const parsedCC = parseCacheControl(data.cacheControl);
+            const parsedCC = cacheControl.parse(data.cacheControl);
             if (parsedCC['max-age']) this.expirationTime = Date.now() + parsedCC['max-age'] * 1000;
         } else if (data.expires) {
             this.expirationTime = new Date(data.expires).getTime();
