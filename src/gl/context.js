@@ -4,7 +4,7 @@ const IndexBuffer = require('./index_buffer');
 const VertexBuffer = require('./vertex_buffer');
 const Framebuffer = require('./framebuffer');
 const ColorMode = require('./color_mode');
-const { deepEqual } = require('../util/util');
+const { deepEqual } = require('../util/object');
 const { ClearColor, ClearDepth, ClearStencil, ColorMask, DepthMask, StencilMask, StencilFunc, StencilOp, StencilTest, DepthRange, DepthTest, DepthFunc, Blend, BlendFunc, BlendColor, Program, LineWidth, ActiveTextureUnit, Viewport, BindFramebuffer, BindRenderbuffer, BindTexture, BindVertexBuffer, BindElementBuffer, BindVertexArrayOES, PixelStoreUnpack, PixelStoreUnpackPremultiplyAlpha } = require('./value');
 
 class Context {

@@ -9,7 +9,7 @@ const ImageManager = require('../render/image_manager');
 const GlyphManager = require('../render/glyph_manager');
 const Light = require('./light');
 const LineAtlas = require('../render/line_atlas');
-const { clone, deepEqual, filterObject, mapObject } = require('../util/util');
+const { clone, deepEqual, filterObject, mapObject } = require('../util/object');
 const { getJSON, ResourceType } = require('../util/ajax');
 const { normalizeStyleURL } = require('../util/mapbox');
 const browser = require('../util/browser');
@@ -688,7 +688,7 @@ class Style extends Evented {
             transition: this.stylesheet.transition,
             sources: mapObject(this.sourceCaches, (source) => source.serialize()),
             layers: this._order.map((id) => this._layers[id].serialize())
-        }, (value) => { return value !== undefined; });
+        }, (value) => value !== undefined);
     }
 
     _updateLayer(layer) {

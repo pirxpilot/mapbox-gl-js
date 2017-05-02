@@ -1,6 +1,6 @@
 'use strict';
 
-const { bindAll } = require('./util');
+const { bindAll } = require('./object');
 const { serialize, deserialize } = require('./web_worker_transfer');
 
 

@@ -2,7 +2,7 @@ const { test } = require('mapbox-gl-js-test');
 const { ClearColor, ClearDepth, ClearStencil, ColorMask, DepthMask, StencilMask, StencilFunc, StencilOp, StencilTest, DepthRange, DepthTest, DepthFunc, Blend, BlendFunc, BlendColor, Program, LineWidth, ActiveTextureUnit, Viewport, BindFramebuffer, BindRenderbuffer, BindTexture, BindVertexBuffer, BindElementBuffer, BindVertexArrayOES, PixelStoreUnpack, PixelStoreUnpackPremultiplyAlpha } = require('../../../src/gl/value');
 const Context = require('../../../src/gl/context');
 const Color = require('../../../src/style-spec/util/color');
-const { deepEqual } = require('../../../src/util/util');
+const { deepEqual } = require('../../../src/util/object');
 
 const context = new Context(require('gl')(10, 10));
 context.lineWidthRange = [0, 1];

@@ -3,7 +3,7 @@
 const DOM = require('../../util/dom');
 
 const LngLatBounds = require('../../geo/lng_lat_bounds');
-const { bindAll } = require('../../util/util');
+const { bindAll } = require('../../util/object');
 const window = require('../../util/window');
 const { Event } = require('../../util/evented');
 

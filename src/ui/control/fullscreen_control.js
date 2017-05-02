@@ -2,7 +2,8 @@
 
 const DOM = require('../../util/dom');
 
-const { bindAll, warnOnce } = require('../../util/util');
+const { bindAll } = require('../../util/object');
+const { warnOnce } = require('../../util/util');
 const window = require('../../util/window');
 
 

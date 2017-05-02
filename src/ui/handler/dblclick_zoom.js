@@ -1,6 +1,6 @@
 'use strict';
 
-const { bindAll } = require('../../util/util');
+const { bindAll } = require('../../util/object');
 
 
 /**

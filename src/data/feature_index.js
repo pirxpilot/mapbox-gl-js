@@ -8,7 +8,7 @@ const DictionaryCoder = require('../util/dictionary_coder');
 const vt = require('@mapbox/vector-tile');
 const Protobuf = require('pbf');
 const GeoJSONFeature = require('../util/vectortile_to_geojson');
-const { arraysIntersect } = require('../util/util');
+const { arraysIntersect } = require('../util/object');
 const { register } = require('../util/web_worker_transfer');
 const EvaluationParameters = require('../style/evaluation_parameters');
 

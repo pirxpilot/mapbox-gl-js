@@ -1,6 +1,7 @@
 'use strict';
 
-const { uniqueId, deepEqual, parseCacheControl } = require('../util/util');
+const { deepEqual } = require('../util/object');
+const { uniqueId, parseCacheControl } = require('../util/util');
 const { deserialize: deserializeBucket } = require('../data/bucket');
 const GeoJSONFeature = require('../util/vectortile_to_geojson');
 const featureFilter = require('../style-spec/feature_filter');

@@ -2,7 +2,8 @@
 
 const assert = require('assert');
 
-const { clone, easeCubicInOut } = require('../util/util');
+const { clone } = require('../util/object');
+const { easeCubicInOut } = require('../util/util');
 const interpolate = require('../style-spec/util/interpolate');
 const { normalizePropertyExpression } = require('../style-spec/expression');
 const { register } = require('../util/web_worker_transfer');
