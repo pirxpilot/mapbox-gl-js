@@ -1,7 +1,7 @@
 'use strict';
 
 const async = require('./async');
-const { uniqueId } = require('./util');
+const uniqueId = require('./unique_id');
 const Actor = require('./actor');
 
 

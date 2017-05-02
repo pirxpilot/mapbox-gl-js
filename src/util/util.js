@@ -77,19 +77,6 @@ function wrap(n, min, max) {
     return (w === min) ? max : w;
 }
 
-let id = 1;
-
-/**
- * Return a unique numeric id, starting at 1 and incrementing with
- * each call.
- *
- * @returns unique numeric id.
- * @private
- */
-function uniqueId() {
-    return id++;
-}
-
 /**
  * Given a list of coordinates, get their center as a coordinate.
  *
@@ -201,7 +188,6 @@ module.exports = {
     ease,
     clamp,
     wrap,
-    uniqueId,
     getCoordinatesCenter,
     isCounterClockwise,
     calculateSignedArea,

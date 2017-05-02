@@ -2,7 +2,7 @@
 
 const cacheControl = require('../util/cache_control');
 const { deepEqual } = require('../util/object');
-const { uniqueId } = require('../util/util');
+const uniqueId = require('../util/unique_id');
 const { deserialize: deserializeBucket } = require('../data/bucket');
 const GeoJSONFeature = require('../util/vectortile_to_geojson');
 const featureFilter = require('../style-spec/feature_filter');
