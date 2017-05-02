@@ -1,6 +1,6 @@
 'use strict';
 
-const { warnOnce } = require('../util/util');
+const warn = require('../util/warn');
 
 const { register } = require('../util/web_worker_transfer');
 
@@ -14,7 +14,7 @@ class SegmentVector {
 
     prepareSegment(numVertices, layoutVertexArray, indexArray) {
         let segment = this.segments[this.segments.length - 1];
-        if (numVertices > SegmentVector.MAX_VERTEX_ARRAY_LENGTH) warnOnce(`Max vertices per segment is ${SegmentVector.MAX_VERTEX_ARRAY_LENGTH}: bucket requested ${numVertices}`);
+        if (numVertices > SegmentVector.MAX_VERTEX_ARRAY_LENGTH) warn.once(`Max vertices per segment is ${SegmentVector.MAX_VERTEX_ARRAY_LENGTH}: bucket requested ${numVertices}`);
         if (!segment || segment.vertexLength + numVertices > SegmentVector.MAX_VERTEX_ARRAY_LENGTH) {
             segment = ({
                 vertexOffset: layoutVertexArray.length,

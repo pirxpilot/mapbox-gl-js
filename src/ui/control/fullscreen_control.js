@@ -3,7 +3,7 @@
 const DOM = require('../../util/dom');
 
 const { bindAll } = require('../../util/object');
-const { warnOnce } = require('../../util/util');
+const warn = require('../../util/warn');
 const window = require('../../util/window');
 
 
@@ -44,7 +44,7 @@ class FullscreenControl {
             this._setupUI();
         } else {
             this._container.style.display = 'none';
-            warnOnce('This device does not support fullscreen mode.');
+            warn.once('This device does not support fullscreen mode.');
         }
         return this._container;
     }
