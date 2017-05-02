@@ -1,6 +1,7 @@
 'use strict';
 
 const DOM = require('../../util/dom');
+const object = require('../../util/object');
 const util = require('../../util/util');
 const window = require('../../util/window');
 
@@ -26,7 +27,7 @@ class DragRotateHandler {
         this._bearingSnap = options.bearingSnap;
         this._pitchWithRotate = options.pitchWithRotate !== false;
 
-        util.bindAll([
+        object.bindAll([
             '_onDown',
             '_onMove',
             '_onUp'

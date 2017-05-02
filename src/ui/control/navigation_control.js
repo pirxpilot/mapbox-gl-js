@@ -2,7 +2,7 @@
 
 const DOM = require('../../util/dom');
 const window = require('../../util/window');
-const util = require('../../util/util');
+const object = require('../../util/object');
 
 const className = 'mapboxgl-ctrl';
 
@@ -19,7 +19,7 @@ const className = 'mapboxgl-ctrl';
 class NavigationControl {
 
     constructor() {
-        util.bindAll([
+        object.bindAll([
             '_rotateCompassArrow'
         ], this);
     }

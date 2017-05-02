@@ -1,7 +1,7 @@
 'use strict';
 
 const createFunction = require('../style-spec/function');
-const util = require('../util/util');
+const object = require('../util/object');
 
 /**
  * A style property declaration
@@ -10,7 +10,7 @@ const util = require('../util/util');
 class StyleDeclaration {
 
     constructor(reference, value) {
-        this.value = util.clone(value);
+        this.value = object.clone(value);
         this.isFunction = createFunction.isFunctionDefinition(value);
 
         // immutable representation of value. used for comparison

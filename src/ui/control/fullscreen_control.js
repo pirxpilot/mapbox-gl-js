@@ -1,7 +1,7 @@
 'use strict';
 
 const DOM = require('../../util/dom');
-const util = require('../../util/util');
+const object = require('../../util/object');
 const window = require('../../util/window');
 
 /**
@@ -17,7 +17,7 @@ class FullscreenControl {
 
     constructor() {
         this._fullscreen = false;
-        util.bindAll([
+        object.bindAll([
             '_onClickFullscreen',
             '_changeIcon'
         ], this);

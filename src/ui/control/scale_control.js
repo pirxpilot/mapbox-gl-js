@@ -1,7 +1,7 @@
 'use strict';
 
 const DOM = require('../../util/dom');
-const util = require('../../util/util');
+const object = require('../../util/object');
 
 /**
  * A `ScaleControl` control displays the ratio of a distance on the map to the corresponding distance on the ground.
@@ -21,7 +21,7 @@ class ScaleControl {
     constructor(options) {
         this.options = options;
 
-        util.bindAll([
+        object.bindAll([
             '_onMove'
         ], this);
     }

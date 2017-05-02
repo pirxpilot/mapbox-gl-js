@@ -1,6 +1,6 @@
 'use strict';
 
-const util = require('../util/util');
+const object = require('../util/object');
 const StyleTransition = require('./style_transition');
 const StyleDeclaration = require('./style_declaration');
 const styleSpec = require('../style-spec/reference/latest');
@@ -272,15 +272,15 @@ class StyleLayer extends Evented {
             'minzoom': this.minzoom,
             'maxzoom': this.maxzoom,
             'filter': this.filter,
-            'layout': util.mapObject(this._layoutDeclarations, getDeclarationValue)
+            'layout': object.map(this._layoutDeclarations, getDeclarationValue)
         };
 
         for (const klass in this._paintDeclarations) {
             const key = klass === '' ? 'paint' : `paint.${klass}`;
-            output[key] = util.mapObject(this._paintDeclarations[klass], getDeclarationValue);
+            output[key] = object.map(this._paintDeclarations[klass], getDeclarationValue);
         }
 
-        return util.filterObject(output, (value, key) => {
+        return object.filter(output, (value, key) => {
             return value !== undefined && !(key === 'layout' && !Object.keys(value).length);
         });
     }

@@ -4,6 +4,7 @@ const FeatureIndex = require('../data/feature_index');
 const CollisionTile = require('../symbol/collision_tile');
 const CollisionBoxArray = require('../symbol/collision_box');
 const DictionaryCoder = require('../util/dictionary_coder');
+const object = require('../util/object');
 const util = require('../util/util');
 const assert = require('assert');
 
@@ -109,7 +110,7 @@ class WorkerTile {
             const transferables = [];
 
             callback(null, {
-                buckets: serializeBuckets(util.values(buckets), transferables),
+                buckets: serializeBuckets(object.values(buckets), transferables),
                 featureIndex: featureIndex.serialize(transferables),
                 collisionTile: collisionTile.serialize(transferables),
                 collisionBoxArray: this.collisionBoxArray.serialize()
@@ -131,7 +132,7 @@ class WorkerTile {
 
         let deps = 0;
         let icons = Object.keys(options.iconDependencies);
-        let stacks = util.mapObject(options.glyphDependencies, (glyphs) => Object.keys(glyphs).map(Number));
+        let stacks = object.map(options.glyphDependencies, (glyphs) => Object.keys(glyphs).map(Number));
 
         const gotDependency = (err) => {
             if (err) return callback(err);

@@ -1,7 +1,7 @@
 'use strict';
 
 const DOM = require('../../util/dom');
-const util = require('../../util/util');
+const object = require('../../util/object');
 
 /**
  * A `LogoControl` is a control that adds the Mapbox watermark
@@ -15,7 +15,7 @@ const util = require('../../util/util');
 class LogoControl {
 
     constructor() {
-        util.bindAll(['_updateLogo'], this);
+        object.bindAll(['_updateLogo'], this);
     }
 
     onAdd(map) {

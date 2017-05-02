@@ -1,7 +1,7 @@
 'use strict';
 
 const DOM = require('../../util/dom');
-const util = require('../../util/util');
+const object = require('../../util/object');
 
 /**
  * An `AttributionControl` control presents the map's [attribution information](https://www.mapbox.com/help/attribution/).
@@ -20,7 +20,7 @@ class AttributionControl {
     constructor(options) {
         this.options = options;
 
-        util.bindAll([
+        object.bindAll([
             '_updateEditLink',
             '_updateData',
             '_updateCompact'

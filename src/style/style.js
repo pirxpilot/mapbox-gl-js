@@ -8,7 +8,7 @@ const Light = require('./light');
 const GlyphSource = require('../symbol/glyph_source');
 const SpriteAtlas = require('../symbol/sprite_atlas');
 const LineAtlas = require('../render/line_atlas');
-const util = require('../util/util');
+const object = require('../util/object');
 const loadJSON = require('../util/loader/json');
 const mapbox = require('../util/mapbox');
 const browser = require('../util/browser');
@@ -44,7 +44,7 @@ class Style extends Evented {
         this.zoomHistory = {};
         this._loaded = false;
 
-        util.bindAll(['_redoPlacement'], this);
+        object.bindAll(['_redoPlacement'], this);
 
         this._resetUpdates();
 
@@ -533,8 +533,8 @@ class Style extends Evented {
 
         if (filter !== null && filter !== undefined && this._validate(validateStyle.filter, `layers.${layer.id}.filter`, filter)) return;
 
-        if (util.deepEqual(layer.filter, filter)) return;
-        layer.filter = util.clone(filter);
+        if (object.deepEqual(layer.filter, filter)) return;
+        layer.filter = object.clone(filter);
 
         this._updateLayer(layer);
     }
@@ -545,7 +545,7 @@ class Style extends Evented {
      * @returns {*} the layer's filter, if any
      */
     getFilter(layer) {
-        return util.clone(this.getLayer(layer).filter);
+        return object.clone(this.getLayer(layer).filter);
     }
 
     setLayoutProperty(layerId, name, value) {
@@ -562,7 +562,7 @@ class Style extends Evented {
             return;
         }
 
-        if (util.deepEqual(layer.getLayoutProperty(name), value)) return;
+        if (object.deepEqual(layer.getLayoutProperty(name), value)) return;
 
         layer.setLayoutProperty(name, value);
         this._updateLayer(layer);
@@ -592,7 +592,7 @@ class Style extends Evented {
             return;
         }
 
-        if (util.deepEqual(layer.getPaintProperty(name, klass), value)) return;
+        if (object.deepEqual(layer.getPaintProperty(name, klass), value)) return;
 
         const wasFeatureConstant = layer.isPaintValueFeatureConstant(name);
         layer.setPaintProperty(name, value, klass);
@@ -632,7 +632,7 @@ class Style extends Evented {
     }
 
     serialize() {
-        return util.filterObject({
+        return object.filter({
             version: this.stylesheet.version,
             name: this.stylesheet.name,
             metadata: this.stylesheet.metadata,
@@ -644,9 +644,9 @@ class Style extends Evented {
             sprite: this.stylesheet.sprite,
             glyphs: this.stylesheet.glyphs,
             transition: this.stylesheet.transition,
-            sources: util.mapObject(this.sourceCaches, (source) => source.serialize()),
+            sources: object.map(this.sourceCaches, (source) => source.serialize()),
             layers: this._order.map((id) => this._layers[id].serialize())
-        }, (value) => { return value !== undefined; });
+        }, (value) => value !== undefined);
     }
 
     _updateLayer(layer) {
@@ -740,7 +740,7 @@ class Style extends Evented {
         const light = this.light.getLight();
         let _update = false;
         for (const key in lightOptions) {
-            if (!util.deepEqual(lightOptions[key], light[key])) {
+            if (!object.deepEqual(lightOptions[key], light[key])) {
                 _update = true;
                 break;
             }

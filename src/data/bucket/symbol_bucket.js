@@ -14,6 +14,7 @@ const Shaping = require('../../symbol/shaping');
 const transformText = require('../../symbol/transform_text');
 const mergeLines = require('../../symbol/mergelines');
 const clipLine = require('../../symbol/clip_line');
+const object = require('../../util/object');
 const util = require('../../util/util');
 const scriptDetection = require('../../util/script_detection');
 const loadGeometry = require('../load_geometry');
@@ -285,7 +286,7 @@ class SymbolBucket {
             textSizeData: this.textSizeData,
             iconSizeData: this.iconSizeData,
             fontstack: this.fontstack,
-            arrays: util.mapObject(this.arrays, (a) => a.isEmpty() ? null : a.serialize(transferables))
+            arrays: object.map(this.arrays, (a) => a.isEmpty() ? null : a.serialize(transferables))
         };
     }
 
@@ -299,7 +300,7 @@ class SymbolBucket {
     }
 
     createArrays() {
-        this.arrays = util.mapObject(this.symbolInterfaces, (programInterface) => {
+        this.arrays = object.map(this.symbolInterfaces, (programInterface) => {
             return new ArrayGroup(programInterface, this.layers, this.zoom);
         });
     }

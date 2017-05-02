@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('mapbox-gl-js-test').test;
-const util = require('../../../src/util/util');
+const object = require('../../../src/util/object');
 const StyleLayerIndex = require('../../../src/style/style_layer_index');
 
 test('StyleLayerIndex#replace', (t) => {
@@ -62,8 +62,8 @@ test('StyleLayerIndex#familiesBySource', (t) => {
         { id: '6' }
     ]);
 
-    const ids = util.mapObject(index.familiesBySource, (bySource) => {
-        return util.mapObject(bySource, (families) => {
+    const ids = object.map(index.familiesBySource, (bySource) => {
+        return object.map(bySource, (families) => {
             return families.map((family) => {
                 return family.map((layer) => layer.id);
             });
