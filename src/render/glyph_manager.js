@@ -4,7 +4,7 @@ const loadGlyphRange = require('../style/load_glyph_range');
 
 const TinySDF = require('@mapbox/tiny-sdf');
 const isChar = require('../util/is_char_in_unicode_block');
-const { asyncAll } = require('../util/util');
+const async = require('../util/async');
 const { AlphaImage } = require('../util/image');
 
 
@@ -32,7 +32,7 @@ class GlyphManager {
             }
         }
 
-        asyncAll(all, ({stack, id}, callback) => {
+        async.all(all, ({stack, id}, callback) => {
             let entry = this.entries[stack];
             if (!entry) {
                 entry = this.entries[stack] = {

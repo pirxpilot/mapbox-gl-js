@@ -7,7 +7,6 @@ const {
     easeCubicInOut,
     uniqueId,
     getCoordinatesCenter,
-    asyncAll,
     clamp,
     wrap,
     bezier,
@@ -29,50 +28,6 @@ test('util', (t) => {
             new Coordinate(0, 0, 2),
             new Coordinate(1, 1, 2)
         ]), new Coordinate(0.5, 0.5, 0));
-        t.end();
-    });
-
-    t.test('asyncAll - sync', (t) => {
-        t.equal(asyncAll([0, 1, 2], (data, callback) => {
-            callback(null, data);
-        }, (err, results) => {
-            t.ifError(err);
-            t.deepEqual(results, [0, 1, 2]);
-        }));
-        t.end();
-    });
-
-    t.test('asyncAll - async', (t) => {
-        t.equal(asyncAll([4, 0, 1, 2], (data, callback) => {
-            setTimeout(() => {
-                callback(null, data);
-            }, data);
-        }, (err, results) => {
-            t.ifError(err);
-            t.deepEqual(results, [4, 0, 1, 2]);
-            t.end();
-        }));
-    });
-
-    t.test('asyncAll - error', (t) => {
-        t.equal(asyncAll([4, 0, 1, 2], (data, callback) => {
-            setTimeout(() => {
-                callback(new Error('hi'), data);
-            }, data);
-        }, (err, results) => {
-            t.equal(err && err.message, 'hi');
-            t.deepEqual(results, [4, 0, 1, 2]);
-            t.end();
-        }));
-    });
-
-    t.test('asyncAll - empty', (t) => {
-        t.equal(asyncAll([], (data, callback) => {
-            callback(null, 'foo');
-        }, (err, results) => {
-            t.ifError(err);
-            t.deepEqual(results, []);
-        }));
         t.end();
     });
 
@@ -99,20 +54,6 @@ test('util', (t) => {
         t.equal(curve(1), 1);
         t.equal(curve(0.5), 0.8230854638965502);
         t.end();
-    });
-
-    t.test('asyncAll', (t) => {
-        let expect = 1;
-        asyncAll([], (callback) => { callback(); }, () => {
-            t.ok('immediate callback');
-        });
-        asyncAll([1, 2, 3], (number, callback) => {
-            t.equal(number, expect++);
-            t.ok(callback instanceof Function);
-            callback(null, 0);
-        }, () => {
-            t.end();
-        });
     });
 
     t.test('isCounterClockwise ', (t) => {
