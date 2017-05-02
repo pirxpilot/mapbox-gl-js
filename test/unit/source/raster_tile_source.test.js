@@ -28,6 +28,11 @@ test('RasterTileSource', (t) => {
         callback();
     });
 
+    t.test('before', (t) => {
+        window.useFakeCache();
+        t.end();
+    });
+
     t.test('respects TileJSON.bounds', (t)=>{
         const source = createSource({
             minzoom: 0,
@@ -72,6 +77,12 @@ test('RasterTileSource', (t) => {
         });
         window.server.respond();
     });
+
+    t.test('after', (t) => {
+        window.restoreFakeCache();
+        t.end();
+    });
+
     t.end();
 
 });

@@ -31,6 +31,11 @@ test('VectorTileSource', (t) => {
         callback();
     });
 
+    t.test('before', (t) => {
+        window.useFakeCache();
+        t.end();
+    });
+
     t.test('can be constructed from TileJSON', (t) => {
         const source = createSource({
             minzoom: 1,
@@ -222,6 +227,11 @@ test('VectorTileSource', (t) => {
             }
         });
         window.server.respond();
+    });
+
+    t.test('after', (t) => {
+        window.restoreFakeCache();
+        t.end();
     });
 
     t.end();
