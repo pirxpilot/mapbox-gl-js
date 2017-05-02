@@ -1,6 +1,6 @@
 'use strict';
 
-const { filterObject } = require('../util/util');
+const { filterObject } = require('../util/object');
 
 const { Evented } = require('../util/evented');
 const { Layout, Transitionable, PossiblyEvaluatedPropertyValue } = require('./properties');

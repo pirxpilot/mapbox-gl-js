@@ -2,7 +2,7 @@
 
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 
-const { pick } = require('../util/util');
+const { pick } = require('../util/object');
 const loadTileJSON = require('./load_tilejson');
 const { normalizeTileURL: normalizeURL } = require('../util/mapbox');
 const TileBounds = require('./tile_bounds');

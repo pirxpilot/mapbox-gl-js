@@ -2,7 +2,7 @@
 
 const DOM = require('../../util/dom');
 
-const { bindAll } = require('../../util/util');
+const { bindAll } = require('../../util/object');
 
 
 /**

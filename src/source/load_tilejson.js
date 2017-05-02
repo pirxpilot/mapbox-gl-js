@@ -1,6 +1,6 @@
 'use strict';
 
-const { pick } = require('../util/util');
+const { pick } = require('../util/object');
 
 const { getJSON, ResourceType } = require('../util/ajax');
 const browser = require('../util/browser');

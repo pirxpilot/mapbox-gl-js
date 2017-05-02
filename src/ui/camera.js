@@ -2,7 +2,9 @@
 
 const {
     bindAll,
-    deepEqual,
+    deepEqual
+} = require('../util/object');
+const {
     warnOnce,
     clamp,
     wrap,

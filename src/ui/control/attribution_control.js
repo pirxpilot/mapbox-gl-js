@@ -1,7 +1,7 @@
 'use strict';
 
 const DOM = require('../../util/dom');
-const { bindAll } = require('../../util/util');
+const { bindAll } = require('../../util/object');
 const config = require('../../util/config');
 
 

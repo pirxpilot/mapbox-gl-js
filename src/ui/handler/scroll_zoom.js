@@ -2,7 +2,8 @@
 
 const DOM = require('../../util/dom');
 
-const { ease: _ease, bindAll, bezier } = require('../../util/util');
+const { bindAll } = require('../../util/object');
+const { ease: _ease, bezier } = require('../../util/util');
 const browser = require('../../util/browser');
 const window = require('../../util/window');
 const { number: interpolate } = require('../../style-spec/util/interpolate');

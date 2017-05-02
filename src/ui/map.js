@@ -1,6 +1,7 @@
 'use strict';
 
-const { bindAll, warnOnce } = require('../util/util');
+const { bindAll } = require('../util/object');
+const { warnOnce } = require('../util/util');
 
 const browser = require('../util/browser');
 const window = require('../util/window');
@@ -23,14 +24,6 @@ const { RGBAImage } = require('../util/image');
 const { Event, ErrorEvent } = require('../util/evented');
 const { MapMouseEvent } = require('./events');
 const TaskQueue = require('../util/task_queue');
-
-
-
-
-/* eslint-disable no-use-before-define */
-/* eslint-enable no-use-before-define */
-
-
 
 const defaultMinZoom = 0;
 const defaultMaxZoom = 22;

@@ -2,7 +2,7 @@
 
 const createStyleLayer = require('./create_style_layer');
 
-const { values } = require('../util/util');
+const { values } = require('../util/object');
 const featureFilter = require('../style-spec/feature_filter');
 const groupByLayout = require('../style-spec/group_by_layout');
 

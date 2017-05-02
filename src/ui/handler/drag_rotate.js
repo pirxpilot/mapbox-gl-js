@@ -2,7 +2,8 @@
 
 const DOM = require('../../util/dom');
 
-const { bezier, bindAll } = require('../../util/util');
+const { bindAll } = require('../../util/object');
+const { bezier } = require('../../util/util');
 const window = require('../../util/window');
 const browser = require('../../util/browser');
 const { Event } = require('../../util/evented');
