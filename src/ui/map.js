@@ -1,7 +1,7 @@
 'use strict';
 
 const { bindAll } = require('../util/object');
-const { warnOnce } = require('../util/util');
+const warn = require('../util/warn');
 
 const browser = require('../util/browser');
 const window = require('../util/window');
@@ -902,7 +902,7 @@ class Map extends Camera {
      * @returns {boolean} A Boolean indicating whether the style is fully loaded.
      */
     isStyleLoaded() {
-        if (!this.style) return warnOnce('There is no style added to the map.');
+        if (!this.style) return warn.once('There is no style added to the map.');
         return this.style.loaded();
     }
 

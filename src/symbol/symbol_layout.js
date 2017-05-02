@@ -8,7 +8,7 @@ const OpacityState = require('./opacity_state');
 const { shapeText, shapeIcon, WritingMode } = require('./shaping');
 const { getGlyphQuads, getIconQuads } = require('./quads');
 const CollisionFeature = require('./collision_feature');
-const { warnOnce } = require('../util/util');
+const warn = require('../util/warn');
 const {
     allowsVerticalWritingMode,
     allowsLetterSpacing
@@ -114,7 +114,7 @@ function performSymbolLayout(bucket,
                 if (bucket.sdfIcons === undefined) {
                     bucket.sdfIcons = image.sdf;
                 } else if (bucket.sdfIcons !== image.sdf) {
-                    warnOnce('Style sheet warning: Cannot mix SDF and non-SDF icons in one buffer');
+                    warn.once('Style sheet warning: Cannot mix SDF and non-SDF icons in one buffer');
                 }
                 if (image.pixelRatio !== bucket.pixelRatio) {
                     bucket.iconsNeedLinear = true;
@@ -371,7 +371,7 @@ function addSymbol(bucket,
     const iconBoxStartIndex = iconCollisionFeature ? iconCollisionFeature.boxStartIndex : bucket.collisionBoxArray.length;
     const iconBoxEndIndex = iconCollisionFeature ? iconCollisionFeature.boxEndIndex : bucket.collisionBoxArray.length;
 
-    if (bucket.glyphOffsetArray.length >= SymbolBucket.MAX_GLYPHS) warnOnce(
+    if (bucket.glyphOffsetArray.length >= SymbolBucket.MAX_GLYPHS) warn.once(
         "Too many glyphs being rendered in a tile. See https://github.com/mapbox/mapbox-gl-js/issues/2907"
     );
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const { warnOnce } = require('../util/util');
+const warn = require('../util/warn');
 
 const EXTENT = require('./extent');
 
@@ -37,7 +37,7 @@ module.exports = function loadGeometry(feature) {
             point.y = Math.round(point.y * scale);
 
             if (point.x < bounds.min || point.x > bounds.max || point.y < bounds.min || point.y > bounds.max) {
-                warnOnce('Geometry exceeds allowed extent, reduce your vector tile buffer size');
+                warn.once('Geometry exceeds allowed extent, reduce your vector tile buffer size');
             }
         }
     }
