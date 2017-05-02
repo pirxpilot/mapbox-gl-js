@@ -1,7 +1,7 @@
 'use strict';
 
 const cacheControl = require('../util/cache_control');
-const util = require('../util/util');
+const uniqueId = require('../util/unique_id');
 const Bucket = require('../data/bucket');
 const FeatureIndex = require('../data/feature_index');
 const vt = require('vector-tile');
@@ -27,7 +27,7 @@ class Tile {
      */
     constructor(coord, size, sourceMaxZoom) {
         this.coord = coord;
-        this.uid = util.uniqueId();
+        this.uid = uniqueId();
         this.uses = 0;
         this.tileSize = size;
         this.sourceMaxZoom = sourceMaxZoom;

@@ -11,7 +11,6 @@ test('util', (t) => {
     t.equal(util.easeCubicInOut(0.2), 0.03200000000000001);
     t.equal(util.easeCubicInOut(0.5), 0.5, 'easeCubicInOut=0.5');
     t.equal(util.easeCubicInOut(1), 1, 'easeCubicInOut=1');
-    t.ok(typeof util.uniqueId() === 'number', 'uniqueId');
 
     t.test('getCoordinatesCenter', (t) => {
         t.deepEqual(util.getCoordinatesCenter(
