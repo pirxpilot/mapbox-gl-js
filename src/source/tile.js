@@ -1,5 +1,6 @@
 'use strict';
 
+const cacheControl = require('../util/cache_control');
 const util = require('../util/util');
 const Bucket = require('../data/bucket');
 const FeatureIndex = require('../data/feature_index');
@@ -238,7 +239,7 @@ class Tile {
         const prior = this.expirationTime;
 
         if (data.cacheControl) {
-            const parsedCC = util.parseCacheControl(data.cacheControl);
+            const parsedCC = cacheControl.parse(data.cacheControl);
             if (parsedCC['max-age']) this.expirationTime = Date.now() + parsedCC['max-age'] * 1000;
         } else if (data.expires) {
             this.expirationTime = new Date(data.expires).getTime();
