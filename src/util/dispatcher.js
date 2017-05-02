@@ -1,7 +1,7 @@
 'use strict';
 
 const async = require('./async');
-const util = require('./util');
+const uniqueId = require('./unique_id');
 const Actor = require('./actor');
 
 /**
@@ -17,7 +17,7 @@ class Dispatcher {
         this.workerPool = workerPool;
         this.actors = [];
         this.currentActor = 0;
-        this.id = util.uniqueId();
+        this.id = uniqueId();
         const workers = this.workerPool.acquire(this.id);
         for (let i = 0; i < workers.length; i++) {
             const worker = workers[i];
