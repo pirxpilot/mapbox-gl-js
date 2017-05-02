@@ -64,6 +64,11 @@ test('Map', (t) => {
         callback();
     });
 
+    t.test('before', (t) => {
+        window.useFakeCache();
+        t.end();
+    });
+
     t.test('constructor', (t) => {
         const map = createMap({interactive: true, style: null});
         t.ok(map.getContainer());
@@ -1291,6 +1296,11 @@ test('Map', (t) => {
         });
 
         map.zoomTo(5, { duration: 0 });
+    });
+
+    t.test('after', (t) => {
+        window.restoreFakeCache();
+        t.end();
     });
 
     t.end();

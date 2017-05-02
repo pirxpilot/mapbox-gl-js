@@ -4,6 +4,8 @@ const jsdom = require('jsdom');
 const gl = require('gl');
 const sinon = require('sinon');
 const util = require('./util');
+const loaderCache =  require('./loader/cache');
+
 
 function restore() {
     // Remove previous window from module.exports
@@ -49,6 +51,20 @@ function restore() {
         sinon.xhr.supportsCORS = true;
         this.server = sinon.fakeServer.create();
         this.XMLHttpRequest = this.server.xhr;
+    };
+
+    window.useFakeCache = function() {
+        sinon.stub(loaderCache, 'from').callsFake((params, fn) => fn());
+        sinon.stub(loaderCache, 'update').callsFake((params, data, fn) => fn && fn());
+    };
+
+    window.restoreFakeCache = function() {
+        if ('restore' in loaderCache.update) {
+            loaderCache.update.restore();
+        }
+        if ('restore' in loaderCache.from) {
+            loaderCache.from.restore();
+        }
     };
 
     window.URL.revokeObjectURL = function () {};

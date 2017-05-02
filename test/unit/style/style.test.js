@@ -38,6 +38,11 @@ function createGeoJSONSource() {
     };
 }
 
+test('before Style', (t) => {
+    window.useFakeCache();
+    t.end();
+});
+
 test('Style', (t) => {
     t.afterEach((callback) => {
         window.restore();
@@ -127,6 +132,7 @@ test('Style', (t) => {
             })
             .on('style.load', () => {
                 window.restore();
+
                 t.end();
             });
 
@@ -186,6 +192,11 @@ test('Style', (t) => {
         });
     });
 
+    t.end();
+});
+
+test('after Style', (t) => {
+    window.restoreFakeCache();
     t.end();
 });
 
