@@ -23,50 +23,6 @@ test('util', (t) => {
         t.end();
     });
 
-    t.test('asyncAll - sync', (t) => {
-        t.equal(util.asyncAll([0, 1, 2], (data, callback) => {
-            callback(null, data);
-        }, (err, results) => {
-            t.ifError(err);
-            t.deepEqual(results, [0, 1, 2]);
-        }));
-        t.end();
-    });
-
-    t.test('asyncAll - async', (t) => {
-        t.equal(util.asyncAll([4, 0, 1, 2], (data, callback) => {
-            setTimeout(() => {
-                callback(null, data);
-            }, data);
-        }, (err, results) => {
-            t.ifError(err);
-            t.deepEqual(results, [4, 0, 1, 2]);
-            t.end();
-        }));
-    });
-
-    t.test('asyncAll - error', (t) => {
-        t.equal(util.asyncAll([4, 0, 1, 2], (data, callback) => {
-            setTimeout(() => {
-                callback(new Error('hi'), data);
-            }, data);
-        }, (err, results) => {
-            t.equal(err && err.message, 'hi');
-            t.deepEqual(results, [4, 0, 1, 2]);
-            t.end();
-        }));
-    });
-
-    t.test('asyncAll - empty', (t) => {
-        t.equal(util.asyncAll([], (data, callback) => {
-            callback(null, 'foo');
-        }, (err, results) => {
-            t.ifError(err);
-            t.deepEqual(results, []);
-        }));
-        t.end();
-    });
-
     t.test('clamp', (t) => {
         t.equal(util.clamp(0, 0, 1), 0);
         t.equal(util.clamp(1, 0, 1), 1);
@@ -90,20 +46,6 @@ test('util', (t) => {
         t.equal(curve(1), 1);
         t.equal(curve(0.5), 0.8230854638965502);
         t.end();
-    });
-
-    t.test('asyncAll', (t) => {
-        let expect = 1;
-        util.asyncAll([], (callback) => { callback(); }, () => {
-            t.ok('immediate callback');
-        });
-        util.asyncAll([1, 2, 3], (number, callback) => {
-            t.equal(number, expect++);
-            t.ok(callback instanceof Function);
-            callback(null, 0);
-        }, () => {
-            t.end();
-        });
     });
 
     t.test('isCounterClockwise ', (t) => {

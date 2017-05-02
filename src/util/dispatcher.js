@@ -1,5 +1,6 @@
 'use strict';
 
+const async = require('./async');
 const util = require('./util');
 const Actor = require('./actor');
 
@@ -38,7 +39,7 @@ class Dispatcher {
      */
     broadcast(type, data, cb) {
         cb = cb || function () {};
-        util.asyncAll(this.actors, (actor, done) => {
+        async.all(this.actors, (actor, done) => {
             actor.send(type, data, done);
         }, cb);
     }
