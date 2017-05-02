@@ -1,7 +1,7 @@
 'use strict';
 
 const ShelfPack = require('@mapbox/shelf-pack');
-const util = require('../util/util');
+const warn = require('../util/warn');
 
 const SIZE_GROWTH_RATE = 4;
 const DEFAULT_SIZE = 128;
@@ -88,7 +88,7 @@ class GlyphAtlas {
             rect = this.atlas.packOne(packWidth, packHeight);
         }
         if (!rect) {
-            util.warnOnce('glyph bitmap overflow');
+            warn.once('glyph bitmap overflow');
             return null;
         }
 

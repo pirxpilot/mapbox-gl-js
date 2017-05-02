@@ -1,7 +1,7 @@
 'use strict';
 
 const object = require('../util/object');
-const util = require('../util/util');
+const warn = require('../util/warn');
 const browser = require('../util/browser');
 const window = require('../util/window');
 const DOM = require('../util/dom');
@@ -272,7 +272,7 @@ class Map extends Camera {
      * @returns {Map} `this`
      */
     addClass(klass, options) {
-        util.warnOnce('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
+        warn.once('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
         if (this._classes.indexOf(klass) >= 0 || klass === '') return this;
         this._classes.push(klass);
         this._classOptions = options;
@@ -293,7 +293,7 @@ class Map extends Camera {
      * @returns {Map} `this`
      */
     removeClass(klass, options) {
-        util.warnOnce('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
+        warn.once('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
         const i = this._classes.indexOf(klass);
         if (i < 0 || klass === '') return this;
         this._classes.splice(i, 1);
@@ -315,7 +315,7 @@ class Map extends Camera {
      * @returns {Map} `this`
      */
     setClasses(klasses, options) {
-        util.warnOnce('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
+        warn.once('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
         const uniqueClasses = {};
         for (let i = 0; i < klasses.length; i++) {
             if (klasses[i] !== '') uniqueClasses[klasses[i]] = true;
@@ -337,7 +337,7 @@ class Map extends Camera {
      * @returns {boolean} `true` if the map has the specified style class.
      */
     hasClass(klass) {
-        util.warnOnce('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
+        warn.once('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
         return this._classes.indexOf(klass) >= 0;
     }
 
@@ -349,7 +349,7 @@ class Map extends Camera {
      * @returns {Array<string>} The map's style classes.
      */
     getClasses() {
-        util.warnOnce('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
+        warn.once('Style classes are deprecated and will be removed in an upcoming release of Mapbox GL JS.');
         return this._classes;
     }
 
@@ -874,7 +874,7 @@ class Map extends Camera {
       * @returns {boolean} A Boolean indicating whether the style is fully loaded.
       */
     isStyleLoaded() {
-        if (!this.style) return util.warnOnce('There is no style added to the map.');
+        if (!this.style) return warn.once('There is no style added to the map.');
         return this.style.loaded();
     }
 

@@ -5,7 +5,7 @@ const CollisionTile = require('../symbol/collision_tile');
 const CollisionBoxArray = require('../symbol/collision_box');
 const DictionaryCoder = require('../util/dictionary_coder');
 const object = require('../util/object');
-const util = require('../util/util');
+const warn = require('../util/warn');
 const assert = require('assert');
 
 class WorkerTile {
@@ -55,7 +55,7 @@ class WorkerTile {
             }
 
             if (sourceLayer.version === 1) {
-                util.warnOnce(
+                warn.once(
                     `Vector tile source "${this.source}" layer "${
                     sourceLayerId}" does not use vector tile spec v2 ` +
                     `and therefore may have some rendering errors.`

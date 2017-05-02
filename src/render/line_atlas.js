@@ -1,6 +1,6 @@
 'use strict';
 
-const util = require('../util/util');
+const warn = require('../util/warn');
 
 /**
  * A LineAtlas lets us reuse rendered dashed lines
@@ -51,7 +51,7 @@ class LineAtlas {
         const offset = 128;
 
         if (this.nextRow + height > this.height) {
-            util.warnOnce('LineAtlas out of space');
+            warn.once('LineAtlas out of space');
             return null;
         }
 

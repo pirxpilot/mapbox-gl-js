@@ -15,7 +15,7 @@ const transformText = require('../../symbol/transform_text');
 const mergeLines = require('../../symbol/mergelines');
 const clipLine = require('../../symbol/clip_line');
 const object = require('../../util/object');
-const util = require('../../util/util');
+const warn = require('../../util/warn');
 const scriptDetection = require('../../util/script_detection');
 const loadGeometry = require('../load_geometry');
 const CollisionFeature = require('../../symbol/collision_feature');
@@ -389,7 +389,7 @@ class SymbolBucket {
                     if (this.sdfIcons === undefined) {
                         this.sdfIcons = image.sdf;
                     } else if (this.sdfIcons !== image.sdf) {
-                        util.warnOnce('Style sheet warning: Cannot mix SDF and non-SDF icons in one buffer');
+                        warn.once('Style sheet warning: Cannot mix SDF and non-SDF icons in one buffer');
                     }
                     if (!image.isNativePixelRatio) {
                         this.iconsNeedLinear = true;
@@ -810,8 +810,8 @@ class SymbolBucket {
         const iconBoxStartIndex = iconCollisionFeature ? iconCollisionFeature.boxStartIndex : this.collisionBoxArray.length;
         const iconBoxEndIndex = iconCollisionFeature ? iconCollisionFeature.boxEndIndex : this.collisionBoxArray.length;
 
-        if (textBoxEndIndex > SymbolBucket.MAX_INSTANCES) util.warnOnce("Too many symbols being rendered in a tile. See https://github.com/mapbox/mapbox-gl-js/issues/2907");
-        if (iconBoxEndIndex > SymbolBucket.MAX_INSTANCES) util.warnOnce("Too many glyphs being rendered in a tile. See https://github.com/mapbox/mapbox-gl-js/issues/2907");
+        if (textBoxEndIndex > SymbolBucket.MAX_INSTANCES) warn.once("Too many symbols being rendered in a tile. See https://github.com/mapbox/mapbox-gl-js/issues/2907");
+        if (iconBoxEndIndex > SymbolBucket.MAX_INSTANCES) warn.once("Too many glyphs being rendered in a tile. See https://github.com/mapbox/mapbox-gl-js/issues/2907");
 
         const writingModes = (
             (shapedTextOrientations[WritingMode.vertical] ? WritingMode.vertical : 0) |

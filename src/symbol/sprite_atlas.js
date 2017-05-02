@@ -2,7 +2,7 @@
 
 const ShelfPack = require('@mapbox/shelf-pack');
 const browser = require('../util/browser');
-const util = require('../util/util');
+const warn = require('../util/warn');
 const window = require('../util/window');
 const Evented = require('../util/evented');
 const padding = 1;
@@ -66,7 +66,7 @@ class SpriteAtlas extends Evented {
 
         const rect = this.shelfPack.packOne(width, height);
         if (!rect) {
-            util.warnOnce('SpriteAtlas out of space.');
+            warn.once('SpriteAtlas out of space.');
             return null;
         }
 

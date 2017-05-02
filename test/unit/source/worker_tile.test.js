@@ -5,7 +5,7 @@ const WorkerTile = require('../../../src/source/worker_tile');
 const Wrapper = require('../../../src/source/geojson_wrapper');
 const TileCoord = require('../../../src/source/tile_coord');
 const StyleLayerIndex = require('../../../src/style/style_layer_index');
-const util = require('../../../src/util/util');
+const warn = require('../../../src/util/warn');
 
 function createWorkerTile() {
     return new WorkerTile({
@@ -90,12 +90,12 @@ test('WorkerTile#parse warns once when encountering a v1 vector tile layer', (t)
         }
     };
 
-    t.stub(util, 'warnOnce');
+    t.stub(warn, 'once');
 
     const tile = createWorkerTile();
     tile.parse(data, layerIndex, {}, (err) => {
         t.ifError(err);
-        t.ok(util.warnOnce.calledWithMatch(/does not use vector tile spec v2/));
+        t.ok(warn.once.calledWithMatch(/does not use vector tile spec v2/));
         t.end();
     });
 });
