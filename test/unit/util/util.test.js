@@ -5,7 +5,6 @@ const { test } = require('mapbox-gl-js-test');
 const Coordinate = require('../../../src/geo/coordinate');
 const {
     easeCubicInOut,
-    uniqueId,
     getCoordinatesCenter,
     clamp,
     wrap,
@@ -20,7 +19,6 @@ test('util', (t) => {
     t.equal(easeCubicInOut(0.2), 0.03200000000000001);
     t.equal(easeCubicInOut(0.5), 0.5, 'easeCubicInOut=0.5');
     t.equal(easeCubicInOut(1), 1, 'easeCubicInOut=1');
-    t.ok(typeof uniqueId() === 'number', 'uniqueId');
 
     t.test('getCoordinatesCenter', (t) => {
         t.deepEqual(getCoordinatesCenter([
