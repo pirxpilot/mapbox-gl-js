@@ -1,6 +1,7 @@
 'use strict';
 
 const DOM = require('../../util/dom');
+const object = require('../../util/object');
 const util = require('../../util/util');
 const window = require('../../util/window');
 
@@ -22,7 +23,7 @@ class TouchZoomRotateHandler {
         this._map = map;
         this._el = map.getCanvasContainer();
 
-        util.bindAll([
+        object.bindAll([
             '_onStart',
             '_onMove',
             '_onEnd'

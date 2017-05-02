@@ -1,7 +1,7 @@
 'use strict';
 
 const StyleLayer = require('./style_layer');
-const util = require('../util/util');
+const object = require('../util/object');
 const featureFilter = require('../style-spec/feature_filter');
 const groupByLayout = require('../style-spec/group_by_layout');
 
@@ -42,7 +42,7 @@ class StyleLayerIndex {
 
         this.familiesBySource = {};
 
-        const groups = groupByLayout(util.values(this._layerConfigs));
+        const groups = groupByLayout(object.values(this._layerConfigs));
 
         for (const layerConfigs of groups) {
             const layers = layerConfigs.map((layerConfig) => this._layers[layerConfig.id]);

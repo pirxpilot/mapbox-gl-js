@@ -1,5 +1,5 @@
 'use strict';
-const util = require('../util/util');
+const object = require('../util/object');
 const loadJSON = require('../util/loader/json');
 const browser = require('../util/browser');
 const normalizeURL = require('../util/mapbox').normalizeSourceURL;
@@ -10,7 +10,7 @@ module.exports = function(options, callback) {
             return callback(err);
         }
 
-        const result = util.pick(tileJSON, ['tiles', 'minzoom', 'maxzoom', 'attribution', 'mapbox_logo', 'bounds']);
+        const result = object.pick(tileJSON, ['tiles', 'minzoom', 'maxzoom', 'attribution', 'mapbox_logo', 'bounds']);
 
         if (tileJSON.vector_layers) {
             result.vectorLayers = tileJSON.vector_layers;

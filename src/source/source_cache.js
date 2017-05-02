@@ -6,7 +6,7 @@ const Evented = require('../util/evented');
 const TileCoord = require('./tile_coord');
 const Cache = require('../util/lru_cache');
 const Coordinate = require('../geo/coordinate');
-const util = require('../util/util');
+const object = require('../util/object');
 const EXTENT = require('../data/extent');
 
 /**
@@ -399,7 +399,7 @@ class SourceCache extends Evented {
         }
 
         // Remove the tiles we don't need anymore.
-        const remove = util.keysDifference(this._tiles, retain);
+        const remove = object.keysDifference(this._tiles, retain);
         for (i = 0; i < remove.length; i++) {
             this.removeTile(+remove[i]);
         }

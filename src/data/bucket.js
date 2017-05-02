@@ -2,7 +2,7 @@
 
 const ArrayGroup = require('./array_group');
 const BufferGroup = require('./buffer_group');
-const util = require('../util/util');
+const object = require('../util/object');
 
 /**
  * The `Bucket` class is the single point of knowledge about turning vector
@@ -60,7 +60,7 @@ class Bucket {
     }
 
     getPaintPropertyStatistics() {
-        return util.mapObject(this.arrays.layerData, data => data.paintPropertyStatistics);
+        return object.map(this.arrays.layerData, data => data.paintPropertyStatistics);
     }
 
     isEmpty() {

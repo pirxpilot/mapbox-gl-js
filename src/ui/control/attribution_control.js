@@ -1,7 +1,7 @@
 'use strict';
 
 const DOM = require('../../util/dom');
-const util = require('../../util/util');
+const object = require('../../util/object');
 const config = require('../../util/config');
 
 /**
@@ -21,7 +21,7 @@ class AttributionControl {
     constructor(options) {
         this.options = options;
 
-        util.bindAll([
+        object.bindAll([
             '_updateEditLink',
             '_updateData',
             '_updateCompact'

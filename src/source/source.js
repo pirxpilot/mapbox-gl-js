@@ -1,6 +1,6 @@
 'use strict';
 
-const util = require('../util/util');
+const object = require('../util/object');
 
 const sourceTypes = {
     'vector': require('../source/vector_tile_source'),
@@ -27,7 +27,7 @@ exports.create = function(id, source, dispatcher, eventedParent) {
         throw new Error(`Expected Source id to be ${id} instead of ${source.id}`);
     }
 
-    util.bindAll(['load', 'abort', 'unload', 'serialize', 'prepare'], source);
+    object.bindAll(['load', 'abort', 'unload', 'serialize', 'prepare'], source);
     return source;
 };
 

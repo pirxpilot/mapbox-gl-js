@@ -2,7 +2,7 @@
 
 const DOM = require('../../util/dom');
 const LngLatBounds = require('../../geo/lng_lat_bounds');
-const util = require('../../util/util');
+const object = require('../../util/object');
 const window = require('../../util/window');
 
 /**
@@ -18,7 +18,7 @@ class BoxZoomHandler {
         this._el = map.getCanvasContainer();
         this._container = map.getContainer();
 
-        util.bindAll([
+        object.bindAll([
             '_onMouseDown',
             '_onMouseMove',
             '_onMouseUp',

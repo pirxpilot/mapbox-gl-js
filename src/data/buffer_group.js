@@ -1,6 +1,6 @@
 'use strict';
 
-const util = require('../util/util');
+const object = require('../util/object');
 const Buffer = require('./buffer');
 const ProgramConfiguration = require('./program_configuration');
 const createVertexArrayType = require('./vertex_array_type');
@@ -41,7 +41,7 @@ class BufferGroup {
 
         for (const segments of [this.segments, this.segments2]) {
             for (const segment of segments || []) {
-                segment.vaos = util.mapObject(this.layerData, () => new VertexArrayObject());
+                segment.vaos = object.map(this.layerData, () => new VertexArrayObject());
             }
         }
     }

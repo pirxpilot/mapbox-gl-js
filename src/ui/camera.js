@@ -1,5 +1,6 @@
 'use strict';
 
+const object = require('../util/object');
 const util = require('../util/util');
 const interpolate = require('../style-spec/util/interpolate');
 const browser = require('../util/browser');
@@ -352,7 +353,7 @@ class Camera extends Evented {
                 left: p
             };
         }
-        if (!util.deepEqual(Object.keys(options.padding).sort((a, b) => {
+        if (!object.deepEqual(Object.keys(options.padding).sort((a, b) => {
             if (a < b) return -1;
             if (a > b) return 1;
             return 0;

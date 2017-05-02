@@ -1,7 +1,7 @@
 'use strict';
 
 const DOM = require('../../util/dom');
-const util = require('../../util/util');
+const object = require('../../util/object');
 const browser = require('../../util/browser');
 const window = require('../../util/window');
 
@@ -19,7 +19,7 @@ class ScrollZoomHandler {
         this._map = map;
         this._el = map.getCanvasContainer();
 
-        util.bindAll([
+        object.bindAll([
             '_onWheel',
             '_onTimeout'
         ], this);

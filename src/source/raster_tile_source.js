@@ -1,6 +1,6 @@
 'use strict';
 
-const util = require('../util/util');
+const object = require('../util/object');
 const loadImage = require('../util/loader/image');
 const Evented = require('../util/evented');
 const loadTileJSON = require('./load_tilejson');
@@ -23,7 +23,7 @@ class RasterTileSource extends Evented {
         this.tileSize = 512;
         this._loaded = false;
         this.options = options;
-        Object.assign(this, util.pick(options, ['url', 'scheme', 'tileSize']));
+        Object.assign(this, object.pick(options, ['url', 'scheme', 'tileSize']));
     }
 
     load() {

@@ -11,7 +11,7 @@ const DictionaryCoder = require('../util/dictionary_coder');
 const vt = require('vector-tile');
 const Protobuf = require('pbf');
 const GeoJSONFeature = require('../util/vectortile_to_geojson');
-const arraysIntersect = require('../util/util').arraysIntersect;
+const arraysIntersect = require('../util/object').arraysIntersect;
 
 const intersection = require('../util/intersection_tests');
 const multiPolygonIntersectsBufferedMultiPoint = intersection.multiPolygonIntersectsBufferedMultiPoint;

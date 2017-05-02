@@ -2,7 +2,7 @@
 
 const config = require('../util/config');
 const Evented = require('../util/evented');
-const util = require('../util/util');
+const object = require('../util/object');
 const loadTileJSON = require('./load_tilejson');
 const normalizeURL = require('../util/mapbox').normalizeTileURL;
 const TileBounds = require('./tile_bounds');
@@ -21,7 +21,7 @@ class VectorTileSource extends Evented {
         this.tileSize = 512;
         this.reparseOverscaled = true;
         this.isTileClipped = true;
-        Object.assign(this, util.pick(options, ['url', 'scheme', 'tileSize']));
+        Object.assign(this, object.pick(options, ['url', 'scheme', 'tileSize']));
 
         this._options = Object.assign({ type: 'vector' }, options);
 

@@ -1,5 +1,6 @@
 'use strict';
 
+const object = require('../util/object');
 const util = require('../util/util');
 const browser = require('../util/browser');
 const window = require('../util/window');
@@ -162,7 +163,7 @@ class Map extends Camera {
             this.setMaxBounds(options.maxBounds);
         }
 
-        util.bindAll([
+        object.bindAll([
             '_onWindowOnline',
             '_onWindowResize',
             '_contextLost',
