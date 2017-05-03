@@ -24,8 +24,7 @@ module.exports = {
     ResourceType,
     getJSON,
     getArrayBuffer,
-    getImage,
-    getVideo
+    getImage
 };
 
 if (typeof Object.freeze == 'function') {
@@ -119,12 +118,6 @@ function getArrayBuffer(requestParameters, callback) {
     return xhr;
 }
 
-function sameOrigin(url) {
-    const a = window.document.createElement('a');
-    a.href = url;
-    return a.protocol === window.document.location.protocol && a.host === window.document.location.host;
-}
-
 const transparentPngUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=';
 
 function getImage(requestParameters, callback) {
@@ -146,20 +139,4 @@ function getImage(requestParameters, callback) {
             img.src = imgData.data.byteLength ? URL.createObjectURL(blob) : transparentPngUrl;
         }
     });
-}
-
-function getVideo(urls, callback) {
-    const video = window.document.createElement('video');
-    video.onloadstart = function() {
-        callback(null, video);
-    };
-    for (let i = 0; i < urls.length; i++) {
-        const s = window.document.createElement('source');
-        if (!sameOrigin(urls[i])) {
-            video.crossOrigin = 'Anonymous';
-        }
-        s.src = urls[i];
-        video.appendChild(s);
-    }
-    return video;
 }

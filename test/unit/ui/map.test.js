@@ -1083,40 +1083,6 @@ test('Map', (t) => {
             });
         });
 
-        t.test('sets visibility on video layer', (t) => {
-            const map = createMap({
-                style: {
-                    "version": 8,
-                    "sources": {
-                        "drone": {
-                            "type": "video",
-                            "urls": [],
-                            "coordinates": [
-                                [-122.51596391201019, 37.56238816766053],
-                                [-122.51467645168304, 37.56410183312965],
-                                [-122.51309394836426, 37.563391708549425],
-                                [-122.51423120498657, 37.56161849366671]
-                            ]
-                        }
-                    },
-                    "layers": [{
-                        "id": "shore",
-                        "type": "raster",
-                        "source": "drone",
-                        "layout": {
-                            "visibility": "none"
-                        }
-                    }]
-                }
-            });
-
-            map.on('style.load', () => {
-                map.setLayoutProperty('shore', 'visibility', 'visible');
-                t.deepEqual(map.getLayoutProperty('shore', 'visibility'), 'visible');
-                t.end();
-            });
-        });
-
         t.test('sets visibility on image layer', (t) => {
             const map = createMap({
                 style: {
