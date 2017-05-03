@@ -602,7 +602,7 @@ function compareKeyZoom(a, b) {
 }
 
 function isRasterType(type) {
-    return type === 'raster' || type === 'image';
+    return type === 'image';
 }
 
 module.exports = SourceCache;
