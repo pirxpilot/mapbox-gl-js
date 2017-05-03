@@ -967,37 +967,6 @@ test('Map', (t) => {
             });
         });
 
-        t.test('sets visibility on raster layer', (t) => {
-            const map = createMap({
-                style: {
-                    "version": 8,
-                    "sources": {
-                        "mapbox://mapbox.satellite": {
-                            "type": "raster",
-                            "tiles": ["http://example.com/{z}/{x}/{y}.png"]
-                        }
-                    },
-                    "layers": [{
-                        "id": "satellite",
-                        "type": "raster",
-                        "source": "mapbox://mapbox.satellite",
-                        "layout": {
-                            "visibility": "none"
-                        }
-                    }]
-                }
-            });
-
-            // Suppress errors because we're not loading tiles from a real URL.
-            map.on('error', () => {});
-
-            map.on('style.load', () => {
-                map.setLayoutProperty('satellite', 'visibility', 'visible');
-                t.deepEqual(map.getLayoutProperty('satellite', 'visibility'), 'visible');
-                t.end();
-            });
-        });
-
         t.test('sets visibility on image layer', (t) => {
             const map = createMap({
                 style: {
