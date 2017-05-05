@@ -29,12 +29,10 @@ const { bindAll } = require('../util/util');
 
 const vector = require('../source/vector_tile_source');
 const geojson = require('../source/geojson_source');
-const image = require('../source/image_source');
 
 const sourceTypes = {
     vector,
-    geojson,
-    image
+    geojson
 };
 
 /*
