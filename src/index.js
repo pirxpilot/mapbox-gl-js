@@ -10,7 +10,6 @@ const NavigationControl = require('./ui/control/navigation_control');
 const AttributionControl = require('./ui/control/attribution_control');
 const ScaleControl = require('./ui/control/scale_control');
 const FullscreenControl = require('./ui/control/fullscreen_control');
-const Marker = require('./ui/marker');
 const Style = require('./style/style');
 const LngLat = require('./geo/lng_lat');
 const LngLatBounds = require('./geo/lng_lat_bounds');
@@ -29,7 +28,6 @@ const exported = {
     AttributionControl,
     ScaleControl,
     FullscreenControl,
-    Marker,
     Style,
     LngLat,
     LngLatBounds,
