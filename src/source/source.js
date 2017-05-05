@@ -5,8 +5,7 @@ const object = require('../util/object');
 const sourceTypes = {
     'vector': require('../source/vector_tile_source'),
     'geojson': require('../source/geojson_source'),
-    'image': require('../source/image_source'),
-    'canvas': require('../source/canvas_source')
+    'image': require('../source/image_source')
 };
 
 /*
