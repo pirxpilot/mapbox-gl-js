@@ -32,15 +32,13 @@ const raster = require('../source/raster_tile_source');
 const rasterDem = require('../source/raster_dem_tile_source');
 const geojson = require('../source/geojson_source');
 const image = require('../source/image_source');
-const canvas = require('../source/canvas_source');
 
 const sourceTypes = {
     vector,
     raster,
     'raster-dem': rasterDem,
     geojson,
-    image,
-    canvas
+    image
 };
 
 /*
