@@ -35,11 +35,6 @@ exports.enableDrag = function () {
     }
 };
 
-const transformProp = testProp(['transform', 'WebkitTransform']);
-exports.setTransform = function(el, value) {
-    el.style[transformProp] = value;
-};
-
 // Suppress the next click, but only if it's immediate.
 function suppressClick(e) {
     e.preventDefault();
