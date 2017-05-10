@@ -50,12 +50,6 @@ DOM.enableDrag = function () {
     }
 };
 
-const transformProp = testProp(['transform', 'WebkitTransform']);
-
-DOM.setTransform = function(el, value) {
-    (el.style)[transformProp] = value;
-};
-
 // Feature detection for {passive: false} support in add/removeEventListener.
 let passiveSupported = false;
 
