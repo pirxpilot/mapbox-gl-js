@@ -167,18 +167,25 @@ class FeatureIndex {
             const styleLayer = styleLayers[id];
 
             let styleLayerDistance = 0;
-            if (styleLayer.type === 'line') {
+            switch (styleLayer.type) {
+            case 'line': {
                 const width = getLineWidth(this.getPaintValue('line-width', styleLayer),
                     this.getPaintValue('line-gap-width', styleLayer));
                 const offset = this.getPaintValue('line-offset', styleLayer);
                 const translate = this.getPaintValue('line-translate', styleLayer);
                 styleLayerDistance = width / 2 + Math.abs(offset) + translateDistance(translate);
-            } else if (styleLayer.type === 'fill') {
+                break;
+            }
+            case 'fill':
                 styleLayerDistance = translateDistance(this.getPaintValue('fill-translate', styleLayer));
-            } else if (styleLayer.type === 'fill-extrusion') {
+                break;
+            case 'fill-extrusion':
                 styleLayerDistance = translateDistance(this.getPaintValue('fill-extrusion-translate', styleLayer));
-            } else if (styleLayer.type === 'circle') {
-                styleLayerDistance = this.getPaintValue('circle-radius', styleLayer) + translateDistance(this.getPaintValue('circle-translate', styleLayer));
+                break;
+            case 'circle':
+                styleLayerDistance = this.getPaintValue('circle-radius', styleLayer) +
+                    translateDistance(this.getPaintValue('circle-translate', styleLayer));
+                break;
             }
             additionalRadius = Math.max(additionalRadius, styleLayerDistance * pixelsToTileUnits);
         }
