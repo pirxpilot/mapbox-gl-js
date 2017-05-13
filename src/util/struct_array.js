@@ -263,7 +263,7 @@ function createStructArrayType(options: {|
     let maxSize = 0;
     const usedTypes = ['Uint8'];
 
-    const members = options.members.map((member) => {
+    const members = options.members.map(member => {
         assert(member.name.length);
         assert(member.type in viewTypes);
 
@@ -293,11 +293,15 @@ function createStructArrayType(options: {|
 
     for (const member of members) {
         for (let c = 0; c < member.components; c++) {
-            const name = member.name + (member.components === 1 ? '' : c);
-            Object.defineProperty(StructType.prototype, name, {
-                get: createGetter(member, c),
-                set: createSetter(member, c)
-            });
+            let name = member.name;
+            if (member.components > 1) {
+                name += c;
+            }
+            Object.defineProperty(
+                StructType.prototype,
+                name,
+                createAccessors(member, c)
+            );
         }
     }
 
@@ -334,9 +338,10 @@ function getArrayViewName(type: ViewType): string {
 function createEmplaceBack(members, bytesPerElement): Function {
     const usedTypeSizes = [];
     const argNames = [];
-    let body =
-        'var i = this.length;\n' +
-        'this.resize(this.length + 1);\n';
+    let body = `
+        var i = this.length;
+        this.resize(this.length + 1);
+    `;
 
     for (const member of members) {
         const size = sizeOf(member.type);
@@ -374,10 +379,10 @@ function createMemberComponentString(member, component) {
     return `this._structArray.${getArrayViewName(member.type)}[${index}]`;
 }
 
-function createGetter(member, c) {
-    return new Function(`return ${createMemberComponentString(member, c)};`);
-}
-
-function createSetter(member, c) {
-    return new Function('x', `${createMemberComponentString(member, c)} = x;`);
+function createAccessors(member, c) {
+    const code = createMemberComponentString(member, c);
+    return {
+        get: new Function(`return ${code};`),
+        set: new Function('x', `${code} = x;`)
+    };
 }
