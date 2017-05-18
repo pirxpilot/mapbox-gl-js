@@ -8,7 +8,7 @@ type Config = {|
   API_URL: string,
   REQUIRE_ACCESS_TOKEN: boolean,
   ACCESS_TOKEN: ?string,
-  LOAD_STRATEGY: ?string
+  LOADER_STRATEGY: ?string
 |};
 
 const config = Object.create(new Evented());

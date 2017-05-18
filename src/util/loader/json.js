@@ -2,7 +2,7 @@
 
 const loader = require('./index');
 
-const load = loader('cache-first-then-cache');
+const load = loader();
 
 module.exports = json;
 
