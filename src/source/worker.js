@@ -7,6 +7,7 @@ const VectorTileWorkerSource = require('./vector_tile_worker_source');
 const GeoJSONWorkerSource = require('./geojson_worker_source');
 const assert = require('assert');
 
+const polyfill = require('../util/polyfill');
 const globalRTLTextPlugin = require('./rtl_text_plugin');
 
 /**
@@ -137,5 +138,6 @@ class Worker {
 }
 
 module.exports = function createWorker(self) {
+    polyfill(self);
     return new Worker(self);
 };
