@@ -7,6 +7,7 @@ const VectorTileWorkerSource = require('./vector_tile_worker_source');
 const GeoJSONWorkerSource = require('./geojson_worker_source');
 const assert = require('assert');
 const { plugin: globalRTLTextPlugin } = require('./rtl_text_plugin');
+const polyfill = require('../util/polyfill');
 
 /**
  * @private
@@ -158,6 +159,7 @@ module.exports = Worker;
 if (typeof WorkerGlobalScope !== 'undefined' &&
     typeof self !== 'undefined' &&
     self instanceof WorkerGlobalScope) {
+    polyfill(self);
     new Worker(self);
 }
 
