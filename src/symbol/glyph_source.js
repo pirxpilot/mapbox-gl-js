@@ -34,7 +34,7 @@ class GlyphSource {
         this.atlases = {};
         this.stacks = {};
         this.loading = {};
-        this.loader = loader('cache-first-then-cache');
+        this.loader = loader();
     }
 
     getSimpleGlyphs(fontstack, glyphIDs, uid, callback) {
@@ -129,6 +129,10 @@ class GlyphSource {
 
     getGlyphAtlas(fontstack) {
         return this.atlases[fontstack];
+    }
+
+    setLoaderStrategy(strategy) {
+        this.loader = loader(strategy);
     }
 }
 

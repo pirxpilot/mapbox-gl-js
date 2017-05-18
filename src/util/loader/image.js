@@ -3,7 +3,7 @@
 const loader = require('./index');
 const window = require('../window');
 
-const load = loader('cache-first-then-cache');
+const load = loader();
 
 module.exports = image;
 
