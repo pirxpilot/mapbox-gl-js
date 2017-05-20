@@ -1,12 +1,13 @@
 'use strict';
 
+const config = require('../config');
 const loader = require('./index');
-
-const load = loader();
 
 module.exports = json;
 
 function json(url, fn) {
+    const load = loader(config.LOADER_STRATEGY);
+
     load({ url, _ilk: 'json' }, done);
 
     function done(err, data) {
