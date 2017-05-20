@@ -1,13 +1,14 @@
 'use strict';
 
+const config = require('../config');
 const loader = require('./index');
 const window = require('../window');
-
-const load = loader();
 
 module.exports = image;
 
 function image(url, fn) {
+    const load = loader(config.LOADER_STRATEGY);
+
     load({ url, _ilk: 'image' }, done);
 
     function done(err, data) {
