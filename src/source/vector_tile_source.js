@@ -29,7 +29,7 @@ class VectorTileSource extends Evented {
             throw new Error('vector tile sources must have a tileSize of 512');
         }
 
-        config.on('change', c => this.setLoaderStrategy(c.LOADER_STRATEGY));
+        config.on('change', c => this.setLoaderStrategy(c.TILE_LOADER_STRATEGY));
 
         this.setEventedParent(eventedParent);
     }
