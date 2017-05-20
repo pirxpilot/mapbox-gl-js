@@ -24,7 +24,7 @@ check: lint flow test
 build: $(BUILD)
 
 # package.json is also using | derequire here
-$(BUILD): node_modules $(SRC) | node_modules
+$(BUILD): $(SRC) | node_modules
 	$(NODE_BIN)/browserify src/index.js --debug --standalone mapboxgl \
 	| $(NODE_BIN)/exorcist --base $(CURDIR)  $@.map > $@
 
