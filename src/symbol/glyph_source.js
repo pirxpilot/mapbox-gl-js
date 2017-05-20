@@ -1,6 +1,7 @@
 'use strict';
 
 const normalizeURL = require('../util/mapbox').normalizeGlyphsURL;
+const config = require('../util/config');
 const loader = require('../util/loader');
 const verticalizePunctuation = require('../util/verticalize_punctuation');
 const Glyphs = require('../util/glyphs');
@@ -34,7 +35,6 @@ class GlyphSource {
         this.atlases = {};
         this.stacks = {};
         this.loading = {};
-        this.loader = loader();
     }
 
     getSimpleGlyphs(fontstack, glyphIDs, uid, callback) {
@@ -116,8 +116,9 @@ class GlyphSource {
 
             const rangeName = `${range * 256}-${range * 256 + 255}`;
             const url = glyphUrl(fontstack, rangeName, this.url);
+            const load = loader(config.LOADER_STRATEGY);
 
-            this.loader({ url, fontstack, range }, (err, response) => {
+            load({ url, fontstack, range }, (err, response) => {
                 const glyphs = !err && new Glyphs(new Protobuf(response.data));
                 for (let i = 0; i < loading[range].length; i++) {
                     loading[range][i](err, range, glyphs);
@@ -129,10 +130,6 @@ class GlyphSource {
 
     getGlyphAtlas(fontstack) {
         return this.atlases[fontstack];
-    }
-
-    setLoaderStrategy(strategy) {
-        this.loader = loader(strategy);
     }
 }
 
