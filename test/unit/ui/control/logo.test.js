@@ -27,7 +27,10 @@ function createMap(logoPosition, logoRequired) {
 }
 
 function createSource(options, logoRequired) {
-    const source = new VectorTileSource('id', options, { send: function () {} });
+    const source = new VectorTileSource('id', options, {
+        send: function () {},
+        broadcast: function() {}
+    });
     source.onAdd({
         transform: { angle: 0, pitch: 0, showCollisionBoxes: false }
     });
