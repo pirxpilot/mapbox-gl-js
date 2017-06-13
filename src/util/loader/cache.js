@@ -39,7 +39,7 @@ function keyFromParams({ coord, zoom, fontstack, range, url, _ilk }) {
     }
     return fontstack ? {
         store: 'font',
-        key: [ fontstack, range ]
+        key: [ fontstack, parseInt(range, 10) ]
     } : {
         store: 'tile',
         key: [ coord.x, coord.y, zoom ]
