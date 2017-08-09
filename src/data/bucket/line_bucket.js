@@ -244,12 +244,12 @@ class LineBucket extends Bucket {
             // Calculate how far along the line the currentVertex is
             if (prevVertex) this.distance += currentVertex.dist(prevVertex);
 
-            if (currentJoin === 'miter') {
-
+            switch (currentJoin) {
+            case 'miter':
                 joinNormal._mult(miterLength);
                 this.addCurrentVertex(currentVertex, this.distance, joinNormal, 0, 0, false, segment);
-
-            } else if (currentJoin === 'flipbevel') {
+                break;
+            case 'flipbevel':
                 // miter is too big, flip the direction to make a beveled join
 
                 if (miterLength > 100) {
@@ -263,8 +263,9 @@ class LineBucket extends Bucket {
                 }
                 this.addCurrentVertex(currentVertex, this.distance, joinNormal, 0, 0, false, segment);
                 this.addCurrentVertex(currentVertex, this.distance, joinNormal.mult(-1), 0, 0, false, segment);
-
-            } else if (currentJoin === 'bevel' || currentJoin === 'fakeround') {
+                break;
+            case 'bevel':
+            case 'fakeround': {
                 const lineTurnsLeft = (prevNormal.x * nextNormal.y - prevNormal.y * nextNormal.x) > 0;
                 const offset = -Math.sqrt(miterLength * miterLength - 1);
                 if (lineTurnsLeft) {
@@ -308,8 +309,9 @@ class LineBucket extends Bucket {
                 if (nextVertex) {
                     this.addCurrentVertex(currentVertex, this.distance, nextNormal, -offsetA, -offsetB, false, segment);
                 }
-
-            } else if (currentJoin === 'butt') {
+                break;
+            }
+            case 'butt':
                 if (!startOfLine) {
                     // Close previous segment with a butt
                     this.addCurrentVertex(currentVertex, this.distance, prevNormal, 0, 0, false, segment);
@@ -319,9 +321,8 @@ class LineBucket extends Bucket {
                 if (nextVertex) {
                     this.addCurrentVertex(currentVertex, this.distance, nextNormal, 0, 0, false, segment);
                 }
-
-            } else if (currentJoin === 'square') {
-
+                break;
+            case 'square':
                 if (!startOfLine) {
                     // Close previous segment with a square cap
                     this.addCurrentVertex(currentVertex, this.distance, prevNormal, 1, 1, false, segment);
@@ -334,9 +335,8 @@ class LineBucket extends Bucket {
                 if (nextVertex) {
                     this.addCurrentVertex(currentVertex, this.distance, nextNormal, -1, -1, false, segment);
                 }
-
-            } else if (currentJoin === 'round') {
-
+                break;
+            case 'round':
                 if (!startOfLine) {
                     // Close previous segment with butt
                     this.addCurrentVertex(currentVertex, this.distance, prevNormal, 0, 0, false, segment);
@@ -356,6 +356,7 @@ class LineBucket extends Bucket {
 
                     this.addCurrentVertex(currentVertex, this.distance, nextNormal, 0, 0, false, segment);
                 }
+                break;
             }
 
             if (isSharpCorner && i < len - 1) {
