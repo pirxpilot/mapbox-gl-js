@@ -20,22 +20,44 @@ function compile(filter) {
     if (!filter) return 'true';
     const op = filter[0];
     if (filter.length <= 1) return op === 'any' ? 'false' : 'true';
-    const str =
-        op === '==' ? compileComparisonOp(filter[1], filter[2], '===', false) :
-        op === '!=' ? compileComparisonOp(filter[1], filter[2], '!==', false) :
-        op === '<' ||
-        op === '>' ||
-        op === '<=' ||
-        op === '>=' ? compileComparisonOp(filter[1], filter[2], op, true) :
-        op === 'any' ? compileLogicalOp(filter.slice(1), '||') :
-        op === 'all' ? compileLogicalOp(filter.slice(1), '&&') :
-        op === 'none' ? compileNegation(compileLogicalOp(filter.slice(1), '||')) :
-        op === 'in' ? compileInOp(filter[1], filter.slice(2)) :
-        op === '!in' ? compileNegation(compileInOp(filter[1], filter.slice(2))) :
-        op === 'has' ? compileHasOp(filter[1]) :
-        op === '!has' ? compileNegation(compileHasOp(filter[1])) :
-        'true';
-    return `(${str})`;
+    let str = 'true';
+    let negation = false;
+    switch (op) {
+    case '==':
+        str = compileComparisonOp(filter[1], filter[2], '===', false);
+        break;
+    case '!=':
+        str = compileComparisonOp(filter[1], filter[2], '!==', false);
+        break;
+    case '<':
+    case '>':
+    case '<=':
+    case '>=':
+        str = compileComparisonOp(filter[1], filter[2], op, true);
+        break;
+    case 'all':
+        str = compileLogicalOp(filter.slice(1), '&&');
+        break;
+    case 'none':
+        negation = true;
+        // eslint-disable-next-line no-fallthrough
+    case 'any':
+        str = compileLogicalOp(filter.slice(1), '||');
+        break;
+    case '!in':
+        negation = true;
+        // eslint-disable-next-line no-fallthrough
+    case 'in':
+        str = compileInOp(filter[1], filter.slice(2));
+        break;
+    case '!has':
+        negation = true;
+        // eslint-disable-next-line no-fallthrough
+    case 'has':
+        str = compileHasOp(filter[1]);
+        break;
+    }
+    return negation ? `(!(${str}))` : `(${str})`;
 }
 
 function compilePropertyReference(property) {
@@ -73,10 +95,6 @@ function compileInOp(property, values) {
 
 function compileHasOp(property) {
     return property === '$id' ? '"id" in f' : `${JSON.stringify(property)} in p`;
-}
-
-function compileNegation(expression) {
-    return `!(${expression})`;
 }
 
 // Comparison function to sort numbers and strings
