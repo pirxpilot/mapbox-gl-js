@@ -49,11 +49,14 @@ function createFunction(parameters, propertySpec) {
         let innerFun;
         let hashedStops;
         let categoricalKeyType;
-        if (type === 'exponential') {
+        switch (type) {
+        case 'exponential':
             innerFun = evaluateExponentialFunction;
-        } else if (type === 'interval') {
+            break;
+        case 'interval':
             innerFun = evaluateIntervalFunction;
-        } else if (type === 'categorical') {
+            break;
+        case 'categorical':
             innerFun = evaluateCategoricalFunction;
 
             // For categorical functions, generate an Object as a hashmap of the stops for fast searching
@@ -64,10 +67,11 @@ function createFunction(parameters, propertySpec) {
 
             // Infer key type based on first stop key-- used to encforce strict type checking later
             categoricalKeyType = typeof parameters.stops[0][0];
-
-        } else if (type === 'identity') {
+            break;
+        case 'identity':
             innerFun = evaluateIdentityFunction;
-        } else {
+            break;
+        default:
             throw new Error(`Unknown function type "${type}"`);
         }
 
