@@ -264,14 +264,14 @@ class FeatureIndex {
                 const styleLayer = styleLayers[layerID];
                 if (!styleLayer) continue;
 
-                let translatedPolygon;
                 if (styleLayer.type !== 'symbol') {
                     // all symbols already match the style
 
                     if (!geometry) geometry = loadGeometry(feature);
 
-                    if (styleLayer.type === 'line') {
-                        translatedPolygon = translate(queryGeometry,
+                    switch (styleLayer.type) {
+                    case 'line': {
+                        const translatedPolygon = translate(queryGeometry,
                             this.getPaintValue('line-translate', styleLayer, feature),
                             this.getPaintValue('line-translate-anchor', styleLayer, feature),
                             bearing, pixelsToTileUnits);
@@ -283,22 +283,27 @@ class FeatureIndex {
                             geometry = offsetLine(geometry, lineOffset * pixelsToTileUnits);
                         }
                         if (!multiPolygonIntersectsBufferedMultiLine(translatedPolygon, geometry, halfWidth)) continue;
-
-                    } else if (styleLayer.type === 'fill' || styleLayer.type === 'fill-extrusion') {
+                        break;
+                    }
+                    case 'fill-extrusion':
+                    case 'fill': {
                         const typePrefix = styleLayer.type;
-                        translatedPolygon = translate(queryGeometry,
+                        const translatedPolygon = translate(queryGeometry,
                             this.getPaintValue(`${typePrefix}-translate`, styleLayer, feature),
                             this.getPaintValue(`${typePrefix}-translate-anchor`, styleLayer, feature),
                             bearing, pixelsToTileUnits);
                         if (!multiPolygonIntersectsMultiPolygon(translatedPolygon, geometry)) continue;
-
-                    } else if (styleLayer.type === 'circle') {
-                        translatedPolygon = translate(queryGeometry,
+                        break;
+                    }
+                    case 'circle': {
+                        const translatedPolygon = translate(queryGeometry,
                             this.getPaintValue('circle-translate', styleLayer, feature),
                             this.getPaintValue('circle-translate-anchor', styleLayer, feature),
                             bearing, pixelsToTileUnits);
                         const circleRadius = this.getPaintValue('circle-radius', styleLayer, feature) * pixelsToTileUnits;
                         if (!multiPolygonIntersectsBufferedMultiPoint(translatedPolygon, geometry, circleRadius)) continue;
+                        break;
+                    }
                     }
                 }
 
