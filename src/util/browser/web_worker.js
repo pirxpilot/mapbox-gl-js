@@ -1,11 +1,8 @@
 'use strict';
 
-// const WebWorkify = require('webworkify');
 const window = require('../window');
-// const workerURL = window.URL.createObjectURL(new WebWorkify(require('../../source/worker'), {bare: true}));
-
-const workerURL = 'mapbox-gl-worker';
+const config = require('../config');
 
 module.exports = function () {
-    return new window.Worker(workerURL);
+    return new window.Worker(config.WORKER_URL);
 };

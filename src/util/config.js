@@ -19,7 +19,7 @@ config.set({
     REQUIRE_ACCESS_TOKEN: true,
     ACCESS_TOKEN: null,
     WORKER_COUNT: getDefaultWorkerCount(),
-    WORKER_URL: '',
+    WORKER_URL: '/mapbox-gl-worker',
     LOADER_STRATEGY: 'network-only',
     TILE_LOADER_STRATEGY: 'network-only'
 });
