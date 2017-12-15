@@ -11,6 +11,7 @@ class Program {
     constructor(context,
                 source,
                 configuration,
+                fixedUniforms,
                 showOverdrawInspector) {
         const gl = context.gl;
         this.program = gl.createProgram();
@@ -67,23 +68,43 @@ class Program {
                 this.uniforms[uniform.name] = gl.getUniformLocation(this.program, uniform.name);
             }
         }
+
+        this.fixedUniforms = fixedUniforms(context);
     }
 
     draw(context,
-         drawMode,
-         layerID,
-         layoutVertexBuffer,
-         indexBuffer,
-         segments,
-         configuration,
-         dynamicLayoutBuffer,
-         dynamicLayoutBuffer2) {
+        drawMode,
+        depthMode,
+        stencilMode,
+        colorMode,
+        uniformValues,
+        layerID,
+        layoutVertexBuffer,
+        indexBuffer,
+        segments,
+        currentProperties,
+        zoom,
+        configuration,
+        dynamicLayoutBuffer,
+        dynamicLayoutBuffer2) {
 
         const gl = context.gl;
 
+        context.setDepthMode(depthMode);
+        context.setStencilMode(stencilMode);
+        context.setColorMode(colorMode);
+
+        this.fixedUniforms.set(this.uniforms, uniformValues);
+        if (configuration) {
+            const invalidate = this.configuration && this.configuration !== configuration;
+            configuration.setUniforms(context, this, currentProperties, {zoom}, invalidate);
+            this.configuration = configuration;
+        }
+
         const primitiveSize = {
             [gl.LINES]: 2,
-            [gl.TRIANGLES]: 3
+            [gl.TRIANGLES]: 3,
+            [gl.LINE_STRIP]: 1
         }[drawMode];
 
         for (const segment of segments.get()) {

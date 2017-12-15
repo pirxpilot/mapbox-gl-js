@@ -4,8 +4,6 @@ const warn = require('../util/warn');
 
 const { register } = require('../util/web_worker_transfer');
 
-
-
 class SegmentVector {
 
     constructor(segments = []) {
@@ -38,6 +36,16 @@ class SegmentVector {
             }
         }
     }
+
+    static simpleSegment(vertexOffset, primitiveOffset, vertexLength, primitiveLength) {
+        return new SegmentVector([{
+            vertexOffset: vertexOffset,
+            primitiveOffset: primitiveOffset,
+            vertexLength: vertexLength,
+            primitiveLength: primitiveLength,
+            vaos: {}
+        }]);
+    }
 }
 
 /*
@@ -49,4 +57,5 @@ class SegmentVector {
 SegmentVector.MAX_VERTEX_ARRAY_LENGTH = Math.pow(2, 16) - 1;
 
 register('SegmentVector', SegmentVector);
+
 module.exports = SegmentVector;
