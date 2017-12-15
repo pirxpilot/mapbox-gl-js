@@ -2,12 +2,11 @@
 
 const { packUint8ToFloat } = require('../shaders/encode_attribute');
 const { supportsPropertyExpression } = require('../style-spec/util/properties');
-const { register, serialize, deserialize } = require('../util/web_worker_transfer');
+const { register } = require('../util/web_worker_transfer');
 const { PossiblyEvaluatedPropertyValue } = require('../style/properties');
 const { StructArrayLayout1f4, StructArrayLayout2f8, StructArrayLayout4f16 } = require('./array_types');
 const EvaluationParameters = require('../style/evaluation_parameters');
-
-
+const { Uniform1f, Uniform4fv } = require('../render/uniform_binding');
 
 function packColor(color) {
     return [
@@ -46,6 +45,7 @@ class ConstantBinder {
     constructor(value, name, type) {
         this.value = value;
         this.name = name;
+        this.uniformName = `u_${this.name}`;
         this.type = type;
         this.maxValue = -Infinity;
     }
@@ -61,36 +61,27 @@ class ConstantBinder {
 
     setUniforms(context,
                 program,
+                invalidate,
                 globals,
                 currentValue) {
         const value = currentValue.constantOr(this.value);
-        const gl = context.gl;
-        if (this.type === 'color') {
-            gl.uniform4f(program.uniforms[`u_${this.name}`], value.r, value.g, value.b, value.a);
-        } else {
-            gl.uniform1f(program.uniforms[`u_${this.name}`], value);
+
+        if (!this.uniformBinding) {
+            this.uniformBinding = this.type === 'color' ? new Uniform4fv(context) : new Uniform1f(context);
         }
-    }
 
-    static serialize(binder) {
-        const {value, name, type} = binder;
-        return {value: serialize(value), name, type};
-    }
-
-    static deserialize(serialized) {
-        const {value, name, type} = serialized;
-        return new ConstantBinder(deserialize(value), name, type);
+        this.uniformBinding.set(program.uniforms[this.uniformName], value, invalidate);
     }
 }
 
 class SourceExpressionBinder {
 
-
     constructor(expression, name, type) {
         this.expression = expression;
         this.name = name;
         this.type = type;
-        this.maxValue = -Infinity;
+        this.uniformName = `a_${name}`;
+        this.statistics = { max: -Infinity };
         const PaintVertexArray = type === 'color' ? StructArrayLayout2f8 : StructArrayLayout1f4;
         this.paintVertexAttributes = [{
             name: `a_${name}`,
@@ -157,17 +148,22 @@ class SourceExpressionBinder {
         }
     }
 
-    setUniforms(context, program) {
-        context.gl.uniform1f(program.uniforms[`a_${this.name}_t`], 0);
+    setUniforms(context, program, invalidate) {
+        if (!this.uniformBinding) {
+            this.uniformBinding = new Uniform1f(context);
+            this.uniformBinding.set(program.uniforms[this.uniformName], 0);
+        } else if (invalidate) {
+            this.uniformBinding.set(program.uniforms[this.uniformName], 0, invalidate);
+        }
     }
 }
 
 class CompositeExpressionBinder {
 
-
     constructor(expression, name, type, useIntegerZoom, zoom) {
         this.expression = expression;
         this.name = name;
+        this.uniformName = `a_${this.name}_t`;
         this.type = type;
         this.useIntegerZoom = useIntegerZoom;
         this.zoom = zoom;
@@ -249,8 +245,13 @@ class CompositeExpressionBinder {
         }
     }
 
-    setUniforms(context, program, globals) {
-        context.gl.uniform1f(program.uniforms[`a_${this.name}_t`], this.interpolationFactor(globals.zoom));
+    setUniforms(context, program, invalidate,
+                globals) {
+        if (!this.uniformBinding) {
+            this.uniformBinding = new Uniform1f(context);
+        }
+
+        this.uniformBinding.set(program.uniforms[this.uniformName], this.interpolationFactor(globals.zoom), invalidate);
     }
 }
 
@@ -367,15 +368,23 @@ class ProgramConfiguration {
         return result;
     }
 
-    setUniforms(context, program, properties, globals) {
-        for (const property in this.binders) {
-            const binder = this.binders[property];
-            binder.setUniforms(context, program, globals, properties.get(property));
-        }
-    }
-
     getPaintVertexBuffers() {
         return this._buffers;
+    }
+
+    setUniforms(context, program, properties, globals, invalidate) {
+        // We maintain a reference here to the last Program used, and a reference
+        // on each Program to the last ProgramConfiguration used: if these match,
+        // we can assume the uniform bindings haven't changed, but if we're using
+        // a different ProgramConfiguration for the same Program or a different
+        // Program with the same ProgramConfiguration, our tracked uniform state
+        // won't be right, so we invalidate the old bindings here.
+        invalidate = invalidate || this.program !== program;
+
+        for (const property in this.binders) {
+            const binder = this.binders[property];
+            binder.setUniforms(context, program, invalidate, globals, properties.get(property));
+        }
     }
 
     upload(context) {

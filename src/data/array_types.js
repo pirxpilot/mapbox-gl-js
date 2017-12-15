@@ -673,6 +673,32 @@ register('StructArrayLayout2ui4', StructArrayLayout2ui4);
 
 /**
  * Implementation of the StructArray layout:
+ * [0]: Uint16[1]
+ *
+ * @private
+ */
+class StructArrayLayout1ui2 extends StructArray {
+    _refreshViews() {
+        this.uint8 = new Uint8Array(this.arrayBuffer);
+        this.uint16 = new Uint16Array(this.arrayBuffer);
+    }
+
+    emplaceBack(v0) {
+        const i = this.length;
+        this.resize(i + 1);
+        const o2 = i * 1;
+        this.uint16[o2 + 0] = v0;
+        return i;
+    }
+
+}
+
+StructArrayLayout1ui2.prototype.bytesPerElement = 2;
+register('StructArrayLayout1ui2', StructArrayLayout1ui2);
+
+
+/**
+ * Implementation of the StructArray layout:
  * [0]: Float32[2]
  *
  * @private
@@ -945,6 +971,7 @@ module.exports = {
     StructArrayLayout1ul2ui8,
     StructArrayLayout3ui6,
     StructArrayLayout2ui4,
+    StructArrayLayout1ui2,
     StructArrayLayout2f8,
     StructArrayLayout4f16,
     PosArray: StructArrayLayout2i4,
@@ -962,6 +989,7 @@ module.exports = {
     CollisionVertexArray: StructArrayLayout2ub4,
     TriangleIndexArray: StructArrayLayout3ui6,
     LineIndexArray: StructArrayLayout2ui4,
+    LineStripIndexArray: StructArrayLayout1ui2,
 
     FeatureIndexArray,
     GlyphOffsetArray,
