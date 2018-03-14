@@ -127,6 +127,7 @@ const circleAttributes = require('../../src/data/bucket/circle_attributes');
 const fillAttributes = require('../../src/data/bucket/fill_attributes');
 const fillExtrusionAttributes = require('../../src/data/bucket/fill_extrusion_attributes');
 const lineAttributes = require('../../src/data/bucket/line_attributes');
+const patternAttributes = require('../../src/data/bucket/pattern_attributes');
 
 // layout vertex arrays
 const layoutAttributes = {
@@ -134,7 +135,8 @@ const layoutAttributes = {
   fill: fillAttributes,
   'fill-extrusion': fillExtrusionAttributes,
   heatmap: circleAttributes,
-  line: lineAttributes
+  line: lineAttributes,
+  pattern: patternAttributes
 };
 for (const name in layoutAttributes) {
   createStructArrayType(`${name.replace(/-/g, '_')}_layout`, layoutAttributes[name]);

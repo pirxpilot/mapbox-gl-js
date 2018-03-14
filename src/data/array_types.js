@@ -163,6 +163,50 @@ register('StructArrayLayout4i4ub12', StructArrayLayout4i4ub12);
 
 /**
  * Implementation of the StructArray layout:
+ * [0]: Uint16[8]
+ *
+ * @private
+ */
+class StructArrayLayout8ui16 extends StructArray {
+  _refreshViews() {
+    this.uint8 = new Uint8Array(this.arrayBuffer);
+    this.uint16 = new Uint16Array(this.arrayBuffer);
+  }
+
+  emplaceBack(v0, v1, v2, v3, v4, v5, v6, v7) {
+    const i = this.length;
+    this.resize(i + 1);
+    const o2 = i * 8;
+    this.uint16[o2 + 0] = v0;
+    this.uint16[o2 + 1] = v1;
+    this.uint16[o2 + 2] = v2;
+    this.uint16[o2 + 3] = v3;
+    this.uint16[o2 + 4] = v4;
+    this.uint16[o2 + 5] = v5;
+    this.uint16[o2 + 6] = v6;
+    this.uint16[o2 + 7] = v7;
+    return i;
+  }
+
+  emplace(i, v0, v1, v2, v3, v4, v5, v6, v7) {
+    const o2 = i * 8;
+    this.uint16[o2 + 0] = v0;
+    this.uint16[o2 + 1] = v1;
+    this.uint16[o2 + 2] = v2;
+    this.uint16[o2 + 3] = v3;
+    this.uint16[o2 + 4] = v4;
+    this.uint16[o2 + 5] = v5;
+    this.uint16[o2 + 6] = v6;
+    this.uint16[o2 + 7] = v7;
+    return i;
+  }
+}
+
+StructArrayLayout8ui16.prototype.bytesPerElement = 16;
+register('StructArrayLayout8ui16', StructArrayLayout8ui16);
+
+/**
+ * Implementation of the StructArray layout:
  * [0]: Int16[4]
  * [8]: Uint16[4]
  *
@@ -1052,6 +1096,7 @@ module.exports = {
   StructArrayLayout4i8,
   StructArrayLayout2i4i12,
   StructArrayLayout4i4ub12,
+  StructArrayLayout8ui16,
   StructArrayLayout4i4ui16,
   StructArrayLayout3f12,
   StructArrayLayout1ul4,
@@ -1074,6 +1119,7 @@ module.exports = {
   FillExtrusionLayoutArray: StructArrayLayout2i4i12,
   HeatmapLayoutArray: StructArrayLayout2i4,
   LineLayoutArray: StructArrayLayout4i4ub12,
+  PatternLayoutArray: StructArrayLayout8ui16,
   SymbolLayoutArray: StructArrayLayout4i4ui16,
   SymbolDynamicLayoutArray: StructArrayLayout3f12,
   SymbolOpacityArray: StructArrayLayout1ul4,

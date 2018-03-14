@@ -3,6 +3,7 @@
 const {
   Properties,
   ColorRampProperty,
+  CrossFadedDataDrivenProperty,
   CrossFadedProperty,
   DataConstantProperty,
   DataDrivenProperty
@@ -89,7 +90,11 @@ const paint = new Properties({
     transition: true,
     expression: { parameters: ['zoom'] }
   }),
-  'line-pattern': new CrossFadedProperty({ type: 'string', transition: true, expression: { parameters: ['zoom'] } }),
+  'line-pattern': new CrossFadedDataDrivenProperty({
+    type: 'string',
+    transition: true,
+    expression: { parameters: ['zoom', 'feature'] }
+  }),
   'line-gradient': new ColorRampProperty({
     type: 'color',
     expression: { interpolated: true, parameters: ['line-progress'] }

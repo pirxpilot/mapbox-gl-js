@@ -27,6 +27,7 @@ class CircleBucket {
     this.layers = options.layers;
     this.layerIds = this.layers.map(layer => layer.id);
     this.index = options.index;
+    this.hasPattern = false;
 
     this.layoutVertexArray = new CircleLayoutArray();
     this.indexArray = new TriangleIndexArray();
@@ -44,9 +45,9 @@ class CircleBucket {
     }
   }
 
-  update(states, vtLayer) {
+  update(states, vtLayer, imagePositions) {
     if (!this.stateDependentLayers.length) return;
-    this.programConfigurations.updatePaintArrays(states, vtLayer, this.stateDependentLayers);
+    this.programConfigurations.updatePaintArrays(states, vtLayer, this.stateDependentLayers, imagePositions);
   }
 
   isEmpty() {
@@ -108,7 +109,7 @@ class CircleBucket {
       }
     }
 
-    this.programConfigurations.populatePaintArrays(this.layoutVertexArray.length, feature, index);
+    this.programConfigurations.populatePaintArrays(this.layoutVertexArray.length, feature, index, {});
   }
 }
 

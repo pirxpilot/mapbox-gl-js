@@ -373,10 +373,10 @@ class Layout {
  * @private
  */
 class PossiblyEvaluatedPropertyValue {
-  constructor(property, value, globals) {
+  constructor(property, value, parameters) {
     this.property = property;
     this.value = value;
-    this.globals = globals;
+    this.parameters = parameters;
   }
 
   isConstant() {
@@ -391,7 +391,7 @@ class PossiblyEvaluatedPropertyValue {
   }
 
   evaluate(feature, featureState) {
-    return this.property.evaluate(this.value, this.globals, feature, featureState);
+    return this.property.evaluate(this.value, this.parameters, feature, featureState);
   }
 }
 
@@ -494,7 +494,7 @@ class DataDrivenProperty {
     // `Properties#defaultPossiblyEvaluatedValues`, which serves as the prototype of
     // `PossiblyEvaluated#_values`.
     if (a.value.value === undefined || b.value.value === undefined) {
-      return new PossiblyEvaluatedPropertyValue(this, { kind: 'constant', value: undefined }, a.globals);
+      return new PossiblyEvaluatedPropertyValue(this, { kind: 'constant', value: undefined }, a.parameters);
     }
 
     const interp = interpolate[this.specification.type];
@@ -502,17 +502,78 @@ class DataDrivenProperty {
       return new PossiblyEvaluatedPropertyValue(
         this,
         { kind: 'constant', value: interp(a.value.value, b.value.value, t) },
-        a.globals
+        a.parameters
       );
     }
     return a;
   }
 
-  evaluate(value, globals, feature, featureState) {
+  evaluate(value, parameters, feature, featureState) {
     if (value.kind === 'constant') {
       return value.value;
     }
-    return value.evaluate(globals, feature, featureState);
+    return value.evaluate(parameters, feature, featureState);
+  }
+}
+
+/**
+ * An implementation of `Property` for  data driven `line-pattern` which are transitioned by cross-fading
+ * rather than interpolation.
+ *
+ * @private
+ */
+
+class CrossFadedDataDrivenProperty extends DataDrivenProperty {
+  constructor(specification) {
+    specification['property-type'] ??= 'cross-faded-data-driven';
+    super(specification);
+  }
+
+  possiblyEvaluate(value, parameters) {
+    if (value.value === undefined) {
+      return new PossiblyEvaluatedPropertyValue(this, { kind: 'constant', value: undefined }, parameters);
+    }
+    if (value.expression.kind === 'constant') {
+      const constantValue = value.expression.evaluate(parameters);
+      const constant = this._calculate(constantValue, constantValue, constantValue, parameters);
+      return new PossiblyEvaluatedPropertyValue(this, { kind: 'constant', value: constant }, parameters);
+    }
+    if (value.expression.kind === 'camera') {
+      const cameraVal = this._calculate(
+        value.expression.evaluate({ zoom: parameters.zoom - 1.0 }),
+        value.expression.evaluate({ zoom: parameters.zoom }),
+        value.expression.evaluate({ zoom: parameters.zoom + 1.0 }),
+        parameters
+      );
+      return new PossiblyEvaluatedPropertyValue(this, { kind: 'constant', value: cameraVal }, parameters);
+    }
+    // source or composite expression
+    return new PossiblyEvaluatedPropertyValue(this, value.expression, parameters);
+  }
+
+  evaluate(value, globals, feature, featureState) {
+    if (value.kind === 'source') {
+      const constant = value.evaluate(globals, feature, featureState);
+      return this._calculate(constant, constant, constant, globals);
+    }
+    if (value.kind === 'composite') {
+      return this._calculate(
+        value.evaluate({ zoom: Math.floor(globals.zoom) - 1.0 }, feature, featureState),
+        value.evaluate({ zoom: Math.floor(globals.zoom) }, feature, featureState),
+        value.evaluate({ zoom: Math.floor(globals.zoom) + 1.0 }, feature, featureState),
+        globals
+      );
+    }
+    return value.value;
+  }
+
+  _calculate(min, mid, max, parameters) {
+    const z = parameters.zoom;
+    return z > parameters.zoomHistory.lastIntegerZoom ? { from: min, to: mid } : { from: max, to: mid };
+  }
+
+  interpolate(a) {
+    return a;
   }
 }
 
@@ -547,11 +608,7 @@ class CrossFadedProperty {
 
   _calculate(min, mid, max, parameters) {
     const z = parameters.zoom;
-    const fraction = z - Math.floor(z);
-    const t = parameters.crossFadingFactor();
-    return z > parameters.zoomHistory.lastIntegerZoom
-      ? { from: min, to: mid, fromScale: 2, toScale: 1, t: fraction + (1 - fraction) * t }
-      : { from: max, to: mid, fromScale: 0.5, toScale: 1, t: 1 - (1 - t) * fraction };
+    return z > parameters.zoomHistory.lastIntegerZoom ? { from: min, to: mid } : { from: max, to: mid };
   }
 
   interpolate(a) {
@@ -614,6 +671,7 @@ class Properties {
 
 register('DataDrivenProperty', DataDrivenProperty);
 register('DataConstantProperty', DataConstantProperty);
+register('CrossFadedDataDrivenProperty', CrossFadedDataDrivenProperty);
 register('CrossFadedProperty', CrossFadedProperty);
 register('ColorRampProperty', ColorRampProperty);
 
@@ -626,6 +684,7 @@ module.exports = {
   PossiblyEvaluated,
   DataConstantProperty,
   DataDrivenProperty,
+  CrossFadedDataDrivenProperty,
   CrossFadedProperty,
   ColorRampProperty,
   Properties

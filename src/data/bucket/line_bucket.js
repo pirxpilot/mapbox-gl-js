@@ -4,11 +4,12 @@ const { members: layoutAttributes } = require('./line_attributes');
 const SegmentVector = require('../segment');
 const { ProgramConfigurationSet } = require('../program_configuration');
 const { TriangleIndexArray } = require('../index_array_type');
-const loadGeometry = require('../load_geometry');
 const EXTENT = require('../extent');
 const mvt = require('@mapbox/vector-tile');
 const vectorTileFeatureTypes = mvt.VectorTileFeature.types;
 const { register } = require('../../util/web_worker_transfer');
+const { hasPattern, addPatternDependencies } = require('./pattern_bucket_features');
+const loadGeometry = require('../load_geometry');
 const EvaluationParameters = require('../../style/evaluation_parameters');
 
 // NOTE ON EXTRUDE SCALE:
@@ -75,6 +76,8 @@ class LineBucket {
     this.layers = options.layers;
     this.layerIds = this.layers.map(layer => layer.id);
     this.index = options.index;
+    this.features = [];
+    this.hasPattern = false;
 
     this.layoutVertexArray = new LineLayoutArray();
     this.indexArray = new TriangleIndexArray();
@@ -83,18 +86,47 @@ class LineBucket {
   }
 
   populate(features, options) {
+    this.features = [];
+    this.hasPattern = hasPattern('line', this.layers, options);
+
     for (const { feature, index, sourceLayerIndex } of features) {
-      if (this.layers[0]._featureFilter(new EvaluationParameters(this.zoom), feature)) {
-        const geometry = loadGeometry(feature);
-        this.addFeature(feature, geometry, index);
-        options.featureIndex.insert(feature, geometry, index, sourceLayerIndex, this.index);
+      if (!this.layers[0]._featureFilter(new EvaluationParameters(this.zoom), feature)) continue;
+
+      const geometry = loadGeometry(feature);
+
+      const patternFeature = {
+        sourceLayerIndex,
+        index,
+        geometry,
+        properties: feature.properties,
+        type: feature.type,
+        patterns: {}
+      };
+
+      if (typeof feature.id !== 'undefined') {
+        patternFeature.id = feature.id;
       }
+
+      if (this.hasPattern) {
+        this.features.push(addPatternDependencies('line', this.layers, patternFeature, this.zoom, options));
+      } else {
+        this.addFeature(patternFeature, geometry, index, {});
+      }
+
+      options.featureIndex.insert(feature, geometry, index, sourceLayerIndex, this.index);
     }
   }
 
-  update(states, vtLayer) {
+  update(states, vtLayer, imagePositions) {
     if (!this.stateDependentLayers.length) return;
-    this.programConfigurations.updatePaintArrays(states, vtLayer, this.stateDependentLayers);
+    this.programConfigurations.updatePaintArrays(states, vtLayer, this.stateDependentLayers, imagePositions);
+  }
+
+  addFeatures(options, imagePositions) {
+    for (const feature of this.features) {
+      const { geometry } = feature;
+      this.addFeature(feature, geometry, feature.index, imagePositions);
+    }
   }
 
   isEmpty() {
@@ -122,7 +154,7 @@ class LineBucket {
     this.segments.destroy();
   }
 
-  addFeature(feature, geometry, index) {
+  addFeature(feature, geometry, index, imagePositions) {
     const layout = this.layers[0].layout;
     const join = layout.get('line-join').evaluate(feature, {});
     const cap = layout.get('line-cap');
@@ -130,11 +162,11 @@ class LineBucket {
     const roundLimit = layout.get('line-round-limit');
 
     for (const line of geometry) {
-      this.addLine(line, feature, join, cap, miterLimit, roundLimit, index);
+      this.addLine(line, feature, join, cap, miterLimit, roundLimit, index, imagePositions);
     }
   }
 
-  addLine(vertices, feature, join, cap, miterLimit, roundLimit, index) {
+  addLine(vertices, feature, join, cap, miterLimit, roundLimit, index, imagePositions) {
     let lineDistances = null;
     if (
       !!feature.properties &&
@@ -462,7 +494,7 @@ class LineBucket {
       startOfLine = false;
     }
 
-    this.programConfigurations.populatePaintArrays(this.layoutVertexArray.length, feature, index);
+    this.programConfigurations.populatePaintArrays(this.layoutVertexArray.length, feature, index, imagePositions);
   }
 
   /**
@@ -588,6 +620,6 @@ function calculateFullDistance(vertices, first, len) {
   return total;
 }
 
-register('LineBucket', LineBucket, { omit: ['layers'] });
+register('LineBucket', LineBucket, { omit: ['layers', 'features'] });
 
 module.exports = LineBucket;

@@ -4,6 +4,9 @@ const { performSymbolLayout } = require('../symbol/symbol_layout');
 const { CollisionBoxArray } = require('../data/array_types');
 const DictionaryCoder = require('../util/dictionary_coder');
 const SymbolBucket = require('../data/bucket/symbol_bucket');
+const LineBucket = require('../data/bucket/line_bucket');
+const FillBucket = require('../data/bucket/fill_bucket');
+const FillExtrusionBucket = require('../data/bucket/fill_extrusion_bucket');
 const { mapObject, values } = require('../util/object');
 const warn = require('../util/warn');
 const assert = require('assert');
@@ -45,6 +48,7 @@ class WorkerTile {
     const options = {
       featureIndex,
       iconDependencies: {},
+      patternDependencies: {},
       glyphDependencies: {}
     };
 
@@ -97,7 +101,8 @@ class WorkerTile {
 
     let error;
     let glyphMap;
-    let imageMap;
+    let iconMap;
+    let patternMap;
 
     const stacks = mapObject(options.glyphDependencies, glyphs => Object.keys(glyphs).map(Number));
     if (Object.keys(stacks).length) {
@@ -117,12 +122,25 @@ class WorkerTile {
       actor.send('getImages', { icons }, (err, result) => {
         if (!error) {
           error = err;
-          imageMap = result;
+          iconMap = result;
           maybePrepare.call(this);
         }
       });
     } else {
-      imageMap = {};
+      iconMap = {};
+    }
+
+    const patterns = Object.keys(options.patternDependencies);
+    if (patterns.length) {
+      actor.send('getImages', { icons: patterns }, (err, result) => {
+        if (!error) {
+          error = err;
+          patternMap = result;
+          maybePrepare.call(this);
+        }
+      });
+    } else {
+      patternMap = {};
     }
 
     maybePrepare.call(this);
@@ -131,9 +149,9 @@ class WorkerTile {
       if (error) {
         return callback(error);
       }
-      if (glyphMap && imageMap) {
+      if (glyphMap && iconMap && patternMap) {
         const glyphAtlas = new GlyphAtlas(glyphMap);
-        const imageAtlas = new ImageAtlas(imageMap);
+        const imageAtlas = new ImageAtlas(iconMap, patternMap);
 
         for (const key in buckets) {
           const bucket = buckets[key];
@@ -143,10 +161,16 @@ class WorkerTile {
               bucket,
               glyphMap,
               glyphAtlas.positions,
-              imageMap,
-              imageAtlas.positions,
+              iconMap,
+              imageAtlas.iconPositions,
               this.showCollisionBoxes
             );
+          } else if (
+            bucket.hasPattern &&
+            (bucket instanceof LineBucket || bucket instanceof FillBucket || bucket instanceof FillExtrusionBucket)
+          ) {
+            recalculateLayers(bucket.layers, this.zoom);
+            bucket.addFeatures(options, imageAtlas.patternPositions);
           }
         }
 
@@ -157,7 +181,7 @@ class WorkerTile {
           featureIndex,
           collisionBoxArray: this.collisionBoxArray,
           glyphAtlasImage: glyphAtlas.image,
-          iconAtlasImage: imageAtlas.image
+          imageAtlas
         });
       }
     }

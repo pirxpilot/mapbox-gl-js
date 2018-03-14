@@ -4,13 +4,14 @@ const { members: layoutAttributes } = require('./fill_extrusion_attributes');
 const SegmentVector = require('../segment');
 const { ProgramConfigurationSet } = require('../program_configuration');
 const { TriangleIndexArray } = require('../index_array_type');
-const loadGeometry = require('../load_geometry');
 const EXTENT = require('../extent');
 const earcut = require('earcut');
 const classifyRings = require('../../util/classify_rings');
 const assert = require('assert');
 const EARCUT_MAX_RINGS = 500;
 const { register } = require('../../util/web_worker_transfer');
+const { hasPattern, addPatternDependencies } = require('./pattern_bucket_features');
+const loadGeometry = require('../load_geometry');
 const EvaluationParameters = require('../../style/evaluation_parameters');
 
 const FACTOR = 2 ** 13;
@@ -36,6 +37,7 @@ class FillExtrusionBucket {
     this.layers = options.layers;
     this.layerIds = this.layers.map(layer => layer.id);
     this.index = options.index;
+    this.hasPattern = false;
 
     this.layoutVertexArray = new FillExtrusionLayoutArray();
     this.indexArray = new TriangleIndexArray();
@@ -44,18 +46,47 @@ class FillExtrusionBucket {
   }
 
   populate(features, options) {
+    this.features = [];
+    this.hasPattern = hasPattern('fill-extrusion', this.layers, options);
+
     for (const { feature, index, sourceLayerIndex } of features) {
-      if (this.layers[0]._featureFilter(new EvaluationParameters(this.zoom), feature)) {
-        const geometry = loadGeometry(feature);
-        this.addFeature(feature, geometry, index);
-        options.featureIndex.insert(feature, geometry, index, sourceLayerIndex, this.index);
+      if (!this.layers[0]._featureFilter(new EvaluationParameters(this.zoom), feature)) continue;
+
+      const geometry = loadGeometry(feature);
+
+      const patternFeature = {
+        sourceLayerIndex,
+        index,
+        geometry,
+        properties: feature.properties,
+        type: feature.type,
+        patterns: {}
+      };
+
+      if (typeof feature.id !== 'undefined') {
+        patternFeature.id = feature.id;
       }
+
+      if (this.hasPattern) {
+        this.features.push(addPatternDependencies('fill-extrusion', this.layers, patternFeature, this.zoom, options));
+      } else {
+        this.addFeature(patternFeature, geometry, index, {});
+      }
+
+      options.featureIndex.insert(feature, geometry, index, sourceLayerIndex, this.index);
     }
   }
 
-  update(states, vtLayer) {
+  addFeatures(options, imagePositions) {
+    for (const feature of this.features) {
+      const { geometry } = feature;
+      this.addFeature(feature, geometry, feature.index, imagePositions);
+    }
+  }
+
+  update(states, vtLayer, imagePositions) {
     if (!this.stateDependentLayers.length) return;
-    this.programConfigurations.updatePaintArrays(states, vtLayer, this.stateDependentLayers);
+    this.programConfigurations.updatePaintArrays(states, vtLayer, this.stateDependentLayers, imagePositions);
   }
 
   isEmpty() {
@@ -83,7 +114,7 @@ class FillExtrusionBucket {
     this.segments.destroy();
   }
 
-  addFeature(feature, geometry, index) {
+  addFeature(feature, geometry, index, imagePositions) {
     for (const polygon of classifyRings(geometry, EARCUT_MAX_RINGS)) {
       let numVertices = 0;
       for (const ring of polygon) {
@@ -179,11 +210,11 @@ class FillExtrusionBucket {
       segment.vertexLength += numVertices;
     }
 
-    this.programConfigurations.populatePaintArrays(this.layoutVertexArray.length, feature, index);
+    this.programConfigurations.populatePaintArrays(this.layoutVertexArray.length, feature, index, imagePositions);
   }
 }
 
-register('FillExtrusionBucket', FillExtrusionBucket, { omit: ['layers'] });
+register('FillExtrusionBucket', FillExtrusionBucket, { omit: ['layers', 'features'] });
 
 module.exports = FillExtrusionBucket;
 

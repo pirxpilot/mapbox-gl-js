@@ -105,8 +105,8 @@ class Tile {
       this.queryPadding = Math.max(this.queryPadding, painter.style.getLayer(bucket.layerIds[0]).queryRadius(bucket));
     }
 
-    if (data.iconAtlasImage) {
-      this.iconAtlasImage = data.iconAtlasImage;
+    if (data.imageAtlas) {
+      this.imageAtlas = data.imageAtlas;
     }
     if (data.glyphAtlasImage) {
       this.glyphAtlasImage = data.glyphAtlasImage;
@@ -124,7 +124,10 @@ class Tile {
     }
     this.buckets = {};
 
-    this.iconAtlasTexture?.destroy();
+    this.imageAtlasTexture?.destroy();
+    if (this.imageAtlas) {
+      this.imageAtlas = null;
+    }
     this.glyphAtlasTexture?.destroy();
     this.latestFeatureIndex = null;
     this.state = 'unloaded';
@@ -150,9 +153,9 @@ class Tile {
 
     const gl = context.gl;
 
-    if (this.iconAtlasImage) {
-      this.iconAtlasTexture = new Texture(context, this.iconAtlasImage, gl.RGBA);
-      this.iconAtlasImage = null;
+    if (this.imageAtlas && !this.imageAtlas.uploaded) {
+      this.imageAtlasTexture = new Texture(context, this.imageAtlas.image, gl.RGBA);
+      this.imageAtlas.uploaded = true;
     }
 
     if (this.glyphAtlasImage) {
@@ -281,6 +284,10 @@ class Tile {
     return this.state === 'loaded' || this.state === 'reloading';
   }
 
+  patternsLoaded() {
+    return this.imageAtlas && !!Object.keys(this.imageAtlas.patternPositions).length;
+  }
+
   setFeatureState(states, painter) {
     if (!this.latestFeatureIndex?.rawTileData || Object.keys(states).length === 0) {
       return;
@@ -296,7 +303,7 @@ class Tile {
       const sourceLayerStates = states[sourceLayerId];
       if (!sourceLayer || !sourceLayerStates || Object.keys(sourceLayerStates).length === 0) continue;
 
-      bucket.update(sourceLayerStates, sourceLayer);
+      bucket.update(sourceLayerStates, sourceLayer, this.imageAtlas?.patternPositions || {});
       if (painter?.style) {
         this.queryPadding = Math.max(this.queryPadding, painter.style.getLayer(bucket.layerIds[0]).queryRadius(bucket));
       }

@@ -11,6 +11,8 @@ function typeToClass(property) {
       return 'DataDrivenProperty';
     case 'cross-faded':
       return 'CrossFadedProperty';
+    case 'cross-faded-data-driven':
+      return 'CrossFadedDataDrivenProperty';
     case 'color-ramp':
       return 'ColorRampProperty';
     case 'data-constant':
