@@ -66,11 +66,12 @@ class ConstantBinder {
                 currentValue) {
         const value = currentValue.constantOr(this.value);
 
-        if (!this.uniformBinding) {
-            this.uniformBinding = this.type === 'color' ? new Uniform4fv(context) : new Uniform1f(context);
+        if (!program.binderUniforms.bindings[this.uniformName]) {
+            program.binderUniforms.bindings[this.uniformName] = this.type === 'color' ?
+                new Uniform4fv(context) : new Uniform1f(context);
         }
 
-        this.uniformBinding.set(program.uniforms[this.uniformName], value, invalidate);
+        program.binderUniforms.bindings[this.uniformName].set(program.uniforms[this.uniformName], value);
     }
 }
 
@@ -148,13 +149,12 @@ class SourceExpressionBinder {
         }
     }
 
-    setUniforms(context, program, invalidate) {
-        if (!this.uniformBinding) {
-            this.uniformBinding = new Uniform1f(context);
-            this.uniformBinding.set(program.uniforms[this.uniformName], 0);
-        } else if (invalidate) {
-            this.uniformBinding.set(program.uniforms[this.uniformName], 0, invalidate);
+    setUniforms(context, program) {
+        if (!program.binderUniforms.bindings[this.uniformName]) {
+            program.binderUniforms.bindings[this.uniformName] = new Uniform1f(context);
         }
+
+        program.binderUniforms.bindings[this.uniformName].set(program.uniforms[this.uniformName], 0);
     }
 }
 
@@ -245,13 +245,13 @@ class CompositeExpressionBinder {
         }
     }
 
-    setUniforms(context, program, invalidate,
+    setUniforms(context, program,
                 globals) {
-        if (!this.uniformBinding) {
-            this.uniformBinding = new Uniform1f(context);
+        if (!program.binderUniforms.bindings[this.uniformName]) {
+            program.binderUniforms.bindings[this.uniformName] = new Uniform1f(context);
         }
 
-        this.uniformBinding.set(program.uniforms[this.uniformName], this.interpolationFactor(globals.zoom), invalidate);
+        program.binderUniforms.bindings[this.uniformName].set(program.uniforms[this.uniformName], this.interpolationFactor(globals.zoom));
     }
 }
 
@@ -372,18 +372,12 @@ class ProgramConfiguration {
         return this._buffers;
     }
 
-    setUniforms(context, program, properties, globals, invalidate) {
-        // We maintain a reference here to the last Program used, and a reference
-        // on each Program to the last ProgramConfiguration used: if these match,
-        // we can assume the uniform bindings haven't changed, but if we're using
-        // a different ProgramConfiguration for the same Program or a different
-        // Program with the same ProgramConfiguration, our tracked uniform state
-        // won't be right, so we invalidate the old bindings here.
-        invalidate = invalidate || this.program !== program;
+    setUniforms(context, program, properties, globals) {
+        // Uniform state bindings are owned by the Program, but we set them
+        // from within the ProgramConfiguraton's binder members.
 
         for (const property in this.binders) {
-            const binder = this.binders[property];
-            binder.setUniforms(context, program, invalidate, globals, properties.get(property));
+            this.binders[property].setUniforms(context, program, globals, properties.get(property));
         }
     }
 

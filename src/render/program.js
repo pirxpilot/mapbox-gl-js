@@ -5,6 +5,7 @@ const browser = require('../util/browser');
 const shaders = require('../shaders');
 const assert = require('assert');
 const VertexArrayObject = require('./vertex_array_object');
+const { Uniforms } = require('./uniform_binding');
 
 class Program {
 
@@ -70,6 +71,7 @@ class Program {
         }
 
         this.fixedUniforms = fixedUniforms(context);
+        this.binderUniforms = new Uniforms({});
     }
 
     draw(context,
@@ -96,9 +98,7 @@ class Program {
 
         this.fixedUniforms.set(this.uniforms, uniformValues);
         if (configuration) {
-            const invalidate = this.configuration && this.configuration !== configuration;
-            configuration.setUniforms(context, this, currentProperties, {zoom}, invalidate);
-            this.configuration = configuration;
+            configuration.setUniforms(context, this, currentProperties, {zoom});
         }
 
         const primitiveSize = {
