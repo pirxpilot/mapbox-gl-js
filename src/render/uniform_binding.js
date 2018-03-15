@@ -10,54 +10,60 @@ class Uniform {
 }
 
 class Uniform1i extends Uniform {
-    set(location, v, invalidate = false) {
-        if (invalidate || this.current !== v) {
+    set(location, v) {
+        if (this.current !== v || this.location !== location) {
             this.current = v;
+            this.location = location;
             this.context.gl.uniform1i(location, v);
         }
     }
 }
 
 class Uniform1f extends Uniform {
-    set(location, v, invalidate = false) {
-        if (invalidate || this.current !== v) {
+    set(location, v) {
+        if (this.current !== v || this.location !== location) {
             this.current = v;
+            this.location = location;
             this.context.gl.uniform1f(location, v);
         }
     }
 }
 
 class Uniform2fv extends Uniform {
-    set(location, v, invalidate = false) {
+    set(location, v) {
         const c = this.current;
-        if (invalidate || !c || v[0] !== c[0] || v[1] !== c[1]) {
+        if (!c || v[0] !== c[0] || v[1] !== c[1] || this.location !== location) {
             this.current = v;
+            this.location = location;
             this.context.gl.uniform2f(location, v[0], v[1]);
         }
     }
 }
 
 class Uniform3fv extends Uniform {
-    set(location, v, invalidate = false) {
+    set(location, v) {
         const c = this.current;
-        if (invalidate || !c || v[0] !== c[0] || v[1] !== c[1] || v[2] !== c[2]) {
+        if (!c || v[0] !== c[0] || v[1] !== c[1] || v[2] !== c[2] || this.location !== location) {
             this.current = v;
+            this.location = location;
             this.context.gl.uniform3f(location, v[0], v[1], v[2]);
         }
     }
 }
 
 class Uniform4fv extends Uniform {
-    set(location, v, invalidate = false) {
+    set(location, v) {
         const c = this.current;
         if (v instanceof Color && (!c || c instanceof Color)) {
-            if (invalidate || !c || v.r !== c.r || v.g !== c.g || v.b !== c.b || v.a !== c.a) {
+            if (!c || v.r !== c.r || v.g !== c.g || v.b !== c.b || v.a !== c.a || this.location !== location) {
                 this.current = v;
+                this.location = location;
                 this.context.gl.uniform4f(location, v.r, v.g, v.b, v.a);
             }
         } else if (Array.isArray(v) && (!c || Array.isArray(c))) {
-            if (invalidate || !c || v[0] !== c[0] || v[1] !== c[1] || v[2] !== c[2] || v[3] !== c[3]) {
+            if (!c || v[0] !== c[0] || v[1] !== c[1] || v[2] !== c[2] || v[3] !== c[3] || this.location !== location) {
                 this.current = v;
+                this.location = location;
                 this.context.gl.uniform4f(location, v[0], v[1], v[2], v[3]);
             }
         }
@@ -65,10 +71,10 @@ class Uniform4fv extends Uniform {
 }
 
 class UniformMatrix4fv extends Uniform {
-    set(location, v, invalidate = false) {
-        let diff = !this.current || invalidate;
+    set(location, v) {
+        let diff = !this.current || this.location !== location;
 
-        if (!invalidate && this.current) {
+        if (!diff && this.current) {
             for (let i = 0; i < 16; i++) {
                 if (v[i] !== this.current[i]) {
                     diff = true;
@@ -79,6 +85,7 @@ class UniformMatrix4fv extends Uniform {
 
         if (diff) {
             this.current = v;
+            this.location = location;
             this.context.gl.uniformMatrix4fv(location, false, v);
         }
     }
