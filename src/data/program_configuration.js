@@ -6,7 +6,7 @@ const { register } = require('../util/web_worker_transfer');
 const { PossiblyEvaluatedPropertyValue } = require('../style/properties');
 const { StructArrayLayout1f4, StructArrayLayout2f8, StructArrayLayout4f16 } = require('./array_types');
 const EvaluationParameters = require('../style/evaluation_parameters');
-const { Uniform1f, Uniform4fv } = require('../render/uniform_binding');
+const {  Uniform1f, UniformColor, Uniforms } = require('../render/uniform_binding');
 
 function packColor(color) {
     return [
@@ -65,13 +65,13 @@ class ConstantBinder {
                 globals,
                 currentValue) {
         const value = currentValue.constantOr(this.value);
+        program.binderUniforms.bindings[this.uniformName].set(value);
+    }
 
-        if (!program.binderUniforms.bindings[this.uniformName]) {
-            program.binderUniforms.bindings[this.uniformName] = this.type === 'color' ?
-                new Uniform4fv(context) : new Uniform1f(context);
-        }
-
-        program.binderUniforms.bindings[this.uniformName].set(program.uniforms[this.uniformName], value);
+    getBinding(context, location) {
+        return (this.type === 'color') ?
+            new UniformColor(context, location) :
+            new Uniform1f(context, location);
     }
 }
 
@@ -150,11 +150,11 @@ class SourceExpressionBinder {
     }
 
     setUniforms(context, program) {
-        if (!program.binderUniforms.bindings[this.uniformName]) {
-            program.binderUniforms.bindings[this.uniformName] = new Uniform1f(context);
-        }
+        program.binderUniforms.bindings[this.uniformName].set(0);
+    }
 
-        program.binderUniforms.bindings[this.uniformName].set(program.uniforms[this.uniformName], 0);
+    getBinding(context, location) {
+        return new Uniform1f(context, location);
     }
 }
 
@@ -247,11 +247,11 @@ class CompositeExpressionBinder {
 
     setUniforms(context, program,
                 globals) {
-        if (!program.binderUniforms.bindings[this.uniformName]) {
-            program.binderUniforms.bindings[this.uniformName] = new Uniform1f(context);
-        }
+        program.binderUniforms.bindings[this.uniformName].set(this.interpolationFactor(globals.zoom));
+    }
 
-        program.binderUniforms.bindings[this.uniformName].set(program.uniforms[this.uniformName], this.interpolationFactor(globals.zoom));
+    getBinding(context, location) {
+        return new Uniform1f(context, location);
     }
 }
 
@@ -370,6 +370,15 @@ class ProgramConfiguration {
 
     getPaintVertexBuffers() {
         return this._buffers;
+    }
+
+    getUniforms(context, program) {
+        program.binderUniforms = new Uniforms({});
+        for (const property in this.binders) {
+            const binder = this.binders[property];
+            program.binderUniforms.bindings[binder.uniformName] =
+                binder.getBinding(context, program.uniforms[binder.uniformName]);
+        }
     }
 
     setUniforms(context, program, properties, globals) {
