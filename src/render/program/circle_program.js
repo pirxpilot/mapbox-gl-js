@@ -9,12 +9,12 @@ const {
 } = require('../uniform_binding');
 const pixelsToTileUnits = require('../../source/pixels_to_tile_units');
 
-const circleUniforms = (context) => new Uniforms({
-    'u_camera_to_center_distance': new Uniform1f(context),
-    'u_scale_with_map': new Uniform1i(context),
-    'u_pitch_with_map': new Uniform1i(context),
-    'u_extrude_scale': new Uniform2fv(context),
-    'u_matrix': new UniformMatrix4fv(context)
+const circleUniforms = (context, locations) => new Uniforms({
+    'u_camera_to_center_distance': new Uniform1f(context, locations.u_camera_to_center_distance),
+    'u_scale_with_map': new Uniform1i(context, locations.u_scale_with_map),
+    'u_pitch_with_map': new Uniform1i(context, locations.u_pitch_with_map),
+    'u_extrude_scale': new Uniform2fv(context, locations.u_extrude_scale),
+    'u_matrix': new UniformMatrix4fv(context, locations.u_matrix)
 });
 
 const circleUniformValues = (

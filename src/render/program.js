@@ -5,7 +5,6 @@ const browser = require('../util/browser');
 const shaders = require('../shaders');
 const assert = require('assert');
 const VertexArrayObject = require('./vertex_array_object');
-const { Uniforms } = require('./uniform_binding');
 
 class Program {
 
@@ -70,8 +69,8 @@ class Program {
             }
         }
 
-        this.fixedUniforms = fixedUniforms(context);
-        this.binderUniforms = new Uniforms({});
+        this.fixedUniforms = fixedUniforms(context, this.uniforms);
+        configuration.getUniforms(context, this);
     }
 
     draw(context,
@@ -96,7 +95,7 @@ class Program {
         context.setStencilMode(stencilMode);
         context.setColorMode(colorMode);
 
-        this.fixedUniforms.set(this.uniforms, uniformValues);
+        this.fixedUniforms.set(uniformValues);
         if (configuration) {
             configuration.setUniforms(context, this, currentProperties, {zoom});
         }

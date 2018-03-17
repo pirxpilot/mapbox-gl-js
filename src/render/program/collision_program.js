@@ -8,12 +8,12 @@ const {
 } = require('../uniform_binding');
 const pixelsToTileUnits = require('../../source/pixels_to_tile_units');
 
-const collisionUniforms = (context) => new Uniforms({
-    'u_matrix': new UniformMatrix4fv(context),
-    'u_camera_to_center_distance': new Uniform1f(context),
-    'u_pixels_to_tile_units': new Uniform1f(context),
-    'u_extrude_scale': new Uniform2fv(context),
-    'u_overscale_factor': new Uniform1f(context)
+const collisionUniforms = (context, locations) => new Uniforms({
+    'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
+    'u_camera_to_center_distance': new Uniform1f(context, locations.u_camera_to_center_distance),
+    'u_pixels_to_tile_units': new Uniform1f(context, locations.u_pixels_to_tile_units),
+    'u_extrude_scale': new Uniform2fv(context, locations.u_extrude_scale),
+    'u_overscale_factor': new Uniform1f(context, locations.u_overscale_factor)
 });
 
 const collisionUniformValues = (

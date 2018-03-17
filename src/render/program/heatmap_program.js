@@ -11,18 +11,18 @@ const {
 } = require('../uniform_binding');
 const pixelsToTileUnits = require('../../source/pixels_to_tile_units');
 
-const heatmapUniforms = (context) => new Uniforms({
-    'u_extrude_scale': new Uniform1f(context),
-    'u_intensity': new Uniform1f(context),
-    'u_matrix': new UniformMatrix4fv(context)
+const heatmapUniforms = (context, locations) => new Uniforms({
+    'u_extrude_scale': new Uniform1f(context, locations.u_extrude_scale),
+    'u_intensity': new Uniform1f(context, locations.u_intensity),
+    'u_matrix': new UniformMatrix4fv(context, locations.u_matrix)
 });
 
-const heatmapTextureUniforms = (context) => new Uniforms({
-    'u_matrix': new UniformMatrix4fv(context),
-    'u_world': new Uniform2fv(context),
-    'u_image': new Uniform1i(context),
-    'u_color_ramp': new Uniform1i(context),
-    'u_opacity': new Uniform1f(context)
+const heatmapTextureUniforms = (context, locations) => new Uniforms({
+    'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
+    'u_world': new Uniform2fv(context, locations.u_world),
+    'u_image': new Uniform1i(context, locations.u_image),
+    'u_color_ramp': new Uniform1i(context, locations.u_color_ramp),
+    'u_opacity': new Uniform1f(context, locations.u_opacity)
 });
 
 const heatmapUniformValues = (
