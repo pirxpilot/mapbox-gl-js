@@ -417,21 +417,13 @@ class Painter {
         return !imagePosA || !imagePosB;
     }
 
-    _createProgramCached(name, programConfiguration) {
+    useProgram(name, programConfiguration = this.emptyProgramConfiguration) {
         this.cache = this.cache || {};
         const key = `${name}${programConfiguration.cacheKey || ''}${this._showOverdrawInspector ? '/overdraw' : ''}`;
         if (!this.cache[key]) {
             this.cache[key] = new Program(this.context, shaders[name], programConfiguration, programUniforms[name], this._showOverdrawInspector);
         }
         return this.cache[key];
-    }
-
-    useProgram(name, programConfiguration) {
-        const nextProgram = this._createProgramCached(name, programConfiguration || this.emptyProgramConfiguration);
-
-        this.context.program.set(nextProgram.program);
-
-        return nextProgram;
     }
 }
 
