@@ -91,6 +91,7 @@ class Program {
 
         const gl = context.gl;
 
+        context.program.set(this.program);
         context.setDepthMode(depthMode);
         context.setStencilMode(stencilMode);
         context.setColorMode(colorMode);
