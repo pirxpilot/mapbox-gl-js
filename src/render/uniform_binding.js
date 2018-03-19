@@ -84,7 +84,7 @@ class Uniform4fv extends Uniform {
 class UniformColor extends Uniform {
     constructor(context, location) {
         super(context, location);
-        this.current = new Color(0, 0, 0, 0);
+        this.current = Color.transparent;
     }
 
     set(v) {
@@ -96,14 +96,23 @@ class UniformColor extends Uniform {
     }
 }
 
+const emptyMat4 = new Float32Array(16);
 class UniformMatrix4fv extends Uniform {
     constructor(context, location) {
         super(context, location);
-        this.current = new Float32Array(16);
+        this.current = emptyMat4;
     }
 
     set(v) {
-        for (let i = 0; i < 16; i++) {
+        // The vast majority of matrix comparisons that will trip this set
+        // happen at i=12 or i=0, so we check those first to avoid lots of
+        // unnecessary iteration:
+        if (v[12] !== this.current[12] || v[0] !== this.current[0]) {
+            this.current = v;
+            this.context.gl.uniformMatrix4fv(this.location, false, v);
+            return;
+        }
+        for (let i = 1; i < 16; i++) {
             if (v[i] !== this.current[i]) {
                 this.current = v;
                 this.context.gl.uniformMatrix4fv(this.location, false, v);
