@@ -5,15 +5,14 @@ const {
     Uniform1i,
     Uniform1f,
     Uniform2fv,
-    UniformMatrix4fv,
-    Uniforms
+    UniformMatrix4fv
 } = require('../uniform_binding');
 
-const fillUniforms = (context, locations) => new Uniforms({
+const fillUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix)
 });
 
-const fillPatternUniforms = (context, locations) => new Uniforms({
+const fillPatternUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_image': new Uniform1i(context, locations.u_image),
     'u_pattern_tl_a': new Uniform2fv(context, locations.u_pattern_tl_a),
@@ -31,12 +30,12 @@ const fillPatternUniforms = (context, locations) => new Uniforms({
     'u_tile_units_to_pixels': new Uniform1f(context, locations.u_tile_units_to_pixels)
 });
 
-const fillOutlineUniforms = (context, locations) => new Uniforms({
+const fillOutlineUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_world': new Uniform2fv(context, locations.u_world)
 });
 
-const fillOutlinePatternUniforms = (context, locations) => new Uniforms({
+const fillOutlinePatternUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_world': new Uniform2fv(context, locations.u_world),
     'u_image': new Uniform1i(context, locations.u_image),

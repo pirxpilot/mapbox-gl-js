@@ -95,7 +95,10 @@ class Program {
         context.setStencilMode(stencilMode);
         context.setColorMode(colorMode);
 
-        this.fixedUniforms.set(uniformValues);
+        for (const name in this.fixedUniforms) {
+            this.fixedUniforms[name].set(uniformValues[name]);
+        }
+
         if (configuration) {
             configuration.setUniforms(context, this, currentProperties, {zoom});
         }

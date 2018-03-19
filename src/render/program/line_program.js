@@ -4,26 +4,25 @@ const {
     Uniform1i,
     Uniform1f,
     Uniform2fv,
-    UniformMatrix4fv,
-    Uniforms
+    UniformMatrix4fv
 } = require('../uniform_binding');
 const pixelsToTileUnits = require('../../source/pixels_to_tile_units');
 const browser = require('../../util/browser');
 
-const lineUniforms = (context, locations) => new Uniforms({
+const lineUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_ratio': new Uniform1f(context, locations.u_ratio),
     'u_gl_units_to_pixels': new Uniform2fv(context, locations.u_gl_units_to_pixels)
 });
 
-const lineGradientUniforms = (context, locations) => new Uniforms({
+const lineGradientUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_ratio': new Uniform1f(context, locations.u_ratio),
     'u_gl_units_to_pixels': new Uniform2fv(context, locations.u_gl_units_to_pixels),
     'u_image': new Uniform1i(context, locations.u_image)
 });
 
-const linePatternUniforms = (context, locations) => new Uniforms({
+const linePatternUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_ratio': new Uniform1f(context, locations.u_ratio),
     'u_gl_units_to_pixels': new Uniform2fv(context, locations.u_gl_units_to_pixels),
@@ -38,7 +37,7 @@ const linePatternUniforms = (context, locations) => new Uniforms({
     'u_fade': new Uniform1f(context, locations.u_fade)
 });
 
-const lineSDFUniforms = (context, locations) => new Uniforms({
+const lineSDFUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_ratio': new Uniform1f(context, locations.u_ratio),
     'u_gl_units_to_pixels': new Uniform2fv(context, locations.u_gl_units_to_pixels),

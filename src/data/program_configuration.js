@@ -6,7 +6,7 @@ const { register } = require('../util/web_worker_transfer');
 const { PossiblyEvaluatedPropertyValue } = require('../style/properties');
 const { StructArrayLayout1f4, StructArrayLayout2f8, StructArrayLayout4f16 } = require('./array_types');
 const EvaluationParameters = require('../style/evaluation_parameters');
-const {  Uniform1f, UniformColor, Uniforms } = require('../render/uniform_binding');
+const {  Uniform1f, UniformColor } = require('../render/uniform_binding');
 
 function packColor(color) {
     return [
@@ -65,7 +65,7 @@ class ConstantBinder {
                 globals,
                 currentValue) {
         const value = currentValue.constantOr(this.value);
-        program.binderUniforms.bindings[this.uniformName].set(value);
+        program.binderUniforms[this.uniformName].set(value);
     }
 
     getBinding(context, location) {
@@ -150,7 +150,7 @@ class SourceExpressionBinder {
     }
 
     setUniforms(context, program) {
-        program.binderUniforms.bindings[this.uniformName].set(0);
+        program.binderUniforms[this.uniformName].set(0);
     }
 
     getBinding(context, location) {
@@ -247,7 +247,7 @@ class CompositeExpressionBinder {
 
     setUniforms(context, program,
                 globals) {
-        program.binderUniforms.bindings[this.uniformName].set(this.interpolationFactor(globals.zoom));
+        program.binderUniforms[this.uniformName].set(this.interpolationFactor(globals.zoom));
     }
 
     getBinding(context, location) {
@@ -373,10 +373,10 @@ class ProgramConfiguration {
     }
 
     getUniforms(context, program) {
-        program.binderUniforms = new Uniforms({});
+        program.binderUniforms = {};
         for (const property in this.binders) {
             const binder = this.binders[property];
-            program.binderUniforms.bindings[binder.uniformName] =
+            program.binderUniforms[binder.uniformName] =
                 binder.getBinding(context, program.uniforms[binder.uniformName]);
         }
     }

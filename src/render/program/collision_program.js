@@ -3,12 +3,11 @@
 const {
     Uniform1f,
     Uniform2fv,
-    UniformMatrix4fv,
-    Uniforms
+    UniformMatrix4fv
 } = require('../uniform_binding');
 const pixelsToTileUnits = require('../../source/pixels_to_tile_units');
 
-const collisionUniforms = (context, locations) => new Uniforms({
+const collisionUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_camera_to_center_distance': new Uniform1f(context, locations.u_camera_to_center_distance),
     'u_pixels_to_tile_units': new Uniform1f(context, locations.u_pixels_to_tile_units),

@@ -1,8 +1,8 @@
 "use strict";
 
-const { UniformMatrix4fv, Uniforms } = require('../uniform_binding');
+const { UniformMatrix4fv } = require('../uniform_binding');
 
-const clippingMaskUniforms = (context, locations) => new Uniforms({
+const clippingMaskUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix)
 });
 

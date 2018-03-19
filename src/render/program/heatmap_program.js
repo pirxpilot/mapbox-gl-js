@@ -6,18 +6,17 @@ const {
     Uniform1i,
     Uniform1f,
     Uniform2fv,
-    UniformMatrix4fv,
-    Uniforms
+    UniformMatrix4fv
 } = require('../uniform_binding');
 const pixelsToTileUnits = require('../../source/pixels_to_tile_units');
 
-const heatmapUniforms = (context, locations) => new Uniforms({
+const heatmapUniforms = (context, locations) => ({
     'u_extrude_scale': new Uniform1f(context, locations.u_extrude_scale),
     'u_intensity': new Uniform1f(context, locations.u_intensity),
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix)
 });
 
-const heatmapTextureUniforms = (context, locations) => new Uniforms({
+const heatmapTextureUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_world': new Uniform2fv(context, locations.u_world),
     'u_image': new Uniform1i(context, locations.u_image),

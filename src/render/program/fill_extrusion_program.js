@@ -6,20 +6,19 @@ const {
     Uniform1f,
     Uniform2fv,
     Uniform3fv,
-    UniformMatrix4fv,
-    Uniforms
+    UniformMatrix4fv
 } = require('../uniform_binding');
 
 const {mat3, vec3, mat4} = require('@mapbox/gl-matrix');
 
-const fillExtrusionUniforms = (context, locations) => new Uniforms({
+const fillExtrusionUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_lightpos': new Uniform3fv(context, locations.u_lightpos),
     'u_lightintensity': new Uniform1f(context, locations.u_lightintensity),
     'u_lightcolor': new Uniform3fv(context, locations.u_lightcolor)
 });
 
-const fillExtrusionPatternUniforms = (context, locations) => new Uniforms({
+const fillExtrusionPatternUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_lightpos': new Uniform3fv(context, locations.u_lightpos),
     'u_lightintensity': new Uniform1f(context, locations.u_lightintensity),
@@ -41,7 +40,7 @@ const fillExtrusionPatternUniforms = (context, locations) => new Uniforms({
     'u_tile_units_to_pixels': new Uniform1f(context, locations.u_tile_units_to_pixels)
 });
 
-const extrusionTextureUniforms = (context, locations) => new Uniforms({
+const extrusionTextureUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_world': new Uniform2fv(context, locations.u_world),
     'u_image': new Uniform1i(context, locations.u_image),
