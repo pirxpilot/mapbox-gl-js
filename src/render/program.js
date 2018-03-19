@@ -52,7 +52,7 @@ class Program {
         this.numAttributes = gl.getProgramParameter(this.program, gl.ACTIVE_ATTRIBUTES);
 
         this.attributes = {};
-        this.uniforms = {};
+        const uniformLocations = {};
 
         for (let i = 0; i < this.numAttributes; i++) {
             const attribute = gl.getActiveAttrib(this.program, i);
@@ -65,12 +65,12 @@ class Program {
         for (let i = 0; i < numUniforms; i++) {
             const uniform = gl.getActiveUniform(this.program, i);
             if (uniform) {
-                this.uniforms[uniform.name] = gl.getUniformLocation(this.program, uniform.name);
+                uniformLocations[uniform.name] = gl.getUniformLocation(this.program, uniform.name);
             }
         }
 
-        this.fixedUniforms = fixedUniforms(context, this.uniforms);
-        configuration.getUniforms(context, this);
+        this.fixedUniforms = fixedUniforms(context, uniformLocations);
+        this.binderUniforms = configuration.getUniforms(context, uniformLocations);
     }
 
     draw(context,
@@ -101,7 +101,7 @@ class Program {
         }
 
         if (configuration) {
-            configuration.setUniforms(context, this, currentProperties, {zoom});
+            configuration.setUniforms(context, this.binderUniforms, currentProperties, {zoom});
         }
 
         const primitiveSize = {

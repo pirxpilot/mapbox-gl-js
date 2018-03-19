@@ -59,13 +59,8 @@ class ConstantBinder {
     upload() {}
     destroy() {}
 
-    setUniforms(context,
-                program,
-                invalidate,
-                globals,
-                currentValue) {
-        const value = currentValue.constantOr(this.value);
-        program.binderUniforms[this.uniformName].set(value);
+    setUniforms(context, uniform, globals, currentValue) {
+        uniform.set(currentValue.constantOr(this.value));
     }
 
     getBinding(context, location) {
@@ -149,8 +144,8 @@ class SourceExpressionBinder {
         }
     }
 
-    setUniforms(context, program) {
-        program.binderUniforms[this.uniformName].set(0);
+    setUniforms(context, uniform) {
+        uniform.set(0);
     }
 
     getBinding(context, location) {
@@ -245,9 +240,9 @@ class CompositeExpressionBinder {
         }
     }
 
-    setUniforms(context, program,
+    setUniforms(context, uniform,
                 globals) {
-        program.binderUniforms[this.uniformName].set(this.interpolationFactor(globals.zoom));
+        uniform.set(this.interpolationFactor(globals.zoom));
     }
 
     getBinding(context, location) {
@@ -372,21 +367,22 @@ class ProgramConfiguration {
         return this._buffers;
     }
 
-    getUniforms(context, program) {
-        program.binderUniforms = {};
+    getUniforms(context, locations) {
+        const result = {};
         for (const property in this.binders) {
             const binder = this.binders[property];
-            program.binderUniforms[binder.uniformName] =
-                binder.getBinding(context, program.uniforms[binder.uniformName]);
+            result[binder.uniformName] = binder.getBinding(context, locations[binder.uniformName]);
         }
+        return result;
     }
 
-    setUniforms(context, program, properties, globals) {
+    setUniforms(context, uniformBindings, properties, globals) {
         // Uniform state bindings are owned by the Program, but we set them
         // from within the ProgramConfiguraton's binder members.
 
         for (const property in this.binders) {
-            this.binders[property].setUniforms(context, program, globals, properties.get(property));
+            const binder = this.binders[property];
+            binder.setUniforms(context, uniformBindings[binder.uniformName], globals, properties.get(property));
         }
     }
 
