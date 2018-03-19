@@ -8,13 +8,12 @@ const {
     Uniform1f,
     Uniform2fv,
     UniformColor,
-    UniformMatrix4fv,
-    Uniforms
+    UniformMatrix4fv
 } = require('../uniform_binding');
 const EXTENT = require('../../data/extent');
 const Coordinate = require('../../geo/coordinate');
 
-const hillshadeUniforms = (context, locations) => new Uniforms({
+const hillshadeUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_image': new Uniform1i(context, locations.u_image),
     'u_latrange': new Uniform2fv(context, locations.u_latrange),
@@ -24,7 +23,7 @@ const hillshadeUniforms = (context, locations) => new Uniforms({
     'u_accent': new UniformColor(context, locations.u_accent)
 });
 
-const hillshadePrepareUniforms = (context, locations) => new Uniforms({
+const hillshadePrepareUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_image': new Uniform1i(context, locations.u_image),
     'u_dimension': new Uniform2fv(context, locations.u_dimension),

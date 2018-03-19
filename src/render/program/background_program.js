@@ -6,17 +6,16 @@ const {
     Uniform1f,
     Uniform2fv,
     UniformColor,
-    UniformMatrix4fv,
-    Uniforms
+    UniformMatrix4fv
 } = require('../uniform_binding');
 
-const backgroundUniforms = (context, locations) => new Uniforms({
+const backgroundUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_opacity': new Uniform1f(context, locations.u_opacity),
     'u_color': new UniformColor(context, locations.u_color)
 });
 
-const backgroundPatternUniforms = (context, locations) => new Uniforms({
+const backgroundPatternUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_opacity': new Uniform1f(context, locations.u_opacity),
     'u_image': new Uniform1i(context, locations.u_image),

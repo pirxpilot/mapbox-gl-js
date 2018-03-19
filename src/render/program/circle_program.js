@@ -4,12 +4,11 @@ const {
     Uniform1i,
     Uniform1f,
     Uniform2fv,
-    UniformMatrix4fv,
-    Uniforms
+    UniformMatrix4fv
 } = require('../uniform_binding');
 const pixelsToTileUnits = require('../../source/pixels_to_tile_units');
 
-const circleUniforms = (context, locations) => new Uniforms({
+const circleUniforms = (context, locations) => ({
     'u_camera_to_center_distance': new Uniform1f(context, locations.u_camera_to_center_distance),
     'u_scale_with_map': new Uniform1i(context, locations.u_scale_with_map),
     'u_pitch_with_map': new Uniform1i(context, locations.u_pitch_with_map),

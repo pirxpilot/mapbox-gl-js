@@ -5,11 +5,10 @@ const {
     Uniform1f,
     Uniform2fv,
     Uniform3fv,
-    UniformMatrix4fv,
-    Uniforms
+    UniformMatrix4fv
 } = require('../uniform_binding');
 
-const rasterUniforms = (context, locations) => new Uniforms({
+const rasterUniforms = (context, locations) => ({
     'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
     'u_tl_parent': new Uniform2fv(context, locations.u_tl_parent),
     'u_scale_parent': new Uniform1f(context, locations.u_scale_parent),

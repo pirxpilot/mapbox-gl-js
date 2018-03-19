@@ -1,6 +1,5 @@
 "use strict";
 
-const assert = require('assert');
 const Color = require('../style-spec/util/color');
 
 class Uniform {
@@ -122,20 +121,6 @@ class UniformMatrix4fv extends Uniform {
     }
 }
 
-class Uniforms {
-
-    constructor(bindings) {
-        this.bindings = bindings;
-    }
-
-    set(uniformValues) {
-        for (const name in uniformValues) {
-            assert(this.bindings[name], `No binding with name ${name}`);
-            this.bindings[name].set(uniformValues[name]);
-        }
-    }
-}
-
 module.exports = {
     Uniform,
     Uniform1i,
@@ -144,6 +129,6 @@ module.exports = {
     Uniform3fv,
     Uniform4fv,
     UniformColor,
-    UniformMatrix4fv,
-    Uniforms
+    UniformMatrix4fv
 };
+
