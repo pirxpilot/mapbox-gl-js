@@ -16,6 +16,7 @@ const layout = new Properties({
     "symbol-avoid-edges": new DataConstantProperty(styleSpec["layout_symbol"]["symbol-avoid-edges"]),
     "icon-allow-overlap": new DataConstantProperty(styleSpec["layout_symbol"]["icon-allow-overlap"]),
     "icon-ignore-placement": new DataConstantProperty(styleSpec["layout_symbol"]["icon-ignore-placement"]),
+    "icon-collision-group": new DataConstantProperty(styleSpec["layout_symbol"]["icon-collision-group"]),
     "icon-optional": new DataConstantProperty(styleSpec["layout_symbol"]["icon-optional"]),
     "icon-rotation-alignment": new DataConstantProperty(styleSpec["layout_symbol"]["icon-rotation-alignment"]),
     "icon-size": new DataDrivenProperty(styleSpec["layout_symbol"]["icon-size"]),
@@ -46,6 +47,7 @@ const layout = new Properties({
     "text-offset": new DataDrivenProperty(styleSpec["layout_symbol"]["text-offset"]),
     "text-allow-overlap": new DataConstantProperty(styleSpec["layout_symbol"]["text-allow-overlap"]),
     "text-ignore-placement": new DataConstantProperty(styleSpec["layout_symbol"]["text-ignore-placement"]),
+    "text-collision-group": new DataConstantProperty(styleSpec["layout_symbol"]["text-collision-group"]),
     "text-optional": new DataConstantProperty(styleSpec["layout_symbol"]["text-optional"]),
 });
 
