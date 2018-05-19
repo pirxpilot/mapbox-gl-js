@@ -754,7 +754,7 @@ class Map extends Camera {
             this._makeQueryGeometry(geometry),
             options,
             this.transform
-        );
+        ) || [];
 
         function isPointLike(input) {
             return input instanceof Point || Array.isArray(input);
