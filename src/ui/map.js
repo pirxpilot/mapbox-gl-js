@@ -635,7 +635,7 @@ class Map extends Camera {
             params,
             this.transform.zoom,
             this.transform.angle
-        );
+        ) || [];
 
         function isPointLike(input) {
             return input instanceof Point || Array.isArray(input);
