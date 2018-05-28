@@ -81,7 +81,7 @@ exports.getImageData = function (img) {
  *   expected (i.e. a software renderer would be used)
  * @return {boolean}
  */
-exports.supported = require('mapbox-gl-supported');
+exports.supported = require('@mapbox/mapbox-gl-supported');
 
 exports.hardwareConcurrency = window.navigator.hardwareConcurrency || 4;
 
