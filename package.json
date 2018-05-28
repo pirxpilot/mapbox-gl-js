@@ -56,7 +56,6 @@
     "glob": "^7.0.3",
     "highlight.js": "^9.9.0",
     "jsdom": "^9.11.0",
-    "lodash": "^4.16.0",
     "nyc": "^10.1.2",
     "package-json-versionify": "^1.0.2",
     "pngjs": "^3.0.0",
