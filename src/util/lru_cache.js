@@ -1,5 +1,4 @@
 'use strict';
-// @flow
 
 /**
  * A [least-recently-used cache](http://en.wikipedia.org/wiki/Cache_algorithms)
@@ -8,16 +7,12 @@
  *
  * @private
  */
-class LRUCache<T> {
-    max: number;
-    data: {[key: string]: T};
-    order: Array<string>;
-    onRemove: (element: T) => void;
+class LRUCache {
     /**
      * @param {number} max number of permitted values
      * @param {Function} onRemove callback called with items when they expire
      */
-    constructor(max: number, onRemove: (element: T) => void) {
+    constructor(max, onRemove) {
         this.max = max;
         this.onRemove = onRemove;
         this.reset();
@@ -50,7 +45,7 @@ class LRUCache<T> {
      * @returns {LRUCache} this cache
      * @private
      */
-    add(key: string, data: T) {
+    add(key, data) {
 
         if (this.has(key)) {
             this.order.splice(this.order.indexOf(key), 1);
@@ -77,7 +72,7 @@ class LRUCache<T> {
      * @returns {boolean} whether the cache has this value
      * @private
      */
-    has(key: string): boolean {
+    has(key) {
         return key in this.data;
     }
 
@@ -87,7 +82,7 @@ class LRUCache<T> {
      * @returns {Array<string>} an array of keys in this cache.
      * @private
      */
-    keys(): Array<string> {
+    keys() {
         return this.order;
     }
 
@@ -99,7 +94,7 @@ class LRUCache<T> {
      * @returns {*} the data, or null if it isn't found
      * @private
      */
-    get(key: string): ?T {
+    get(key) {
         if (!this.has(key)) { return null; }
 
         const data = this.data[key];
@@ -118,7 +113,7 @@ class LRUCache<T> {
      * @returns {*} the data, or null if it isn't found
      * @private
      */
-    getWithoutRemoving(key: string): ?T {
+    getWithoutRemoving(key) {
         if (!this.has(key)) { return null; }
 
         const data = this.data[key];
@@ -132,7 +127,7 @@ class LRUCache<T> {
      * @returns {LRUCache} this cache
      * @private
      */
-    remove(key: string) {
+    remove(key) {
         if (!this.has(key)) { return this; }
 
         const data = this.data[key];
@@ -150,7 +145,7 @@ class LRUCache<T> {
      * @returns {LRUCache} this cache
      * @private
      */
-    setMaxSize(max: number): LRUCache<T> {
+    setMaxSize(max) {
         this.max = max;
 
         while (this.order.length > this.max) {

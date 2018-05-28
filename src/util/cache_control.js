@@ -1,5 +1,4 @@
 'use strict';
-// @flow
 
 /**
  * Parses data from 'Cache-Control' headers.
@@ -8,7 +7,7 @@
  * @return object containing parsed header info.
  */
 
-exports.parse = function(cacheControl: string): Object {
+exports.parse = function(cacheControl) {
     // Taken from [Wreck](https://github.com/hapijs/wreck)
     const re = /(?:^|(?:\s*\,\s*))([^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)(?:\=(?:([^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)|(?:\"((?:[^"\\]|\\.)*)\")))?/g;
 

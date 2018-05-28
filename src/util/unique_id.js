@@ -1,5 +1,4 @@
 'use strict';
-// @flow
 
 let id = 1;
 
@@ -10,6 +9,6 @@ let id = 1;
  * @returns unique numeric id.
  * @private
  */
-module.exports = function uniqueId(): number {
+module.exports = function uniqueId() {
     return id++;
 };

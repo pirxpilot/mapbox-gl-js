@@ -1,5 +1,4 @@
 'use strict';
-// @flow
 
 // Note: all "sizes" are measured in bytes
 
@@ -20,7 +19,6 @@ const viewTypes = {
 };
 
 /* eslint-disable no-undef */
-type ViewType = $Keys<typeof viewTypes>;
 /* eslint-enable no-undef */
 
 /**
@@ -35,14 +33,7 @@ type ViewType = $Keys<typeof viewTypes>;
  * @private
  */
 class Struct {
-    _pos1: number;
-    _pos2: number;
-    _pos4: number;
-    _pos8: number;
-    _structArray: StructArray;
     // The following properties are defined on the prototype of sub classes.
-    size: number;
-    alignment: number;
     /**
      * @param {StructArray} structArray The StructArray the struct is stored in
      * @param {number} index The index of the struct in the StructArray.
@@ -60,12 +51,6 @@ class Struct {
 const DEFAULT_CAPACITY = 128;
 const RESIZE_MULTIPLIER = 5;
 
-type StructArrayMember = {|
-    name: string,
-    type: ViewType,
-    components: number,
-    offset: number
-|};
 
 /**
  * The StructArray class is inherited by the custom StructArrayType classes created with
@@ -73,26 +58,8 @@ type StructArrayMember = {|
  * @private
  */
 class StructArray {
-    capacity: number;
-    length: number;
-    isTransferred: boolean;
-    arrayBuffer: ArrayBuffer;
-    int8: ?Int8Array;
-    uint8: Uint8Array;
-    uint8clamped: ?Uint8ClampedArray;
-    int16: ?Int16Array;
-    uint16: ?Uint16Array;
-    int32: ?Int32Array;
-    uint32: ?Uint32Array;
-    float32: ?Float32Array;
-    float64: ?Float64Array;
     // The following properties aer defined on the prototype.
-    members: Array<StructArrayMember>;
-    StructType: typeof Struct;
-    bytesPerElement: number;
-    _usedTypes: Array<ViewType>;
-    emplaceBack: Function;
-    constructor(serialized?: {arrayBuffer: ArrayBuffer, length: number}) {
+    constructor(serialized) {
         this.isTransferred = false;
 
         if (serialized !== undefined) {
@@ -123,7 +90,7 @@ class StructArray {
     /**
      * Serialize this StructArray instance
      */
-    serialize(transferables: ?{push: (buffer: ArrayBuffer) => void}) {
+    serialize(transferables) {
         assert(!this.isTransferred);
 
         this._trim();
@@ -142,7 +109,7 @@ class StructArray {
      * Return the Struct at the given location in the array.
      * @param {number} index The index of the element.
      */
-    get(index: number) {
+    get(index) {
         assert(!this.isTransferred);
         return new this.StructType(this, index);
     }
@@ -164,7 +131,7 @@ class StructArray {
      * If `n` is less than the current length then the array will be reduced to the first `n` elements.
      * @param {number} n The new size of the array.
      */
-    resize(n: number) {
+    resize(n) {
         assert(!this.isTransferred);
 
         this.length = n;
@@ -193,7 +160,7 @@ class StructArray {
      * @param {number} startIndex
      * @param {number} endIndex
      */
-    toArray(startIndex: number, endIndex: number) {
+    toArray(startIndex, endIndex) {
         assert(!this.isTransferred);
 
         const array = [];
@@ -207,7 +174,7 @@ class StructArray {
     }
 }
 
-const structArrayTypeCache: {[key: string]: typeof StructArray} = {};
+const structArrayTypeCache = {};
 
 /**
  * `createStructArrayType` is used to create new `StructArray` types.
@@ -245,10 +212,7 @@ const structArrayTypeCache: {[key: string]: typeof StructArray} = {};
  * @private
  */
 
-function createStructArrayType(options: {|
-  members: Array<{type: ViewType, name: string, components?: number}>,
-  alignment?: number
-|}) {
+function createStructArrayType(options) {
 
     const key = JSON.stringify(options);
 
@@ -318,15 +282,15 @@ function createStructArrayType(options: {|
     return StructArrayType;
 }
 
-function align(offset: number, size: number): number {
+function align(offset, size) {
     return Math.ceil(offset / size) * size;
 }
 
-function sizeOf(type: ViewType): number {
+function sizeOf(type) {
     return viewTypes[type].BYTES_PER_ELEMENT;
 }
 
-function getArrayViewName(type: ViewType): string {
+function getArrayViewName(type) {
     return type.toLowerCase();
 }
 
@@ -335,7 +299,7 @@ function getArrayViewName(type: ViewType): string {
  * > elementIndex to i) (likely due to v8 inlining heuristics).
  * - lucaswoj
  */
-function createEmplaceBack(members, bytesPerElement): Function {
+function createEmplaceBack(members, bytesPerElement) {
     const usedTypeSizes = [];
     const argNames = [];
     let body = `

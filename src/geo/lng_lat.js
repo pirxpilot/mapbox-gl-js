@@ -1,5 +1,4 @@
 'use strict';
-// @flow
 
 const wrap = require('../util/util').wrap;
 
@@ -22,9 +21,7 @@ const wrap = require('../util/util').wrap;
  * @see [Create a timeline animation](https://www.mapbox.com/mapbox-gl-js/example/timeline-animation/)
  */
 class LngLat {
-    lng: number;
-    lat: number;
-    constructor(lng: number, lat: number) {
+    constructor(lng, lat) {
         if (isNaN(lng) || isNaN(lat)) {
             throw new Error(`Invalid LngLat object: (${lng}, ${lat})`);
         }
@@ -84,7 +81,7 @@ class LngLat {
      * var ll = mapboxgl.LngLat.convert(arr);
      * ll;   // = LngLat {lng: -73.9749, lat: 40.7736}
      */
-    static convert(input: mixed): LngLat {
+    static convert(input) {
         if (input instanceof LngLat) {
             return input;
         }

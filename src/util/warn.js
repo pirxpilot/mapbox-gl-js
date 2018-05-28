@@ -1,5 +1,4 @@
 'use strict';
-// @flow
 
 /**
  * Print a warning message to the console and ensure duplicate warning messages
@@ -7,8 +6,8 @@
  *
  * @private
  */
-const warnOnceHistory: {[key: string]: boolean} = {};
-exports.once = function(message: string): void {
+const warnOnceHistory = {};
+exports.once = function(message) {
     if (!warnOnceHistory[message]) {
         // console isn't defined in some WebWorkers, see #2558
         if (typeof console !== "undefined") console.warn(message);

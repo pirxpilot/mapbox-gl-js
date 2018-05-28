@@ -1,5 +1,4 @@
 'use strict';
-// @flow
 
 /*
  * Polyfill for Object.values. Not fully spec compliant, but we don't
@@ -7,7 +6,7 @@
  *
  * @private
  */
-exports.values = function (obj: {[key: string]: mixed}): Array<mixed> {
+exports.values = function (obj) {
     const result = [];
     for (const k in obj) {
         result.push(obj[k]);
@@ -22,7 +21,7 @@ exports.values = function (obj: {[key: string]: mixed}): Array<mixed> {
  * @returns keys difference
  * @private
  */
-exports.keysDifference = function (obj: {[key: string]: mixed}, other: {[key: string]: mixed}): Array<string> {
+exports.keysDifference = function (obj, other) {
     const difference = [];
     for (const i in obj) {
         if (!(i in other)) {
@@ -46,7 +45,7 @@ exports.keysDifference = function (obj: {[key: string]: mixed}, other: {[key: st
  * // justName = { name: 'Charlie' }
  * @private
  */
-exports.pick = function (src: Object, properties: Array<string>): Object {
+exports.pick = function (src, properties) {
     const result = {};
     for (let i = 0; i < properties.length; i++) {
         const k = properties[i];
@@ -78,7 +77,7 @@ exports.pick = function (src: Object, properties: Array<string>): Object {
  * setTimeout(myClass.ontimer, 100);
  * @private
  */
-exports.bindAll = function(fns: Array<string>, context: Object): void {
+exports.bindAll = function(fns, context) {
     fns.forEach((fn) => {
         if (!context[fn]) { return; }
         context[fn] = context[fn].bind(context);
@@ -91,7 +90,7 @@ exports.bindAll = function(fns: Array<string>, context: Object): void {
  *
  * @private
  */
-exports.map = function(input: Object, iterator: Function, context?: Object): Object {
+exports.map = function(input, iterator, context) {
     const output = {};
     for (const key in input) {
         output[key] = iterator.call(context || this, input[key], key, input);
@@ -104,7 +103,7 @@ exports.map = function(input: Object, iterator: Function, context?: Object): Obj
  *
  * @private
  */
-exports.filter = function(input: Object, iterator: Function, context?: Object): Object {
+exports.filter = function(input, iterator, context) {
     const output = {};
     for (const key in input) {
         if (iterator.call(context || this, input[key], key, input)) {
@@ -119,7 +118,7 @@ exports.filter = function(input: Object, iterator: Function, context?: Object): 
  *
  * @private
  */
-exports.deepEqual = function(a: ?mixed, b: ?mixed): boolean {
+exports.deepEqual = function(a, b) {
     if (Array.isArray(a)) {
         if (!Array.isArray(b) || a.length !== b.length) return false;
         for (let i = 0; i < a.length; i++) {
@@ -144,11 +143,11 @@ exports.deepEqual = function(a: ?mixed, b: ?mixed): boolean {
  *
  * @private
  */
-exports.clone = function<T>(input: T): T {
+exports.clone = function(input) {
     if (Array.isArray(input)) {
         return input.map(exports.clone);
     } else if (typeof input === 'object' && input) {
-        return ((exports.map(input, exports.clone): any): T);
+        return ((exports.map(input, exports.clone)));
     } else {
         return input;
     }
@@ -159,7 +158,7 @@ exports.clone = function<T>(input: T): T {
  *
  * @private
  */
-exports.arraysIntersect = function(a: Array<any>, b: Array<any>): boolean {
+exports.arraysIntersect = function(a, b) {
     for (let l = 0; l < a.length; l++) {
         if (b.indexOf(a[l]) >= 0) return true;
     }

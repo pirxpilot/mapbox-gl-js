@@ -1,6 +1,4 @@
 'use strict';
-// @flow
-
 
 /*
  * Call an asynchronous function on an array of arguments,
@@ -12,10 +10,10 @@
  * called with an array, containing the results of each async call.
  * @private
  */
-exports.all = function<Item, Result> (
-    array: Array<Item>,
-    fn: (item: Item, fnCallback: (error: Error | null, result: Result) => void) => void,
-    callback: (error: Error | null, results: Array<Result>) => void
+exports.all = function (
+    array,
+    fn,
+    callback
 ) {
     if (!array.length) { return callback(null, []); }
     let remaining = array.length;

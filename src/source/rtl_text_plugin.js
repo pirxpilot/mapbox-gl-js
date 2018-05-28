@@ -1,5 +1,4 @@
 'use strict';
-// @flow
 
 const ajax = require('../util/ajax');
 const Evented = require('../util/evented');
@@ -10,10 +9,9 @@ let pluginBlobURL = null;
 
 module.exports.evented = new Evented();
 
-type ErrorCallback = (error: Error) => void;
 
 module.exports.registerForPluginAvailability = function(
-    callback: (pluginBlobURL: string, errorCallback: ErrorCallback) => void
+    callback
 ) {
     if (pluginBlobURL) {
         callback(pluginBlobURL, module.exports.errorCallback);
@@ -23,7 +21,7 @@ module.exports.registerForPluginAvailability = function(
     return callback;
 };
 
-module.exports.setRTLTextPlugin = function(pluginURL: string, callback: ErrorCallback) {
+module.exports.setRTLTextPlugin = function(pluginURL, callback) {
     if (pluginRequested) {
         throw new Error('setRTLTextPlugin cannot be called multiple times.');
     }

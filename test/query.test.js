@@ -1,6 +1,5 @@
 'use strict';
 
-require('flow-remove-types/register');
 const querySuite = require('./integration').query;
 const suiteImplementation = require('./suite_implementation');
 

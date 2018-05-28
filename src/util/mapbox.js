@@ -1,18 +1,11 @@
 'use strict';
-// @flow
 
 const config = require('./config');
 
 const help = 'See https://www.mapbox.com/api-documentation/#access-tokens';
 
-type UrlObject = {|
-    protocol: string,
-    authority: string,
-    path: string,
-    params: Array<string>
-|};
 
-function makeAPIURL(urlObject: UrlObject, accessToken): string {
+function makeAPIURL(urlObject, accessToken) {
     const apiUrlObject = parseUrl(config.API_URL);
     urlObject.protocol = apiUrlObject.protocol;
     urlObject.authority = apiUrlObject.authority;
@@ -29,27 +22,27 @@ function makeAPIURL(urlObject: UrlObject, accessToken): string {
     return formatUrl(urlObject);
 }
 
-function isMapboxURL(url: string) {
+function isMapboxURL(url) {
     return url.startsWith('mapbox:');
 }
 
 exports.isMapboxURL = isMapboxURL;
 
-exports.normalizeStyleURL = function(url: string, accessToken: string): string {
+exports.normalizeStyleURL = function(url, accessToken) {
     if (!isMapboxURL(url)) return url;
     const urlObject = parseUrl(url);
     urlObject.path = `/styles/v1${urlObject.path}`;
     return makeAPIURL(urlObject, accessToken);
 };
 
-exports.normalizeGlyphsURL = function(url: string, accessToken: string): string {
+exports.normalizeGlyphsURL = function(url, accessToken) {
     if (!isMapboxURL(url)) return url;
     const urlObject = parseUrl(url);
     urlObject.path = `/fonts/v1${urlObject.path}`;
     return makeAPIURL(urlObject, accessToken);
 };
 
-exports.normalizeSourceURL = function(url: string, accessToken: string): string {
+exports.normalizeSourceURL = function(url, accessToken) {
     if (!isMapboxURL(url)) return url;
     const urlObject = parseUrl(url);
     urlObject.path = `/v4/${urlObject.authority}.json`;
@@ -59,7 +52,7 @@ exports.normalizeSourceURL = function(url: string, accessToken: string): string 
     return makeAPIURL(urlObject, accessToken);
 };
 
-exports.normalizeSpriteURL = function(url: string, format: string, extension: string, accessToken: string): string {
+exports.normalizeSpriteURL = function(url, format, extension, accessToken) {
     const urlObject = parseUrl(url);
     if (!isMapboxURL(url)) {
         urlObject.path += `${format}${extension}`;
@@ -69,7 +62,7 @@ exports.normalizeSpriteURL = function(url: string, format: string, extension: st
     return makeAPIURL(urlObject, accessToken);
 };
 
-exports.normalizeTileURL = function(tileURL: string, sourceURL?: ?string): string {
+exports.normalizeTileURL = function(tileURL, sourceURL) {
     if (!sourceURL || !isMapboxURL(sourceURL)) return tileURL;
 
     const urlObject = parseUrl(tileURL);
@@ -78,7 +71,7 @@ exports.normalizeTileURL = function(tileURL: string, sourceURL?: ?string): strin
     return formatUrl(urlObject);
 };
 
-function replaceTempAccessToken(params: Array<string>) {
+function replaceTempAccessToken(params) {
     for (let i = 0; i < params.length; i++) {
         if (params[i].startsWith('access_token=tk.')) {
             params[i] = `access_token=${config.ACCESS_TOKEN || ''}`;
@@ -88,7 +81,7 @@ function replaceTempAccessToken(params: Array<string>) {
 
 const urlRe = /^(\w+):\/\/([^/?]*)(\/[^?]+)?\??(.+)?/;
 
-function parseUrl(url: string): UrlObject {
+function parseUrl(url) {
     const parts = url.match(urlRe);
     if (!parts) {
         throw new Error('Unable to parse URL object');
@@ -101,7 +94,7 @@ function parseUrl(url: string): UrlObject {
     };
 }
 
-function formatUrl(obj: UrlObject): string {
+function formatUrl(obj) {
     const params = obj.params.length ? `?${obj.params.join('&')}` : '';
     return `${obj.protocol}://${obj.authority}${obj.path}${params}`;
 }

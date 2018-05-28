@@ -1,9 +1,7 @@
 'use strict';
-// @flow
 
 const UnitBezier = require('@mapbox/unitbezier');
 const Coordinate = require('../geo/coordinate');
-const Point = require('@mapbox/point-geometry');
 
 /**
  * Given a value `t` that varies between 0 and 1, return
@@ -12,7 +10,7 @@ const Point = require('@mapbox/point-geometry');
  *
  * @private
  */
-exports.easeCubicInOut = function(t: number): number {
+exports.easeCubicInOut = function(t) {
     if (t <= 0) return 0;
     if (t >= 1) return 1;
     const t2 = t * t,
@@ -30,9 +28,9 @@ exports.easeCubicInOut = function(t: number): number {
  * @param p2y control point 2 y coordinate
  * @private
  */
-exports.bezier = function(p1x: number, p1y: number, p2x: number, p2y: number): (t: number) => number {
+exports.bezier = function(p1x, p1y, p2x, p2y) {
     const bezier = new UnitBezier(p1x, p1y, p2x, p2y);
-    return function(t: number) {
+    return function(t) {
         return bezier.solve(t);
     };
 };
@@ -54,7 +52,7 @@ exports.ease = exports.bezier(0.25, 0.1, 0.25, 1);
  * @returns the clamped value
  * @private
  */
-exports.clamp = function (n: number, min: number, max: number): number {
+exports.clamp = function (n, min, max) {
     return Math.min(max, Math.max(min, n));
 };
 
@@ -67,7 +65,7 @@ exports.clamp = function (n: number, min: number, max: number): number {
  * @returns constrained number
  * @private
  */
-exports.wrap = function (n: number, min: number, max: number): number {
+exports.wrap = function (n, min, max) {
     const d = max - min;
     const w = ((n - min) % d + d) % d + min;
     return (w === min) ? max : w;
@@ -82,7 +80,7 @@ let id = 1;
  * @returns unique numeric id.
  * @private
  */
-exports.uniqueId = function (): number {
+exports.uniqueId = function () {
     return id++;
 };
 
@@ -92,7 +90,7 @@ exports.uniqueId = function (): number {
  * @returns centerpoint
  * @private
  */
-exports.getCoordinatesCenter = function(coords: Array<Coordinate>): Coordinate {
+exports.getCoordinatesCenter = function(coords) {
     let minX = Infinity;
     let minY = Infinity;
     let maxX = -Infinity;
@@ -119,7 +117,7 @@ exports.getCoordinatesCenter = function(coords: Array<Coordinate>): Coordinate {
  * @returns true for a counter clockwise set of points
  */
 // http://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
-exports.isCounterClockwise = function(a: Point, b: Point, c: Point): boolean {
+exports.isCounterClockwise = function(a, b, c) {
     return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
 };
 
@@ -130,7 +128,7 @@ exports.isCounterClockwise = function(a: Point, b: Point, c: Point): boolean {
  *
  * @param ring Exterior or interior ring
  */
-exports.calculateSignedArea = function(ring: Array<Point>): number {
+exports.calculateSignedArea = function(ring) {
     let sum = 0;
     for (let i = 0, len = ring.length, j = len - 1, p1, p2; i < len; j = i++) {
         p1 = ring[i];
@@ -146,7 +144,7 @@ exports.calculateSignedArea = function(ring: Array<Point>): number {
  * @param points array of points
  * @return true if the points are a closed polygon
  */
-exports.isClosedPolygon = function(points: Array<Point>): boolean {
+exports.isClosedPolygon = function(points) {
     // If it is 2 points that are the same then it is a point
     // If it is 3 points with start and end the same then it is a line
     if (points.length < 4)
@@ -171,7 +169,7 @@ exports.isClosedPolygon = function(points: Array<Point>): boolean {
  * @return cartesian coordinates in [x, y, z]
  */
 
-exports.sphericalToCartesian = function(spherical: Array<number>): Array<number> {
+exports.sphericalToCartesian = function(spherical) {
     const r = spherical[0];
     let azimuthal = spherical[1],
         polar = spherical[2];

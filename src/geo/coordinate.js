@@ -1,5 +1,4 @@
 'use strict';
-// @flow
 
 /**
  * A coordinate is a column, row, zoom combination, often used
@@ -11,10 +10,7 @@
  * @private
  */
 class Coordinate {
-    column: number;
-    row: number;
-    zoom: number;
-    constructor(column: number, row: number, zoom: number) {
+    constructor(column, row, zoom) {
         this.column = column;
         this.row = row;
         this.zoom = zoom;
@@ -48,7 +44,7 @@ class Coordinate {
      * var c2 = coord.zoomTo(1);
      * c2 // equals new Coordinate(0, 0, 1);
      */
-    zoomTo(zoom: number) { return this.clone()._zoomTo(zoom); }
+    zoomTo(zoom) { return this.clone()._zoomTo(zoom); }
 
     /**
      * Subtract the column and row values of this coordinate from those
@@ -59,9 +55,9 @@ class Coordinate {
      * @returns {Coordinate} result
      * @private
      */
-    sub(c: Coordinate) { return this.clone()._sub(c); }
+    sub(c) { return this.clone()._sub(c); }
 
-    _zoomTo(zoom: number) {
+    _zoomTo(zoom) {
         const scale = Math.pow(2, zoom - this.zoom);
         this.column *= scale;
         this.row *= scale;
@@ -69,7 +65,7 @@ class Coordinate {
         return this;
     }
 
-    _sub(c: Coordinate) {
+    _sub(c) {
         c = c.zoomTo(this.zoom);
         this.column -= c.column;
         this.row -= c.row;

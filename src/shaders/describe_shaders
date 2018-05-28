@@ -6,7 +6,6 @@
 // style JSON
 // Usage: describe_shaders path/to/style.json zoom
 
-require('flow-remove-types/register');
 const fs = require('fs');
 const deref = require('../style-spec/deref');
 const util = require('../util/util');
