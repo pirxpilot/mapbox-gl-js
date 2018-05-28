@@ -1,4 +1,7 @@
 {
+  "plugins": [
+    "html"
+  ],
   "rules": {
     "prefer-arrow-callback": "off",
     "no-var": "off",
