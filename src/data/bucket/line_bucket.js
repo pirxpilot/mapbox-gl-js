@@ -4,7 +4,7 @@ const Bucket = require('../bucket');
 const createElementArrayType = require('../element_array_type');
 const loadGeometry = require('../load_geometry');
 const EXTENT = require('../extent');
-const VectorTileFeature = require('vector-tile').VectorTileFeature;
+const VectorTileFeature = require('@mapbox/vector-tile').VectorTileFeature;
 
 // NOTE ON EXTRUDE SCALE:
 // scale the extrusion vector so that the normal length is this value.

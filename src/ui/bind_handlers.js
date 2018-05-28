@@ -1,7 +1,7 @@
 'use strict';
 
 const DOM = require('../util/dom');
-const Point = require('point-geometry');
+const Point = require('@mapbox/point-geometry');
 
 const handlers = {
     scrollZoom: require('./handler/scroll_zoom'),

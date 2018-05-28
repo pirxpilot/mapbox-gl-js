@@ -1,6 +1,6 @@
 'use strict';
 const Queue = require('tinyqueue');
-const Point = require('point-geometry');
+const Point = require('@mapbox/point-geometry');
 const distToSegmentSquared = require('./intersection_tests').distToSegmentSquared;
 
 /**

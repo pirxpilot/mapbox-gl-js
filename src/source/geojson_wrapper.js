@@ -1,7 +1,7 @@
 'use strict';
 
-const Point = require('point-geometry');
-const VectorTileFeature = require('vector-tile').VectorTileFeature;
+const Point = require('@mapbox/point-geometry');
+const VectorTileFeature = require('@mapbox/vector-tile').VectorTileFeature;
 const EXTENT = require('../data/extent');
 
 class FeatureWrapper {

@@ -5,7 +5,7 @@ const suite = new Benchmark.Suite();
 
 const Transform = require('../../src/geo/transform');
 const LngLat = require('../../src/geo/lng_lat.js');
-const Point = require('point-geometry');
+const Point = require('@mapbox/point-geometry');
 
 const t = new Transform();
 t.resize(512, 512);

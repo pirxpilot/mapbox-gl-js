@@ -4,7 +4,7 @@ const test = require('mapbox-gl-js-test').test;
 
 const getIconQuads = require('../../../src/symbol/quads').getIconQuads;
 const Anchor = require('../../../src/symbol/anchor');
-const Point = require('point-geometry');
+const Point = require('@mapbox/point-geometry');
 
 function createLayer(layer) {
     return {

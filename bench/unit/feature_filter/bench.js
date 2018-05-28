@@ -1,6 +1,6 @@
 'use strict';
 
-const VectorTile = require('vector-tile').VectorTile;
+const VectorTile = require('@mapbox/vector-tile').VectorTile;
 const Pbf = require('pbf');
 const fs = require('fs');
 const createFilter = require('../../../src/style-spec').featureFilter;

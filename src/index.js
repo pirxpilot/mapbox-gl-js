@@ -18,7 +18,7 @@ mapboxgl.Style = require('./style/style');
 
 mapboxgl.LngLat = require('./geo/lng_lat');
 mapboxgl.LngLatBounds = require('./geo/lng_lat_bounds');
-mapboxgl.Point = require('point-geometry');
+mapboxgl.Point = require('@mapbox/point-geometry');
 
 mapboxgl.Evented = require('./util/evented');
 mapboxgl.supported = require('./util/browser').supported;

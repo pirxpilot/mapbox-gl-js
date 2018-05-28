@@ -3,7 +3,7 @@
 
 const UnitBezier = require('@mapbox/unitbezier');
 const Coordinate = require('../geo/coordinate');
-const Point = require('point-geometry');
+const Point = require('@mapbox/point-geometry');
 
 /**
  * Given a value `t` that varies between 0 and 1, return

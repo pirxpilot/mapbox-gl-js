@@ -1,5 +1,5 @@
 'use strict';
-const vt = require('vector-tile');
+const vt = require('@mapbox/vector-tile');
 const loader = require('../util/loader');
 const Protobuf = require('pbf');
 const WorkerTile = require('./worker_tile');

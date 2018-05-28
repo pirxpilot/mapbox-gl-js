@@ -1,6 +1,6 @@
 'use strict';
 
-const Point = require('point-geometry');
+const Point = require('@mapbox/point-geometry');
 const EXTENT = require('../data/extent');
 const Grid = require('grid-index');
 
