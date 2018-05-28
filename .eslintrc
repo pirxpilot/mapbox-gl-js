@@ -4,9 +4,6 @@
   "parserOptions": {
     "sourceType": "script",
   },
-  "plugins": [
-    "flowtype"
-  ],
   "rules": {
     "array-bracket-spacing": "off",
     "block-scoped-var": "error",

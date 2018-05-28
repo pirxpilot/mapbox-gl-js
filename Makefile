@@ -19,7 +19,7 @@ dist/%.js: dist/%-dev.js
 
 all: check build
 
-check: lint flow test
+check: lint test
 
 build: $(BUILD)
 
@@ -50,9 +50,6 @@ test-render:
 
 test-query:
 	node test/query.test.js
-
-flow:
-	$(NODE_BIN)/flow .
 
 test-query:
 
