@@ -52,7 +52,7 @@
     "flow-bin": "^0.42.0",
     "flow-remove-types": "^1.0.4",
     "github-slugger": "^1.1.1",
-    "gl": "^4.0.1",
+    "gl": "^4.0.4",
     "glob": "^7.0.3",
     "highlight.js": "^9.9.0",
     "jsdom": "^9.11.0",
