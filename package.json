@@ -64,7 +64,6 @@
     "uglify-js": "2.7.5",
     "unassertify": "^2.0.0",
     "unflowify": "^1.0.0",
-    "watchify": "^3.7.0",
     "webworkify": "^1.4.0"
   },
   "browserify": {
