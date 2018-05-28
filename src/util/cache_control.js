@@ -9,7 +9,9 @@
 
 exports.parse = function(cacheControl) {
     // Taken from [Wreck](https://github.com/hapijs/wreck)
+    /* eslint-disable no-control-regex */
     const re = /(?:^|(?:\s*\,\s*))([^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)(?:\=(?:([^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)|(?:\"((?:[^"\\]|\\.)*)\")))?/g;
+    /* eslint-enable no-control-regex */
 
     const header = {};
     cacheControl.replace(re, ($0, $1, $2, $3) => {

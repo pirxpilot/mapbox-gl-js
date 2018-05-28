@@ -1,6 +1,5 @@
 {
   "extends": "mourner",
-  "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "script",
   },
