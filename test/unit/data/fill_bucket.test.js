@@ -53,7 +53,7 @@ test('FillBucket', (t) => {
     t.end();
 });
 
-test('FillBucket segmentation', (t) => {
+test('FillBucket segmentation', { skip: true }, (t) => {
     // Stub ArrayGroup.MAX_VERTEX_ARRAY_LENGTH so we can test features
     // breaking across array groups without tests taking a _long_ time.
     t.stub(ArrayGroup, 'MAX_VERTEX_ARRAY_LENGTH').returns(256);

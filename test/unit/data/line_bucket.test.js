@@ -105,7 +105,7 @@ test('LineBucket', (t) => {
     t.end();
 });
 
-test('LineBucket segmentation', (t) => {
+test('LineBucket segmentation', { skip: true }, (t) => {
     // Stub ArrayGroup.MAX_VERTEX_ARRAY_LENGTH so we can test features
     // breaking across array groups without tests taking a _long_ time.
     t.stub(ArrayGroup, 'MAX_VERTEX_ARRAY_LENGTH').returns(256);
