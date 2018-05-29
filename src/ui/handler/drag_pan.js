@@ -57,8 +57,8 @@ class DragPanHandler {
     enable() {
         if (this.isEnabled()) return;
         this._el.classList.add('mapboxgl-touch-drag-pan');
-        this._el.addEventListener('mousedown', this._onDown);
-        this._el.addEventListener('touchstart', this._onDown);
+        DOM.addEventListener(this._el, 'mousedown', this._onDown, { passive: false });
+        DOM.addEventListener(this._el, 'touchstart', this._onDown, { passive: false });
         this._enabled = true;
     }
 
@@ -71,8 +71,8 @@ class DragPanHandler {
     disable() {
         if (!this.isEnabled()) return;
         this._el.classList.remove('mapboxgl-touch-drag-pan');
-        this._el.removeEventListener('mousedown', this._onDown);
-        this._el.removeEventListener('touchstart', this._onDown);
+        DOM.removeEventListener(this._el, 'mousedown', this._onDown, { passive: false });
+        DOM.removeEventListener(this._el, 'touchstart', this._onDown, { passive: false });
         this._enabled = false;
     }
 
@@ -81,14 +81,14 @@ class DragPanHandler {
         if (this.isActive()) return;
 
         if (e.touches) {
-            window.document.addEventListener('touchmove', this._onMove);
-            window.document.addEventListener('touchend', this._onTouchEnd);
+            DOM.addEventListener(window.document, 'touchmove', this._onMove, { passive: false });
+            DOM.addEventListener(window.document, 'touchend', this._onTouchEnd);
         } else {
-            window.document.addEventListener('mousemove', this._onMove);
-            window.document.addEventListener('mouseup', this._onMouseUp);
+            DOM.addEventListener(window.document, 'mousemove', this._onMove, { passive: false });
+            DOM.addEventListener(window.document, 'mouseup', this._onMouseUp);
         }
         /* Deactivate DragPan when the window looses focus. Otherwise if a mouseup occurs when the window isn't in focus, DragPan will still be active even though the mouse is no longer pressed. */
-        window.addEventListener('blur', this._onMouseUp);
+        DOM.addEventListener(window, 'blur', this._onMouseUp);
 
         this._active = false;
         this._startPos = this._pos = DOM.mousePos(this._el, e);
@@ -172,16 +172,16 @@ class DragPanHandler {
     _onMouseUp(e) {
         if (this._ignoreEvent(e)) return;
         this._onUp(e);
-        window.document.removeEventListener('mousemove', this._onMove);
-        window.document.removeEventListener('mouseup', this._onMouseUp);
-        window.removeEventListener('blur', this._onMouseUp);
+        DOM.removeEventListener(window.document, 'mousemove', this._onMove, { passive: false });
+        DOM.removeEventListener(window.document, 'mouseup', this._onMouseUp);
+        DOM.removeEventListener(window, 'blur', this._onMouseUp);
     }
 
     _onTouchEnd(e) {
         if (this._ignoreEvent(e)) return;
         this._onUp(e);
-        window.document.removeEventListener('touchmove', this._onMove);
-        window.document.removeEventListener('touchend', this._onTouchEnd);
+        DOM.removeEventListener(window.document, 'touchmove', this._onMove, { passive: false });
+        DOM.removeEventListener(window.document, 'touchend', this._onTouchEnd);
     }
 
     _fireEvent(type, e) {

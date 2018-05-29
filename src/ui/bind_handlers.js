@@ -27,17 +27,17 @@ module.exports = function bindHandlers(map, options) {
         }
     }
 
-    el.addEventListener('mouseout', onMouseOut, false);
-    el.addEventListener('mousedown', onMouseDown, false);
-    el.addEventListener('mouseup', onMouseUp, false);
-    el.addEventListener('mousemove', onMouseMove, false);
-    el.addEventListener('touchstart', onTouchStart, false);
-    el.addEventListener('touchend', onTouchEnd, false);
-    el.addEventListener('touchmove', onTouchMove, false);
-    el.addEventListener('touchcancel', onTouchCancel, false);
-    el.addEventListener('click', onClick, false);
-    el.addEventListener('dblclick', onDblClick, false);
-    el.addEventListener('contextmenu', onContextMenu, false);
+    DOM.addEventListener(el, 'mouseout', onMouseOut, false);
+    DOM.addEventListener(el, 'mousedown', onMouseDown, false);
+    DOM.addEventListener(el, 'mouseup', onMouseUp, false);
+    DOM.addEventListener(el, 'mousemove', onMouseMove, false);
+    DOM.addEventListener(el, 'touchstart', onTouchStart, false, { passive: false });
+    DOM.addEventListener(el, 'touchend', onTouchEnd, false);
+    DOM.addEventListener(el, 'touchmove', onTouchMove, false, { passive: false });
+    DOM.addEventListener(el, 'touchcancel', onTouchCancel, false);
+    DOM.addEventListener(el, 'click', onClick, false);
+    DOM.addEventListener(el, 'dblclick', onDblClick, false);
+    DOM.addEventListener(el, 'contextmenu', onContextMenu, false);
 
     function onMouseOut(e) {
         fireMouseEvent('mouseout', e);
