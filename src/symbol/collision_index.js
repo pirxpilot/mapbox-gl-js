@@ -284,17 +284,17 @@ class CollisionIndex {
         return result;
     }
 
-    insertCollisionBox(collisionBox, ignorePlacement, bucketInstanceId, featureIndex, collisionGroup) {
+    insertCollisionBox(collisionBox, ignorePlacement, bucketInstanceId, featureIndex, collisionGroupID) {
         const grid = ignorePlacement ? this.ignoredGrid : this.grid;
 
-        const key = { bucketInstanceId: bucketInstanceId, featureIndex: featureIndex, collisionGroup: collisionGroup };
+        const key = { bucketInstanceId: bucketInstanceId, featureIndex: featureIndex, collisionGroupID: collisionGroupID };
         grid.insert(key, collisionBox[0], collisionBox[1], collisionBox[2], collisionBox[3]);
     }
 
-    insertCollisionCircles(collisionCircles, ignorePlacement, bucketInstanceId, featureIndex, collisionGroup) {
+    insertCollisionCircles(collisionCircles, ignorePlacement, bucketInstanceId, featureIndex, collisionGroupID) {
         const grid = ignorePlacement ? this.ignoredGrid : this.grid;
 
-        const key = { bucketInstanceId: bucketInstanceId, featureIndex: featureIndex, collisionGroup: collisionGroup };
+        const key = { bucketInstanceId: bucketInstanceId, featureIndex: featureIndex, collisionGroupID: collisionGroupID };
         for (let k = 0; k < collisionCircles.length; k += 4) {
             grid.insertCircle(key, collisionCircles[k], collisionCircles[k + 1], collisionCircles[k + 2]);
         }

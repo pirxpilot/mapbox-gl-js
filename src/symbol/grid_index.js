@@ -103,17 +103,15 @@ class GridIndex {
                     y2: y + radius
                 });
             }
-            if (predicate) {
-                return result.filter(predicate);
-            }
+            return predicate ? result.filter(predicate) : result;
         } else {
             const queryArgs = {
                 hitTest,
                 seenUids: { box: {}, circle: {} }
             };
             this._forEachCell(x1, y1, x2, y2, this._queryCell, result, queryArgs, predicate);
+            return hitTest ? result.length > 0 : result;
         }
-        return hitTest ? result.length > 0 : result;
     }
 
     _queryCircle(x, y, radius, hitTest, predicate) {

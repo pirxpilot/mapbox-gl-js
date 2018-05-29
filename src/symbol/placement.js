@@ -64,37 +64,30 @@ class RetainedQueryData {
 
 class CollisionGroups {
 
-    constructor() {
+    constructor(crossSourceCollisions) {
+        this.crossSourceCollisions = crossSourceCollisions;
         this.maxGroupID = 0;
-        this.collisionGroups = {
-            undefined: {
-                ID: 0,
-                predicate: null
-            }
-        };
+        this.collisionGroups = {};
     }
 
-    get(groupName) {
-        if (groupName && this.maxGroupID === 0) {
-            // Keep the predicate null until the first collision
-            // group gets added to avoid overhead in the case
-            // everything's in the default group.
-            this.collisionGroups[undefined].predicate =
-                (key) => {
-                    return key.collisionGroup === 0;
+    get(sourceID) {
+        // The predicate/groupID mechanism allows for arbitrary grouping,
+        // but the current interface defines one source == one group when
+        // crossSourceCollisions == true.
+        if (!this.crossSourceCollisions) {
+            if (!this.collisionGroups[sourceID]) {
+                const nextGroupID = ++this.maxGroupID;
+                this.collisionGroups[sourceID] = {
+                    ID: nextGroupID,
+                    predicate: (key) => {
+                        return key.collisionGroupID === nextGroupID;
+                    }
                 };
+            }
+            return this.collisionGroups[sourceID];
+        } else {
+            return { ID: 0, predicate: null };
         }
-
-        if (!this.collisionGroups[groupName]) {
-            const nextGroupID = ++this.maxGroupID;
-            this.collisionGroups[groupName] = {
-                ID: nextGroupID,
-                predicate: (key) => {
-                    return key.collisionGroup === nextGroupID;
-                }
-            };
-        }
-        return this.collisionGroups[groupName];
     }
 }
 
@@ -109,8 +102,7 @@ class Placement {
         this.stale = false;
         this.fadeDuration = fadeDuration;
         this.retainedQueryData = {};
-        this.collisionGroups = new CollisionGroups();
-        this.crossSourceCollisions = crossSourceCollisions;
+        this.collisionGroups = new CollisionGroups(crossSourceCollisions);
     }
 
     placeLayerTile(styleLayer, tile, showCollisionBoxes, seenCrossTileIDs) {
@@ -164,9 +156,7 @@ class Placement {
         const iconWithoutText = !bucket.hasTextData() || layout.get('text-optional');
         const textWithoutIcon = !bucket.hasIconData() || layout.get('icon-optional');
 
-        const collisionGroup = this.crossSourceCollisions ?
-            this.collisionGroups.get() :
-            this.collisionGroups.get(bucket.sourceID);
+        const collisionGroup = this.collisionGroups.get(bucket.sourceID);
 
         for (const symbolInstance of bucket.symbolInstances) {
             if (!seenCrossTileIDs[symbolInstance.crossTileID]) {
