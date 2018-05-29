@@ -9,11 +9,7 @@ function restore() {
     // Remove previous window from module.exports
     const previousWindow = module.exports;
     if (previousWindow.close) previousWindow.close();
-    for (const key in previousWindow) {
-        if (previousWindow.hasOwnProperty(key)) {
-            delete previousWindow[key];
-        }
-    }
+    Object.keys(previousWindow).forEach(key => delete previousWindow[key]);
 
     // Create new window and inject into module.exports
     const window = jsdom.jsdom(undefined, {
