@@ -3,6 +3,7 @@
 const Point = require('@mapbox/point-geometry');
 const window = require('./window');
 
+
 exports.create = function (tagName, className, container) {
     const el = window.document.createElement(tagName);
     if (className) el.className = className;
@@ -75,3 +76,29 @@ exports.remove = function(node) {
         node.parentNode.removeChild(node);
     }
 };
+
+let passiveFlag = false;
+
+try {
+    const _opts = Object.defineProperty({}, 'passive', {
+        get: () => { passiveFlag = true; }
+    });
+    window.addEventListener('test-passive', null, _opts);
+    window.removeEventListener('test-passive', null, _opts);
+} catch (err) { /* ignore */ }
+
+if (passiveFlag) {
+    exports.addEventListener = function(el, event, listener, options) {
+        return el.addEventListener(event, listener, options);
+    };
+    exports.removeEventListener = function(el, event, listener, options) {
+        return el.removeEventListener(event, listener, options);
+    };
+} else {
+    exports.addEventListener = function(el, event, listener, options) {
+        return el.addEventListener(event, listener, options && options.capture);
+    };
+    exports.removeEventListener = function(el, event, listener, options) {
+        return el.removeEventListener(event, listener, options && options.capture);
+    };
+}
