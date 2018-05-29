@@ -28,9 +28,9 @@ class LayerPlacement {
 class PauseablePlacement {
 
     constructor(transform, order,
-            forceFullPlacement, showCollisionBoxes, fadeDuration) {
+            forceFullPlacement, showCollisionBoxes, fadeDuration, crossSourceCollisions) {
 
-        this.placement = new Placement(transform, fadeDuration);
+        this.placement = new Placement(transform, fadeDuration, crossSourceCollisions);
         this._currentPlacementIndex = order.length - 1;
         this._forceFullPlacement = forceFullPlacement;
         this._showCollisionBoxes = showCollisionBoxes;
