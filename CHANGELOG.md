@@ -1,4 +1,11 @@
-## master
+
+0.38.4 / 2018-05-28
+===================
+
+ * increase significantRotateThreshold to favor zooming over rotate
+ * remove unused parts - docs, plugins
+ * remove flow and flow tooling
+ * upgrade dependencies
 
 ## 0.38.0 (May 9, 2017)
 
