@@ -73,7 +73,7 @@ test('SymbolBucket', (t) => {
 
 test('SymbolBucket integer overflow', (t) => {
     t.stub(warn, 'once');
-    t.stub(SymbolBucket, 'MAX_INSTANCES', 5);
+    t.stub(SymbolBucket, 'MAX_INSTANCES').returns(5);
 
     const bucket = bucketSetup();
     const options = {iconDependencies: {}, glyphDependencies: {}};
