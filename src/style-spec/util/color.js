@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { parseCSSColor } from 'csscolorparser';
 
@@ -14,27 +14,20 @@ import { parseCSSColor } from 'csscolorparser';
  * @private
  */
 class Color {
-    r: number;
-    g: number;
-    b: number;
-    a: number;
 
-    constructor(r: number, g: number, b: number, a: number = 1) {
+    constructor(r, g, b, a = 1) {
         this.r = r;
         this.g = g;
         this.b = b;
         this.a = a;
     }
 
-    static black: Color;
-    static white: Color;
-    static transparent: Color;
 
     /**
      * Parses valid CSS color strings and returns a `Color` instance.
      * @returns A `Color` instance, or `undefined` if the input is not a valid color string.
      */
-    static parse(input: ?string): Color | void {
+    static parse(input) {
         if (!input) {
             return undefined;
         }
@@ -70,12 +63,12 @@ class Color {
      * var translucentGreen = new Color.parse('rgba(26, 207, 26, .73)');
      * translucentGreen.toString(); // = "rgba(26,207,26,0.73)"
      */
-    toString(): string {
+    toString() {
         const [r, g, b, a] = this.toArray();
         return `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${a})`;
     }
 
-    toArray(): [number, number, number, number] {
+    toArray() {
         const {r, g, b, a} = this;
         return a === 0 ? [0, 0, 0, 0] : [
             r * 255 / a,

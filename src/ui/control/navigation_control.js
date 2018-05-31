@@ -1,17 +1,12 @@
-// @flow
+// 
 
 import DOM from '../../util/dom';
 import { extend, bindAll } from '../../util/util';
 import DragRotateHandler from '../handler/drag_rotate';
 
-import type Map from '../map';
 
-type Options = {
-    showCompass?: boolean,
-    showZoom?: boolean
-};
 
-const defaultOptions: Options = {
+const defaultOptions = {
     showCompass: true,
     showZoom: true
 };
@@ -30,16 +25,8 @@ const defaultOptions: Options = {
  * @see [Add a third party vector tile source](https://www.mapbox.com/mapbox-gl-js/example/third-party/)
  */
 class NavigationControl {
-    _map: Map;
-    options: Options;
-    _container: HTMLElement;
-    _zoomInButton: HTMLElement;
-    _zoomOutButton: HTMLElement;
-    _compass: HTMLElement;
-    _compassArrow: HTMLElement;
-    _handler: DragRotateHandler;
 
-    constructor(options: Options) {
+    constructor(options) {
         this.options = extend({}, defaultOptions, options);
 
         this._container = DOM.create('div', 'mapboxgl-ctrl mapboxgl-ctrl-group');
@@ -63,7 +50,7 @@ class NavigationControl {
         this._compassArrow.style.transform = rotate;
     }
 
-    onAdd(map: Map) {
+    onAdd(map) {
         this._map = map;
         if (this.options.showCompass) {
             this._map.on('rotate', this._rotateCompassArrow);
@@ -87,7 +74,7 @@ class NavigationControl {
         delete this._map;
     }
 
-    _createButton(className: string, ariaLabel: string, fn: () => mixed) {
+    _createButton(className, ariaLabel, fn) {
         const a = DOM.create('button', className, this._container);
         a.type = 'button';
         a.setAttribute('aria-label', ariaLabel);

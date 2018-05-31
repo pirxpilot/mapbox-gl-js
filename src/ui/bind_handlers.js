@@ -1,8 +1,7 @@
-// @flow
+// 
 
 import { MapMouseEvent, MapTouchEvent, MapWheelEvent } from '../ui/events';
 import DOM from '../util/dom';
-import type Map from './map';
 import scrollZoom from './handler/scroll_zoom';
 import boxZoom from './handler/box_zoom';
 import dragRotate from './handler/drag_rotate';
@@ -21,16 +20,16 @@ const handlers = {
     touchZoomRotate
 };
 
-export default function bindHandlers(map: Map, options: {interactive: boolean}) {
+export default function bindHandlers(map, options) {
     const el = map.getCanvasContainer();
     let contextMenuEvent = null;
     let mouseDown = false;
     let startPos = null;
 
     for (const name in handlers) {
-        (map: any)[name] = new handlers[name](map, options);
+        (map)[name] = new handlers[name](map, options);
         if (options.interactive && options[name]) {
-            (map: any)[name].enable(options[name]);
+            (map)[name].enable(options[name]);
         }
     }
 
@@ -55,7 +54,7 @@ export default function bindHandlers(map: Map, options: {interactive: boolean}) 
     DOM.addEventListener(el, 'contextmenu', onContextMenu);
     DOM.addEventListener(el, 'wheel', onWheel, {passive: false});
 
-    function onMouseDown(e: MouseEvent) {
+    function onMouseDown(e) {
         mouseDown = true;
         startPos = DOM.mousePos(el, e);
 
@@ -81,7 +80,7 @@ export default function bindHandlers(map: Map, options: {interactive: boolean}) 
         }
     }
 
-    function onMouseUp(e: MouseEvent) {
+    function onMouseUp(e) {
         const rotating = map.dragRotate.isActive();
 
         if (contextMenuEvent && !rotating) {
@@ -95,30 +94,30 @@ export default function bindHandlers(map: Map, options: {interactive: boolean}) 
         map.fire(new MapMouseEvent('mouseup', map, e));
     }
 
-    function onMouseMove(e: MouseEvent) {
+    function onMouseMove(e) {
         if (map.dragPan.isActive()) return;
         if (map.dragRotate.isActive()) return;
 
-        let target: ?Node = (e.target: any);
+        let target = (e.target);
         while (target && target !== el) target = target.parentNode;
         if (target !== el) return;
 
         map.fire(new MapMouseEvent('mousemove', map, e));
     }
 
-    function onMouseOver(e: MouseEvent) {
-        let target: ?Node = (e.target: any);
+    function onMouseOver(e) {
+        let target = (e.target);
         while (target && target !== el) target = target.parentNode;
         if (target !== el) return;
 
         map.fire(new MapMouseEvent('mouseover', map, e));
     }
 
-    function onMouseOut(e: MouseEvent) {
+    function onMouseOut(e) {
         map.fire(new MapMouseEvent('mouseout', map, e));
     }
 
-    function onTouchStart(e: TouchEvent) {
+    function onTouchStart(e) {
         const mapEvent = new MapTouchEvent('touchstart', map, e);
         map.fire(mapEvent);
 
@@ -138,26 +137,26 @@ export default function bindHandlers(map: Map, options: {interactive: boolean}) 
         map.doubleClickZoom.onTouchStart(mapEvent);
     }
 
-    function onTouchMove(e: TouchEvent) {
+    function onTouchMove(e) {
         map.fire(new MapTouchEvent('touchmove', map, e));
     }
 
-    function onTouchEnd(e: TouchEvent) {
+    function onTouchEnd(e) {
         map.fire(new MapTouchEvent('touchend', map, e));
     }
 
-    function onTouchCancel(e: TouchEvent) {
+    function onTouchCancel(e) {
         map.fire(new MapTouchEvent('touchcancel', map, e));
     }
 
-    function onClick(e: MouseEvent) {
+    function onClick(e) {
         const pos = DOM.mousePos(el, e);
         if (pos.equals(startPos)) {
             map.fire(new MapMouseEvent('click', map, e));
         }
     }
 
-    function onDblClick(e: MouseEvent) {
+    function onDblClick(e) {
         const mapEvent = new MapMouseEvent('dblclick', map, e);
         map.fire(mapEvent);
 
@@ -168,7 +167,7 @@ export default function bindHandlers(map: Map, options: {interactive: boolean}) 
         map.doubleClickZoom.onDblClick(mapEvent);
     }
 
-    function onContextMenu(e: MouseEvent) {
+    function onContextMenu(e) {
         const rotating = map.dragRotate.isActive();
         if (!mouseDown && !rotating) {
             // Windows: contextmenu fired on mouseup, so fire event now
@@ -181,7 +180,7 @@ export default function bindHandlers(map: Map, options: {interactive: boolean}) 
         e.preventDefault();
     }
 
-    function onWheel(e: WheelEvent) {
+    function onWheel(e) {
         const mapEvent = new MapWheelEvent('wheel', map, e);
         map.fire(mapEvent);
 

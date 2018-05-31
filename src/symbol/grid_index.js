@@ -1,4 +1,4 @@
-// @flow
+// 
 
 /**
  * GridIndex is a data structure for testing the intersection of
@@ -14,22 +14,8 @@
  * @private
  */
 class GridIndex {
-    circleKeys: Array<any>;
-    boxKeys: Array<any>;
-    boxCells: Array<Array<number>>;
-    circleCells: Array<Array<number>>;
-    bboxes: Array<number>;
-    circles: Array<number>;
-    xCellCount: number;
-    yCellCount: number;
-    width: number;
-    height: number;
-    xScale: number;
-    yScale: number;
-    boxUid: number;
-    circleUid: number;
 
-    constructor (width: number, height: number, cellSize: number) {
+    constructor (width, height, cellSize) {
         const boxCells = this.boxCells = [];
         const circleCells = this.circleCells = [];
 
@@ -60,7 +46,7 @@ class GridIndex {
         return this.boxKeys.length + this.circleKeys.length;
     }
 
-    insert(key: any, x1: number, y1: number, x2: number, y2: number) {
+    insert(key, x1, y1, x2, y2) {
         this._forEachCell(x1, y1, x2, y2, this._insertBoxCell, this.boxUid++);
         this.boxKeys.push(key);
         this.bboxes.push(x1);
@@ -69,7 +55,7 @@ class GridIndex {
         this.bboxes.push(y2);
     }
 
-    insertCircle(key: any, x: number, y: number, radius: number) {
+    insertCircle(key, x, y, radius) {
         // Insert circle into grid for all cells in the circumscribing square
         // It's more than necessary (by a factor of 4/PI), but fast to insert
         this._forEachCell(x - radius, y - radius, x + radius, y + radius, this._insertCircleCell, this.circleUid++);
@@ -79,15 +65,15 @@ class GridIndex {
         this.circles.push(radius);
     }
 
-    _insertBoxCell(x1: number, y1: number, x2: number, y2: number, cellIndex: number, uid: number) {
+    _insertBoxCell(x1, y1, x2, y2, cellIndex, uid) {
         this.boxCells[cellIndex].push(uid);
     }
 
-    _insertCircleCell(x1: number, y1: number, x2: number, y2: number, cellIndex: number, uid: number)  {
+    _insertCircleCell(x1, y1, x2, y2, cellIndex, uid)  {
         this.circleCells[cellIndex].push(uid);
     }
 
-    _query(x1: number, y1: number, x2: number, y2: number, hitTest: boolean) {
+    _query(x1, y1, x2, y2, hitTest) {
         if (x2 < 0 || x1 > this.width || y2 < 0 || y1 > this.height) {
             return hitTest ? false : [];
         }
@@ -127,7 +113,7 @@ class GridIndex {
         return hitTest ? result.length > 0 : result;
     }
 
-    _queryCircle(x: number, y: number, radius: number, hitTest: boolean) {
+    _queryCircle(x, y, radius, hitTest) {
         // Insert circle into grid for all cells in the circumscribing square
         // It's more than necessary (by a factor of 4/PI), but fast to insert
         const x1 = x - radius;
@@ -151,19 +137,19 @@ class GridIndex {
         return hitTest ? result.length > 0 : result;
     }
 
-    query(x1: number, y1: number, x2: number, y2: number): Array<any> {
-        return (this._query(x1, y1, x2, y2, false): any);
+    query(x1, y1, x2, y2) {
+        return (this._query(x1, y1, x2, y2, false));
     }
 
-    hitTest(x1: number, y1: number, x2: number, y2: number): boolean  {
-        return (this._query(x1, y1, x2, y2, true): any);
+    hitTest(x1, y1, x2, y2)  {
+        return (this._query(x1, y1, x2, y2, true));
     }
 
-    hitTestCircle(x: number, y: number, radius: number): boolean {
-        return (this._queryCircle(x, y, radius, true): any);
+    hitTestCircle(x, y, radius) {
+        return (this._queryCircle(x, y, radius, true));
     }
 
-    _queryCell(x1: number, y1: number, x2: number, y2: number, cellIndex: number, result: any, queryArgs: any) {
+    _queryCell(x1, y1, x2, y2, cellIndex, result, queryArgs) {
         const seenUids = queryArgs.seenUids;
         const boxCell = this.boxCells[cellIndex];
         if (boxCell !== null) {
@@ -228,7 +214,7 @@ class GridIndex {
         }
     }
 
-    _queryCellCircle(x1: number, y1: number, x2: number, y2: number, cellIndex: number, result: any, queryArgs: any) {
+    _queryCellCircle(x1, y1, x2, y2, cellIndex, result, queryArgs) {
         const circle = queryArgs.circle;
         const seenUids = queryArgs.seenUids;
         const boxCell = this.boxCells[cellIndex];
@@ -275,7 +261,7 @@ class GridIndex {
         }
     }
 
-    _forEachCell(x1: number, y1: number, x2: number, y2: number, fn: any, arg1: any, arg2?: any) {
+    _forEachCell(x1, y1, x2, y2, fn, arg1, arg2) {
         const cx1 = this._convertToXCellCoord(x1);
         const cy1 = this._convertToYCellCoord(y1);
         const cx2 = this._convertToXCellCoord(x2);
@@ -289,22 +275,22 @@ class GridIndex {
         }
     }
 
-    _convertToXCellCoord(x: number) {
+    _convertToXCellCoord(x) {
         return Math.max(0, Math.min(this.xCellCount - 1, Math.floor(x * this.xScale)));
     }
 
-    _convertToYCellCoord(y: number) {
+    _convertToYCellCoord(y) {
         return Math.max(0, Math.min(this.yCellCount - 1, Math.floor(y * this.yScale)));
     }
 
-    _circlesCollide(x1: number, y1: number, r1: number, x2: number, y2: number, r2: number): boolean {
+    _circlesCollide(x1, y1, r1, x2, y2, r2) {
         const dx = x2 - x1;
         const dy = y2 - y1;
         const bothRadii = r1 + r2;
         return (bothRadii * bothRadii) > (dx * dx + dy * dy);
     }
 
-    _circleAndRectCollide(circleX: number, circleY: number, radius: number, x1: number, y1: number, x2: number, y2: number): boolean {
+    _circleAndRectCollide(circleX, circleY, radius, x1, y1, x2, y2) {
         const halfRectWidth = (x2 - x1) / 2;
         const distX = Math.abs(circleX - (x1 + halfRectWidth));
         if (distX > (halfRectWidth + radius)) {

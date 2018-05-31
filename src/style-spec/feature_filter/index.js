@@ -1,14 +1,12 @@
-// @flow
+// 
 
 import { createExpression } from '../expression';
 
-import type {GlobalProperties} from '../expression';
-export type FeatureFilter = (globalProperties: GlobalProperties, feature: VectorTileFeature) => boolean;
 
 export default createFilter;
 export { isExpressionFilter };
 
-function isExpressionFilter(filter: any) {
+function isExpressionFilter(filter) {
     if (!Array.isArray(filter) || filter.length === 0) {
         return false;
     }
@@ -64,7 +62,7 @@ const filterSpec = {
  * @param {Array} filter mapbox gl filter
  * @returns {Function} filter-evaluating function
  */
-function createFilter(filter: any): FeatureFilter {
+function createFilter(filter) {
     if (!filter) {
         return () => true;
     }
@@ -77,7 +75,7 @@ function createFilter(filter: any): FeatureFilter {
     if (compiled.result === 'error') {
         throw new Error(compiled.value.map(err => `${err.key}: ${err.message}`).join(', '));
     } else {
-        return (globalProperties: GlobalProperties, feature: VectorTileFeature) => compiled.value.evaluate(globalProperties, feature);
+        return (globalProperties, feature) => compiled.value.evaluate(globalProperties, feature);
     }
 }
 
@@ -86,7 +84,7 @@ function compare(a, b) {
     return a < b ? -1 : a > b ? 1 : 0;
 }
 
-function convertFilter(filter: ?Array<any>): mixed {
+function convertFilter(filter) {
     if (!filter) return true;
     const op = filter[0];
     if (filter.length <= 1) return (op !== 'any');
@@ -108,7 +106,7 @@ function convertFilter(filter: ?Array<any>): mixed {
     return converted;
 }
 
-function convertComparisonOp(property: string, value: any, op: string) {
+function convertComparisonOp(property, value, op) {
     switch (property) {
     case '$type':
         return [`filter-type-${op}`, value];
@@ -119,11 +117,11 @@ function convertComparisonOp(property: string, value: any, op: string) {
     }
 }
 
-function convertDisjunctionOp(filters: Array<Array<any>>) {
+function convertDisjunctionOp(filters) {
     return ['any'].concat(filters.map(convertFilter));
 }
 
-function convertInOp(property: string, values: Array<any>) {
+function convertInOp(property, values) {
     if (values.length === 0) { return false; }
     switch (property) {
     case '$type':
@@ -139,7 +137,7 @@ function convertInOp(property: string, values: Array<any>) {
     }
 }
 
-function convertHasOp(property: string) {
+function convertHasOp(property) {
     switch (property) {
     case '$type':
         return true;
@@ -150,7 +148,7 @@ function convertHasOp(property: string) {
     }
 }
 
-function convertNegation(filter: mixed) {
+function convertNegation(filter) {
     return ['!', filter];
 }
 

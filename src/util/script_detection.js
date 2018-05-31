@@ -1,31 +1,31 @@
-// @flow
+// 
 
 /* eslint-disable new-cap */
 
 import isChar from './is_char_in_unicode_block';
 
-export function allowsIdeographicBreaking(chars: string) {
+export function allowsIdeographicBreaking(chars) {
     for (const char of chars) {
         if (!charAllowsIdeographicBreaking(char.charCodeAt(0))) return false;
     }
     return true;
 }
 
-export function allowsVerticalWritingMode(chars: string) {
+export function allowsVerticalWritingMode(chars) {
     for (const char of chars) {
         if (charHasUprightVerticalOrientation(char.charCodeAt(0))) return true;
     }
     return false;
 }
 
-export function allowsLetterSpacing(chars: string) {
+export function allowsLetterSpacing(chars) {
     for (const char of chars) {
         if (!charAllowsLetterSpacing(char.charCodeAt(0))) return false;
     }
     return true;
 }
 
-export function charAllowsLetterSpacing(char: number) {
+export function charAllowsLetterSpacing(char) {
     if (isChar['Arabic'](char)) return false;
     if (isChar['Arabic Supplement'](char)) return false;
     if (isChar['Arabic Extended-A'](char)) return false;
@@ -35,7 +35,7 @@ export function charAllowsLetterSpacing(char: number) {
     return true;
 }
 
-export function charAllowsIdeographicBreaking(char: number) {
+export function charAllowsIdeographicBreaking(char) {
     // Return early for characters outside all ideographic ranges.
     if (char < 0x2E80) return false;
 
@@ -83,7 +83,7 @@ export function charAllowsIdeographicBreaking(char: number) {
  * “neutral” character to be drawn upright as well.
  * @private
  */
-export function charHasUprightVerticalOrientation(char: number) {
+export function charHasUprightVerticalOrientation(char) {
     if (char === 0x02EA /* modifier letter yin departing tone mark */ ||
         char === 0x02EB /* modifier letter yang departing tone mark */) {
         return true;
@@ -171,7 +171,7 @@ export function charHasUprightVerticalOrientation(char: number) {
  * adjacent character is drawn upright or rotated.
  * @private
  */
-export function charHasNeutralVerticalOrientation(char: number) {
+export function charHasNeutralVerticalOrientation(char) {
     if (isChar['Latin-1 Supplement'](char)) {
         if (char === 0x00A7 /* section sign */ ||
             char === 0x00A9 /* copyright sign */ ||
@@ -262,12 +262,12 @@ export function charHasNeutralVerticalOrientation(char: number) {
  * character causes an adjacent “neutral” character to be drawn rotated as well.
  * @private
  */
-export function charHasRotatedVerticalOrientation(char: number) {
+export function charHasRotatedVerticalOrientation(char) {
     return !(charHasUprightVerticalOrientation(char) ||
              charHasNeutralVerticalOrientation(char));
 }
 
-export function charInSupportedScript(char: number, canRenderRTL: boolean) {
+export function charInSupportedScript(char, canRenderRTL) {
     // This is a rough heuristic: whether we "can render" a script
     // actually depends on the properties of the font being used
     // and whether differences from the ideal rendering are considered
@@ -296,7 +296,7 @@ export function charInSupportedScript(char: number, canRenderRTL: boolean) {
     return true;
 }
 
-export function isStringInSupportedScript(chars: string, canRenderRTL: boolean) {
+export function isStringInSupportedScript(chars, canRenderRTL) {
     for (const char of chars) {
         if (!charInSupportedScript(char.charCodeAt(0), canRenderRTL)) {
             return false;

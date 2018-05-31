@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import DOM from '../../util/dom';
 
@@ -7,25 +7,17 @@ import { bindAll } from '../../util/util';
 import window from '../../util/window';
 import { Event } from '../../util/evented';
 
-import type Map from '../map';
 
 /**
  * The `BoxZoomHandler` allows the user to zoom the map to fit within a bounding box.
  * The bounding box is defined by clicking and holding `shift` while dragging the cursor.
  */
 class BoxZoomHandler {
-    _map: Map;
-    _el: HTMLElement;
-    _container: HTMLElement;
-    _enabled: boolean;
-    _active: boolean;
-    _startPos: any;
-    _box: HTMLElement;
 
     /**
      * @private
      */
-    constructor(map: Map) {
+    constructor(map) {
         this._map = map;
         this._el = map.getCanvasContainer();
         this._container = map.getContainer();
@@ -77,7 +69,7 @@ class BoxZoomHandler {
         this._enabled = false;
     }
 
-    onMouseDown(e: MouseEvent) {
+    onMouseDown(e) {
         if (!this.isEnabled()) return;
         if (!(e.shiftKey && e.button === 0)) return;
 
@@ -90,7 +82,7 @@ class BoxZoomHandler {
         this._active = true;
     }
 
-    _onMouseMove(e: MouseEvent) {
+    _onMouseMove(e) {
         const p0 = this._startPos,
             p1 = DOM.mousePos(this._el, e);
 
@@ -111,7 +103,7 @@ class BoxZoomHandler {
         this._box.style.height = `${maxY - minY}px`;
     }
 
-    _onMouseUp(e: MouseEvent) {
+    _onMouseUp(e) {
         if (e.button !== 0) return;
 
         const p0 = this._startPos,
@@ -133,7 +125,7 @@ class BoxZoomHandler {
         }
     }
 
-    _onKeyDown(e: KeyboardEvent) {
+    _onKeyDown(e) {
         if (e.keyCode === 27) {
             this._finish();
             this._fireEvent('boxzoomcancel', e);
@@ -151,13 +143,13 @@ class BoxZoomHandler {
 
         if (this._box) {
             DOM.remove(this._box);
-            this._box = (null: any);
+            this._box = (null);
         }
 
         DOM.enableDrag();
     }
 
-    _fireEvent(type: string, e: *) {
+    _fireEvent(type, e) {
         return this._map.fire(new Event(type, { originalEvent: e }));
     }
 }

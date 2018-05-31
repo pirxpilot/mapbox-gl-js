@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import {getArrayBuffer} from '../util/ajax';
 
@@ -8,25 +8,8 @@ import WorkerTile from './worker_tile';
 import { extend } from '../util/util';
 import perf from '../util/performance';
 
-import type {
-    WorkerSource,
-    WorkerTileParameters,
-    WorkerTileCallback,
-    TileParameters
-} from '../source/worker_source';
 
-import type {PerformanceResourceTiming} from '../types/performance_resource_timing';
-import type Actor from '../util/actor';
-import type StyleLayerIndex from '../style/style_layer_index';
-import type {Callback} from '../types/callback';
 
-export type LoadVectorTileResult = {
-    vectorTile: VectorTile;
-    rawData: ArrayBuffer;
-    expires?: any;
-    cacheControl?: any;
-    resourceTiming?: Array<PerformanceResourceTiming>;
-};
 
 /**
  * @callback LoadVectorDataCallback
@@ -34,15 +17,12 @@ export type LoadVectorTileResult = {
  * @param vectorTile
  * @private
  */
-export type LoadVectorDataCallback = Callback<?LoadVectorTileResult>;
 
-export type AbortVectorData = () => void;
-export type LoadVectorData = (params: WorkerTileParameters, callback: LoadVectorDataCallback) => ?AbortVectorData;
 
 /**
  * @private
  */
-function loadVectorTile(params: WorkerTileParameters, callback: LoadVectorDataCallback) {
+function loadVectorTile(params, callback) {
     const xhr = getArrayBuffer(params.request, (err, response) => {
         if (err) {
             callback(err);
@@ -70,12 +50,7 @@ function loadVectorTile(params: WorkerTileParameters, callback: LoadVectorDataCa
  *
  * @private
  */
-class VectorTileWorkerSource implements WorkerSource {
-    actor: Actor;
-    layerIndex: StyleLayerIndex;
-    loadVectorData: LoadVectorData;
-    loading: { [string]: WorkerTile };
-    loaded: { [string]: WorkerTile };
+class VectorTileWorkerSource {
 
     /**
      * @param [loadVectorData] Optional method for custom loading of a VectorTile
@@ -83,7 +58,7 @@ class VectorTileWorkerSource implements WorkerSource {
      * {@link VectorTileWorkerSource#loadTile}. The default implementation simply
      * loads the pbf at `params.url`.
      */
-    constructor(actor: Actor, layerIndex: StyleLayerIndex, loadVectorData: ?LoadVectorData) {
+    constructor(actor, layerIndex, loadVectorData) {
         this.actor = actor;
         this.layerIndex = layerIndex;
         this.loadVectorData = loadVectorData || loadVectorTile;
@@ -96,7 +71,7 @@ class VectorTileWorkerSource implements WorkerSource {
      * {@link VectorTileWorkerSource#loadVectorData} (which by default expects
      * a `params.url` property) for fetching and producing a VectorTile object.
      */
-    loadTile(params: WorkerTileParameters, callback: WorkerTileCallback) {
+    loadTile(params, callback) {
         const uid = params.uid;
 
         if (!this.loading)
@@ -139,7 +114,7 @@ class VectorTileWorkerSource implements WorkerSource {
     /**
      * Implements {@link WorkerSource#reloadTile}.
      */
-    reloadTile(params: WorkerTileParameters, callback: WorkerTileCallback) {
+    reloadTile(params, callback) {
         const loaded = this.loaded,
             uid = params.uid,
             vtSource = this;
@@ -170,7 +145,7 @@ class VectorTileWorkerSource implements WorkerSource {
      * @param params
      * @param params.uid The UID for this tile.
      */
-    abortTile(params: TileParameters, callback: WorkerTileCallback) {
+    abortTile(params, callback) {
         const loading = this.loading,
             uid = params.uid;
         if (loading && loading[uid] && loading[uid].abort) {
@@ -186,7 +161,7 @@ class VectorTileWorkerSource implements WorkerSource {
      * @param params
      * @param params.uid The UID for this tile.
      */
-    removeTile(params: TileParameters, callback: WorkerTileCallback) {
+    removeTile(params, callback) {
         const loaded = this.loaded,
             uid = params.uid;
         if (loaded && loaded[uid]) {

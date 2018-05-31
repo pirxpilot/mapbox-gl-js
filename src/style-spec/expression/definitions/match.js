@@ -1,27 +1,17 @@
-// @flow
+// 
 
 import assert from 'assert';
 
 import { typeOf } from '../values';
-import { ValueType, type Type } from '../types';
+import { ValueType, } from '../types';
 
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
-import type EvaluationContext from '../evaluation_context';
 
 // Map input label values to output expression index
-type Cases = {[number | string]: number};
 
-class Match implements Expression {
-    type: Type;
-    inputType: Type;
+class Match {
 
-    input: Expression;
-    cases: Cases;
-    outputs: Array<Expression>;
-    otherwise: Expression;
 
-    constructor(inputType: Type, outputType: Type, input: Expression, cases: Cases, outputs: Array<Expression>, otherwise: Expression) {
+    constructor(inputType, outputType, input, cases, outputs, otherwise) {
         this.inputType = inputType;
         this.type = outputType;
         this.input = input;
@@ -30,7 +20,7 @@ class Match implements Expression {
         this.otherwise = otherwise;
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext) {
+    static parse(args, context) {
         if (args.length < 5)
             return context.error(`Expected at least 4 arguments, but found only ${args.length - 1}.`);
         if (args.length % 2 !== 1)
@@ -92,20 +82,20 @@ class Match implements Expression {
 
         assert(inputType && outputType);
 
-        if (input.type.kind !== 'value' && context.concat(1).checkSubtype((inputType: any), input.type)) {
+        if (input.type.kind !== 'value' && context.concat(1).checkSubtype((inputType), input.type)) {
             return null;
         }
 
-        return new Match((inputType: any), (outputType: any), input, cases, outputs, otherwise);
+        return new Match((inputType), (outputType), input, cases, outputs, otherwise);
     }
 
-    evaluate(ctx: EvaluationContext) {
-        const input = (this.input.evaluate(ctx): any);
+    evaluate(ctx) {
+        const input = (this.input.evaluate(ctx));
         const output = (typeOf(input) === this.inputType && this.outputs[this.cases[input]]) || this.otherwise;
         return output.evaluate(ctx);
     }
 
-    eachChild(fn: (Expression) => void) {
+    eachChild(fn) {
         fn(this.input);
         this.outputs.forEach(fn);
         fn(this.otherwise);
@@ -126,8 +116,8 @@ class Match implements Expression {
 
         // Group branches by unique match expression to support condensed
         // serializations of the form [case1, case2, ...] -> matchExpression
-        const groupedByOutput: Array<[number, Array<number | string>]> = [];
-        const outputLookup: {[index: number]: number} = {}; // lookup index into groupedByOutput for a given output expression
+        const groupedByOutput = [];
+        const outputLookup = {}; // lookup index into groupedByOutput for a given output expression
         for (const label of sortedLabels) {
             const outputIndex = outputLookup[this.cases[label]];
             if (outputIndex === undefined) {

@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { getVideo, ResourceType } from '../util/ajax';
 
@@ -8,9 +8,6 @@ import VertexArrayObject from '../render/vertex_array_object';
 import Texture from '../render/texture';
 import { ErrorEvent } from '../util/evented';
 
-import type Map from '../ui/map';
-import type Dispatcher from '../util/dispatcher';
-import type {Evented} from '../util/evented';
 
 /**
  * A data source containing video.
@@ -45,15 +42,11 @@ import type {Evented} from '../util/evented';
  * @see [Add a video](https://www.mapbox.com/mapbox-gl-js/example/video-on-a-map/)
  */
 class VideoSource extends ImageSource {
-    options: VideoSourceSpecification;
-    urls: Array<string>;
-    video: HTMLVideoElement;
-    roundZoom: boolean;
 
     /**
      * @private
      */
-    constructor(id: string, options: VideoSourceSpecification, dispatcher: Dispatcher, eventedParent: Evented) {
+    constructor(id, options, dispatcher, eventedParent) {
         super(id, options, dispatcher, eventedParent);
         this.roundZoom = true;
         this.type = 'video';
@@ -99,7 +92,7 @@ class VideoSource extends ImageSource {
         return this.video;
     }
 
-    onAdd(map: Map) {
+    onAdd(map) {
         if (this.map) return;
         this.map = map;
         this.load();

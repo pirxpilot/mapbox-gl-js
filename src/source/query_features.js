@@ -1,18 +1,12 @@
-// @flow
+// 
 
-import type SourceCache from './source_cache';
-import type StyleLayer from '../style/style_layer';
-import type Coordinate from '../geo/coordinate';
-import type CollisionIndex from '../symbol/collision_index';
-import type Transform from '../geo/transform';
-import type { RetainedQueryData } from '../symbol/placement';
 import assert from 'assert';
 
-export function queryRenderedFeatures(sourceCache: SourceCache,
-                            styleLayers: {[string]: StyleLayer},
-                            queryGeometry: Array<Coordinate>,
-                            params: { filter: FilterSpecification, layers: Array<string> },
-                            transform: Transform) {
+export function queryRenderedFeatures(sourceCache,
+                            styleLayers,
+                            queryGeometry,
+                            params,
+                            transform) {
     const maxPitchScaleFactor = transform.maxPitchScaleFactor();
     const tilesIn = sourceCache.tilesIn(queryGeometry, maxPitchScaleFactor);
 
@@ -50,12 +44,12 @@ export function queryRenderedFeatures(sourceCache: SourceCache,
     return result;
 }
 
-export function queryRenderedSymbols(styleLayers: {[string]: StyleLayer},
-                            sourceCaches: {[string]: SourceCache},
-                            queryGeometry: Array<Point>,
-                            params: { filter: FilterSpecification, layers: Array<string> },
-                            collisionIndex: CollisionIndex,
-                            retainedQueryData: {[number]: RetainedQueryData}) {
+export function queryRenderedSymbols(styleLayers,
+                            sourceCaches,
+                            queryGeometry,
+                            params,
+                            collisionIndex,
+                            retainedQueryData) {
     const result = {};
     const renderedSymbols = collisionIndex.queryRenderedSymbols(queryGeometry);
     const bucketQueryData = [];
@@ -118,7 +112,7 @@ export function queryRenderedSymbols(styleLayers: {[string]: StyleLayer},
     return result;
 }
 
-export function querySourceFeatures(sourceCache: SourceCache, params: any) {
+export function querySourceFeatures(sourceCache, params) {
     const tiles = sourceCache.getRenderableIds().map((id) => {
         return sourceCache.getTileByID(id);
     });

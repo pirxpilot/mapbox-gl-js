@@ -1,10 +1,9 @@
-// @flow
+// 
 
 import { warnOnce } from '../util/util';
 
 import EXTENT from './extent';
 
-import type Point from '@mapbox/point-geometry';
 
 // These bounds define the minimum and maximum supported coordinate values.
 // While visible coordinates are within [0, EXTENT], tiles may theoretically
@@ -25,7 +24,7 @@ const bounds = createBounds(16);
  * @param {VectorTileFeature} feature
  * @private
  */
-export default function loadGeometry(feature: VectorTileFeature): Array<Array<Point>> {
+export default function loadGeometry(feature) {
     const scale = EXTENT / feature.extent;
     const geometry = feature.loadGeometry();
     for (let r = 0; r < geometry.length; r++) {

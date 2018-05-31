@@ -1,53 +1,34 @@
-// @flow
+// 
 
 import Worker from '../source/worker';
 
-import type {WorkerSource} from '../source/worker_source';
 
-type MessageListener = ({data: Object}) => mixed;
 
 // The main thread interface. Provided by Worker in a browser environment,
 // and MessageBus below in a node environment.
-export interface WorkerInterface {
-    addEventListener(type: 'message', listener: MessageListener): void;
-    removeEventListener(type: 'message', listener: MessageListener): void;
-    postMessage(message: any): void;
-    terminate(): void;
-}
 
-export interface WorkerGlobalScopeInterface {
-    importScripts(...urls: Array<string>): void;
 
-    registerWorkerSource: (string, Class<WorkerSource>) => void,
-    registerRTLTextPlugin: (any) => void
-}
+class MessageBus {
 
-class MessageBus implements WorkerInterface, WorkerGlobalScopeInterface {
-    addListeners: Array<MessageListener>;
-    postListeners: Array<MessageListener>;
-    target: MessageBus;
-    registerWorkerSource: *;
-    registerRTLTextPlugin: *;
-
-    constructor(addListeners: Array<MessageListener>, postListeners: Array<MessageListener>) {
+    constructor(addListeners, postListeners) {
         this.addListeners = addListeners;
         this.postListeners = postListeners;
     }
 
-    addEventListener(event: 'message', callback: MessageListener) {
+    addEventListener(event, callback) {
         if (event === 'message') {
             this.addListeners.push(callback);
         }
     }
 
-    removeEventListener(event: 'message', callback: MessageListener) {
+    removeEventListener(event, callback) {
         const i = this.addListeners.indexOf(callback);
         if (i >= 0) {
             this.addListeners.splice(i, 1);
         }
     }
 
-    postMessage(data: Object) {
+    postMessage(data) {
         setImmediate(() => {
             try {
                 for (const listener of this.postListeners) {
@@ -67,7 +48,7 @@ class MessageBus implements WorkerInterface, WorkerGlobalScopeInterface {
     importScripts() {}
 }
 
-export default function WebWorker(): WorkerInterface {
+export default function WebWorker() {
     const parentListeners = [],
         workerListeners = [],
         parentBus = new MessageBus(workerListeners, parentListeners),

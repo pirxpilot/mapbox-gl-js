@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { getImage, ResourceType } from '../util/ajax';
 import { extend } from '../util/util';
@@ -10,16 +10,11 @@ import RasterTileSource from './raster_tile_source';
 // ensure DEMData is registered for worker transfer on main thread:
 import '../data/dem_data';
 
-import type {Source} from './source';
-import type Dispatcher from '../util/dispatcher';
-import type Tile from './tile';
-import type {Callback} from '../types/callback';
 
 
-class RasterDEMTileSource extends RasterTileSource implements Source {
-    encoding: "mapbox" | "terrarium";
+class RasterDEMTileSource extends RasterTileSource {
 
-    constructor(id: string, options: RasterDEMSourceSpecification, dispatcher: Dispatcher, eventedParent: Evented) {
+    constructor(id, options, dispatcher, eventedParent) {
         super(id, options, dispatcher, eventedParent);
         this.type = 'raster-dem';
         this.maxzoom = 22;
@@ -38,7 +33,7 @@ class RasterDEMTileSource extends RasterTileSource implements Source {
         };
     }
 
-    loadTile(tile: Tile, callback: Callback<void>) {
+    loadTile(tile, callback) {
         const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url, this.tileSize);
         tile.request = getImage(this.map._transformRequest(url, ResourceType.Tile), imageLoaded.bind(this));
 
@@ -53,8 +48,8 @@ class RasterDEMTileSource extends RasterTileSource implements Source {
                 callback(err);
             } else if (img) {
                 if (this.map._refreshExpiredTiles) tile.setExpiryData(img);
-                delete (img: any).cacheControl;
-                delete (img: any).expires;
+                delete (img).cacheControl;
+                delete (img).expires;
 
                 const rawImageData = browser.getImageData(img);
                 const params = {
@@ -87,7 +82,7 @@ class RasterDEMTileSource extends RasterTileSource implements Source {
     }
 
 
-    _getNeighboringTiles(tileID: OverscaledTileID) {
+    _getNeighboringTiles(tileID) {
         const canonical = tileID.canonical;
         const dim = Math.pow(2, canonical.z);
 
@@ -118,7 +113,7 @@ class RasterDEMTileSource extends RasterTileSource implements Source {
     }
 
 
-    unloadTile(tile: Tile) {
+    unloadTile(tile) {
         if (tile.demTexture) this.map.painter.saveTileTexture(tile.demTexture);
         if (tile.fbo) {
             tile.fbo.destroy();

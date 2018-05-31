@@ -1,5 +1,5 @@
 // This file is generated. Edit build/generate-style-code.js, then run `yarn run codegen`.
-// @flow
+// 
 /* eslint-disable */
 
 import styleSpec from '../../style-spec/reference/latest';
@@ -12,37 +12,17 @@ import {
     ColorRampProperty
 } from '../properties';
 
-import type Color from '../../style-spec/util/color';
 
-export type LayoutProps = {|
-    "line-cap": DataConstantProperty<"butt" | "round" | "square">,
-    "line-join": DataDrivenProperty<"bevel" | "round" | "miter">,
-    "line-miter-limit": DataConstantProperty<number>,
-    "line-round-limit": DataConstantProperty<number>,
-|};
 
-const layout: Properties<LayoutProps> = new Properties({
+const layout = new Properties({
     "line-cap": new DataConstantProperty(styleSpec["layout_line"]["line-cap"]),
     "line-join": new DataDrivenProperty(styleSpec["layout_line"]["line-join"]),
     "line-miter-limit": new DataConstantProperty(styleSpec["layout_line"]["line-miter-limit"]),
     "line-round-limit": new DataConstantProperty(styleSpec["layout_line"]["line-round-limit"]),
 });
 
-export type PaintProps = {|
-    "line-opacity": DataDrivenProperty<number>,
-    "line-color": DataDrivenProperty<Color>,
-    "line-translate": DataConstantProperty<[number, number]>,
-    "line-translate-anchor": DataConstantProperty<"map" | "viewport">,
-    "line-width": DataDrivenProperty<number>,
-    "line-gap-width": DataDrivenProperty<number>,
-    "line-offset": DataDrivenProperty<number>,
-    "line-blur": DataDrivenProperty<number>,
-    "line-dasharray": CrossFadedProperty<Array<number>>,
-    "line-pattern": CrossFadedProperty<string>,
-    "line-gradient": ColorRampProperty,
-|};
 
-const paint: Properties<PaintProps> = new Properties({
+const paint = new Properties({
     "line-opacity": new DataDrivenProperty(styleSpec["paint_line"]["line-opacity"]),
     "line-color": new DataDrivenProperty(styleSpec["paint_line"]["line-color"]),
     "line-translate": new DataConstantProperty(styleSpec["paint_line"]["line-translate"]),

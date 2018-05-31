@@ -1,11 +1,10 @@
-// @flow
+// 
 
 import UnitBezier from '@mapbox/unitbezier';
 
 import Coordinate from '../geo/coordinate';
 import Point from '@mapbox/point-geometry';
 
-import type {Callback} from '../types/callback';
 
 /**
  * @module util
@@ -19,7 +18,7 @@ import type {Callback} from '../types/callback';
  *
  * @private
  */
-export function easeCubicInOut(t: number): number {
+export function easeCubicInOut(t) {
     if (t <= 0) return 0;
     if (t >= 1) return 1;
     const t2 = t * t,
@@ -37,9 +36,9 @@ export function easeCubicInOut(t: number): number {
  * @param p2y control point 2 y coordinate
  * @private
  */
-export function bezier(p1x: number, p1y: number, p2x: number, p2y: number): (t: number) => number {
+export function bezier(p1x, p1y, p2x, p2y) {
     const bezier = new UnitBezier(p1x, p1y, p2x, p2y);
-    return function(t: number) {
+    return function(t) {
         return bezier.solve(t);
     };
 }
@@ -61,7 +60,7 @@ export const ease = bezier(0.25, 0.1, 0.25, 1);
  * @returns the clamped value
  * @private
  */
-export function clamp(n: number, min: number, max: number): number {
+export function clamp(n, min, max) {
     return Math.min(max, Math.max(min, n));
 }
 
@@ -74,7 +73,7 @@ export function clamp(n: number, min: number, max: number): number {
  * @returns constrained number
  * @private
  */
-export function wrap(n: number, min: number, max: number): number {
+export function wrap(n, min, max) {
     const d = max - min;
     const w = ((n - min) % d + d) % d + min;
     return (w === min) ? max : w;
@@ -90,10 +89,10 @@ export function wrap(n: number, min: number, max: number): number {
  * called with an array, containing the results of each async call.
  * @private
  */
-export function asyncAll<Item, Result>(
-    array: Array<Item>,
-    fn: (item: Item, fnCallback: Callback<Result>) => void,
-    callback: Callback<Array<Result>>
+export function asyncAll(
+    array,
+    fn,
+    callback
 ) {
     if (!array.length) { return callback(null, []); }
     let remaining = array.length;
@@ -102,7 +101,7 @@ export function asyncAll<Item, Result>(
     array.forEach((item, i) => {
         fn(item, (err, result) => {
             if (err) error = err;
-            results[i] = ((result: any): Result); // https://github.com/facebook/flow/issues/2123
+            results[i] = ((result)); // https://github.com/facebook/flow/issues/2123
             if (--remaining === 0) callback(error, results);
         });
     });
@@ -114,7 +113,7 @@ export function asyncAll<Item, Result>(
  *
  * @private
  */
-export function values<T>(obj: {[key: string]: T}): Array<T> {
+export function values(obj) {
     const result = [];
     for (const k in obj) {
         result.push(obj[k]);
@@ -129,7 +128,7 @@ export function values<T>(obj: {[key: string]: T}): Array<T> {
  * @returns keys difference
  * @private
  */
-export function keysDifference<S, T>(obj: {[key: string]: S}, other: {[key: string]: T}): Array<string> {
+export function keysDifference(obj, other) {
     const difference = [];
     for (const i in obj) {
         if (!(i in other)) {
@@ -149,7 +148,7 @@ export function keysDifference<S, T>(obj: {[key: string]: S}, other: {[key: stri
  * @param sources sources from which properties are pulled
  * @private
  */
-export function extend(dest: Object, ...sources: Array<?Object>): Object {
+export function extend(dest, ...sources) {
     for (const src of sources) {
         for (const k in src) {
             dest[k] = src[k];
@@ -172,7 +171,7 @@ export function extend(dest: Object, ...sources: Array<?Object>): Object {
  * // justName = { name: 'Charlie' }
  * @private
  */
-export function pick(src: Object, properties: Array<string>): Object {
+export function pick(src, properties) {
     const result = {};
     for (let i = 0; i < properties.length; i++) {
         const k = properties[i];
@@ -192,7 +191,7 @@ let id = 1;
  * @returns unique numeric id.
  * @private
  */
-export function uniqueId(): number {
+export function uniqueId() {
     return id++;
 }
 
@@ -217,7 +216,7 @@ export function uniqueId(): number {
  * setTimeout(myClass.ontimer, 100);
  * @private
  */
-export function bindAll(fns: Array<string>, context: Object): void {
+export function bindAll(fns, context) {
     fns.forEach((fn) => {
         if (!context[fn]) { return; }
         context[fn] = context[fn].bind(context);
@@ -230,7 +229,7 @@ export function bindAll(fns: Array<string>, context: Object): void {
  * @returns centerpoint
  * @private
  */
-export function getCoordinatesCenter(coords: Array<Coordinate>): Coordinate {
+export function getCoordinatesCenter(coords) {
     let minX = Infinity;
     let minY = Infinity;
     let maxX = -Infinity;
@@ -256,7 +255,7 @@ export function getCoordinatesCenter(coords: Array<Coordinate>): Coordinate {
  *
  * @private
  */
-export function endsWith(string: string, suffix: string): boolean {
+export function endsWith(string, suffix) {
     return string.indexOf(suffix, string.length - suffix.length) !== -1;
 }
 
@@ -266,7 +265,7 @@ export function endsWith(string: string, suffix: string): boolean {
  *
  * @private
  */
-export function mapObject(input: Object, iterator: Function, context?: Object): Object {
+export function mapObject(input, iterator, context) {
     const output = {};
     for (const key in input) {
         output[key] = iterator.call(context || this, input[key], key, input);
@@ -279,7 +278,7 @@ export function mapObject(input: Object, iterator: Function, context?: Object): 
  *
  * @private
  */
-export function filterObject(input: Object, iterator: Function, context?: Object): Object {
+export function filterObject(input, iterator, context) {
     const output = {};
     for (const key in input) {
         if (iterator.call(context || this, input[key], key, input)) {
@@ -297,11 +296,11 @@ export { deepEqual };
  *
  * @private
  */
-export function clone<T>(input: T): T {
+export function clone(input) {
     if (Array.isArray(input)) {
         return input.map(clone);
     } else if (typeof input === 'object' && input) {
-        return ((mapObject(input, clone): any): T);
+        return ((mapObject(input, clone)));
     } else {
         return input;
     }
@@ -312,7 +311,7 @@ export function clone<T>(input: T): T {
  *
  * @private
  */
-export function arraysIntersect<T>(a: Array<T>, b: Array<T>): boolean {
+export function arraysIntersect(a, b) {
     for (let l = 0; l < a.length; l++) {
         if (b.indexOf(a[l]) >= 0) return true;
     }
@@ -325,9 +324,9 @@ export function arraysIntersect<T>(a: Array<T>, b: Array<T>): boolean {
  *
  * @private
  */
-const warnOnceHistory: {[key: string]: boolean} = {};
+const warnOnceHistory = {};
 
-export function warnOnce(message: string): void {
+export function warnOnce(message) {
     if (!warnOnceHistory[message]) {
         // console isn't defined in some WebWorkers, see #2558
         if (typeof console !== "undefined") console.warn(message);
@@ -342,7 +341,7 @@ export function warnOnce(message: string): void {
  * @returns true for a counter clockwise set of points
  */
 // http://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
-export function isCounterClockwise(a: Point, b: Point, c: Point): boolean {
+export function isCounterClockwise(a, b, c) {
     return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
 }
 
@@ -354,7 +353,7 @@ export function isCounterClockwise(a: Point, b: Point, c: Point): boolean {
  * @private
  * @param ring Exterior or interior ring
  */
-export function calculateSignedArea(ring: Array<Point>): number {
+export function calculateSignedArea(ring) {
     let sum = 0;
     for (let i = 0, len = ring.length, j = len - 1, p1, p2; i < len; j = i++) {
         p1 = ring[i];
@@ -371,7 +370,7 @@ export function calculateSignedArea(ring: Array<Point>): number {
  * @param points array of points
  * @return true if the points are a closed polygon
  */
-export function isClosedPolygon(points: Array<Point>): boolean {
+export function isClosedPolygon(points) {
     // If it is 2 points that are the same then it is a point
     // If it is 3 points with start and end the same then it is a line
     if (points.length < 4)
@@ -397,7 +396,7 @@ export function isClosedPolygon(points: Array<Point>): boolean {
  * @return cartesian coordinates in [x, y, z]
  */
 
-export function sphericalToCartesian([r, azimuthal, polar]: [number, number, number]): {x: number, y: number, z: number} {
+export function sphericalToCartesian([r, azimuthal, polar]) {
     // We abstract "north"/"up" (compass-wise) to be 0° when really this is 90° (π/2):
     // correct for that here
     azimuthal += 90;
@@ -421,7 +420,7 @@ export function sphericalToCartesian([r, azimuthal, polar]: [number, number, num
  * @return object containing parsed header info.
  */
 
-export function parseCacheControl(cacheControl: string): Object {
+export function parseCacheControl(cacheControl) {
     // Taken from [Wreck](https://github.com/hapijs/wreck)
     const re = /(?:^|(?:\s*\,\s*))([^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)(?:\=(?:([^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)|(?:\"((?:[^"\\]|\\.)*)\")))?/g;
 

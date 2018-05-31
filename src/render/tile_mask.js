@@ -1,13 +1,8 @@
-// @flow
+// 
 
 import { OverscaledTileID, CanonicalTileID } from '../source/tile_id';
 
-import type Tile from './../source/tile';
-import type Context from '../gl/context';
 
-type Mask = {
-    [number]: CanonicalTileID
-};
 
 // Updates the TileMasks for all renderable tiles. A TileMask describes all regions
 // within that tile that are *not* covered by other renderable tiles.
@@ -60,7 +55,7 @@ type Mask = {
 // 2/1/3, since it is not a descendant of it.
 
 
-export default function(renderableTiles: Array<Tile>, context: Context) {
+export default function(renderableTiles, context) {
     const sortedRenderables = renderableTiles.sort((a, b) => { return a.tileID.isLessThan(b.tileID) ? -1 : b.tileID.isLessThan(a.tileID) ? 1 : 0; });
 
     for (let i = 0; i < sortedRenderables.length; i++) {
@@ -77,7 +72,7 @@ export default function(renderableTiles: Array<Tile>, context: Context) {
     }
 }
 
-function computeTileMasks(rootTile: OverscaledTileID, ref: OverscaledTileID, childArray: Array<Tile>, lowerBound: OverscaledTileID, mask: Mask) {
+function computeTileMasks(rootTile, ref, childArray, lowerBound, mask) {
     // If the reference or any of its children is found in the list, we need to recurse.
     for (let i = 0; i < childArray.length; i++) {
         const childTile = childArray[i];

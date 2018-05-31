@@ -1,13 +1,9 @@
-// @flow
+// 
 
 import { toString, ValueType, BooleanType, CollatorType } from '../types';
 
-import type { Expression } from '../expression';
-import type EvaluationContext from '../evaluation_context';
-import type ParsingContext from '../parsing_context';
-import type { Type } from '../types';
 
-function isComparableType(type: Type) {
+function isComparableType(type) {
     return type.kind === 'string' ||
         type.kind === 'number' ||
         type.kind === 'boolean' ||
@@ -28,21 +24,17 @@ function isComparableType(type: Type) {
  *
  * @private
  */
-function makeComparison(op: string, negate: boolean) {
-    return class Comparison implements Expression {
-        type: Type;
-        lhs: Expression;
-        rhs: Expression;
-        collator: Expression | null;
+function makeComparison(op, negate) {
+    return class Comparison {
 
-        constructor(lhs: Expression, rhs: Expression, collator: Expression | null) {
+        constructor(lhs, rhs, collator) {
             this.type = BooleanType;
             this.lhs = lhs;
             this.rhs = rhs;
             this.collator = collator;
         }
 
-        static parse(args: Array<mixed>, context: ParsingContext): ?Expression {
+        static parse(args, context) {
             if (args.length !== 3 && args.length !== 4)
                 return context.error(`Expected two or three arguments.`);
 
@@ -71,7 +63,7 @@ function makeComparison(op: string, negate: boolean) {
             return new Comparison(lhs, rhs, collator);
         }
 
-        evaluate(ctx: EvaluationContext) {
+        evaluate(ctx) {
             const equal = this.collator ?
                 this.collator.evaluate(ctx).compare(this.lhs.evaluate(ctx), this.rhs.evaluate(ctx)) === 0 :
                 this.lhs.evaluate(ctx) === this.rhs.evaluate(ctx);
@@ -79,7 +71,7 @@ function makeComparison(op: string, negate: boolean) {
             return negate ? !equal : equal;
         }
 
-        eachChild(fn: (Expression) => void) {
+        eachChild(fn) {
             fn(this.lhs);
             fn(this.rhs);
             if (this.collator) {

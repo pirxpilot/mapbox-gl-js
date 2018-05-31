@@ -1,17 +1,7 @@
-// @flow
+// 
 
-export type Anchor =
-    | 'center'
-    | 'top'
-    | 'bottom'
-    | 'left'
-    | 'right'
-    | 'top-left'
-    | 'top-right'
-    | 'bottom-left'
-    | 'bottom-right';
 
-export const anchorTranslate: {[Anchor]: string} = {
+export const anchorTranslate = {
     'center': 'translate(-50%,-50%)',
     'top': 'translate(-50%,0)',
     'top-left': 'translate(0,0)',
@@ -23,7 +13,7 @@ export const anchorTranslate: {[Anchor]: string} = {
     'right': 'translate(-100%,-50%)'
 };
 
-export function applyAnchorClass(element: HTMLElement, anchor: Anchor, prefix: string) {
+export function applyAnchorClass(element, anchor, prefix) {
     const classList = element.classList;
     for (const key in anchorTranslate) {
         classList.remove(`mapboxgl-${prefix}-anchor-${key}`);

@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import DOM from '../../util/dom';
 import { bezier, bindAll } from '../../util/util';
@@ -6,9 +6,6 @@ import window from '../../util/window';
 import browser from '../../util/browser';
 import { Event } from '../../util/evented';
 
-import type Map from '../map';
-import type Point from '@mapbox/point-geometry';
-import type {TaskID} from '../../util/task_queue';
 
 const inertiaLinearity = 0.15,
     inertiaEasing = bezier(0, 0, inertiaLinearity, 1),
@@ -22,23 +19,11 @@ const inertiaLinearity = 0.15,
  * pinching on a touchscreen.
  */
 class TouchZoomRotateHandler {
-    _map: Map;
-    _el: HTMLElement;
-    _enabled: boolean;
-    _aroundCenter: boolean;
-    _rotationDisabled: boolean;
-    _startVec: Point;
-    _startScale: number;
-    _startBearing: number;
-    _gestureIntent: 'rotate' | 'zoom' | void;
-    _inertia: Array<[number, number, Point]>;
-    _lastTouchEvent: TouchEvent;
-    _frameId: ?TaskID;
 
     /**
      * @private
      */
-    constructor(map: Map) {
+    constructor(map) {
         this._map = map;
         this._el = map.getCanvasContainer();
 
@@ -69,7 +54,7 @@ class TouchZoomRotateHandler {
      * @example
      *   map.touchZoomRotate.enable({ around: 'center' });
      */
-    enable(options: ?{around?: 'center'}) {
+    enable(options) {
         if (this.isEnabled()) return;
         this._el.classList.add('mapboxgl-touch-zoom-rotate');
         this._enabled = true;
@@ -110,7 +95,7 @@ class TouchZoomRotateHandler {
         this._rotationDisabled = false;
     }
 
-    onStart(e: TouchEvent) {
+    onStart(e) {
         if (!this.isEnabled()) return;
         if (e.touches.length !== 2) return;
 
@@ -125,7 +110,7 @@ class TouchZoomRotateHandler {
         DOM.addEventListener(window.document, 'touchend', this._onEnd);
     }
 
-    _getTouchEventData(e: TouchEvent) {
+    _getTouchEventData(e) {
         const p0 = DOM.mousePos(this._el, e.touches[0]),
             p1 = DOM.mousePos(this._el, e.touches[1]);
 
@@ -138,7 +123,7 @@ class TouchZoomRotateHandler {
         };
     }
 
-    _onMove(e: TouchEvent) {
+    _onMove(e) {
         if (e.touches.length !== 2) return;
 
         const {vec, scale, bearing} = this._getTouchEventData(e);
@@ -202,7 +187,7 @@ class TouchZoomRotateHandler {
         this._inertia.push([browser.now(), scale, center]);
     }
 
-    _onEnd(e: TouchEvent) {
+    _onEnd(e) {
         DOM.removeEventListener(window.document, 'touchmove', this._onMove, {passive: false});
         DOM.removeEventListener(window.document, 'touchend', this._onEnd);
 

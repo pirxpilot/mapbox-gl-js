@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import circle from './style_layer/circle_style_layer';
 import heatmap from './style_layer/heatmap_style_layer';
@@ -22,7 +22,7 @@ const subclasses = {
     raster
 };
 
-export default function createStyleLayer(layer: LayerSpecification) {
+export default function createStyleLayer(layer) {
     return new subclasses[layer.type](layer);
 }
 

@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { symbolLayoutAttributes, collisionVertexAttributes, collisionBoxLayout, collisionCircleLayout, dynamicLayoutAttributes } from './symbol_attributes';
 
@@ -19,76 +19,10 @@ import { getSizeData } from '../../symbol/symbol_size';
 import { register } from '../../util/web_worker_transfer';
 import EvaluationParameters from '../../style/evaluation_parameters';
 
-import type {
-    Bucket,
-    BucketParameters,
-    IndexedFeature,
-    PopulateParameters
-} from '../bucket';
-import type {CollisionBoxArray, CollisionBox} from '../array_types';
-import type { StructArray, StructArrayMember } from '../../util/struct_array';
-import type SymbolStyleLayer from '../../style/style_layer/symbol_style_layer';
-import type Context from '../../gl/context';
-import type IndexBuffer from '../../gl/index_buffer';
-import type VertexBuffer from '../../gl/vertex_buffer';
-import type {SymbolQuad} from '../../symbol/quads';
-import type {SizeData} from '../../symbol/symbol_size';
-import type {FeatureStates} from '../../source/source_state';
 
-export type SingleCollisionBox = {
-    x1: number;
-    y1: number;
-    x2: number;
-    y2: number;
-    anchorPointX: number;
-    anchorPointY: number;
-};
 
-export type CollisionArrays = {
-    textBox?: SingleCollisionBox;
-    iconBox?: SingleCollisionBox;
-    textCircles?: Array<number>;
-    textFeatureIndex?: number;
-    iconFeatureIndex?: number;
-};
 
-export type SymbolFeature = {|
-    text: string | void,
-    icon: string | void,
-    index: number,
-    sourceLayerIndex: number,
-    geometry: Array<Array<Point>>,
-    properties: Object,
-    type: 'Point' | 'LineString' | 'Polygon',
-    id?: any
-|};
 
-export type SymbolInstance = {
-    key: string,
-    textBoxStartIndex: number,
-    textBoxEndIndex: number,
-    iconBoxStartIndex: number,
-    iconBoxEndIndex: number,
-    textOffset: [number, number],
-    iconOffset: [number, number],
-    anchor: Anchor,
-    line: Array<Point>,
-    featureIndex: number,
-    feature: SymbolFeature,
-    textCollisionFeature?: {boxStartIndex: number, boxEndIndex: number},
-    iconCollisionFeature?: {boxStartIndex: number, boxEndIndex: number},
-    placedTextSymbolIndices: Array<number>;
-    numGlyphVertices: number;
-    numVerticalGlyphVertices: number;
-    numIconVertices: number;
-    // Populated/modified on foreground during placement
-    isDuplicate: boolean;
-    crossTileID: number;
-    collisionArrays?: CollisionArrays;
-    placedText?: boolean;
-    placedIcon?: boolean;
-    hidden?: boolean;
-};
 
 // Opacity arrays are frequently updated but don't contain a lot of information, so we pack them
 // tight. Each Uint32 is actually four duplicate Uint8s for the four corners of a glyph
@@ -118,7 +52,7 @@ function addVertex(array, anchorX, anchorY, ox, oy, tx, ty, sizeVertex) {
     );
 }
 
-function addDynamicAttributes(dynamicLayoutVertexArray: StructArray, p: Point, angle: number) {
+function addDynamicAttributes(dynamicLayoutVertexArray, p, angle) {
     dynamicLayoutVertexArray.emplaceBack(p.x, p.y, angle);
     dynamicLayoutVertexArray.emplaceBack(p.x, p.y, angle);
     dynamicLayoutVertexArray.emplaceBack(p.x, p.y, angle);
@@ -126,27 +60,14 @@ function addDynamicAttributes(dynamicLayoutVertexArray: StructArray, p: Point, a
 }
 
 class SymbolBuffers {
-    layoutVertexArray: SymbolLayoutArray;
-    layoutVertexBuffer: VertexBuffer;
 
-    indexArray: TriangleIndexArray;
-    indexBuffer: IndexBuffer;
 
-    programConfigurations: ProgramConfigurationSet<SymbolStyleLayer>;
-    segments: SegmentVector;
 
-    dynamicLayoutVertexArray: SymbolDynamicLayoutArray;
-    dynamicLayoutVertexBuffer: VertexBuffer;
 
-    opacityVertexArray: SymbolOpacityArray;
-    opacityVertexBuffer: VertexBuffer;
 
-    collisionVertexArray: CollisionVertexArray;
-    collisionVertexBuffer: VertexBuffer;
 
-    placedSymbolArray: PlacedSymbolArray;
 
-    constructor(programConfigurations: ProgramConfigurationSet<SymbolStyleLayer>) {
+    constructor(programConfigurations) {
         this.layoutVertexArray = new SymbolLayoutArray();
         this.indexArray = new TriangleIndexArray();
         this.programConfigurations = programConfigurations;
@@ -156,7 +77,7 @@ class SymbolBuffers {
         this.placedSymbolArray = new PlacedSymbolArray();
     }
 
-    upload(context: Context, dynamicIndexBuffer: boolean, upload?: boolean, update?: boolean) {
+    upload(context, dynamicIndexBuffer, upload, update) {
         if (upload) {
             this.layoutVertexBuffer = context.createVertexBuffer(this.layoutVertexArray, symbolLayoutAttributes.members);
             this.indexBuffer = context.createIndexBuffer(this.indexArray, dynamicIndexBuffer);
@@ -185,21 +106,13 @@ class SymbolBuffers {
 register('SymbolBuffers', SymbolBuffers);
 
 class CollisionBuffers {
-    layoutVertexArray: StructArray;
-    layoutAttributes: Array<StructArrayMember>;
-    layoutVertexBuffer: VertexBuffer;
 
-    indexArray: TriangleIndexArray | LineIndexArray;
-    indexBuffer: IndexBuffer;
 
-    segments: SegmentVector;
 
-    collisionVertexArray: CollisionVertexArray;
-    collisionVertexBuffer: VertexBuffer;
 
-    constructor(LayoutArray: Class<StructArray>,
-                layoutAttributes: Array<StructArrayMember>,
-                IndexArray: Class<TriangleIndexArray | LineIndexArray>) {
+    constructor(LayoutArray,
+                layoutAttributes,
+                IndexArray) {
         this.layoutVertexArray = new LayoutArray();
         this.layoutAttributes = layoutAttributes;
         this.indexArray = new IndexArray();
@@ -207,7 +120,7 @@ class CollisionBuffers {
         this.collisionVertexArray = new CollisionVertexArray();
     }
 
-    upload(context: Context) {
+    upload(context) {
         this.layoutVertexBuffer = context.createVertexBuffer(this.layoutVertexArray, this.layoutAttributes);
         this.indexBuffer = context.createIndexBuffer(this.indexArray);
         this.collisionVertexBuffer = context.createVertexBuffer(this.collisionVertexArray, collisionVertexAttributes.members, true);
@@ -256,45 +169,13 @@ register('CollisionBuffers', CollisionBuffers);
  *
  * @private
  */
-class SymbolBucket implements Bucket {
-    static MAX_GLYPHS: number;
-    static addDynamicAttributes: typeof addDynamicAttributes;
+class SymbolBucket {
 
-    collisionBoxArray: CollisionBoxArray;
-    zoom: number;
-    overscaling: number;
-    layers: Array<SymbolStyleLayer>;
-    layerIds: Array<string>;
-    stateDependentLayers: Array<SymbolStyleLayer>;
-    index: number;
-    sdfIcons: boolean;
-    iconsNeedLinear: boolean;
-    bucketInstanceId: number;
-    justReloaded: boolean;
 
-    textSizeData: SizeData;
-    iconSizeData: SizeData;
 
-    glyphOffsetArray: GlyphOffsetArray;
-    lineVertexArray: SymbolLineVertexArray;
-    features: Array<SymbolFeature>;
-    symbolInstances: Array<SymbolInstance>;
-    pixelRatio: number;
-    tilePixelRatio: number;
-    compareText: {[string]: Array<Point>};
-    fadeStartTime: number;
-    sortFeaturesByY: boolean;
-    sortedAngle: number;
-    featureSortOrder: Array<number>;
 
-    text: SymbolBuffers;
-    icon: SymbolBuffers;
-    collisionBox: CollisionBuffers;
-    collisionCircle: CollisionBuffers;
-    uploaded: boolean;
-    sourceLayerIndex: number;
 
-    constructor(options: BucketParameters<SymbolStyleLayer>) {
+    constructor(options) {
         this.collisionBoxArray = options.collisionBoxArray;
         this.zoom = options.zoom;
         this.overscaling = options.overscaling;
@@ -326,7 +207,7 @@ class SymbolBucket implements Bucket {
         this.lineVertexArray = new SymbolLineVertexArray();
     }
 
-    populate(features: Array<IndexedFeature>, options: PopulateParameters) {
+    populate(features, options) {
         const layer = this.layers[0];
         const layout = layer.layout;
 
@@ -368,7 +249,7 @@ class SymbolBucket implements Bucket {
                 continue;
             }
 
-            const symbolFeature: SymbolFeature = {
+            const symbolFeature = {
                 text,
                 icon,
                 index,
@@ -410,7 +291,7 @@ class SymbolBucket implements Bucket {
         }
     }
 
-    update(states: FeatureStates, vtLayer: VectorTileLayer) {
+    update(states, vtLayer) {
         if (!this.stateDependentLayers.length) return;
         this.text.programConfigurations.updatePaintArrays(states, vtLayer, this.layers);
         this.icon.programConfigurations.updatePaintArrays(states, vtLayer, this.layers);
@@ -424,7 +305,7 @@ class SymbolBucket implements Bucket {
         return !this.uploaded || this.text.programConfigurations.needsUpload || this.icon.programConfigurations.needsUpload;
     }
 
-    upload(context: Context) {
+    upload(context) {
         if (!this.uploaded) {
             this.collisionBox.upload(context);
             this.collisionCircle.upload(context);
@@ -441,7 +322,7 @@ class SymbolBucket implements Bucket {
         this.collisionCircle.destroy();
     }
 
-    addToLineVertexArray(anchor: Anchor, line: any) {
+    addToLineVertexArray(anchor, line) {
         const lineStartIndex = this.lineVertexArray.length;
         if (anchor.segment !== undefined) {
             let sumForwardLength = anchor.dist(line[anchor.segment + 1]);
@@ -470,16 +351,16 @@ class SymbolBucket implements Bucket {
         };
     }
 
-    addSymbols(arrays: SymbolBuffers,
-               quads: Array<SymbolQuad>,
-               sizeVertex: any,
-               lineOffset: [number, number],
-               alongLine: boolean,
-               feature: SymbolFeature,
-               writingMode: any,
-               labelAnchor: Anchor,
-               lineStartIndex: number,
-               lineLength: number) {
+    addSymbols(arrays,
+               quads,
+               sizeVertex,
+               lineOffset,
+               alongLine,
+               feature,
+               writingMode,
+               labelAnchor,
+               lineStartIndex,
+               lineLength) {
         const indexArray = arrays.indexArray;
         const layoutVertexArray = arrays.layoutVertexArray;
         const dynamicLayoutVertexArray = arrays.dynamicLayoutVertexArray;
@@ -517,15 +398,15 @@ class SymbolBucket implements Bucket {
 
         arrays.placedSymbolArray.emplaceBack(labelAnchor.x, labelAnchor.y,
             glyphOffsetArrayStart, this.glyphOffsetArray.length - glyphOffsetArrayStart, vertexStartIndex,
-            lineStartIndex, lineLength, (labelAnchor.segment: any),
+            lineStartIndex, lineLength, (labelAnchor.segment),
             sizeVertex ? sizeVertex[0] : 0, sizeVertex ? sizeVertex[1] : 0,
             lineOffset[0], lineOffset[1],
-            writingMode, (false: any));
+            writingMode, (false));
 
         arrays.programConfigurations.populatePaintArrays(arrays.layoutVertexArray.length, feature, feature.index);
     }
 
-    _addCollisionDebugVertex(layoutVertexArray: StructArray, collisionVertexArray: StructArray, point: Point, anchor: Point, extrude: Point) {
+    _addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, point, anchor, extrude) {
         collisionVertexArray.emplaceBack(0, 0);
         return layoutVertexArray.emplaceBack(
             // pos
@@ -540,7 +421,7 @@ class SymbolBucket implements Bucket {
     }
 
 
-    addCollisionDebugVertices(x1: number, y1: number, x2: number, y2: number, arrays: CollisionBuffers, boxAnchorPoint: Point, symbolInstance: SymbolInstance, isCircle: boolean) {
+    addCollisionDebugVertices(x1, y1, x2, y2, arrays, boxAnchorPoint, symbolInstance, isCircle) {
         const segment = arrays.segments.prepareSegment(4, arrays.layoutVertexArray, arrays.indexArray);
         const index = segment.vertexLength;
 
@@ -554,13 +435,13 @@ class SymbolBucket implements Bucket {
 
         segment.vertexLength += 4;
         if (isCircle) {
-            const indexArray: TriangleIndexArray = (arrays.indexArray: any);
+            const indexArray = (arrays.indexArray);
             indexArray.emplaceBack(index, index + 1, index + 2);
             indexArray.emplaceBack(index, index + 2, index + 3);
 
             segment.primitiveLength += 2;
         } else {
-            const indexArray: LineIndexArray = (arrays.indexArray: any);
+            const indexArray = (arrays.indexArray);
             indexArray.emplaceBack(index, index + 1);
             indexArray.emplaceBack(index + 1, index + 2);
             indexArray.emplaceBack(index + 2, index + 3);
@@ -580,7 +461,7 @@ class SymbolBucket implements Bucket {
                 if (!feature) continue;
 
                 for (let b = feature.boxStartIndex; b < feature.boxEndIndex; b++) {
-                    const box: CollisionBox = (this.collisionBoxArray.get(b): any);
+                    const box = (this.collisionBoxArray.get(b));
                     const x1 = box.x1;
                     const y1 = box.y1;
                     const x2 = box.x2;
@@ -597,10 +478,10 @@ class SymbolBucket implements Bucket {
 
     // These flat arrays are meant to be quicker to iterate over than the source
     // CollisionBoxArray
-    deserializeCollisionBoxes(collisionBoxArray: CollisionBoxArray, textStartIndex: number, textEndIndex: number, iconStartIndex: number, iconEndIndex: number): CollisionArrays {
+    deserializeCollisionBoxes(collisionBoxArray, textStartIndex, textEndIndex, iconStartIndex, iconEndIndex) {
         const collisionArrays = {};
         for (let k = textStartIndex; k < textEndIndex; k++) {
-            const box: CollisionBox = (collisionBoxArray.get(k): any);
+            const box = (collisionBoxArray.get(k));
             if (box.radius === 0) {
                 collisionArrays.textBox = { x1: box.x1, y1: box.y1, x2: box.x2, y2: box.y2, anchorPointX: box.anchorPointX, anchorPointY: box.anchorPointY };
                 collisionArrays.textFeatureIndex = box.featureIndex;
@@ -616,7 +497,7 @@ class SymbolBucket implements Bucket {
         }
         for (let k = iconStartIndex; k < iconEndIndex; k++) {
             // An icon can only have one box now, so this indexing is a bit vestigial...
-            const box: CollisionBox = (collisionBoxArray.get(k): any);
+            const box = (collisionBoxArray.get(k));
             if (box.radius === 0) {
                 collisionArrays.iconBox = { x1: box.x1, y1: box.y1, x2: box.x2, y2: box.y2, anchorPointX: box.anchorPointX, anchorPointY: box.anchorPointY };
                 collisionArrays.iconFeatureIndex = box.featureIndex;
@@ -642,7 +523,7 @@ class SymbolBucket implements Bucket {
         return this.collisionCircle.segments.get().length > 0;
     }
 
-    sortFeatures(angle: number) {
+    sortFeatures(angle) {
         if (!this.sortFeaturesByY) return;
 
         if (this.sortedAngle === angle) return;

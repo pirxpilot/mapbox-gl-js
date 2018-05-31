@@ -1,24 +1,18 @@
-// @flow
+// 
 
 import browser from '../util/browser';
 
 import { Placement } from '../symbol/placement';
 
-import type Transform from '../geo/transform';
-import type StyleLayer from './style_layer';
-import type Tile from '../source/tile';
 
 class LayerPlacement {
-    _currentTileIndex: number;
-    _tiles: Array<Tile>;
-    _seenCrossTileIDs: { [string | number]: boolean };
 
     constructor() {
         this._currentTileIndex = 0;
         this._seenCrossTileIDs = {};
     }
 
-    continuePlacement(tiles: Array<Tile>, placement: Placement, showCollisionBoxes: boolean, styleLayer: StyleLayer, shouldPausePlacement) {
+    continuePlacement(tiles, placement, showCollisionBoxes, styleLayer, shouldPausePlacement) {
         while (this._currentTileIndex < tiles.length) {
             const tile = tiles[this._currentTileIndex];
             placement.placeLayerTile(styleLayer, tile, showCollisionBoxes, this._seenCrossTileIDs);
@@ -32,15 +26,9 @@ class LayerPlacement {
 }
 
 class PauseablePlacement {
-    placement: Placement;
-    _done: boolean;
-    _currentPlacementIndex: number;
-    _forceFullPlacement: boolean;
-    _showCollisionBoxes: boolean;
-    _inProgressLayer: ?LayerPlacement;
 
-    constructor(transform: Transform, order: Array<string>,
-            forceFullPlacement: boolean, showCollisionBoxes: boolean, fadeDuration: number) {
+    constructor(transform, order,
+            forceFullPlacement, showCollisionBoxes, fadeDuration) {
 
         this.placement = new Placement(transform, fadeDuration);
         this._currentPlacementIndex = order.length - 1;
@@ -49,11 +37,11 @@ class PauseablePlacement {
         this._done = false;
     }
 
-    isDone(): boolean {
+    isDone() {
         return this._done;
     }
 
-    continuePlacement(order: Array<string>, layers: {[string]: StyleLayer}, layerTiles: {[string]: Array<Tile>}) {
+    continuePlacement(order, layers, layerTiles) {
         const startTime = browser.now();
 
         const shouldPausePlacement = () => {
@@ -91,7 +79,7 @@ class PauseablePlacement {
         this._done = true;
     }
 
-    commit(previousPlacement: ?Placement, now: number) {
+    commit(previousPlacement, now) {
         this.placement.commit(previousPlacement, now);
         return this.placement;
     }

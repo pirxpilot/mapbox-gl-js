@@ -1,62 +1,7 @@
-// @flow
+// 
 
-type ExpressionType = 'data-driven' | 'cross-faded' | 'cross-faded-data-driven' | 'color-ramp' | 'data-constant' | 'constant';
-type ExpressionParameters = Array<'zoom' | 'feature' | 'heatmap-density' | 'line-progress'>;
 
-type ExpressionSpecification = {
-    interpolated: boolean,
-    parameters: ExpressionParameters
-}
 
-export type StylePropertySpecification = {
-    type: 'number',
-    'property-type': ExpressionType,
-    expression?: ExpressionSpecification,
-    transition: boolean,
-    default?: number
-} | {
-    type: 'string',
-    'property-type': ExpressionType,
-    expression?: ExpressionSpecification,
-    transition: boolean,
-    default?: string,
-    tokens?: boolean
-} | {
-    type: 'boolean',
-    'property-type': ExpressionType,
-    expression?: ExpressionSpecification,
-    transition: boolean,
-    default?: boolean
-} | {
-    type: 'enum',
-    'property-type': ExpressionType,
-    expression?: ExpressionSpecification,
-    values: {[string]: {}},
-    transition: boolean,
-    default?: string
-} | {
-    type: 'color',
-    'property-type': ExpressionType,
-    expression?: ExpressionSpecification,
-    transition: boolean,
-    default?: string
-} | {
-    type: 'array',
-    value: 'number',
-    'property-type': ExpressionType,
-    expression?: ExpressionSpecification,
-    length?: number,
-    transition: boolean,
-    default?: Array<number>
-} | {
-    type: 'array',
-    value: 'string',
-    'property-type': ExpressionType,
-    expression?: ExpressionSpecification,
-    length?: number,
-    transition: boolean,
-    default?: Array<string>
-};
 
 import v8 from './reference/v8.json';
 import latest from './reference/latest';

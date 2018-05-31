@@ -1,18 +1,9 @@
-// @flow
+// 
 import assert from 'assert';
 
-export type TaskID = number; // can't mark opaque due to https://github.com/flowtype/flow-remove-types/pull/61
-type Task = {
-    callback: () => void;
-    id: TaskID;
-    cancelled: boolean;
-};
+ // can't mark opaque due to https://github.com/flowtype/flow-remove-types/pull/61
 
 class TaskQueue {
-    _queue: Array<Task>;
-    _id: TaskID;
-    _cleared: boolean;
-    _currentlyRunning: Array<Task> | false;
 
     constructor()  {
         this._queue = [];
@@ -21,14 +12,14 @@ class TaskQueue {
         this._currentlyRunning = false;
     }
 
-    add(callback: () => void): TaskID {
+    add(callback) {
         const id = ++this._id;
         const queue = this._queue;
         queue.push({callback, id, cancelled: false});
         return id;
     }
 
-    remove(id: TaskID) {
+    remove(id) {
         const running = this._currentlyRunning;
         const queue = running ? this._queue.concat(running) : this._queue;
         for (const task of queue) {

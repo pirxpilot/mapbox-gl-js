@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { test } from 'mapbox-gl-js-test';
 import { StructArrayLayout3i6, FeatureIndexArray } from '../../../src/data/array_types';

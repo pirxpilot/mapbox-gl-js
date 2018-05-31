@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import browser from '../util/browser';
 
@@ -10,13 +10,10 @@ import posAttributes from '../data/pos_attributes';
 import DepthMode from '../gl/depth_mode';
 import StencilMode from '../gl/stencil_mode';
 
-import type Painter from './painter';
-import type SourceCache from '../source/source_cache';
-import type {OverscaledTileID} from '../source/tile_id';
 
 export default drawDebug;
 
-function drawDebug(painter: Painter, sourceCache: SourceCache, coords: Array<OverscaledTileID>) {
+function drawDebug(painter, sourceCache, coords) {
     for (let i = 0; i < coords.length; i++) {
         drawDebugTile(painter, sourceCache, coords[i]);
     }

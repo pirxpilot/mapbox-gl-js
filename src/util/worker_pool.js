@@ -1,10 +1,9 @@
-// @flow
+// 
 
 import assert from 'assert';
 
 import WebWorker from './web_worker';
 
-import type {WorkerInterface} from './web_worker';
 import mapboxgl from '../';
 
 /**
@@ -12,14 +11,12 @@ import mapboxgl from '../';
  * @private
  */
 class WorkerPool {
-    active: {[number]: boolean};
-    workers: Array<WorkerInterface>;
 
     constructor() {
         this.active = {};
     }
 
-    acquire(mapId: number): Array<WorkerInterface> {
+    acquire(mapId) {
         if (!this.workers) {
             // Lazily look up the value of mapboxgl.workerCount so that
             // client code has had a chance to set it.
@@ -36,13 +33,13 @@ class WorkerPool {
         return this.workers.slice();
     }
 
-    release(mapId: number) {
+    release(mapId) {
         delete this.active[mapId];
         if (Object.keys(this.active).length === 0) {
             this.workers.forEach((w) => {
                 w.terminate();
             });
-            this.workers = (null: any);
+            this.workers = (null);
         }
     }
 }

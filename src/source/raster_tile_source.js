@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { extend, pick } from '../util/util';
 
@@ -9,33 +9,12 @@ import { normalizeTileURL as normalizeURL } from '../util/mapbox';
 import TileBounds from './tile_bounds';
 import Texture from '../render/texture';
 
-import type {Source} from './source';
-import type {OverscaledTileID} from './tile_id';
-import type Map from '../ui/map';
-import type Dispatcher from '../util/dispatcher';
-import type Tile from './tile';
-import type {Callback} from '../types/callback';
 
-class RasterTileSource extends Evented implements Source {
-    type: 'raster' | 'raster-dem';
-    id: string;
-    minzoom: number;
-    maxzoom: number;
-    url: string;
-    scheme: string;
-    tileSize: number;
+class RasterTileSource extends Evented {
 
-    bounds: ?[number, number, number, number];
-    tileBounds: TileBounds;
-    roundZoom: boolean;
-    dispatcher: Dispatcher;
-    map: Map;
-    tiles: Array<string>;
 
-    _loaded: boolean;
-    _options: RasterSourceSpecification | RasterDEMSourceSpecification;
 
-    constructor(id: string, options: RasterSourceSpecification | RasterDEMSourceSpecification, dispatcher: Dispatcher, eventedParent: Evented) {
+    constructor(id, options, dispatcher, eventedParent) {
         super();
         this.id = id;
         this.dispatcher = dispatcher;
@@ -71,7 +50,7 @@ class RasterTileSource extends Evented implements Source {
         });
     }
 
-    onAdd(map: Map) {
+    onAdd(map) {
         this.map = map;
         this.load();
     }
@@ -80,11 +59,11 @@ class RasterTileSource extends Evented implements Source {
         return extend({}, this._options);
     }
 
-    hasTile(tileID: OverscaledTileID) {
+    hasTile(tileID) {
         return !this.tileBounds || this.tileBounds.contains(tileID.canonical);
     }
 
-    loadTile(tile: Tile, callback: Callback<void>) {
+    loadTile(tile, callback) {
         const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url, this.tileSize);
         tile.request = getImage(this.map._transformRequest(url, ResourceType.Tile), (err, img) => {
             delete tile.request;
@@ -97,8 +76,8 @@ class RasterTileSource extends Evented implements Source {
                 callback(err);
             } else if (img) {
                 if (this.map._refreshExpiredTiles) tile.setExpiryData(img);
-                delete (img: any).cacheControl;
-                delete (img: any).expires;
+                delete (img).cacheControl;
+                delete (img).expires;
 
                 const context = this.map.painter.context;
                 const gl = context.gl;
@@ -121,7 +100,7 @@ class RasterTileSource extends Evented implements Source {
         });
     }
 
-    abortTile(tile: Tile, callback: Callback<void>) {
+    abortTile(tile, callback) {
         if (tile.request) {
             tile.request.abort();
             delete tile.request;
@@ -129,7 +108,7 @@ class RasterTileSource extends Evented implements Source {
         callback();
     }
 
-    unloadTile(tile: Tile, callback: Callback<void>) {
+    unloadTile(tile, callback) {
         if (tile.texture) this.map.painter.saveTileTexture(tile.texture);
         callback();
     }

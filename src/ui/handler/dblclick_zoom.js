@@ -1,24 +1,18 @@
-// @flow
+// 
 
 import { bindAll } from '../../util/util';
 
-import type Map from '../map';
-import type {MapMouseEvent, MapTouchEvent} from '../events';
 
 /**
  * The `DoubleClickZoomHandler` allows the user to zoom the map at a point by
  * double clicking or double tapping.
  */
 class DoubleClickZoomHandler {
-    _map: Map;
-    _enabled: boolean;
-    _active: boolean;
-    _tapped: ?TimeoutID;
 
     /**
      * @private
      */
-    constructor(map: Map) {
+    constructor(map) {
         this._map = map;
 
         bindAll([
@@ -67,7 +61,7 @@ class DoubleClickZoomHandler {
         this._enabled = false;
     }
 
-    onTouchStart(e: MapTouchEvent) {
+    onTouchStart(e) {
         if (!this.isEnabled()) return;
         if (e.points.length > 1) return;
 
@@ -80,13 +74,13 @@ class DoubleClickZoomHandler {
         }
     }
 
-    onDblClick(e: MapMouseEvent) {
+    onDblClick(e) {
         if (!this.isEnabled()) return;
         e.originalEvent.preventDefault();
         this._zoom(e);
     }
 
-    _zoom(e: MapMouseEvent | MapTouchEvent) {
+    _zoom(e) {
         this._active = true;
         this._map.on('zoomend', this._onZoomEnd);
         this._map.zoomTo(

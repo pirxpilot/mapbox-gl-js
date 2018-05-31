@@ -1,9 +1,8 @@
-// @flow
+// 
 
 import { uniqueId, asyncAll } from './util';
 import Actor from './actor';
 
-import type WorkerPool from './worker_pool';
 
 /**
  * Responsible for sending messages from a {@link Source} to an associated
@@ -12,15 +11,10 @@ import type WorkerPool from './worker_pool';
  * @private
  */
 class Dispatcher {
-    workerPool: WorkerPool;
-    actors: Array<Actor>;
-    currentActor: number;
-    id: number;
 
     // exposed to allow stubbing in unit tests
-    static Actor: Class<Actor>;
 
-    constructor(workerPool: WorkerPool, parent: any) {
+    constructor(workerPool, parent) {
         this.workerPool = workerPool;
         this.actors = [];
         this.currentActor = 0;
@@ -37,7 +31,7 @@ class Dispatcher {
     /**
      * Broadcast a message to all Workers.
      */
-    broadcast(type: string, data: mixed, cb?: Function) {
+    broadcast(type, data, cb) {
         cb = cb || function () {};
         asyncAll(this.actors, (actor, done) => {
             actor.send(type, data, done);
@@ -49,7 +43,7 @@ class Dispatcher {
      * @param targetID The ID of the Worker to which to send this message. Omit to allow the dispatcher to choose.
      * @returns The ID of the worker to which the message was sent.
      */
-    send(type: string, data: mixed, callback?: ?Function, targetID?: number): number {
+    send(type, data, callback, targetID) {
         if (typeof targetID !== 'number' || isNaN(targetID)) {
             // Use round robin to send requests to web workers.
             targetID = this.currentActor = (this.currentActor + 1) % this.actors.length;

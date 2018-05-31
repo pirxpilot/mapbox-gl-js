@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import Point from '@mapbox/point-geometry';
 
@@ -8,20 +8,20 @@ import assert from 'assert';
 const DOM = {};
 export default DOM;
 
-DOM.create = function (tagName: *, className?: string, container?: HTMLElement) {
+DOM.create = function (tagName, className, container) {
     const el = window.document.createElement(tagName);
     if (className) el.className = className;
     if (container) container.appendChild(el);
     return el;
 };
 
-DOM.createNS = function (namespaceURI: string, tagName: string) {
+DOM.createNS = function (namespaceURI, tagName) {
     const el = window.document.createElementNS(namespaceURI, tagName);
     return el;
 };
 
 const docStyle = window.document ?
-    (window.document.documentElement: any).style :
+    (window.document.documentElement).style :
     null;
 
 function testProp(props) {
@@ -52,43 +52,43 @@ DOM.enableDrag = function () {
 
 const transformProp = testProp(['transform', 'WebkitTransform']);
 
-DOM.setTransform = function(el: HTMLElement, value: string) {
-    (el.style: any)[transformProp] = value;
+DOM.setTransform = function(el, value) {
+    (el.style)[transformProp] = value;
 };
 
 // Feature detection for {passive: false} support in add/removeEventListener.
 let passiveSupported = false;
 
 try {
-    const options = (Object.defineProperty: any)({}, "passive", {
+    const options = (Object.defineProperty)({}, "passive", {
         get: function() {
             passiveSupported = true;
         }
     });
-    (window.addEventListener: any)("test", options, options);
-    (window.removeEventListener: any)("test", options, options);
+    (window.addEventListener)("test", options, options);
+    (window.removeEventListener)("test", options, options);
 } catch (err) {
     passiveSupported = false;
 }
 
-DOM.addEventListener = function(target: *, type: *, callback: *, options: {passive?: boolean, capture?: boolean} = {}) {
+DOM.addEventListener = function(target, type, callback, options = {}) {
     if ('passive' in options && passiveSupported) {
-        target.addEventListener(type, callback, (options: any));
+        target.addEventListener(type, callback, (options));
     } else {
         target.addEventListener(type, callback, options.capture);
     }
 };
 
-DOM.removeEventListener = function(target: *, type: *, callback: *, options: {passive?: boolean, capture?: boolean} = {}) {
+DOM.removeEventListener = function(target, type, callback, options = {}) {
     if ('passive' in options && passiveSupported) {
-        target.removeEventListener(type, callback, (options: any));
+        target.removeEventListener(type, callback, (options));
     } else {
         target.removeEventListener(type, callback, options.capture);
     }
 };
 
 // Suppress the next click, but only if it's immediate.
-const suppressClick: MouseEventListener = function (e) {
+const suppressClick = function (e) {
     e.preventDefault();
     e.stopPropagation();
     window.removeEventListener('click', suppressClick, true);
@@ -101,7 +101,7 @@ DOM.suppressClick = function() {
     }, 0);
 };
 
-DOM.mousePos = function (el: HTMLElement, e: any) {
+DOM.mousePos = function (el, e) {
     const rect = el.getBoundingClientRect();
     e = e.touches ? e.touches[0] : e;
     return new Point(
@@ -110,7 +110,7 @@ DOM.mousePos = function (el: HTMLElement, e: any) {
     );
 };
 
-DOM.touchPos = function (el: HTMLElement, e: any) {
+DOM.touchPos = function (el, e) {
     const rect = el.getBoundingClientRect(),
         points = [];
     const touches = (e.type === 'touchend') ? e.changedTouches : e.touches;
@@ -123,7 +123,7 @@ DOM.touchPos = function (el: HTMLElement, e: any) {
     return points;
 };
 
-DOM.mouseButton = function (e: MouseEvent) {
+DOM.mouseButton = function (e) {
     assert(e.type === 'mousedown' || e.type === 'mouseup');
     if (typeof window.InstallTrigger !== 'undefined' && e.button === 2 && e.ctrlKey &&
         window.navigator.platform.toUpperCase().indexOf('MAC') >= 0) {
@@ -135,7 +135,7 @@ DOM.mouseButton = function (e: MouseEvent) {
     return e.button;
 };
 
-DOM.remove = function(node: HTMLElement) {
+DOM.remove = function(node) {
     if (node.parentNode) {
         node.parentNode.removeChild(node);
     }

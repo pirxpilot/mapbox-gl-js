@@ -1,5 +1,5 @@
 // This file is generated. Edit build/generate-style-code.js, then run `yarn run codegen`.
-// @flow
+// 
 /* eslint-disable */
 
 import styleSpec from '../../style-spec/reference/latest';
@@ -12,48 +12,9 @@ import {
     ColorRampProperty
 } from '../properties';
 
-import type Color from '../../style-spec/util/color';
 
-export type LayoutProps = {|
-    "symbol-placement": DataConstantProperty<"point" | "line">,
-    "symbol-spacing": DataConstantProperty<number>,
-    "symbol-avoid-edges": DataConstantProperty<boolean>,
-    "icon-allow-overlap": DataConstantProperty<boolean>,
-    "icon-ignore-placement": DataConstantProperty<boolean>,
-    "icon-optional": DataConstantProperty<boolean>,
-    "icon-rotation-alignment": DataConstantProperty<"map" | "viewport" | "auto">,
-    "icon-size": DataDrivenProperty<number>,
-    "icon-text-fit": DataConstantProperty<"none" | "width" | "height" | "both">,
-    "icon-text-fit-padding": DataConstantProperty<[number, number, number, number]>,
-    "icon-image": DataDrivenProperty<string>,
-    "icon-rotate": DataDrivenProperty<number>,
-    "icon-padding": DataConstantProperty<number>,
-    "icon-keep-upright": DataConstantProperty<boolean>,
-    "icon-offset": DataDrivenProperty<[number, number]>,
-    "icon-anchor": DataDrivenProperty<"center" | "left" | "right" | "top" | "bottom" | "top-left" | "top-right" | "bottom-left" | "bottom-right">,
-    "icon-pitch-alignment": DataConstantProperty<"map" | "viewport" | "auto">,
-    "text-pitch-alignment": DataConstantProperty<"map" | "viewport" | "auto">,
-    "text-rotation-alignment": DataConstantProperty<"map" | "viewport" | "auto">,
-    "text-field": DataDrivenProperty<string>,
-    "text-font": DataDrivenProperty<Array<string>>,
-    "text-size": DataDrivenProperty<number>,
-    "text-max-width": DataDrivenProperty<number>,
-    "text-line-height": DataConstantProperty<number>,
-    "text-letter-spacing": DataDrivenProperty<number>,
-    "text-justify": DataDrivenProperty<"left" | "center" | "right">,
-    "text-anchor": DataDrivenProperty<"center" | "left" | "right" | "top" | "bottom" | "top-left" | "top-right" | "bottom-left" | "bottom-right">,
-    "text-max-angle": DataConstantProperty<number>,
-    "text-rotate": DataDrivenProperty<number>,
-    "text-padding": DataConstantProperty<number>,
-    "text-keep-upright": DataConstantProperty<boolean>,
-    "text-transform": DataDrivenProperty<"none" | "uppercase" | "lowercase">,
-    "text-offset": DataDrivenProperty<[number, number]>,
-    "text-allow-overlap": DataConstantProperty<boolean>,
-    "text-ignore-placement": DataConstantProperty<boolean>,
-    "text-optional": DataConstantProperty<boolean>,
-|};
 
-const layout: Properties<LayoutProps> = new Properties({
+const layout = new Properties({
     "symbol-placement": new DataConstantProperty(styleSpec["layout_symbol"]["symbol-placement"]),
     "symbol-spacing": new DataConstantProperty(styleSpec["layout_symbol"]["symbol-spacing"]),
     "symbol-avoid-edges": new DataConstantProperty(styleSpec["layout_symbol"]["symbol-avoid-edges"]),
@@ -92,24 +53,8 @@ const layout: Properties<LayoutProps> = new Properties({
     "text-optional": new DataConstantProperty(styleSpec["layout_symbol"]["text-optional"]),
 });
 
-export type PaintProps = {|
-    "icon-opacity": DataDrivenProperty<number>,
-    "icon-color": DataDrivenProperty<Color>,
-    "icon-halo-color": DataDrivenProperty<Color>,
-    "icon-halo-width": DataDrivenProperty<number>,
-    "icon-halo-blur": DataDrivenProperty<number>,
-    "icon-translate": DataConstantProperty<[number, number]>,
-    "icon-translate-anchor": DataConstantProperty<"map" | "viewport">,
-    "text-opacity": DataDrivenProperty<number>,
-    "text-color": DataDrivenProperty<Color>,
-    "text-halo-color": DataDrivenProperty<Color>,
-    "text-halo-width": DataDrivenProperty<number>,
-    "text-halo-blur": DataDrivenProperty<number>,
-    "text-translate": DataConstantProperty<[number, number]>,
-    "text-translate-anchor": DataConstantProperty<"map" | "viewport">,
-|};
 
-const paint: Properties<PaintProps> = new Properties({
+const paint = new Properties({
     "icon-opacity": new DataDrivenProperty(styleSpec["paint_symbol"]["icon-opacity"]),
     "icon-color": new DataDrivenProperty(styleSpec["paint_symbol"]["icon-color"]),
     "icon-halo-color": new DataDrivenProperty(styleSpec["paint_symbol"]["icon-halo-color"]),

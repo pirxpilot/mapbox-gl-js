@@ -1,5 +1,5 @@
 // This file is generated. Edit build/generate-style-code.js, then run `yarn run codegen`.
-// @flow
+// 
 /* eslint-disable */
 
 import styleSpec from '../../style-spec/reference/latest';
@@ -12,20 +12,10 @@ import {
     ColorRampProperty
 } from '../properties';
 
-import type Color from '../../style-spec/util/color';
 
 
-export type PaintProps = {|
-    "fill-antialias": DataConstantProperty<boolean>,
-    "fill-opacity": DataDrivenProperty<number>,
-    "fill-color": DataDrivenProperty<Color>,
-    "fill-outline-color": DataDrivenProperty<Color>,
-    "fill-translate": DataConstantProperty<[number, number]>,
-    "fill-translate-anchor": DataConstantProperty<"map" | "viewport">,
-    "fill-pattern": CrossFadedProperty<string>,
-|};
 
-const paint: Properties<PaintProps> = new Properties({
+const paint = new Properties({
     "fill-antialias": new DataConstantProperty(styleSpec["paint_fill"]["fill-antialias"]),
     "fill-opacity": new DataDrivenProperty(styleSpec["paint_fill"]["fill-opacity"]),
     "fill-color": new DataDrivenProperty(styleSpec["paint_fill"]["fill-color"]),

@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { packUint8ToFloat } from '../shaders/encode_attribute';
 import Color from '../style-spec/util/color';
@@ -8,30 +8,9 @@ import { PossiblyEvaluatedPropertyValue } from '../style/properties';
 import { StructArrayLayout1f4, StructArrayLayout2f8, StructArrayLayout4f16 } from './array_types';
 import EvaluationParameters from '../style/evaluation_parameters';
 
-import type Context from '../gl/context';
-import type {TypedStyleLayer} from '../style/style_layer/typed_style_layer';
-import type {StructArray, StructArrayMember} from '../util/struct_array';
-import type VertexBuffer from '../gl/vertex_buffer';
-import type Program from '../render/program';
-import type {
-    Feature,
-    FeatureState,
-    GlobalProperties,
-    SourceExpression,
-    CompositeExpression
-} from '../style-spec/expression';
-import type {PossiblyEvaluated} from '../style/properties';
-import type {FeatureStates} from '../source/source_state';
 
-type FeaturePaintBufferMap = {
-    [feature_id: string]: Array<{
-        index: number,
-        start: number,
-        end: number
-    }>
-};
 
-function packColor(color: Color): [number, number] {
+function packColor(color) {
     return [
         packUint8ToFloat(255 * color.r, 255 * color.g),
         packUint8ToFloat(255 * color.b, 255 * color.a)
@@ -62,29 +41,10 @@ function packColor(color: Color): [number, number] {
  *
  * @private
  */
-interface Binder<T> {
-    statistics: { max: number };
 
-    populatePaintArray(length: number, feature: Feature): void;
-    updatePaintArray(start: number, length: number, feature: Feature, featureState: FeatureState): void;
-    upload(Context): void;
-    destroy(): void;
+class ConstantBinder {
 
-    defines(): Array<string>;
-
-    setUniforms(context: Context,
-                program: Program,
-                globals: GlobalProperties,
-                currentValue: PossiblyEvaluatedPropertyValue<T>): void;
-}
-
-class ConstantBinder<T> implements Binder<T> {
-    value: T;
-    name: string;
-    type: string;
-    statistics: { max: number };
-
-    constructor(value: T, name: string, type: string) {
+    constructor(value, name, type) {
         this.value = value;
         this.name = name;
         this.type = type;
@@ -100,11 +60,11 @@ class ConstantBinder<T> implements Binder<T> {
     upload() {}
     destroy() {}
 
-    setUniforms(context: Context,
-                program: Program,
-                globals: GlobalProperties,
-                currentValue: PossiblyEvaluatedPropertyValue<T>) {
-        const value: any = currentValue.constantOr(this.value);
+    setUniforms(context,
+                program,
+                globals,
+                currentValue) {
+        const value = currentValue.constantOr(this.value);
         const gl = context.gl;
         if (this.type === 'color') {
             gl.uniform4f(program.uniforms[`u_${this.name}`], value.r, value.g, value.b, value.a);
@@ -114,17 +74,10 @@ class ConstantBinder<T> implements Binder<T> {
     }
 }
 
-class SourceExpressionBinder<T> implements Binder<T> {
-    expression: SourceExpression;
-    name: string;
-    type: string;
-    statistics: { max: number };
+class SourceExpressionBinder {
 
-    paintVertexArray: StructArray;
-    paintVertexAttributes: Array<StructArrayMember>;
-    paintVertexBuffer: ?VertexBuffer;
 
-    constructor(expression: SourceExpression, name: string, type: string) {
+    constructor(expression, name, type) {
         this.expression = expression;
         this.name = name;
         this.type = type;
@@ -143,7 +96,7 @@ class SourceExpressionBinder<T> implements Binder<T> {
         return [];
     }
 
-    populatePaintArray(newLength: number, feature: Feature) {
+    populatePaintArray(newLength, feature) {
         const paintArray = this.paintVertexArray;
 
         const start = paintArray.length;
@@ -165,7 +118,7 @@ class SourceExpressionBinder<T> implements Binder<T> {
         }
     }
 
-    updatePaintArray(start: number, end: number, feature: Feature, featureState: FeatureState) {
+    updatePaintArray(start, end, feature, featureState) {
         const paintArray = this.paintVertexArray;
         const value = this.expression.evaluate({zoom: 0}, feature, featureState);
 
@@ -183,7 +136,7 @@ class SourceExpressionBinder<T> implements Binder<T> {
         }
     }
 
-    upload(context: Context) {
+    upload(context) {
         if (this.paintVertexArray && this.paintVertexArray.arrayBuffer) {
             this.paintVertexBuffer = context.createVertexBuffer(this.paintVertexArray, this.paintVertexAttributes, this.expression.isStateDependent);
         }
@@ -195,24 +148,15 @@ class SourceExpressionBinder<T> implements Binder<T> {
         }
     }
 
-    setUniforms(context: Context, program: Program) {
+    setUniforms(context, program) {
         context.gl.uniform1f(program.uniforms[`a_${this.name}_t`], 0);
     }
 }
 
-class CompositeExpressionBinder<T> implements Binder<T> {
-    expression: CompositeExpression;
-    name: string;
-    type: string;
-    useIntegerZoom: boolean;
-    zoom: number;
-    statistics: { max: number };
+class CompositeExpressionBinder {
 
-    paintVertexArray: StructArray;
-    paintVertexAttributes: Array<StructArrayMember>;
-    paintVertexBuffer: ?VertexBuffer;
 
-    constructor(expression: CompositeExpression, name: string, type: string, useIntegerZoom: boolean, zoom: number) {
+    constructor(expression, name, type, useIntegerZoom, zoom) {
         this.expression = expression;
         this.name = name;
         this.type = type;
@@ -233,7 +177,7 @@ class CompositeExpressionBinder<T> implements Binder<T> {
         return [];
     }
 
-    populatePaintArray(newLength: number, feature: Feature) {
+    populatePaintArray(newLength, feature) {
         const paintArray = this.paintVertexArray;
 
         const start = paintArray.length;
@@ -257,7 +201,7 @@ class CompositeExpressionBinder<T> implements Binder<T> {
         }
     }
 
-    updatePaintArray(start: number, end: number, feature: Feature, featureState: FeatureState) {
+    updatePaintArray(start, end, feature, featureState) {
         const paintArray = this.paintVertexArray;
 
         const min = this.expression.evaluate({zoom: this.zoom    }, feature, featureState);
@@ -278,7 +222,7 @@ class CompositeExpressionBinder<T> implements Binder<T> {
         }
     }
 
-    upload(context: Context) {
+    upload(context) {
         if (this.paintVertexArray && this.paintVertexArray.arrayBuffer) {
             this.paintVertexBuffer = context.createVertexBuffer(this.paintVertexArray, this.paintVertexAttributes, this.expression.isStateDependent);
         }
@@ -290,7 +234,7 @@ class CompositeExpressionBinder<T> implements Binder<T> {
         }
     }
 
-    interpolationFactor(currentZoom: number) {
+    interpolationFactor(currentZoom) {
         if (this.useIntegerZoom) {
             return this.expression.interpolationFactor(Math.floor(currentZoom), this.zoom, this.zoom + 1);
         } else {
@@ -298,7 +242,7 @@ class CompositeExpressionBinder<T> implements Binder<T> {
         }
     }
 
-    setUniforms(context: Context, program: Program, globals: GlobalProperties) {
+    setUniforms(context, program, globals) {
         context.gl.uniform1f(program.uniforms[`a_${this.name}_t`], this.interpolationFactor(globals.zoom));
     }
 }
@@ -324,14 +268,8 @@ class CompositeExpressionBinder<T> implements Binder<T> {
  * @private
  */
 export default class ProgramConfiguration {
-    binders: { [string]: Binder<any> };
-    cacheKey: string;
-    layoutAttributes: Array<StructArrayMember>;
 
-    _buffers: Array<VertexBuffer>;
 
-    _idMap: FeaturePaintBufferMap;
-    _bufferOffset: number;
 
     constructor() {
         this.binders = {};
@@ -342,7 +280,7 @@ export default class ProgramConfiguration {
         this._bufferOffset = 0;
     }
 
-    static createDynamic<Layer: TypedStyleLayer>(layer: Layer, zoom: number, filterProperties: (string) => boolean) {
+    static createDynamic(layer, zoom, filterProperties) {
         const self = new ProgramConfiguration();
         const keys = [];
 
@@ -373,7 +311,7 @@ export default class ProgramConfiguration {
         return self;
     }
 
-    populatePaintArrays(newLength: number, feature: Feature, index: number) {
+    populatePaintArrays(newLength, feature, index) {
         for (const property in this.binders) {
             this.binders[property].populatePaintArray(newLength, feature);
         }
@@ -390,8 +328,8 @@ export default class ProgramConfiguration {
         this._bufferOffset = newLength;
     }
 
-    updatePaintArrays(featureStates: FeatureStates, vtLayer: VectorTileLayer, layer: TypedStyleLayer): boolean {
-        let dirty: boolean = false;
+    updatePaintArrays(featureStates, vtLayer, layer) {
+        let dirty = false;
         for (const id in featureStates) {
             const posArray = this._idMap[id];
             if (!posArray) continue;
@@ -403,10 +341,10 @@ export default class ProgramConfiguration {
                 for (const property in this.binders) {
                     const binder = this.binders[property];
                     if (binder instanceof ConstantBinder) continue;
-                    if ((binder: any).expression.isStateDependent === true) {
+                    if ((binder).expression.isStateDependent === true) {
                         //AHM: Remove after https://github.com/mapbox/mapbox-gl-js/issues/6255
                         const value = layer.paint.get(property);
-                        (binder: any).expression = value.value;
+                        (binder).expression = value.value;
                         binder.updatePaintArray(pos.start, pos.end, feature, featureState);
                         dirty = true;
                     }
@@ -416,7 +354,7 @@ export default class ProgramConfiguration {
         return dirty;
     }
 
-    defines(): Array<string> {
+    defines() {
         const result = [];
         for (const property in this.binders) {
             result.push.apply(result, this.binders[property].defines());
@@ -424,18 +362,18 @@ export default class ProgramConfiguration {
         return result;
     }
 
-    setUniforms<Properties: Object>(context: Context, program: Program, properties: PossiblyEvaluated<Properties>, globals: GlobalProperties) {
+    setUniforms(context, program, properties, globals) {
         for (const property in this.binders) {
             const binder = this.binders[property];
             binder.setUniforms(context, program, globals, properties.get(property));
         }
     }
 
-    getPaintVertexBuffers(): Array<VertexBuffer> {
+    getPaintVertexBuffers() {
         return this._buffers;
     }
 
-    upload(context: Context) {
+    upload(context) {
         for (const property in this.binders) {
             this.binders[property].upload(context);
         }
@@ -460,11 +398,9 @@ export default class ProgramConfiguration {
     }
 }
 
-export class ProgramConfigurationSet<Layer: TypedStyleLayer> {
-    programConfigurations: {[string]: ProgramConfiguration};
-    needsUpload: boolean;
+export class ProgramConfigurationSet {
 
-    constructor(layoutAttributes: Array<StructArrayMember>, layers: $ReadOnlyArray<Layer>, zoom: number, filterProperties: (string) => boolean = () => true) {
+    constructor(layoutAttributes, layers, zoom, filterProperties = () => true) {
         this.programConfigurations = {};
         for (const layer of layers) {
             this.programConfigurations[layer.id] = ProgramConfiguration.createDynamic(layer, zoom, filterProperties);
@@ -473,24 +409,24 @@ export class ProgramConfigurationSet<Layer: TypedStyleLayer> {
         this.needsUpload = false;
     }
 
-    populatePaintArrays(length: number, feature: Feature, index: number) {
+    populatePaintArrays(length, feature, index) {
         for (const key in this.programConfigurations) {
             this.programConfigurations[key].populatePaintArrays(length, feature, index);
         }
         this.needsUpload = true;
     }
 
-    updatePaintArrays(featureStates: FeatureStates, vtLayer: VectorTileLayer, layers: $ReadOnlyArray<TypedStyleLayer>) {
+    updatePaintArrays(featureStates, vtLayer, layers) {
         for (const layer of layers) {
             this.needsUpload = this.programConfigurations[layer.id].updatePaintArrays(featureStates, vtLayer, layer) || this.needsUpload;
         }
     }
 
-    get(layerId: string) {
+    get(layerId) {
         return this.programConfigurations[layerId];
     }
 
-    upload(context: Context) {
+    upload(context) {
         if (!this.needsUpload) return;
         for (const layerId in this.programConfigurations) {
             this.programConfigurations[layerId].upload(context);

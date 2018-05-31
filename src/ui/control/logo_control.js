@@ -1,10 +1,9 @@
-// @flow
+// 
 
 import DOM from '../../util/dom';
 
 import { bindAll } from '../../util/util';
 
-import type Map from '../map';
 
 /**
  * A `LogoControl` is a control that adds the Mapbox watermark
@@ -16,15 +15,13 @@ import type Map from '../map';
 **/
 
 class LogoControl {
-    _map: Map;
-    _container: HTMLElement;
 
     constructor() {
         bindAll(['_updateLogo'], this);
         bindAll(['_updateCompact'], this);
     }
 
-    onAdd(map: Map) {
+    onAdd(map) {
         this._map = map;
         this._container = DOM.create('div', 'mapboxgl-ctrl');
         const anchor = DOM.create('a', 'mapboxgl-ctrl-logo');
@@ -54,7 +51,7 @@ class LogoControl {
         return 'bottom-left';
     }
 
-    _updateLogo(e: any) {
+    _updateLogo(e) {
         if (!e || e.sourceDataType === 'metadata') {
             this._container.style.display = this._logoRequired() ? 'block' : 'none';
         }

@@ -1,22 +1,9 @@
-// @flow
+// 
 
 import assert from 'assert';
 
-import type Program from './program';
-import type VertexBuffer from '../gl/vertex_buffer';
-import type IndexBuffer from '../gl/index_buffer';
-import type Context from '../gl/context';
 
 class VertexArrayObject {
-    context: Context;
-    boundProgram: ?Program;
-    boundLayoutVertexBuffer: ?VertexBuffer;
-    boundPaintVertexBuffers: Array<VertexBuffer>;
-    boundIndexBuffer: ?IndexBuffer;
-    boundVertexOffset: ?number;
-    boundDynamicVertexBuffer: ?VertexBuffer;
-    boundDynamicVertexBuffer2: ?VertexBuffer;
-    vao: any;
 
     constructor() {
         this.boundProgram = null;
@@ -28,14 +15,14 @@ class VertexArrayObject {
         this.vao = null;
     }
 
-    bind(context: Context,
-         program: Program,
-         layoutVertexBuffer: VertexBuffer,
-         paintVertexBuffers: Array<VertexBuffer>,
-         indexBuffer: ?IndexBuffer,
-         vertexOffset: ?number,
-         dynamicVertexBuffer: ?VertexBuffer,
-         dynamicVertexBuffer2: ?VertexBuffer) {
+    bind(context,
+         program,
+         layoutVertexBuffer,
+         paintVertexBuffers,
+         indexBuffer,
+         vertexOffset,
+         dynamicVertexBuffer,
+         dynamicVertexBuffer2) {
 
         this.context = context;
 
@@ -77,13 +64,13 @@ class VertexArrayObject {
         }
     }
 
-    freshBind(program: Program,
-              layoutVertexBuffer: VertexBuffer,
-              paintVertexBuffers: Array<VertexBuffer>,
-              indexBuffer: ?IndexBuffer,
-              vertexOffset: ?number,
-              dynamicVertexBuffer: ?VertexBuffer,
-              dynamicVertexBuffer2: ?VertexBuffer) {
+    freshBind(program,
+              layoutVertexBuffer,
+              paintVertexBuffers,
+              indexBuffer,
+              vertexOffset,
+              dynamicVertexBuffer,
+              dynamicVertexBuffer2) {
         let numPrevAttributes;
         const numNextAttributes = program.numAttributes;
 

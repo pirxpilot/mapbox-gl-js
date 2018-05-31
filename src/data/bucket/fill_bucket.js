@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { FillLayoutArray } from '../array_types';
 
@@ -14,42 +14,14 @@ const EARCUT_MAX_RINGS = 500;
 import { register } from '../../util/web_worker_transfer';
 import EvaluationParameters from '../../style/evaluation_parameters';
 
-import type {
-    Bucket,
-    BucketParameters,
-    IndexedFeature,
-    PopulateParameters
-} from '../bucket';
-import type FillStyleLayer from '../../style/style_layer/fill_style_layer';
-import type Context from '../../gl/context';
-import type IndexBuffer from '../../gl/index_buffer';
-import type VertexBuffer from '../../gl/vertex_buffer';
-import type Point from '@mapbox/point-geometry';
-import type {FeatureStates} from '../../source/source_state';
 
-class FillBucket implements Bucket {
-    index: number;
-    zoom: number;
-    overscaling: number;
-    layers: Array<FillStyleLayer>;
-    layerIds: Array<string>;
-    stateDependentLayers: Array<FillStyleLayer>;
+class FillBucket {
 
-    layoutVertexArray: FillLayoutArray;
-    layoutVertexBuffer: VertexBuffer;
 
-    indexArray: TriangleIndexArray;
-    indexBuffer: IndexBuffer;
 
-    indexArray2: LineIndexArray;
-    indexBuffer2: IndexBuffer;
 
-    programConfigurations: ProgramConfigurationSet<FillStyleLayer>;
-    segments: SegmentVector;
-    segments2: SegmentVector;
-    uploaded: boolean;
 
-    constructor(options: BucketParameters<FillStyleLayer>) {
+    constructor(options) {
         this.zoom = options.zoom;
         this.overscaling = options.overscaling;
         this.layers = options.layers;
@@ -64,7 +36,7 @@ class FillBucket implements Bucket {
         this.segments2 = new SegmentVector();
     }
 
-    populate(features: Array<IndexedFeature>, options: PopulateParameters) {
+    populate(features, options) {
         for (const {feature, index, sourceLayerIndex} of features) {
             if (this.layers[0]._featureFilter(new EvaluationParameters(this.zoom), feature)) {
                 const geometry = loadGeometry(feature);
@@ -74,7 +46,7 @@ class FillBucket implements Bucket {
         }
     }
 
-    update(states: FeatureStates, vtLayer: VectorTileLayer) {
+    update(states, vtLayer) {
         if (!this.stateDependentLayers.length) return;
         this.programConfigurations.updatePaintArrays(states, vtLayer, this.stateDependentLayers);
     }
@@ -83,10 +55,10 @@ class FillBucket implements Bucket {
         return this.layoutVertexArray.length === 0;
     }
 
-    uploadPending(): boolean {
+    uploadPending() {
         return !this.uploaded || this.programConfigurations.needsUpload;
     }
-    upload(context: Context) {
+    upload(context) {
         if (!this.uploaded) {
             this.layoutVertexBuffer = context.createVertexBuffer(this.layoutVertexArray, layoutAttributes);
             this.indexBuffer = context.createIndexBuffer(this.indexArray);
@@ -106,7 +78,7 @@ class FillBucket implements Bucket {
         this.segments2.destroy();
     }
 
-    addFeature(feature: VectorTileFeature, geometry: Array<Array<Point>>, index: number) {
+    addFeature(feature, geometry, index) {
         for (const polygon of classifyRings(geometry, EARCUT_MAX_RINGS)) {
             let numVertices = 0;
             for (const ring of polygon) {
