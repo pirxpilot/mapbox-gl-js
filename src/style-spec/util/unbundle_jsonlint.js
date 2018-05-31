@@ -1,6 +1,7 @@
+'use strict';
 
 // Turn jsonlint-lines-primitives objects into primitive objects
-export function unbundle(value) {
+function unbundle(value) {
     if (value instanceof Number || value instanceof String || value instanceof Boolean) {
         return value.valueOf();
     } else {
@@ -8,10 +9,15 @@ export function unbundle(value) {
     }
 }
 
-export function deepUnbundle(value) {
+function deepUnbundle(value) {
     if (Array.isArray(value)) {
         return value.map(deepUnbundle);
     }
     return unbundle(value);
 }
 
+
+module.exports = {
+    unbundle,
+    deepUnbundle
+};

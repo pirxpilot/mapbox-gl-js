@@ -1,11 +1,11 @@
-// 
+'use strict';
 
-import DOM from '../../util/dom';
+const DOM = require('../../util/dom');
 
-import LngLatBounds from '../../geo/lng_lat_bounds';
-import { bindAll } from '../../util/util';
-import window from '../../util/window';
-import { Event } from '../../util/evented';
+const LngLatBounds = require('../../geo/lng_lat_bounds');
+const { bindAll } = require('../../util/util');
+const window = require('../../util/window');
+const { Event } = require('../../util/evented');
 
 
 /**
@@ -154,4 +154,4 @@ class BoxZoomHandler {
     }
 }
 
-export default BoxZoomHandler;
+module.exports = BoxZoomHandler;

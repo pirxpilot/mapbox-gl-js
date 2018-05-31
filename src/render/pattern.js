@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import pixelsToTileUnits from '../source/pixels_to_tile_units';
+const pixelsToTileUnits = require('../source/pixels_to_tile_units');
 
 
 /**
@@ -10,14 +10,14 @@ import pixelsToTileUnits from '../source/pixels_to_tile_units';
  * @private
  * @returns true if a needed image is missing and rendering needs to be skipped.
  */
-export const isPatternMissing = function(image, painter) {
+function isPatternMissing(image, painter) {
     if (!image) return false;
     const imagePosA = painter.imageManager.getPattern(image.from);
     const imagePosB = painter.imageManager.getPattern(image.to);
     return !imagePosA || !imagePosB;
-};
+}
 
-export const prepare = function (image, painter, program) {
+function prepare(image, painter, program) {
     const context = painter.context;
     const gl = context.gl;
 
@@ -40,9 +40,9 @@ export const prepare = function (image, painter, program) {
 
     context.activeTexture.set(gl.TEXTURE0);
     painter.imageManager.bind(painter.context);
-};
+}
 
-export const setPatternUniforms = function (tile, painter, program) {
+function setPatternUniforms(tile, painter, program) {
     const gl = painter.context.gl;
 
     gl.uniform1f(program.uniforms.u_tile_units_to_pixels, 1 / pixelsToTileUnits(tile, 1, painter.transform.tileZoom));
@@ -56,4 +56,10 @@ export const setPatternUniforms = function (tile, painter, program) {
     // split the pixel coord into two pairs of 16 bit numbers. The glsl spec only guarantees 16 bits of precision.
     gl.uniform2f(program.uniforms.u_pixel_coord_upper, pixelX >> 16, pixelY >> 16);
     gl.uniform2f(program.uniforms.u_pixel_coord_lower, pixelX & 0xFFFF, pixelY & 0xFFFF);
+}
+
+module.exports = {
+    isPatternMissing,
+    prepare,
+    setPatternUniforms
 };

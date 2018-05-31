@@ -1,5 +1,5 @@
-import { test as t } from 'mapbox-gl-js-test';
-import declass from '../../../src/style-spec/declass';
+const { test: t } = require('mapbox-gl-js-test');
+const declass = require('../../../src/style-spec/declass');
 
 t('declass a style, one class', (t) => {
     const style = {

@@ -1,10 +1,16 @@
-// 
+'use strict';
 
-import { isCounterClockwise } from './util';
+const { isCounterClockwise } = require('./util');
 
 
-export { multiPolygonIntersectsBufferedPoint, multiPolygonIntersectsBufferedMultiPoint, multiPolygonIntersectsMultiPolygon, multiPolygonIntersectsBufferedMultiLine, polygonIntersectsPolygon, distToSegmentSquared };
-
+module.exports = {
+    multiPolygonIntersectsBufferedPoint,
+    multiPolygonIntersectsBufferedMultiPoint,
+    multiPolygonIntersectsMultiPolygon,
+    multiPolygonIntersectsBufferedMultiLine,
+    polygonIntersectsPolygon,
+    distToSegmentSquared
+};
 
 function polygonIntersectsPolygon(polygonA, polygonB) {
     for (let i = 0; i < polygonA.length; i++) {

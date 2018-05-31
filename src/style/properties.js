@@ -1,15 +1,12 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import { clone, extend, easeCubicInOut } from '../util/util';
-import * as interpolate from '../style-spec/util/interpolate';
-import { normalizePropertyExpression } from '../style-spec/expression';
-import Color from '../style-spec/util/color';
-import { register } from '../util/web_worker_transfer';
-import EvaluationParameters from './evaluation_parameters';
-
-
+const { clone, extend, easeCubicInOut } = require('../util/util');
+const interpolate = require('../style-spec/util/interpolate');
+const { normalizePropertyExpression } = require('../style-spec/expression');
+const { register } = require('../util/web_worker_transfer');
+const EvaluationParameters = require('./evaluation_parameters');
 
 
 /**
@@ -67,7 +64,7 @@ import EvaluationParameters from './evaluation_parameters';
  *
  *  @private
  */
-export class PropertyValue {
+class PropertyValue {
 
     constructor(property, value) {
         this.property = property;
@@ -131,7 +128,7 @@ class TransitionablePropertyValue {
  *
  * @private
  */
-export class Transitionable {
+class Transitionable {
 
     constructor(properties) {
         this._properties = properties;
@@ -264,7 +261,7 @@ class TransitioningPropertyValue {
  *
  * @private
  */
-export class Transitioning {
+class Transitioning {
 
     constructor(properties) {
         this._properties = properties;
@@ -309,7 +306,7 @@ export class Transitioning {
  *
  * @private
  */
-export class Layout {
+class Layout {
 
     constructor(properties) {
         this._properties = properties;
@@ -376,7 +373,7 @@ export class Layout {
  *
  * @private
  */
-export class PossiblyEvaluatedPropertyValue {
+class PossiblyEvaluatedPropertyValue {
 
     constructor(property, value, globals) {
         this.property = property;
@@ -424,7 +421,7 @@ export class PossiblyEvaluatedPropertyValue {
  * given layer type.
  * @private
  */
-export class PossiblyEvaluated {
+class PossiblyEvaluated {
 
     constructor(properties) {
         this._properties = properties;
@@ -443,7 +440,7 @@ export class PossiblyEvaluated {
  *
  * @private
  */
-export class DataConstantProperty {
+class DataConstantProperty {
 
     constructor(specification) {
         this.specification = specification;
@@ -471,7 +468,7 @@ export class DataConstantProperty {
  *
  * @private
  */
-export class DataDrivenProperty {
+class DataDrivenProperty {
 
     constructor(specification) {
         this.specification = specification;
@@ -527,7 +524,7 @@ export class DataDrivenProperty {
  *
  * @private
  */
-export class CrossFadedProperty {
+class CrossFadedProperty {
 
     constructor(specification) {
         this.specification = specification;
@@ -571,7 +568,7 @@ export class CrossFadedProperty {
  * @private
  */
 
-export class ColorRampProperty {
+class ColorRampProperty {
 
     constructor(specification) {
         this.specification = specification;
@@ -595,7 +592,7 @@ export class ColorRampProperty {
  *
  * @private
  */
-export class Properties {
+class Properties {
 
     constructor(properties) {
         this.properties = properties;
@@ -622,3 +619,17 @@ register('DataDrivenProperty', DataDrivenProperty);
 register('DataConstantProperty', DataConstantProperty);
 register('CrossFadedProperty', CrossFadedProperty);
 register('ColorRampProperty', ColorRampProperty);
+
+module.exports = {
+    PropertyValue,
+    Transitionable,
+    Transitioning,
+    Layout,
+    PossiblyEvaluatedPropertyValue,
+    PossiblyEvaluated,
+    DataConstantProperty,
+    DataDrivenProperty,
+    CrossFadedProperty,
+    ColorRampProperty,
+    Properties
+};

@@ -1,23 +1,20 @@
-// 
+'use strict';
 
+const v8 = require('./reference/v8.json');
+const latest = require('./reference/latest');
+const format = require('./format');
+const migrate = require('./migrate');
+const composite = require('./composite');
+const diff = require('./diff');
+const ValidationError = require('./error/validation_error');
+const ParsingError = require('./error/parsing_error');
+const { StyleExpression, isExpression, createExpression, createPropertyExpression, normalizePropertyExpression, ZoomConstantExpression, ZoomDependentExpression, StylePropertyFunction } = require('./expression');
+const featureFilter = require('./feature_filter');
+const Color = require('./util/color');
+const { createFunction, isFunction } = require('./function');
+const convertFunction = require('./function/convert');
 
-
-
-import v8 from './reference/v8.json';
-import latest from './reference/latest';
-import format from './format';
-import migrate from './migrate';
-import composite from './composite';
-import diff from './diff';
-import ValidationError from './error/validation_error';
-import ParsingError from './error/parsing_error';
-import { StyleExpression, isExpression, createExpression, createPropertyExpression, normalizePropertyExpression, ZoomConstantExpression, ZoomDependentExpression, StylePropertyFunction } from './expression';
-import featureFilter from './feature_filter';
-import Color from './util/color';
-import { createFunction, isFunction } from './function';
-import convertFunction from './function/convert';
-
-import validate from './validate_style';
+const validate = require('./validate_style');
 
 const expression = {
     StyleExpression,
@@ -36,7 +33,7 @@ const styleFunction = {
     isFunction
 };
 
-export {
+module.exports = {
     v8,
     latest,
     format,
@@ -48,7 +45,7 @@ export {
     expression,
     featureFilter,
     Color,
-    styleFunction as function,
+    function: styleFunction,
     validate
 };
 

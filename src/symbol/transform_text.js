@@ -1,9 +1,9 @@
-// 
+'use strict';
 
-import { plugin as rtlTextPlugin } from '../source/rtl_text_plugin';
+const { plugin: rtlTextPlugin } = require('../source/rtl_text_plugin');
 
 
-export default function(text, layer, feature) {
+module.exports = function(text, layer, feature) {
     const transform = layer.layout.get('text-transform').evaluate(feature, {});
     if (transform === 'uppercase') {
         text = text.toLocaleUpperCase();
@@ -16,4 +16,4 @@ export default function(text, layer, feature) {
     }
 
     return text;
-}
+};

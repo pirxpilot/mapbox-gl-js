@@ -1,9 +1,8 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import { register } from './web_worker_transfer';
-
+const { register } = require('./web_worker_transfer');
 
 
 function createImage(image, {width, height}, channels, data) {
@@ -70,7 +69,7 @@ function copyImage(srcImg, dstImg, srcPt, dstPt, size, channels) {
     return dstImg;
 }
 
-export class AlphaImage {
+class AlphaImage {
 
     constructor(size, data) {
         createImage(this, size, 1, data);
@@ -91,7 +90,7 @@ export class AlphaImage {
 
 // Not premultiplied, because ImageData is not premultiplied.
 // UNPACK_PREMULTIPLY_ALPHA_WEBGL must be used when uploading to a texture.
-export class RGBAImage {
+class RGBAImage {
 
     constructor(size, data) {
         createImage(this, size, 4, data);
@@ -112,3 +111,8 @@ export class RGBAImage {
 
 register('AlphaImage', AlphaImage);
 register('RGBAImage', RGBAImage);
+
+module.exports = {
+    AlphaImage,
+    RGBAImage
+};

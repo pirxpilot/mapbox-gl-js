@@ -1,14 +1,10 @@
-// 
+'use strict';
 
-import browser from '../util/browser';
+const browser = require('../util/browser');
 
-import shaders from '../shaders';
-import assert from 'assert';
-import ProgramConfiguration from '../data/program_configuration';
-import VertexArrayObject from './vertex_array_object';
-import Context from '../gl/context';
-
-
+const shaders = require('../shaders');
+const assert = require('assert');
+const VertexArrayObject = require('./vertex_array_object');
 
 class Program {
 
@@ -114,4 +110,4 @@ class Program {
     }
 }
 
-export default Program;
+module.exports = Program;

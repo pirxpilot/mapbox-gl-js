@@ -1,14 +1,13 @@
-// 
+'use strict';
 
-import StyleLayer from '../style_layer';
+const StyleLayer = require('../style_layer');
 
-import CircleBucket from '../../data/bucket/circle_bucket';
-import { multiPolygonIntersectsBufferedPoint } from '../../util/intersection_tests';
-import { getMaximumPaintValue, translateDistance, translate } from '../query_utils';
-import properties from './circle_style_layer_properties';
-import { Transitionable, Transitioning, PossiblyEvaluated } from '../properties';
-import { vec4 } from 'gl-matrix';
-import Point from '@mapbox/point-geometry';
+const CircleBucket = require('../../data/bucket/circle_bucket');
+const { multiPolygonIntersectsBufferedPoint } = require('../../util/intersection_tests');
+const { getMaximumPaintValue, translateDistance, translate } = require('../query_utils');
+const properties = require('./circle_style_layer_properties');
+const { vec4 } = require('gl-matrix');
+const Point = require('@mapbox/point-geometry');
 
 
 class CircleStyleLayer extends StyleLayer {
@@ -88,4 +87,4 @@ function projectQueryGeometry(queryGeometry, posMatrix, transform) {
     });
 }
 
-export default CircleStyleLayer;
+module.exports = CircleStyleLayer;

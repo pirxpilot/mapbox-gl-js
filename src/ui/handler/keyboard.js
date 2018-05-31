@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import { bindAll } from '../../util/util';
+const { bindAll } = require('../../util/util');
 
 
 const panStep = 100,
@@ -154,4 +154,4 @@ function easeOut(t) {
     return t * (2 - t);
 }
 
-export default KeyboardHandler;
+module.exports = KeyboardHandler;

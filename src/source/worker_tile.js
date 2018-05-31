@@ -1,17 +1,17 @@
-// 
+'use strict';
 
-import FeatureIndex from '../data/feature_index';
+const FeatureIndex = require('../data/feature_index');
 
-import { performSymbolLayout } from '../symbol/symbol_layout';
-import { CollisionBoxArray } from '../data/array_types';
-import DictionaryCoder from '../util/dictionary_coder';
-import SymbolBucket from '../data/bucket/symbol_bucket';
-import { warnOnce, mapObject, values } from '../util/util';
-import assert from 'assert';
-import ImageAtlas from '../render/image_atlas';
-import GlyphAtlas from '../render/glyph_atlas';
-import EvaluationParameters from '../style/evaluation_parameters';
-import { OverscaledTileID } from './tile_id';
+const { performSymbolLayout } = require('../symbol/symbol_layout');
+const { CollisionBoxArray } = require('../data/array_types');
+const DictionaryCoder = require('../util/dictionary_coder');
+const SymbolBucket = require('../data/bucket/symbol_bucket');
+const { warnOnce, mapObject, values } = require('../util/util');
+const assert = require('assert');
+const ImageAtlas = require('../render/image_atlas');
+const GlyphAtlas = require('../render/glyph_atlas');
+const EvaluationParameters = require('../style/evaluation_parameters');
+const { OverscaledTileID } = require('./tile_id');
 
 
 class WorkerTile {
@@ -161,4 +161,4 @@ function recalculateLayers(layers, zoom) {
     }
 }
 
-export default WorkerTile;
+module.exports = WorkerTile;

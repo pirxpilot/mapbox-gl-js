@@ -1,13 +1,10 @@
-// 
+'use strict';
 
-import StyleLayer from '../style_layer';
+const StyleLayer = require('../style_layer');
 
-import HeatmapBucket from '../../data/bucket/heatmap_bucket';
-import { RGBAImage } from '../../util/image';
-import properties from './heatmap_style_layer_properties';
-import renderColorRamp from '../../util/color_ramp';
-import { Transitionable, Transitioning, PossiblyEvaluated } from '../properties';
-
+const HeatmapBucket = require('../../data/bucket/heatmap_bucket');
+const properties = require('./heatmap_style_layer_properties');
+const renderColorRamp = require('../../util/color_ramp');
 
 class HeatmapStyleLayer extends StyleLayer {
 
@@ -56,4 +53,4 @@ class HeatmapStyleLayer extends StyleLayer {
     }
 }
 
-export default HeatmapStyleLayer;
+module.exports = HeatmapStyleLayer;

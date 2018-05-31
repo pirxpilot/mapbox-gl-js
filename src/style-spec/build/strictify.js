@@ -1,7 +1,9 @@
-import through from 'through2';
-import path from 'path';
+'use strict';
 
-export default (file) => {
+const through = require('through2');
+const path = require('path');
+
+module.exports = (file) => {
     if (path.extname(file) === '.json') {
         return through();
     }

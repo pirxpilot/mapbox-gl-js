@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 class ParsingError extends Error {
     constructor(key, message) {
@@ -8,4 +8,4 @@ class ParsingError extends Error {
     }
 }
 
-export default ParsingError;
+module.exports = ParsingError;

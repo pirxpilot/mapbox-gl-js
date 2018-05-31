@@ -1,12 +1,10 @@
-// 
+'use strict';
 
-import Color from '../style-spec/util/color';
+const Color = require('../style-spec/util/color');
 
-import { clamp } from '../util/util';
+const { clamp } = require('../util/util');
 
-
-
-export class ClearColor {
+class ClearColor {
 
     constructor(context) {
         this.context = context;
@@ -24,7 +22,7 @@ export class ClearColor {
     }
 }
 
-export class ClearDepth {
+class ClearDepth {
 
     constructor(context) {
         this.context = context;
@@ -41,7 +39,7 @@ export class ClearDepth {
     }
 }
 
-export class ClearStencil {
+class ClearStencil {
 
     constructor(context) {
         this.context = context;
@@ -58,7 +56,7 @@ export class ClearStencil {
     }
 }
 
-export class ColorMask {
+class ColorMask {
 
     constructor(context) {
         this.context = context;
@@ -76,7 +74,7 @@ export class ColorMask {
     }
 }
 
-export class DepthMask {
+class DepthMask {
 
     constructor(context) {
         this.context = context;
@@ -93,7 +91,7 @@ export class DepthMask {
     }
 }
 
-export class StencilMask {
+class StencilMask {
 
     constructor(context) {
         this.context = context;
@@ -110,7 +108,7 @@ export class StencilMask {
     }
 }
 
-export class StencilFunc {
+class StencilFunc {
 
     constructor(context) {
         this.context = context;
@@ -132,7 +130,7 @@ export class StencilFunc {
     }
 }
 
-export class StencilOp {
+class StencilOp {
 
     constructor(context) {
         this.context = context;
@@ -151,7 +149,7 @@ export class StencilOp {
     }
 }
 
-export class StencilTest {
+class StencilTest {
 
     constructor(context) {
         this.context = context;
@@ -173,7 +171,7 @@ export class StencilTest {
     }
 }
 
-export class DepthRange {
+class DepthRange {
 
     constructor(context) {
         this.context = context;
@@ -191,7 +189,7 @@ export class DepthRange {
     }
 }
 
-export class DepthTest {
+class DepthTest {
 
     constructor(context) {
         this.context = context;
@@ -213,7 +211,7 @@ export class DepthTest {
     }
 }
 
-export class DepthFunc {
+class DepthFunc {
 
     constructor(context) {
         this.context = context;
@@ -230,7 +228,7 @@ export class DepthFunc {
     }
 }
 
-export class Blend {
+class Blend {
 
     constructor(context) {
         this.context = context;
@@ -252,7 +250,7 @@ export class Blend {
     }
 }
 
-export class BlendFunc {
+class BlendFunc {
 
     constructor(context) {
         this.context = context;
@@ -271,7 +269,7 @@ export class BlendFunc {
     }
 }
 
-export class BlendColor {
+class BlendColor {
 
     constructor(context) {
         this.context = context;
@@ -289,7 +287,7 @@ export class BlendColor {
     }
 }
 
-export class Program {
+class Program {
 
     constructor(context) {
         this.context = context;
@@ -306,7 +304,7 @@ export class Program {
     }
 }
 
-export class LineWidth {
+class LineWidth {
 
     constructor(context) {
         this.context = context;
@@ -325,7 +323,7 @@ export class LineWidth {
     }
 }
 
-export class ActiveTextureUnit {
+class ActiveTextureUnit {
 
     constructor(context) {
         this.context = context;
@@ -342,7 +340,7 @@ export class ActiveTextureUnit {
     }
 }
 
-export class Viewport {
+class Viewport {
 
     constructor(context) {
         this.context = context;
@@ -361,7 +359,7 @@ export class Viewport {
     }
 }
 
-export class BindFramebuffer {
+class BindFramebuffer {
 
     constructor(context) {
         this.context = context;
@@ -379,7 +377,7 @@ export class BindFramebuffer {
     }
 }
 
-export class BindRenderbuffer {
+class BindRenderbuffer {
 
     constructor(context) {
         this.context = context;
@@ -397,7 +395,7 @@ export class BindRenderbuffer {
     }
 }
 
-export class BindTexture {
+class BindTexture {
 
     constructor(context) {
         this.context = context;
@@ -415,7 +413,7 @@ export class BindTexture {
     }
 }
 
-export class BindVertexBuffer {
+class BindVertexBuffer {
 
     constructor(context) {
         this.context = context;
@@ -433,7 +431,7 @@ export class BindVertexBuffer {
     }
 }
 
-export class BindElementBuffer {
+class BindElementBuffer {
 
     constructor(context) {
         this.context = context;
@@ -450,7 +448,7 @@ export class BindElementBuffer {
     }
 }
 
-export class BindVertexArrayOES {
+class BindVertexArrayOES {
 
     constructor(context) {
         this.context = context;
@@ -467,7 +465,7 @@ export class BindVertexArrayOES {
     }
 }
 
-export class PixelStoreUnpack {
+class PixelStoreUnpack {
 
     constructor(context) {
         this.context = context;
@@ -485,7 +483,7 @@ export class PixelStoreUnpack {
     }
 }
 
-export class PixelStoreUnpackPremultiplyAlpha {
+class PixelStoreUnpackPremultiplyAlpha {
 
     constructor(context) {
         this.context = context;
@@ -507,7 +505,7 @@ export class PixelStoreUnpackPremultiplyAlpha {
  * Framebuffer values
  * @private
  */
-export class FramebufferValue {
+class FramebufferValue {
 
     constructor(context, parent) {
         this.context = context;
@@ -518,7 +516,7 @@ export class FramebufferValue {
     get() { return this.current; }
 }
 
-export class ColorAttachment extends FramebufferValue {
+class ColorAttachment extends FramebufferValue {
 
     constructor(context, parent) {
         super(context, parent);
@@ -542,7 +540,7 @@ export class ColorAttachment extends FramebufferValue {
     }
 }
 
-export class DepthAttachment extends FramebufferValue {
+class DepthAttachment extends FramebufferValue {
     set(v) {
         if (this.current !== v) {
             const gl = this.context.gl;
@@ -554,3 +552,36 @@ export class DepthAttachment extends FramebufferValue {
         }
     }
 }
+
+module.exports = {
+    ClearColor,
+    ClearDepth,
+    ClearStencil,
+    ColorMask,
+    DepthMask,
+    StencilMask,
+    StencilFunc,
+    StencilOp,
+    StencilTest,
+    DepthRange,
+    DepthTest,
+    DepthFunc,
+    Blend,
+    BlendFunc,
+    BlendColor,
+    Program,
+    LineWidth,
+    ActiveTextureUnit,
+    Viewport,
+    BindFramebuffer,
+    BindRenderbuffer,
+    BindTexture,
+    BindVertexBuffer,
+    BindElementBuffer,
+    BindVertexArrayOES,
+    PixelStoreUnpack,
+    PixelStoreUnpackPremultiplyAlpha,
+    FramebufferValue,
+    ColorAttachment,
+    DepthAttachment
+};

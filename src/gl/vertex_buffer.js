@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
 
 
@@ -103,4 +103,4 @@ class VertexBuffer {
     }
 }
 
-export default VertexBuffer;
+module.exports = VertexBuffer;

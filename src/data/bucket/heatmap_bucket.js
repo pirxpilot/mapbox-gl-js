@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import CircleBucket from './circle_bucket';
+const CircleBucket = require('./circle_bucket');
 
-import { register } from '../../util/web_worker_transfer';
+const { register } = require('../../util/web_worker_transfer');
 
 
 class HeatmapBucket extends CircleBucket {
@@ -12,4 +12,4 @@ class HeatmapBucket extends CircleBucket {
 
 register('HeatmapBucket', HeatmapBucket, {omit: ['layers']});
 
-export default HeatmapBucket;
+module.exports = HeatmapBucket;

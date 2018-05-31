@@ -1,19 +1,15 @@
 // This file is generated. Edit build/generate-style-code.js, then run `yarn run codegen`.
-// 
+'use strict';
 /* eslint-disable */
 
-import styleSpec from '../../style-spec/reference/latest';
+const styleSpec = require('../../style-spec/reference/latest');
 
-import {
+const {
     Properties,
+    ColorRampProperty,
     DataConstantProperty,
     DataDrivenProperty,
-    CrossFadedProperty,
-    ColorRampProperty
-} from '../properties';
-
-
-
+} = require ('../properties');
 
 const paint = new Properties({
     "heatmap-radius": new DataDrivenProperty(styleSpec["paint_heatmap"]["heatmap-radius"]),
@@ -23,4 +19,4 @@ const paint = new Properties({
     "heatmap-opacity": new DataConstantProperty(styleSpec["paint_heatmap"]["heatmap-opacity"]),
 });
 
-export default { paint };
+module.exports = { paint };

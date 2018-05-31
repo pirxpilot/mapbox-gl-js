@@ -1,7 +1,8 @@
-import { test } from 'mapbox-gl-js-test';
-import DEMData, { Level } from '../../../src/data/dem_data';
-import { RGBAImage } from '../../../src/util/image';
-import { serialize, deserialize } from '../../../src/util/web_worker_transfer';
+const { test } = require('mapbox-gl-js-test');
+const DEMData = require('../../../src/data/dem_data');
+const { Level } = DEMData;
+const { RGBAImage } = require('../../../src/util/image');
+const { serialize, deserialize } = require('../../../src/util/web_worker_transfer');
 
 function createMockImage(height, width) {
     const pixels = new Uint8Array(height * width * 4);

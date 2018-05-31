@@ -1,13 +1,13 @@
-// 
+'use strict';
 
-import { getJSON, getImage, ResourceType } from '../util/ajax';
+const { getJSON, getImage, ResourceType } = require('../util/ajax');
 
-import browser from '../util/browser';
-import { normalizeSpriteURL } from '../util/mapbox';
-import { RGBAImage } from '../util/image';
+const browser = require('../util/browser');
+const { normalizeSpriteURL } = require('../util/mapbox');
+const { RGBAImage } = require('../util/image');
 
 
-export default function(baseURL,
+module.exports = function(baseURL,
                           transformRequestCallback,
                           callback) {
     let json, image, error;
@@ -46,4 +46,4 @@ export default function(baseURL,
             callback(null, result);
         }
     }
-}
+};

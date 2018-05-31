@@ -1,18 +1,18 @@
-// 
+'use strict';
 
-import { FillLayoutArray } from '../array_types';
+const { FillLayoutArray } = require('../array_types');
 
-import { members as layoutAttributes } from './fill_attributes';
-import SegmentVector from '../segment';
-import { ProgramConfigurationSet } from '../program_configuration';
-import { LineIndexArray, TriangleIndexArray } from '../index_array_type';
-import loadGeometry from '../load_geometry';
-import earcut from 'earcut';
-import classifyRings from '../../util/classify_rings';
-import assert from 'assert';
+const { members: layoutAttributes } = require('./fill_attributes');
+const SegmentVector = require('../segment');
+const { ProgramConfigurationSet } = require('../program_configuration');
+const { LineIndexArray, TriangleIndexArray } = require('../index_array_type');
+const loadGeometry = require('../load_geometry');
+const earcut = require('earcut');
+const classifyRings = require('../../util/classify_rings');
+const assert = require('assert');
 const EARCUT_MAX_RINGS = 500;
-import { register } from '../../util/web_worker_transfer';
-import EvaluationParameters from '../../style/evaluation_parameters';
+const { register } = require('../../util/web_worker_transfer');
+const EvaluationParameters = require('../../style/evaluation_parameters');
 
 
 class FillBucket {
@@ -139,4 +139,4 @@ class FillBucket {
 
 register('FillBucket', FillBucket, {omit: ['layers']});
 
-export default FillBucket;
+module.exports = FillBucket;

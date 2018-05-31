@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import DEMData from '../data/dem_data';
+const DEMData = require('../data/dem_data');
 
 
 
@@ -34,4 +34,4 @@ class RasterDEMTileWorkerSource {
     }
 }
 
-export default RasterDEMTileWorkerSource;
+module.exports = RasterDEMTileWorkerSource;

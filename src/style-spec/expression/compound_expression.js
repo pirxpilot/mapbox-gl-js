@@ -1,15 +1,10 @@
-// 
+'use strict';
 
-import { toString } from './types';
+const { toString } = require('./types');
 
-import ParsingContext from './parsing_context';
-import EvaluationContext from './evaluation_context';
-import assert from 'assert';
-
-
+const assert = require('assert');
 
 class CompoundExpression {
-
 
     constructor(name, type, evaluate, args) {
         this.name = name;
@@ -35,6 +30,8 @@ class CompoundExpression {
     }
 
     static parse(args, context) {
+        const ParsingContext = require('./parsing_context');
+
         const op = (args[0]);
         const definition = CompoundExpression.definitions[op];
         if (!definition) {
@@ -133,4 +130,4 @@ function stringifySignature(signature) {
     }
 }
 
-export default CompoundExpression;
+module.exports = CompoundExpression;

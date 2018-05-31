@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import { Event, ErrorEvent, Evented } from '../util/evented';
+const { Event, ErrorEvent, Evented } = require('../util/evented');
 
-import { extend } from '../util/util';
-import window from '../util/window';
-import EXTENT from '../data/extent';
-import { ResourceType } from '../util/ajax';
-import browser from '../util/browser';
+const { extend } = require('../util/util');
+const window = require('../util/window');
+const EXTENT = require('../data/extent');
+const { ResourceType } = require('../util/ajax');
+const browser = require('../util/browser');
 
 
 /**
@@ -268,4 +268,4 @@ function resolveURL(url) {
     return a.href;
 }
 
-export default GeoJSONSource;
+module.exports = GeoJSONSource;

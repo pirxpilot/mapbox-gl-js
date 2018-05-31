@@ -1,19 +1,18 @@
-// 
+'use strict';
 
-import { create as createSource } from './source';
+const { create: createSource } = require('./source');
 
-import Tile from './tile';
-import { Event, ErrorEvent, Evented } from '../util/evented';
-import TileCache from './tile_cache';
-import Coordinate from '../geo/coordinate';
-import { keysDifference } from '../util/util';
-import EXTENT from '../data/extent';
-import Context from '../gl/context';
-import Point from '@mapbox/point-geometry';
-import browser from '../util/browser';
-import { OverscaledTileID } from './tile_id';
-import assert from 'assert';
-import SourceFeatureState from './source_state';
+const Tile = require('./tile');
+const { Event, ErrorEvent, Evented } = require('../util/evented');
+const TileCache = require('./tile_cache');
+const Coordinate = require('../geo/coordinate');
+const { keysDifference } = require('../util/util');
+const EXTENT = require('../data/extent');
+const Point = require('@mapbox/point-geometry');
+const browser = require('../util/browser');
+const { OverscaledTileID } = require('./tile_id');
+const assert = require('assert');
+const SourceFeatureState = require('./source_state');
 
 
 /**
@@ -797,5 +796,5 @@ function isRasterType(type) {
     return type === 'raster' || type === 'image' || type === 'video';
 }
 
-export default SourceCache;
+module.exports = SourceCache;
 

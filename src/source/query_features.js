@@ -1,8 +1,14 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-export function queryRenderedFeatures(sourceCache,
+module.exports = {
+    queryRenderedFeatures,
+    queryRenderedSymbols,
+    querySourceFeatures
+};
+
+function queryRenderedFeatures(sourceCache,
                             styleLayers,
                             queryGeometry,
                             params,
@@ -44,7 +50,7 @@ export function queryRenderedFeatures(sourceCache,
     return result;
 }
 
-export function queryRenderedSymbols(styleLayers,
+function queryRenderedSymbols(styleLayers,
                             sourceCaches,
                             queryGeometry,
                             params,
@@ -112,7 +118,7 @@ export function queryRenderedSymbols(styleLayers,
     return result;
 }
 
-export function querySourceFeatures(sourceCache, params) {
+function querySourceFeatures(sourceCache, params) {
     const tiles = sourceCache.getRenderableIds().map((id) => {
         return sourceCache.getTileByID(id);
     });

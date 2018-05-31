@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import { NumberType } from '../types';
+const { NumberType } = require('../types');
 
-import { findStopLessThanOrEqualTo } from '../stops';
+const { findStopLessThanOrEqualTo } = require('../stops');
 
 
 class Step {
@@ -112,4 +112,4 @@ class Step {
     }
 }
 
-export default Step;
+module.exports = Step;

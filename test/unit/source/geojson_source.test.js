@@ -1,10 +1,10 @@
-import { test } from 'mapbox-gl-js-test';
-import Tile from '../../../src/source/tile';
-import { OverscaledTileID } from '../../../src/source/tile_id';
-import GeoJSONSource from '../../../src/source/geojson_source';
-import Transform from '../../../src/geo/transform';
-import LngLat from '../../../src/geo/lng_lat';
-import { extend } from '../../../src/util/util';
+const { test } = require('mapbox-gl-js-test');
+const Tile = require('../../../src/source/tile');
+const { OverscaledTileID } = require('../../../src/source/tile_id');
+const GeoJSONSource = require('../../../src/source/geojson_source');
+const Transform = require('../../../src/geo/transform');
+const LngLat = require('../../../src/geo/lng_lat');
+const { extend } = require('../../../src/util/util');
 
 const mockDispatcher = {
     send: function () {}

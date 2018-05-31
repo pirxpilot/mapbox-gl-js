@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import { number as interpolate } from '../style-spec/util/interpolate';
+const { number: interpolate } = require('../style-spec/util/interpolate');
 
-import Anchor from '../symbol/anchor';
-import checkMaxAngle from './check_max_angle';
+const Anchor = require('../symbol/anchor');
+const checkMaxAngle = require('./check_max_angle');
 
 
-export default getAnchors;
+module.exports = getAnchors;
 
 function getAnchors(line,
                     spacing,

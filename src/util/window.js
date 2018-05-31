@@ -1,10 +1,10 @@
-// 
+'use strict';
 
-import jsdom from 'jsdom';
+const jsdom = require('jsdom');
 
-import gl from 'gl';
-import sinon from 'sinon';
-import { extend } from './util';
+const gl = require('gl');
+const sinon = require('sinon');
+const { extend } = require('./util');
 
 const { window: _window } = new jsdom.JSDOM('', {
     virtualConsole: new jsdom.VirtualConsole().sendTo(console)
@@ -12,7 +12,7 @@ const { window: _window } = new jsdom.JSDOM('', {
 
 restore();
 
-export default _window;
+module.exports = _window;
 
 function restore() {
     // Remove previous window from exported object

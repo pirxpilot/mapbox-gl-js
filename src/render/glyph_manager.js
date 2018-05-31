@@ -1,11 +1,11 @@
-// 
+'use strict';
 
-import loadGlyphRange from '../style/load_glyph_range';
+const loadGlyphRange = require('../style/load_glyph_range');
 
-import TinySDF from '@mapbox/tiny-sdf';
-import isChar from '../util/is_char_in_unicode_block';
-import { asyncAll } from '../util/util';
-import { AlphaImage } from '../util/image';
+const TinySDF = require('@mapbox/tiny-sdf');
+const isChar = require('../util/is_char_in_unicode_block');
+const { asyncAll } = require('../util/util');
+const { AlphaImage } = require('../util/image');
 
 
 
@@ -143,4 +143,4 @@ class GlyphManager {
 GlyphManager.loadGlyphRange = loadGlyphRange;
 GlyphManager.TinySDF = TinySDF;
 
-export default GlyphManager;
+module.exports = GlyphManager;

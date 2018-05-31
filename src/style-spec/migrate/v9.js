@@ -1,5 +1,6 @@
+'use strict';
 
-import deref from '../deref';
+const deref = require('../deref');
 
 function eachLayer(style, callback) {
     for (const k in style.layers) {
@@ -7,7 +8,7 @@ function eachLayer(style, callback) {
     }
 }
 
-export default function(style) {
+module.exports = function(style) {
     style.version = 9;
 
     // remove user-specified refs
@@ -23,4 +24,4 @@ export default function(style) {
     });
 
     return style;
-}
+};

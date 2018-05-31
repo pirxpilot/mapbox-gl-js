@@ -1,8 +1,6 @@
-// 
+'use strict';
 
-import { extend } from '../util/util';
-import Tile from './tile';
-
+const { extend } = require('../util/util');
 
 /**
  * SourceFeatureState manages the state and state changes
@@ -59,4 +57,4 @@ class SourceFeatureState {
     }
 }
 
-export default SourceFeatureState;
+module.exports = SourceFeatureState;

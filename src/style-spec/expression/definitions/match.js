@@ -1,9 +1,9 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import { typeOf } from '../values';
-import { ValueType, } from '../types';
+const { typeOf } = require('../values');
+const { ValueType, } = require('../types');
 
 
 // Map input label values to output expression index
@@ -147,4 +147,4 @@ class Match {
     }
 }
 
-export default Match;
+module.exports = Match;

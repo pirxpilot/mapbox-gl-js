@@ -1,13 +1,13 @@
-// 
+'use strict';
 
-import { Event, ErrorEvent, Evented } from '../util/evented';
+const { Event, ErrorEvent, Evented } = require('../util/evented');
 
-import { extend, pick } from '../util/util';
-import loadTileJSON from './load_tilejson';
-import { normalizeTileURL as normalizeURL } from '../util/mapbox';
-import TileBounds from './tile_bounds';
-import { ResourceType } from '../util/ajax';
-import browser from '../util/browser';
+const { extend, pick } = require('../util/util');
+const loadTileJSON = require('./load_tilejson');
+const { normalizeTileURL: normalizeURL } = require('../util/mapbox');
+const TileBounds = require('./tile_bounds');
+const { ResourceType } = require('../util/ajax');
+const browser = require('../util/browser');
 
 
 class VectorTileSource extends Evented {
@@ -131,4 +131,4 @@ class VectorTileSource extends Evented {
     }
 }
 
-export default VectorTileSource;
+module.exports = VectorTileSource;

@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 
 class Var {
@@ -36,4 +36,4 @@ class Var {
     }
 }
 
-export default Var;
+module.exports = Var;

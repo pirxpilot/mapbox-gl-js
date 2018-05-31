@@ -1,10 +1,10 @@
-// 
+'use strict';
 
-import { test } from 'mapbox-gl-js-test';
-import fs from 'fs';
-import path from 'path';
-import window from '../../../src/util/window';
-import loadGlyphRange from '../../../src/style/load_glyph_range';
+const { test } = require('mapbox-gl-js-test');
+const fs = require('fs');
+const path = require('path');
+const window = require('../../../src/util/window');
+const loadGlyphRange = require('../../../src/style/load_glyph_range');
 
 test('loadGlyphRange', (t) => {
     window.useFakeXMLHttpRequest();

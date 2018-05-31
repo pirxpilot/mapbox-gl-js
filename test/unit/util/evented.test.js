@@ -1,5 +1,5 @@
-import { test } from 'mapbox-gl-js-test';
-import { Event, Evented } from '../../../src/util/evented';
+const { test } = require('mapbox-gl-js-test');
+const { Event, Evented } = require('../../../src/util/evented');
 
 test('Evented', (t) => {
 

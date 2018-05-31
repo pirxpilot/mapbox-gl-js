@@ -1,10 +1,10 @@
 // This file is generated. Edit build/generate-struct-arrays.js, then run `yarn run codegen`.
-// 
+'use strict';
 
-import assert from 'assert';
-import {Struct, StructArray} from '../util/struct_array';
-import {register} from '../util/web_worker_transfer';
-import Point from '@mapbox/point-geometry';
+const assert = require('assert');
+const {Struct, StructArray} = require('../util/struct_array');
+const {register} = require('../util/web_worker_transfer');
+const Point = require('@mapbox/point-geometry');
 
 
 /**
@@ -776,7 +776,7 @@ CollisionBoxStruct.prototype.size = 24;
 /**
  * @private
  */
-export class CollisionBoxArray extends StructArrayLayout6i1ul2ui2i24 {
+class CollisionBoxArray extends StructArrayLayout6i1ul2ui2i24 {
     /**
      * Return the CollisionBoxStruct at the given location in the array.
      * @param {number} index The index of the element.
@@ -827,7 +827,7 @@ PlacedSymbolStruct.prototype.size = 40;
 /**
  * @private
  */
-export class PlacedSymbolArray extends StructArrayLayout2i2ui3ul3ui2f2ub40 {
+class PlacedSymbolArray extends StructArrayLayout2i2ui3ul3ui2f2ub40 {
     /**
      * Return the PlacedSymbolStruct at the given location in the array.
      * @param {number} index The index of the element.
@@ -852,7 +852,7 @@ GlyphOffsetStruct.prototype.size = 4;
 /**
  * @private
  */
-export class GlyphOffsetArray extends StructArrayLayout1f4 {
+class GlyphOffsetArray extends StructArrayLayout1f4 {
     getoffsetX(index) { return this.float32[index * 1 + 0]; }
     /**
      * Return the GlyphOffsetStruct at the given location in the array.
@@ -882,7 +882,7 @@ SymbolLineVertexStruct.prototype.size = 6;
 /**
  * @private
  */
-export class SymbolLineVertexArray extends StructArrayLayout3i6 {
+class SymbolLineVertexArray extends StructArrayLayout3i6 {
     getx(index) { return this.int16[index * 3 + 0]; }
     gety(index) { return this.int16[index * 3 + 1]; }
     gettileUnitDistanceFromAnchor(index) { return this.int16[index * 3 + 2]; }
@@ -914,7 +914,7 @@ FeatureIndexStruct.prototype.size = 8;
 /**
  * @private
  */
-export class FeatureIndexArray extends StructArrayLayout1ul2ui8 {
+class FeatureIndexArray extends StructArrayLayout1ul2ui8 {
     /**
      * Return the FeatureIndexStruct at the given location in the array.
      * @param {number} index The index of the element.
@@ -928,7 +928,7 @@ export class FeatureIndexArray extends StructArrayLayout1ul2ui8 {
 register('FeatureIndexArray', FeatureIndexArray);
 
 
-export {
+module.exports = {
     StructArrayLayout2i4,
     StructArrayLayout4i8,
     StructArrayLayout2i4i12,
@@ -947,19 +947,25 @@ export {
     StructArrayLayout2ui4,
     StructArrayLayout2f8,
     StructArrayLayout4f16,
-    StructArrayLayout2i4 as PosArray,
-    StructArrayLayout4i8 as RasterBoundsArray,
-    StructArrayLayout2i4 as CircleLayoutArray,
-    StructArrayLayout2i4 as FillLayoutArray,
-    StructArrayLayout2i4i12 as FillExtrusionLayoutArray,
-    StructArrayLayout2i4 as HeatmapLayoutArray,
-    StructArrayLayout4i4ub12 as LineLayoutArray,
-    StructArrayLayout4i4ui16 as SymbolLayoutArray,
-    StructArrayLayout3f12 as SymbolDynamicLayoutArray,
-    StructArrayLayout1ul4 as SymbolOpacityArray,
-    StructArrayLayout2i2i2i12 as CollisionBoxLayoutArray,
-    StructArrayLayout2i2i2i12 as CollisionCircleLayoutArray,
-    StructArrayLayout2ub4 as CollisionVertexArray,
-    StructArrayLayout3ui6 as TriangleIndexArray,
-    StructArrayLayout2ui4 as LineIndexArray
+    PosArray: StructArrayLayout2i4,
+    RasterBoundsArray: StructArrayLayout4i8,
+    CircleLayoutArray: StructArrayLayout2i4,
+    FillLayoutArray: StructArrayLayout2i4,
+    FillExtrusionLayoutArray: StructArrayLayout2i4i12,
+    HeatmapLayoutArray: StructArrayLayout2i4,
+    LineLayoutArray: StructArrayLayout4i4ub12,
+    SymbolLayoutArray: StructArrayLayout4i4ui16,
+    SymbolDynamicLayoutArray: StructArrayLayout3f12,
+    SymbolOpacityArray: StructArrayLayout1ul4,
+    CollisionBoxLayoutArray: StructArrayLayout2i2i2i12,
+    CollisionCircleLayoutArray: StructArrayLayout2i2i2i12,
+    CollisionVertexArray: StructArrayLayout2ub4,
+    TriangleIndexArray: StructArrayLayout3ui6,
+    LineIndexArray: StructArrayLayout2ui4,
+
+    FeatureIndexArray,
+    GlyphOffsetArray,
+    SymbolLineVertexArray,
+    PlacedSymbolArray,
+    CollisionBoxArray
 };

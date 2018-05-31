@@ -1,7 +1,8 @@
+'use strict';
 
-import ValidationError from '../error/validation_error';
+const ValidationError = require('../error/validation_error');
 
-export default function validateConstants(options) {
+module.exports = function validateConstants(options) {
     const key = options.key;
     const constants = options.value;
 
@@ -10,4 +11,4 @@ export default function validateConstants(options) {
     } else {
         return [];
     }
-}
+};

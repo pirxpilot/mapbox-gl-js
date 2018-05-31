@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 /**
  * The maximum value of a coordinate in the internal tile coordinate system. Coordinates of
@@ -16,4 +16,4 @@
  * @private
  * @readonly
  */
-export default 8192;
+module.exports = 8192;

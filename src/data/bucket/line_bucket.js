@@ -1,17 +1,17 @@
-// 
+'use strict';
 
-import { LineLayoutArray } from '../array_types';
+const { LineLayoutArray } = require('../array_types');
 
-import { members as layoutAttributes } from './line_attributes';
-import SegmentVector from '../segment';
-import { ProgramConfigurationSet } from '../program_configuration';
-import { TriangleIndexArray } from '../index_array_type';
-import loadGeometry from '../load_geometry';
-import EXTENT from '../extent';
-import mvt from '@mapbox/vector-tile';
+const { members: layoutAttributes } = require('./line_attributes');
+const SegmentVector = require('../segment');
+const { ProgramConfigurationSet } = require('../program_configuration');
+const { TriangleIndexArray } = require('../index_array_type');
+const loadGeometry = require('../load_geometry');
+const EXTENT = require('../extent');
+const mvt = require('@mapbox/vector-tile');
 const vectorTileFeatureTypes = mvt.VectorTileFeature.types;
-import { register } from '../../util/web_worker_transfer';
-import EvaluationParameters from '../../style/evaluation_parameters';
+const { register } = require('../../util/web_worker_transfer');
+const EvaluationParameters = require('../../style/evaluation_parameters');
 
 
 // NOTE ON EXTRUDE SCALE:
@@ -188,10 +188,10 @@ class LineBucket {
             endCap = isPolygon ? 'butt' : cap;
         let startOfLine = true;
         let currentVertex;
-        let prevVertex = ((undefined));
-        let nextVertex = ((undefined));
-        let prevNormal = ((undefined));
-        let nextNormal = ((undefined));
+        let prevVertex;
+        let nextVertex;
+        let prevNormal;
+        let nextNormal;
         let offsetA;
         let offsetB;
 
@@ -559,4 +559,4 @@ function calculateFullDistance(vertices, first, len) {
 
 register('LineBucket', LineBucket, {omit: ['layers']});
 
-export default LineBucket;
+module.exports = LineBucket;

@@ -1,20 +1,20 @@
-import { test } from 'mapbox-gl-js-test';
-import assert from 'assert';
-import Style from '../../../src/style/style';
-import SourceCache from '../../../src/source/source_cache';
-import StyleLayer from '../../../src/style/style_layer';
-import Transform from '../../../src/geo/transform';
-import EvaluationParameters from '../../../src/style/evaluation_parameters';
-import { extend } from '../../../src/util/util';
-import { Event, Evented } from '../../../src/util/evented';
-import window from '../../../src/util/window';
-import {
+const { test } = require('mapbox-gl-js-test');
+const assert = require('assert');
+const Style = require('../../../src/style/style');
+const SourceCache = require('../../../src/source/source_cache');
+const StyleLayer = require('../../../src/style/style_layer');
+const Transform = require('../../../src/geo/transform');
+const EvaluationParameters = require('../../../src/style/evaluation_parameters');
+const { extend } = require('../../../src/util/util');
+const { Event, Evented } = require('../../../src/util/evented');
+const window = require('../../../src/util/window');
+const {
     setRTLTextPlugin,
     clearRTLTextPlugin,
-    evented as rtlTextPluginEvented
-} from '../../../src/source/rtl_text_plugin';
-import browser from '../../../src/util/browser';
-import { OverscaledTileID } from '../../../src/source/tile_id';
+    evented: rtlTextPluginEvented
+} = require('../../../src/source/rtl_text_plugin');
+const browser = require('../../../src/util/browser');
+const { OverscaledTileID } = require('../../../src/source/tile_id');
 
 function createStyleJSON(properties) {
     return extend({

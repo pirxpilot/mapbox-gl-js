@@ -1,8 +1,8 @@
-// 
+'use strict';
 
 // Note: all "sizes" are measured in bytes
 
-import assert from 'assert';
+const assert = require('assert');
 
 
 const viewTypes = {
@@ -207,4 +207,4 @@ function align(offset, size) {
     return Math.ceil(offset / size) * size;
 }
 
-export { StructArray, Struct, viewTypes, createLayout };
+module.exports = { StructArray, Struct, viewTypes, createLayout };

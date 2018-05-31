@@ -1,20 +1,18 @@
-// 
+'use strict';
 
-import Actor from '../util/actor';
+const Actor = require('../util/actor');
 
-import StyleLayerIndex from '../style/style_layer_index';
-import VectorTileWorkerSource from './vector_tile_worker_source';
-import RasterDEMTileWorkerSource from './raster_dem_tile_worker_source';
-import GeoJSONWorkerSource from './geojson_worker_source';
-import assert from 'assert';
-import { plugin as globalRTLTextPlugin } from './rtl_text_plugin';
-
-
+const StyleLayerIndex = require('../style/style_layer_index');
+const VectorTileWorkerSource = require('./vector_tile_worker_source');
+const RasterDEMTileWorkerSource = require('./raster_dem_tile_worker_source');
+const GeoJSONWorkerSource = require('./geojson_worker_source');
+const assert = require('assert');
+const { plugin: globalRTLTextPlugin } = require('./rtl_text_plugin');
 
 /**
  * @private
  */
-export default class Worker {
+class Worker {
 
     constructor(self) {
         this.self = self;
@@ -173,6 +171,8 @@ export default class Worker {
         return this.demWorkerSources[mapId][source];
     }
 }
+
+module.exports = Worker;
 
 /* global self, WorkerGlobalScope */
 if (typeof WorkerGlobalScope !== 'undefined' &&

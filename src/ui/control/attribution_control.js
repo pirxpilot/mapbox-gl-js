@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import DOM from '../../util/dom';
-import { bindAll } from '../../util/util';
-import config from '../../util/config';
+const DOM = require('../../util/dom');
+const { bindAll } = require('../../util/util');
+const config = require('../../util/config');
 
 
 
@@ -145,4 +145,4 @@ class AttributionControl {
 
 }
 
-export default AttributionControl;
+module.exports = AttributionControl;

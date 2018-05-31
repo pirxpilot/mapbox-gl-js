@@ -1,10 +1,8 @@
-// 
+'use strict';
 
-import Coordinate from '../geo/coordinate';
+const { OverscaledTileID } = require('../source/tile_id');
 
-import { OverscaledTileID } from '../source/tile_id';
-
-export default tileCover;
+module.exports = tileCover;
 
 function tileCover(z, bounds,
         actualZ, renderWorldCopies) {

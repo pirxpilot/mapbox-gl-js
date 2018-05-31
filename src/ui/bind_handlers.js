@@ -1,14 +1,14 @@
-// 
+'use strict';
 
-import { MapMouseEvent, MapTouchEvent, MapWheelEvent } from '../ui/events';
-import DOM from '../util/dom';
-import scrollZoom from './handler/scroll_zoom';
-import boxZoom from './handler/box_zoom';
-import dragRotate from './handler/drag_rotate';
-import dragPan from './handler/drag_pan';
-import keyboard from './handler/keyboard';
-import doubleClickZoom from './handler/dblclick_zoom';
-import touchZoomRotate from './handler/touch_zoom_rotate';
+const { MapMouseEvent, MapTouchEvent, MapWheelEvent } = require('../ui/events');
+const DOM = require('../util/dom');
+const scrollZoom = require('./handler/scroll_zoom');
+const boxZoom = require('./handler/box_zoom');
+const dragRotate = require('./handler/drag_rotate');
+const dragPan = require('./handler/drag_pan');
+const keyboard = require('./handler/keyboard');
+const doubleClickZoom = require('./handler/dblclick_zoom');
+const touchZoomRotate = require('./handler/touch_zoom_rotate');
 
 const handlers = {
     scrollZoom,
@@ -20,7 +20,7 @@ const handlers = {
     touchZoomRotate
 };
 
-export default function bindHandlers(map, options) {
+module.exports = function bindHandlers(map, options) {
     const el = map.getCanvasContainer();
     let contextMenuEvent = null;
     let mouseDown = false;
@@ -190,4 +190,4 @@ export default function bindHandlers(map, options) {
 
         map.scrollZoom.onWheel(e);
     }
-}
+};

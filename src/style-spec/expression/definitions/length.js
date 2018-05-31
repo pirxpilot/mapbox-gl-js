@@ -1,9 +1,9 @@
-// 
+'use strict';
 
-import { NumberType, toString } from '../types';
+const { NumberType, toString } = require('../types');
 
-import { typeOf } from '../values';
-import RuntimeError from '../runtime_error';
+const { typeOf } = require('../values');
+const RuntimeError = require('../runtime_error');
 
 
 class Length {
@@ -52,4 +52,4 @@ class Length {
     }
 }
 
-export default Length;
+module.exports = Length;

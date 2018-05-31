@@ -1,11 +1,11 @@
-// 
+'use strict';
 
-import {
+const {
     charHasUprightVerticalOrientation,
     charAllowsIdeographicBreaking
-} from '../util/script_detection';
-import verticalizePunctuation from '../util/verticalize_punctuation';
-import { plugin as rtlTextPlugin } from '../source/rtl_text_plugin';
+} = require('../util/script_detection');
+const verticalizePunctuation = require('../util/verticalize_punctuation');
+const { plugin: rtlTextPlugin } = require('../source/rtl_text_plugin');
 
 
 const WritingMode = {
@@ -14,7 +14,11 @@ const WritingMode = {
     horizontalOnly: 3
 };
 
-export { shapeText, shapeIcon, WritingMode };
+module.exports = {
+    shapeText,
+    shapeIcon,
+    WritingMode
+};
 
 // The position of a glyph relative to the text's anchor point.
 

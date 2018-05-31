@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import LngLat from '../geo/lng_lat';
+const LngLat = require('../geo/lng_lat');
 
 
 /**
@@ -18,7 +18,7 @@ import LngLat from '../geo/lng_lat';
  *
  * @private
  */
-export default function(lngLat, priorPos, transform) {
+module.exports = function(lngLat, priorPos, transform) {
     lngLat = new LngLat(lngLat.lng, lngLat.lat);
 
     // First, try shifting one world in either direction, and see if either is closer to the
@@ -50,4 +50,4 @@ export default function(lngLat, priorPos, transform) {
     }
 
     return lngLat;
-}
+};

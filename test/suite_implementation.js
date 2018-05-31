@@ -1,12 +1,12 @@
-import {PNG} from 'pngjs';
-import Map from '../src/ui/map';
-import config from '../src/util/config';
-import window from '../src/util/window';
-import browser from '../src/util/browser';
-import {plugin as rtlTextPlugin} from '../src/source/rtl_text_plugin';
-import rtlText from '@mapbox/mapbox-gl-rtl-text';
-import fs from 'fs';
-import path from 'path';
+const {PNG} = require('pngjs');
+const Map = require('../src/ui/map');
+const config = require('../src/util/config');
+const window = require('../src/util/window');
+const browser = require('../src/util/browser');
+const {plugin: rtlTextPlugin} = require('../src/source/rtl_text_plugin');
+const rtlText = require('@mapbox/mapbox-gl-rtl-text');
+const fs = require('fs');
+const path = require('path');
 
 rtlTextPlugin['applyArabicShaping'] = rtlText.applyArabicShaping;
 rtlTextPlugin['processBidirectionalText'] = rtlText.processBidirectionalText;

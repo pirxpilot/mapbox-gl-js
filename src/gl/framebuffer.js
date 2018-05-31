@@ -1,5 +1,5 @@
-// 
-import { ColorAttachment, DepthAttachment } from './value';
+'use strict';
+const { ColorAttachment, DepthAttachment } = require('./value');
 
 
 class Framebuffer {
@@ -28,4 +28,4 @@ class Framebuffer {
     }
 }
 
-export default Framebuffer;
+module.exports = Framebuffer;

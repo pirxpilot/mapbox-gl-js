@@ -1,19 +1,8 @@
-// 
-import validateStyleMin from '../style-spec/validate_style.min';
-import { ErrorEvent } from '../util/evented';
+'use strict';
+const validateStyleMin = require('../style-spec/validate_style.min');
+const { ErrorEvent } = require('../util/evented');
 
-
-
-
-export const validateStyle = (validateStyleMin);
-
-export const validateSource = (validateStyleMin.source);
-export const validateLight = (validateStyleMin.light);
-export const validateFilter = (validateStyleMin.filter);
-export const validatePaintProperty = (validateStyleMin.paintProperty);
-export const validateLayoutProperty = (validateStyleMin.layoutProperty);
-
-export function emitValidationErrors(emitter, errors) {
+function emitValidationErrors(emitter, errors) {
     let hasErrors = false;
     if (errors && errors.length) {
         for (const error of errors) {
@@ -23,3 +12,13 @@ export function emitValidationErrors(emitter, errors) {
     }
     return hasErrors;
 }
+
+module.exports = {
+    validateStyle: validateStyleMin,
+    validateSource: validateStyleMin.source,
+    validateLight: validateStyleMin.light,
+    validateFilter: validateStyleMin.filter,
+    validatePaintProperty: validateStyleMin.paintProperty,
+    validateLayoutProperty: validateStyleMin.layoutProperty,
+    emitValidationErrors
+};

@@ -1,13 +1,11 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import { BooleanType } from '../types';
-
+const { BooleanType } = require('../types');
 
 
 class Case {
-
 
     constructor(type, branches, otherwise) {
         this.type = type;
@@ -65,7 +63,7 @@ class Case {
 
     possibleOutputs() {
         return []
-            .concat(...this.branches.map(([_, out]) => out.possibleOutputs()))
+            .concat(...this.branches.map(branch => branch[1].possibleOutputs()))
             .concat(this.otherwise.possibleOutputs());
     }
 
@@ -76,4 +74,4 @@ class Case {
     }
 }
 
-export default Case;
+module.exports = Case;

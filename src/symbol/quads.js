@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import Point from '@mapbox/point-geometry';
+const Point = require('@mapbox/point-geometry');
 
-import { GLYPH_PBF_BORDER } from '../style/parse_glyph_pbf';
+const { GLYPH_PBF_BORDER } = require('../style/parse_glyph_pbf');
 
 
 /**
@@ -23,7 +23,7 @@ import { GLYPH_PBF_BORDER } from '../style/parse_glyph_pbf';
  * Create the quads used for rendering an icon.
  * @private
  */
-export function getIconQuads(anchor,
+function getIconQuads(anchor,
                       shapedIcon,
                       layer,
                       alongLine,
@@ -95,7 +95,7 @@ export function getIconQuads(anchor,
  * Create the quads used for rendering a text label.
  * @private
  */
-export function getGlyphQuads(anchor,
+function getGlyphQuads(anchor,
                        shaping,
                        layer,
                        alongLine,
@@ -176,3 +176,8 @@ export function getGlyphQuads(anchor,
 
     return quads;
 }
+
+module.exports = {
+    getIconQuads,
+    getGlyphQuads
+};

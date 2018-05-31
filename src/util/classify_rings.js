@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import quickselect from 'quickselect';
+const quickselect = require('quickselect');
 
-import { calculateSignedArea } from './util';
+const { calculateSignedArea } = require('./util');
 
 
 // classifies an array of rings into polygons with outer rings and holes
-export default function classifyRings(rings, maxRings) {
+module.exports = function classifyRings(rings, maxRings) {
     const len = rings.length;
 
     if (len <= 1) return [rings];
@@ -44,7 +44,7 @@ export default function classifyRings(rings, maxRings) {
     }
 
     return polygons;
-}
+};
 
 function compareAreas(a, b) {
     return b.area - a.area;

@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import { register } from '../util/web_worker_transfer';
+const { register } = require('../util/web_worker_transfer');
 
 class OpacityState {
 
@@ -21,4 +21,4 @@ class OpacityState {
 
 register('OpacityState', OpacityState);
 
-export default OpacityState;
+module.exports = OpacityState;

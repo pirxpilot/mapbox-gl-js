@@ -1,15 +1,13 @@
-// 
+'use strict';
 
-import ShelfPack from '@mapbox/shelf-pack';
+const ShelfPack = require('@mapbox/shelf-pack');
 
-import { RGBAImage } from '../util/image';
-import { register } from '../util/web_worker_transfer';
-
+const { RGBAImage } = require('../util/image');
+const { register } = require('../util/web_worker_transfer');
 
 const padding = 1;
 
-
-export class ImagePosition {
+class ImagePosition {
 
     constructor(paddedRect, {pixelRatio}) {
         this.paddedRect = paddedRect;
@@ -38,7 +36,7 @@ export class ImagePosition {
     }
 }
 
-export default class ImageAtlas {
+class ImageAtlas {
 
     constructor(images) {
         const image = new RGBAImage({width: 0, height: 0});
@@ -82,6 +80,8 @@ export default class ImageAtlas {
     }
 }
 
+ImageAtlas.ImagePosition = ImagePosition;
+module.exports = ImageAtlas;
+
 register('ImagePosition', ImagePosition);
 register('ImageAtlas', ImageAtlas);
-

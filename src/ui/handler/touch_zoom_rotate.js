@@ -1,10 +1,10 @@
-// 
+'use strict';
 
-import DOM from '../../util/dom';
-import { bezier, bindAll } from '../../util/util';
-import window from '../../util/window';
-import browser from '../../util/browser';
-import { Event } from '../../util/evented';
+const DOM = require('../../util/dom');
+const { bezier, bindAll } = require('../../util/util');
+const window = require('../../util/window');
+const browser = require('../../util/browser');
+const { Event } = require('../../util/evented');
 
 
 const inertiaLinearity = 0.15,
@@ -266,4 +266,4 @@ class TouchZoomRotateHandler {
     }
 }
 
-export default TouchZoomRotateHandler;
+module.exports = TouchZoomRotateHandler;

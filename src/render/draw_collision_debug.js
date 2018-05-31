@@ -1,10 +1,10 @@
-// 
+'use strict';
 
-import pixelsToTileUnits from '../source/pixels_to_tile_units';
-import DepthMode from '../gl/depth_mode';
-import StencilMode from '../gl/stencil_mode';
+const pixelsToTileUnits = require('../source/pixels_to_tile_units');
+const DepthMode = require('../gl/depth_mode');
+const StencilMode = require('../gl/stencil_mode');
 
-export default drawCollisionDebug;
+module.exports = drawCollisionDebug;
 
 function drawCollisionDebugGeometry(painter, sourceCache, layer, coords, drawCircles) {
     const context = painter.context;

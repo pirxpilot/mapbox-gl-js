@@ -1,11 +1,10 @@
-// 
+'use strict';
 
-import UnitBezier from '@mapbox/unitbezier';
+const UnitBezier = require('@mapbox/unitbezier');
 
-import * as interpolate from '../../util/interpolate';
-import { toString, NumberType } from '../types';
-import { findStopLessThanOrEqualTo } from '../stops';
-
+const interpolate = require('../../util/interpolate');
+const { toString, NumberType } = require('../types');
+const { findStopLessThanOrEqualTo } = require('../stops');
 
 
 class Interpolate {
@@ -239,4 +238,4 @@ function exponentialInterpolation(input, base, lowerValue, upperValue) {
     }
 }
 
-export default Interpolate;
+module.exports = Interpolate;

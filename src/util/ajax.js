@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import window from './window';
+const window = require('./window');
 
 
 /**
@@ -19,7 +19,14 @@ const ResourceType = {
     SpriteJSON: 'SpriteJSON',
     Image: 'Image'
 };
-export { ResourceType };
+
+module.exports = {
+    ResourceType,
+    getJSON,
+    getArrayBuffer,
+    getImage,
+    getVideo
+};
 
 if (typeof Object.freeze == 'function') {
     Object.freeze(ResourceType);
@@ -60,7 +67,7 @@ function makeRequest(requestParameters) {
     return xhr;
 }
 
-export const getJSON = function(requestParameters, callback) {
+function getJSON(requestParameters, callback) {
     const xhr = makeRequest(requestParameters);
     xhr.setRequestHeader('Accept', 'application/json');
     xhr.onerror = function() {
@@ -85,9 +92,9 @@ export const getJSON = function(requestParameters, callback) {
     };
     xhr.send();
     return xhr;
-};
+}
 
-export const getArrayBuffer = function(requestParameters, callback) {
+function getArrayBuffer(requestParameters, callback) {
     const xhr = makeRequest(requestParameters);
     xhr.responseType = 'arraybuffer';
     xhr.onerror = function() {
@@ -110,7 +117,7 @@ export const getArrayBuffer = function(requestParameters, callback) {
     };
     xhr.send();
     return xhr;
-};
+}
 
 function sameOrigin(url) {
     const a = window.document.createElement('a');
@@ -120,7 +127,7 @@ function sameOrigin(url) {
 
 const transparentPngUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=';
 
-export const getImage = function(requestParameters, callback) {
+function getImage(requestParameters, callback) {
     // request the image with XHR to work around caching issues
     // see https://github.com/mapbox/mapbox-gl-js/issues/1470
     return getArrayBuffer(requestParameters, (err, imgData) => {
@@ -139,9 +146,9 @@ export const getImage = function(requestParameters, callback) {
             img.src = imgData.data.byteLength ? URL.createObjectURL(blob) : transparentPngUrl;
         }
     });
-};
+}
 
-export const getVideo = function(urls, callback) {
+function getVideo(urls, callback) {
     const video = window.document.createElement('video');
     video.onloadstart = function() {
         callback(null, video);
@@ -155,4 +162,4 @@ export const getVideo = function(urls, callback) {
         video.appendChild(s);
     }
     return video;
-};
+}

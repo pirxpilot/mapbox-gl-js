@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import { normalizeGlyphsURL } from '../util/mapbox';
+const { normalizeGlyphsURL } = require('../util/mapbox');
 
-import { getArrayBuffer, ResourceType } from '../util/ajax';
-import parseGlyphPBF from './parse_glyph_pbf';
+const { getArrayBuffer, ResourceType } = require('../util/ajax');
+const parseGlyphPBF = require('./parse_glyph_pbf');
 
 
-export default function (fontstack,
+module.exports = function (fontstack,
                            range,
                            urlTemplate,
                            requestTransform,
@@ -33,4 +33,4 @@ export default function (fontstack,
             callback(null, glyphs);
         }
     });
-}
+};

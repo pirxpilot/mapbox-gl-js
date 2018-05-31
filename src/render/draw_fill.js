@@ -1,16 +1,16 @@
-// 
+'use strict';
 
-import {
+const {
     isPatternMissing,
     setPatternUniforms,
-    prepare as preparePattern
-} from './pattern';
+    prepare: preparePattern
+} = require('./pattern');
 
-import Color from '../style-spec/util/color';
-import DepthMode from '../gl/depth_mode';
+const Color = require('../style-spec/util/color');
+const DepthMode = require('../gl/depth_mode');
 
 
-export default drawFill;
+module.exports = drawFill;
 
 function drawFill(painter, sourceCache, layer, coords) {
     const color = layer.paint.get('fill-color');

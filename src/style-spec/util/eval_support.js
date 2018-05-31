@@ -1,4 +1,6 @@
-export default (function () {
+'use strict';
+
+module.exports = (function () {
     try {
         new Function('');
         return true;

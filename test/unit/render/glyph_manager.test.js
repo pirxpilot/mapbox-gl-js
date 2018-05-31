@@ -1,7 +1,7 @@
-import { test } from 'mapbox-gl-js-test';
-import parseGlyphPBF from '../../../src/style/parse_glyph_pbf';
-import GlyphManager from '../../../src/render/glyph_manager';
-import fs from 'fs';
+const { test } = require('mapbox-gl-js-test');
+const parseGlyphPBF = require('../../../src/style/parse_glyph_pbf');
+const GlyphManager = require('../../../src/render/glyph_manager');
+const fs = require('fs');
 
 const glyphs = {};
 for (const glyph of parseGlyphPBF(fs.readFileSync('./test/fixtures/0-255.pbf'))) {

@@ -1,7 +1,7 @@
-// 
+'use strict';
 
-import { bindAll } from './util';
-import { serialize, deserialize } from './web_worker_transfer';
+const { bindAll } = require('./util');
+const { serialize, deserialize } = require('./web_worker_transfer');
 
 
 /**
@@ -94,4 +94,4 @@ class Actor {
     }
 }
 
-export default Actor;
+module.exports = Actor;

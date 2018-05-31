@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import { parseCSSColor } from 'csscolorparser';
+const { parseCSSColor } = require('csscolorparser');
 
 /**
  * An RGBA color value. Create instances from color strings using the static
@@ -83,4 +83,4 @@ Color.black = new Color(0, 0, 0, 1);
 Color.white = new Color(1, 1, 1, 1);
 Color.transparent = new Color(0, 0, 0, 0);
 
-export default Color;
+module.exports = Color;

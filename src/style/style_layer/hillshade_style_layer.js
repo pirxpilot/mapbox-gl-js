@@ -1,10 +1,8 @@
-// 
+'use strict';
 
-import StyleLayer from '../style_layer';
+const StyleLayer = require('../style_layer');
 
-import properties from './hillshade_style_layer_properties';
-import { Transitionable, Transitioning, PossiblyEvaluated } from '../properties';
-
+const properties = require('./hillshade_style_layer_properties');
 
 class HillshadeStyleLayer extends StyleLayer {
 
@@ -17,4 +15,4 @@ class HillshadeStyleLayer extends StyleLayer {
     }
 }
 
-export default HillshadeStyleLayer;
+module.exports = HillshadeStyleLayer;

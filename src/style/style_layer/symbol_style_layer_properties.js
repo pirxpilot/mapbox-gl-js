@@ -1,18 +1,14 @@
 // This file is generated. Edit build/generate-style-code.js, then run `yarn run codegen`.
-// 
+'use strict';
 /* eslint-disable */
 
-import styleSpec from '../../style-spec/reference/latest';
+const styleSpec = require('../../style-spec/reference/latest');
 
-import {
+const {
     Properties,
     DataConstantProperty,
-    DataDrivenProperty,
-    CrossFadedProperty,
-    ColorRampProperty
-} from '../properties';
-
-
+    DataDrivenProperty
+} = require ('../properties');
 
 const layout = new Properties({
     "symbol-placement": new DataConstantProperty(styleSpec["layout_symbol"]["symbol-placement"]),
@@ -71,4 +67,4 @@ const paint = new Properties({
     "text-translate-anchor": new DataConstantProperty(styleSpec["paint_symbol"]["text-translate-anchor"]),
 });
 
-export default { paint, layout };
+module.exports = { paint, layout };

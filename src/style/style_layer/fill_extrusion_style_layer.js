@@ -1,12 +1,11 @@
-// 
+'use strict';
 
-import StyleLayer from '../style_layer';
+const StyleLayer = require('../style_layer');
 
-import FillExtrusionBucket from '../../data/bucket/fill_extrusion_bucket';
-import { multiPolygonIntersectsMultiPolygon } from '../../util/intersection_tests';
-import { translateDistance, translate } from '../query_utils';
-import properties from './fill_extrusion_style_layer_properties';
-import { Transitionable, Transitioning, PossiblyEvaluated } from '../properties';
+const FillExtrusionBucket = require('../../data/bucket/fill_extrusion_bucket');
+const { multiPolygonIntersectsMultiPolygon } = require('../../util/intersection_tests');
+const { translateDistance, translate } = require('../query_utils');
+const properties = require('./fill_extrusion_style_layer_properties');
 
 
 class FillExtrusionStyleLayer extends StyleLayer {
@@ -49,4 +48,4 @@ class FillExtrusionStyleLayer extends StyleLayer {
     }
 }
 
-export default FillExtrusionStyleLayer;
+module.exports = FillExtrusionStyleLayer;

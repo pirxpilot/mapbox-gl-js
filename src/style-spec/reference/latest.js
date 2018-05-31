@@ -1,3 +1,4 @@
+'use strict';
 
-import spec from './v8.json';
-export default spec;
+const spec = require('./v8.json');
+module.exports = spec;

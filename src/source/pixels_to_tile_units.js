@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import EXTENT from '../data/extent';
+const EXTENT = require('../data/extent');
 
 
 /**
@@ -15,6 +15,6 @@ import EXTENT from '../data/extent';
  * @returns value in tile units
  * @private
  */
-export default function(tile, pixelValue, z) {
+module.exports = function(tile, pixelValue, z) {
     return pixelValue * (EXTENT / (tile.tileSize * Math.pow(2, z - tile.tileID.overscaledZ)));
-}
+};

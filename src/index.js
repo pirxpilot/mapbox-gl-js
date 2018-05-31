@@ -1,25 +1,25 @@
-// 
+'use strict';
 
-import assert from 'assert';
-import supported from '@mapbox/mapbox-gl-supported';
+const assert = require('assert');
+const supported = require('@mapbox/mapbox-gl-supported');
 
-import browser from './util/browser';
-import { version } from '../package.json';
-import Map from './ui/map';
-import NavigationControl from './ui/control/navigation_control';
-import GeolocateControl from './ui/control/geolocate_control';
-import AttributionControl from './ui/control/attribution_control';
-import ScaleControl from './ui/control/scale_control';
-import FullscreenControl from './ui/control/fullscreen_control';
-import Popup from './ui/popup';
-import Marker from './ui/marker';
-import Style from './style/style';
-import LngLat from './geo/lng_lat';
-import LngLatBounds from './geo/lng_lat_bounds';
-import Point from '@mapbox/point-geometry';
-import {Evented} from './util/evented';
-import config from './util/config';
-import {setRTLTextPlugin} from './source/rtl_text_plugin';
+const browser = require('./util/browser');
+const { version } = require('../package.json');
+const Map = require('./ui/map');
+const NavigationControl = require('./ui/control/navigation_control');
+const GeolocateControl = require('./ui/control/geolocate_control');
+const AttributionControl = require('./ui/control/attribution_control');
+const ScaleControl = require('./ui/control/scale_control');
+const FullscreenControl = require('./ui/control/fullscreen_control');
+const Popup = require('./ui/popup');
+const Marker = require('./ui/marker');
+const Style = require('./style/style');
+const LngLat = require('./geo/lng_lat');
+const LngLatBounds = require('./geo/lng_lat_bounds');
+const Point = require('@mapbox/point-geometry');
+const {Evented} = require('./util/evented');
+const config = require('./util/config');
+const {setRTLTextPlugin} = require('./source/rtl_text_plugin');
 
 const exported = {
     version,
@@ -93,7 +93,7 @@ const exported = {
  * @see [Add support for right-to-left scripts](https://www.mapbox.com/mapbox-gl-js/example/mapbox-gl-rtl-text/)
  */
 
-export default exported;
+module.exports = exported;
 
 // canary assert: used to confirm that asserts have been removed from production build
 assert(true, 'canary assert');

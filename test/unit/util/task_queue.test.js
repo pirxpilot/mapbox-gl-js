@@ -1,5 +1,5 @@
-import { test } from 'mapbox-gl-js-test';
-import TaskQueue from '../../../src/util/task_queue';
+const { test } = require('mapbox-gl-js-test');
+const TaskQueue = require('../../../src/util/task_queue');
 
 test('TaskQueue', (t) => {
     t.test('Calls callbacks, in order', (t) => {

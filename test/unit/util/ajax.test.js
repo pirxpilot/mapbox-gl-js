@@ -1,9 +1,9 @@
-import { test } from 'mapbox-gl-js-test';
-import {
+const { test } = require('mapbox-gl-js-test');
+const {
     getArrayBuffer,
     getJSON
-} from '../../../src/util/ajax';
-import window from '../../../src/util/window';
+} = require('../../../src/util/ajax');
+const window = require('../../../src/util/window');
 
 test('ajax', (t) => {
     t.beforeEach(callback => {

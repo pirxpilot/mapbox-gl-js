@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 // The following table comes from <http://www.unicode.org/Public/10.0.0/ucd/Blocks.txt>.
 // Keep it synchronized with <http://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt>.
@@ -287,4 +287,4 @@ const unicodeBlockLookup = {
     // 'Supplementary Private Use Area-B': (char) => char >= 0x100000 && char <= 0x10FFFF,
 };
 
-export default unicodeBlockLookup;
+module.exports = unicodeBlockLookup;

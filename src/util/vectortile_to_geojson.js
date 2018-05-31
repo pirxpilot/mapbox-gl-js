@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 class Feature {
 
@@ -44,4 +44,4 @@ class Feature {
     }
 }
 
-export default Feature;
+module.exports = Feature;

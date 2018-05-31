@@ -1,7 +1,7 @@
-import { test } from 'mapbox-gl-js-test';
-import window from '../../../../src/util/window';
-import Map from '../../../../src/ui/map';
-import GeolocateControl from '../../../../src/ui/control/geolocate_control';
+const { test } = require('mapbox-gl-js-test');
+const window = require('../../../../src/util/window');
+const Map = require('../../../../src/ui/map');
+const GeolocateControl = require('../../../../src/ui/control/geolocate_control');
 
 // window and navigator globals need to be set for mock-geolocation
 global.window = {};

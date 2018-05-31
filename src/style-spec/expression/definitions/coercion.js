@@ -1,10 +1,10 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import { ColorType, ValueType, NumberType } from '../types';
-import { Color, validateRGBA } from '../values';
-import RuntimeError from '../runtime_error';
+const { ColorType, ValueType, NumberType } = require('../types');
+const { Color, validateRGBA } = require('../values');
+const RuntimeError = require('../runtime_error');
 
 
 const types = {
@@ -95,4 +95,4 @@ class Coercion {
     }
 }
 
-export default Coercion;
+module.exports = Coercion;

@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 
 const config = {
@@ -7,4 +7,4 @@ const config = {
     ACCESS_TOKEN: null
 };
 
-export default config;
+module.exports = config;

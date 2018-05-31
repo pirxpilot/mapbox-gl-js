@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 // We use brfs, a browserify transform, to inline shader sources during bundling. As a result:
 // - readFileSync calls must be written out long-form

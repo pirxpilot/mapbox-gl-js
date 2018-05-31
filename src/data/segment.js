@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import { warnOnce } from '../util/util';
+const { warnOnce } = require('../util/util');
 
-import { register } from '../util/web_worker_transfer';
+const { register } = require('../util/web_worker_transfer');
 
 
 
@@ -49,4 +49,4 @@ class SegmentVector {
 SegmentVector.MAX_VERTEX_ARRAY_LENGTH = Math.pow(2, 16) - 1;
 
 register('SegmentVector', SegmentVector);
-export default SegmentVector;
+module.exports = SegmentVector;

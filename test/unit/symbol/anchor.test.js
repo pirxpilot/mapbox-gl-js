@@ -1,5 +1,5 @@
-import { test } from 'mapbox-gl-js-test';
-import Anchor from '../../../src/symbol/anchor';
+const { test } = require('mapbox-gl-js-test');
+const Anchor = require('../../../src/symbol/anchor');
 
 test('Anchor', (t) => {
     t.test('#constructor', (t) => {

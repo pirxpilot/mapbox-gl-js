@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 /**
  * A coordinate is a column, row, zoom combination, often used
@@ -73,4 +73,4 @@ class Coordinate {
     }
 }
 
-export default Coordinate;
+module.exports = Coordinate;

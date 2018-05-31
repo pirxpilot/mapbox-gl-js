@@ -1,8 +1,4 @@
-// 
-
-
-
-
+'use strict';
 
 /**
  * The `Bucket` interface is the single point of knowledge about turning vector
@@ -28,7 +24,7 @@
  * @private
  */
 
-export function deserialize(input, style) {
+function deserialize(input, style) {
     const output = {};
 
     // Guard against the case where the map's style has been set to null while
@@ -46,8 +42,8 @@ export function deserialize(input, style) {
 
         // look up StyleLayer objects from layer ids (since we don't
         // want to waste time serializing/copying them from the worker)
-        (bucket).layers = layers;
-        (bucket).stateDependentLayers = layers.filter((l) => l.isStateDependent());
+        bucket.layers = layers;
+        bucket.stateDependentLayers = layers.filter((l) => l.isStateDependent());
         for (const layer of layers) {
             output[layer.id] = bucket;
         }
@@ -55,3 +51,7 @@ export function deserialize(input, style) {
 
     return output;
 }
+
+module.exports = {
+    deserialize
+};

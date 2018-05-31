@@ -1,5 +1,5 @@
-import { test } from 'mapbox-gl-js-test';
-import mapboxgl from '../../src';
+const { test } = require('mapbox-gl-js-test');
+const mapboxgl = require('../../src');
 
 test('mapboxgl', (t) => {
     t.test('version', (t) => {

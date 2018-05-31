@@ -1,12 +1,11 @@
-// 
+'use strict';
 
-import Point from '@mapbox/point-geometry';
+const Point = require('@mapbox/point-geometry');
 
-import * as intersectionTests from '../util/intersection_tests';
-import Grid from './grid_index';
-import { mat4 } from 'gl-matrix';
+const intersectionTests = require('../util/intersection_tests');
+const Grid = require('./grid_index');
 
-import * as projection from '../symbol/projection';
+const projection = require('../symbol/projection');
 
 
 // When a symbol crosses the edge that causes it to be included in
@@ -343,4 +342,4 @@ function markCollisionCircleUsed(collisionCircles, index, used) {
     collisionCircles[index + 4] = used ? 1 : 0;
 }
 
-export default CollisionIndex;
+module.exports = CollisionIndex;

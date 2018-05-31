@@ -1,15 +1,13 @@
-// 
+'use strict';
 
-import { getImage, ResourceType } from '../util/ajax';
-import { extend } from '../util/util';
-import { Evented } from '../util/evented';
-import { normalizeTileURL as normalizeURL } from '../util/mapbox';
-import browser from '../util/browser';
-import { OverscaledTileID } from './tile_id';
-import RasterTileSource from './raster_tile_source';
+const { getImage, ResourceType } = require('../util/ajax');
+const { extend } = require('../util/util');
+const { normalizeTileURL: normalizeURL } = require('../util/mapbox');
+const browser = require('../util/browser');
+const { OverscaledTileID } = require('./tile_id');
+const RasterTileSource = require('./raster_tile_source');
 // ensure DEMData is registered for worker transfer on main thread:
-import '../data/dem_data';
-
+require('../data/dem_data');
 
 
 class RasterDEMTileSource extends RasterTileSource {
@@ -128,4 +126,4 @@ class RasterDEMTileSource extends RasterTileSource {
 
 }
 
-export default RasterDEMTileSource;
+module.exports = RasterDEMTileSource;

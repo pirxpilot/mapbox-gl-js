@@ -1,19 +1,13 @@
 // This file is generated. Edit build/generate-style-code.js, then run `yarn run codegen`.
-// 
+'use strict';
 /* eslint-disable */
 
-import styleSpec from '../../style-spec/reference/latest';
+const styleSpec = require('../../style-spec/reference/latest');
 
-import {
+const {
     Properties,
     DataConstantProperty,
-    DataDrivenProperty,
-    CrossFadedProperty,
-    ColorRampProperty
-} from '../properties';
-
-
-
+} = require ('../properties');
 
 const paint = new Properties({
     "raster-opacity": new DataConstantProperty(styleSpec["paint_raster"]["raster-opacity"]),
@@ -25,4 +19,4 @@ const paint = new Properties({
     "raster-fade-duration": new DataConstantProperty(styleSpec["paint_raster"]["raster-fade-duration"]),
 });
 
-export default { paint };
+module.exports = { paint };

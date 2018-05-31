@@ -1,11 +1,11 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import extend from '../util/extend';
+const extend = require('../util/extend');
 
 
-export default convertFunction;
+module.exports = convertFunction;
 
 function convertFunction(parameters, propertySpec) {
     let expression;

@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 class ZoomHistory {
 
@@ -36,4 +36,4 @@ class ZoomHistory {
     }
 }
 
-export default ZoomHistory;
+module.exports = ZoomHistory;

@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import { bindAll } from '../util/util';
-import window from '../util/window';
-import throttle from '../util/throttle';
+const { bindAll } = require('../util/util');
+const window = require('../util/window');
+const throttle = require('../util/throttle');
 
 
 /*
@@ -95,4 +95,4 @@ class Hash {
 
 }
 
-export default Hash;
+module.exports = Hash;

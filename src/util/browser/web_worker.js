@@ -1,9 +1,9 @@
-// 
+'use strict';
 
-import window from '../window';
-import mapboxgl from '../../';
+const window = require('../window');
+const mapboxgl = require('../../');
 
 
-export default function () {
+module.exports = function () {
     return (new window.Worker(mapboxgl.workerUrl));
-}
+};

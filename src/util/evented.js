@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import { extend } from './util';
+const { extend } = require('./util');
 
 
 function _addEventListener(type, listener, listenerList) {
@@ -20,7 +20,7 @@ function _removeEventListener(type, listener, listenerList) {
     }
 }
 
-export class Event {
+class Event {
 
     constructor(type, data = {}) {
         extend(this, data);
@@ -28,7 +28,7 @@ export class Event {
     }
 }
 
-export class ErrorEvent extends Event {
+class ErrorEvent extends Event {
 
     constructor(error, data = {}) {
         super('error', extend({error}, data));
@@ -40,7 +40,7 @@ export class ErrorEvent extends Event {
  *
  * @mixin Evented
  */
-export class Evented {
+class Evented {
 
     /**
      * Adds a listener to a specified event type.
@@ -160,3 +160,9 @@ export class Evented {
         return this;
     }
 }
+
+module.exports = {
+    Event,
+    ErrorEvent,
+    Evented
+};

@@ -1,8 +1,9 @@
 {
   "parserOptions": {
-    "sourceType": "module",
+    "sourceType": "script",
   },
   "rules": {
-    "no-restricted-properties": "off"
+    "no-restricted-properties": "off",
+    "strict": "off"
   }
 }

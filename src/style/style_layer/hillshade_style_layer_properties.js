@@ -1,19 +1,13 @@
 // This file is generated. Edit build/generate-style-code.js, then run `yarn run codegen`.
-// 
+'use strict';
 /* eslint-disable */
 
-import styleSpec from '../../style-spec/reference/latest';
+const styleSpec = require('../../style-spec/reference/latest');
 
-import {
+const {
     Properties,
     DataConstantProperty,
-    DataDrivenProperty,
-    CrossFadedProperty,
-    ColorRampProperty
-} from '../properties';
-
-
-
+} = require ('../properties');
 
 const paint = new Properties({
     "hillshade-illumination-direction": new DataConstantProperty(styleSpec["paint_hillshade"]["hillshade-illumination-direction"]),
@@ -24,4 +18,4 @@ const paint = new Properties({
     "hillshade-accent-color": new DataConstantProperty(styleSpec["paint_hillshade"]["hillshade-accent-color"]),
 });
 
-export default { paint };
+module.exports = { paint };

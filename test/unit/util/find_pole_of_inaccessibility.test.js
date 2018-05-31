@@ -1,6 +1,6 @@
-import { test } from 'mapbox-gl-js-test';
-import Point from '@mapbox/point-geometry';
-import findPoleOfInaccessibility from '../../../src/util/find_pole_of_inaccessibility';
+const { test } = require('mapbox-gl-js-test');
+const Point = require('@mapbox/point-geometry');
+const findPoleOfInaccessibility = require('../../../src/util/find_pole_of_inaccessibility');
 
 test('polygon_poi', (t) => {
 

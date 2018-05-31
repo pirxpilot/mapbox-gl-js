@@ -1,6 +1,4 @@
-// 
-
-import { OverscaledTileID } from './tile_id';
+'use strict';
 
 /**
  * A [least-recently-used cache](http://en.wikipedia.org/wiki/Cache_algorithms)
@@ -176,4 +174,4 @@ class TileCache {
     }
 }
 
-export default TileCache;
+module.exports = TileCache;

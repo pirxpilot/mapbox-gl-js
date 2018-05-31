@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
 class DictionaryCoder {
 
@@ -25,4 +25,4 @@ class DictionaryCoder {
     }
 }
 
-export default DictionaryCoder;
+module.exports = DictionaryCoder;

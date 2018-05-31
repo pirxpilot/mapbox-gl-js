@@ -1,8 +1,8 @@
-import { test } from 'mapbox-gl-js-test';
-import Light from '../../../src/style/light';
-import styleSpec from '../../../src/style-spec/reference/latest';
-import Color from '../../../src/style-spec/util/color';
-import { sphericalToCartesian } from '../../../src/util/util';
+const { test } = require('mapbox-gl-js-test');
+const Light = require('../../../src/style/light');
+const styleSpec = require('../../../src/style-spec/reference/latest');
+const Color = require('../../../src/style-spec/util/color');
+const { sphericalToCartesian } = require('../../../src/util/util');
 
 const spec = styleSpec.light;
 

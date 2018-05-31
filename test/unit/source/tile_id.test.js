@@ -1,5 +1,5 @@
-import { test } from 'mapbox-gl-js-test';
-import { CanonicalTileID, OverscaledTileID } from '../../../src/source/tile_id';
+const { test } = require('mapbox-gl-js-test');
+const { CanonicalTileID, OverscaledTileID } = require('../../../src/source/tile_id');
 
 test('CanonicalTileID', (t) => {
     t.test('#constructor', (t) => {

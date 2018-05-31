@@ -1,19 +1,19 @@
-// 
+'use strict';
 
-import { FillExtrusionLayoutArray } from '../array_types';
+const { FillExtrusionLayoutArray } = require('../array_types');
 
-import { members as layoutAttributes } from './fill_extrusion_attributes';
-import SegmentVector from '../segment';
-import { ProgramConfigurationSet } from '../program_configuration';
-import { TriangleIndexArray } from '../index_array_type';
-import loadGeometry from '../load_geometry';
-import EXTENT from '../extent';
-import earcut from 'earcut';
-import classifyRings from '../../util/classify_rings';
-import assert from 'assert';
+const { members: layoutAttributes } = require('./fill_extrusion_attributes');
+const SegmentVector = require('../segment');
+const { ProgramConfigurationSet } = require('../program_configuration');
+const { TriangleIndexArray } = require('../index_array_type');
+const loadGeometry = require('../load_geometry');
+const EXTENT = require('../extent');
+const earcut = require('earcut');
+const classifyRings = require('../../util/classify_rings');
+const assert = require('assert');
 const EARCUT_MAX_RINGS = 500;
-import { register } from '../../util/web_worker_transfer';
-import EvaluationParameters from '../../style/evaluation_parameters';
+const { register } = require('../../util/web_worker_transfer');
+const EvaluationParameters = require('../../style/evaluation_parameters');
 
 
 const FACTOR = Math.pow(2, 13);
@@ -192,7 +192,7 @@ class FillExtrusionBucket {
 
 register('FillExtrusionBucket', FillExtrusionBucket, {omit: ['layers']});
 
-export default FillExtrusionBucket;
+module.exports = FillExtrusionBucket;
 
 function isBoundaryEdge(p1, p2) {
     return (p1.x === p2.x && (p1.x < 0 || p1.x > EXTENT)) ||

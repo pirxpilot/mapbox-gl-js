@@ -1,17 +1,17 @@
-// 
+'use strict';
 
-import browser from '../util/browser';
+const browser = require('../util/browser');
 
-import { mat4 } from 'gl-matrix';
-import EXTENT from '../data/extent';
-import VertexArrayObject from './vertex_array_object';
-import { PosArray } from '../data/array_types';
-import posAttributes from '../data/pos_attributes';
-import DepthMode from '../gl/depth_mode';
-import StencilMode from '../gl/stencil_mode';
+const { mat4 } = require('gl-matrix');
+const EXTENT = require('../data/extent');
+const VertexArrayObject = require('./vertex_array_object');
+const { PosArray } = require('../data/array_types');
+const posAttributes = require('../data/pos_attributes');
+const DepthMode = require('../gl/depth_mode');
+const StencilMode = require('../gl/stencil_mode');
 
 
-export default drawDebug;
+module.exports = drawDebug;
 
 function drawDebug(painter, sourceCache, coords) {
     for (let i = 0; i < coords.length; i++) {

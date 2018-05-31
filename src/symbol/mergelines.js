@@ -1,7 +1,7 @@
-// 
+'use strict';
 
 
-export default function (features) {
+module.exports = function (features) {
     const leftIndex = {};
     const rightIndex = {};
     const mergedFeatures = [];
@@ -78,4 +78,4 @@ export default function (features) {
     }
 
     return mergedFeatures.filter((f) => f.geometry);
-}
+};

@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import DOM from '../../util/dom';
+const DOM = require('../../util/dom');
 
-import { bezier, bindAll } from '../../util/util';
-import window from '../../util/window';
-import browser from '../../util/browser';
-import { Event } from '../../util/evented';
-import assert from 'assert';
+const { bezier, bindAll } = require('../../util/util');
+const window = require('../../util/window');
+const browser = require('../../util/browser');
+const { Event } = require('../../util/evented');
+const assert = require('assert');
 
 
 const inertiaLinearity = 0.25,
@@ -315,4 +315,4 @@ class DragRotateHandler {
     }
 }
 
-export default DragRotateHandler;
+module.exports = DragRotateHandler;

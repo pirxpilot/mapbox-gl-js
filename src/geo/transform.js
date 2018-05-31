@@ -1,15 +1,15 @@
-// 
+'use strict';
 
-import LngLat from './lng_lat';
+const LngLat = require('./lng_lat');
 
-import Point from '@mapbox/point-geometry';
-import Coordinate from './coordinate';
-import { wrap, clamp } from '../util/util';
-import {number as interpolate} from '../style-spec/util/interpolate';
-import tileCover from '../util/tile_cover';
-import { CanonicalTileID, UnwrappedTileID } from '../source/tile_id';
-import EXTENT from '../data/extent';
-import { vec4, mat4, mat2 } from 'gl-matrix';
+const Point = require('@mapbox/point-geometry');
+const Coordinate = require('./coordinate');
+const { wrap, clamp } = require('../util/util');
+const { number: interpolate } = require('../style-spec/util/interpolate');
+const tileCover = require('../util/tile_cover');
+const { UnwrappedTileID } = require('../source/tile_id');
+const EXTENT = require('../data/extent');
+const { vec4, mat4, mat2 } = require('gl-matrix');
 
 /**
  * A single transform, generally used for a single tile to be
@@ -197,8 +197,7 @@ class Transform {
      * @param {boolean} options.renderWorldCopies
      * @returns {Array<Tile>} tiles
      */
-    coveringTiles(
-        options    ) {
+    coveringTiles(options) {
         let z = this.coveringZoomLevel(options);
         const actualZ = z;
 
@@ -533,4 +532,4 @@ class Transform {
     }
 }
 
-export default Transform;
+module.exports = Transform;

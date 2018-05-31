@@ -1,9 +1,8 @@
-// 
+'use strict';
 
-import StyleLayer from '../style_layer';
+const StyleLayer = require('../style_layer');
 
-import properties from './background_style_layer_properties';
-import { Transitionable, Transitioning, PossiblyEvaluated } from '../properties';
+const properties = require('./background_style_layer_properties');
 
 
 class BackgroundStyleLayer extends StyleLayer {
@@ -13,4 +12,4 @@ class BackgroundStyleLayer extends StyleLayer {
     }
 }
 
-export default BackgroundStyleLayer;
+module.exports = BackgroundStyleLayer;

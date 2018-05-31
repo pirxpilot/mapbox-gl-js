@@ -1,8 +1,6 @@
-// 
+'use strict';
 
-import { bindAll } from '../util/util';
-
-import {CanonicalTileID} from './tile_id';
+const { bindAll } = require('../util/util');
 
 /**
  * The `Source` interface must be implemented by each source type, including "core" types (`vector`, `raster`,
@@ -29,15 +27,13 @@ import {CanonicalTileID} from './tile_id';
  * if they are floor-ed to the nearest integer.
  */
 
-
-
-import vector from '../source/vector_tile_source';
-import raster from '../source/raster_tile_source';
-import rasterDem from '../source/raster_dem_tile_source';
-import geojson from '../source/geojson_source';
-import video from '../source/video_source';
-import image from '../source/image_source';
-import canvas from '../source/canvas_source';
+const vector = require('../source/vector_tile_source');
+const raster = require('../source/raster_tile_source');
+const rasterDem = require('../source/raster_dem_tile_source');
+const geojson = require('../source/geojson_source');
+const video = require('../source/video_source');
+const image = require('../source/image_source');
+const canvas = require('../source/canvas_source');
 
 const sourceTypes = {
     vector,
@@ -59,7 +55,7 @@ const sourceTypes = {
  * @param {Dispatcher} dispatcher
  * @returns {Source}
  */
-export const create = function(id, specification, dispatcher, eventedParent) {
+function create(id, specification, dispatcher, eventedParent) {
     const source = new sourceTypes[specification.type](id, (specification), dispatcher, eventedParent);
 
     if (source.id !== id) {
@@ -68,13 +64,18 @@ export const create = function(id, specification, dispatcher, eventedParent) {
 
     bindAll(['load', 'abort', 'unload', 'serialize', 'prepare'], source);
     return source;
-};
+}
 
-export const getType = function (name) {
+function getType (name) {
     return sourceTypes[name];
-};
+}
 
-export const setType = function (name, type) {
+function setType (name, type) {
     sourceTypes[name] = type;
-};
+}
 
+module.exports = {
+    create,
+    getType,
+    setType
+};

@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import Worker from '../source/worker';
+const Worker = require('../source/worker');
 
 
 
@@ -48,7 +48,7 @@ class MessageBus {
     importScripts() {}
 }
 
-export default function WebWorker() {
+function WebWorker() {
     const parentListeners = [],
         workerListeners = [],
         parentBus = new MessageBus(workerListeners, parentListeners),
@@ -64,3 +64,5 @@ export default function WebWorker() {
 
 // expose to allow stubbing in unit tests
 WebWorker.Worker = Worker;
+
+module.exports = WebWorker;

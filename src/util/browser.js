@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import window from './window';
+const window = require('./window');
 
 const now = window.performance && window.performance.now ?
     window.performance.now.bind(window.performance) :
@@ -51,7 +51,7 @@ const exported = {
     supportsWebp: false
 };
 
-export default exported;
+module.exports = exported;
 
 if (window.document) {
     const webpImgTest = window.document.createElement('img');

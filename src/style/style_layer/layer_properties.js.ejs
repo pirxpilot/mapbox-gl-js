@@ -7,7 +7,7 @@
 // @flow
 /* eslint-disable */
 
-import styleSpec from '../../style-spec/reference/latest';
+const styleSpec = require('../../style-spec/reference/latest');
 
 import {
     Properties,
@@ -15,9 +15,9 @@ import {
     DataDrivenProperty,
     CrossFadedProperty,
     ColorRampProperty
-} from '../properties';
+} = require('../properties');
 
-import type Color from '../../style-spec/util/color';
+const type Color = require('../../style-spec/util/color');
 
 <% if (layoutProperties.length) { -%>
 export type LayoutProps = {|
@@ -47,4 +47,4 @@ const paint: Properties<PaintProps> = new Properties({
 <% } -%>
 });
 
-export default { paint<% if (layoutProperties.length) { %>, layout<% } %> };
+module.exports = { paint<% if (layoutProperties.length) { %>, layout<% } %> };

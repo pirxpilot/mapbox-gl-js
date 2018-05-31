@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import { Event, Evented } from '../../util/evented';
-import DOM from '../../util/dom';
-import window from '../../util/window';
-import { extend, bindAll, warnOnce } from '../../util/util';
-import assert from 'assert';
-import LngLat from '../../geo/lng_lat';
-import Marker from '../marker';
+const { Event, Evented } = require('../../util/evented');
+const DOM = require('../../util/dom');
+const window = require('../../util/window');
+const { extend, bindAll, warnOnce } = require('../../util/util');
+const assert = require('assert');
+const LngLat = require('../../geo/lng_lat');
+const Marker = require('../marker');
 
 
 
@@ -391,7 +391,7 @@ class GeolocateControl extends Evented {
     }
 }
 
-export default GeolocateControl;
+module.exports = GeolocateControl;
 
 /* Geolocate Control Watch States
  * This is the private state of the control.

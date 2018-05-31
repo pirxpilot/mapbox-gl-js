@@ -1,13 +1,13 @@
-// 
+'use strict';
 
-import browser from '../util/browser';
+const browser = require('../util/browser');
 
-import pixelsToTileUnits from '../source/pixels_to_tile_units';
-import DepthMode from '../gl/depth_mode';
-import Texture from './texture';
+const pixelsToTileUnits = require('../source/pixels_to_tile_units');
+const DepthMode = require('../gl/depth_mode');
+const Texture = require('./texture');
 
 
-export default function drawLine(painter, sourceCache, layer, coords) {
+module.exports = function drawLine(painter, sourceCache, layer, coords) {
     if (painter.renderPass !== 'translucent') return;
 
     const opacity = layer.paint.get('line-opacity');
@@ -44,7 +44,7 @@ export default function drawLine(painter, sourceCache, layer, coords) {
         prevTileZoom = tile.tileID.overscaledZ;
         firstTile = false;
     }
-}
+};
 
 function drawLineTile(program, painter, tile, bucket, layer, coord, programConfiguration, programChanged, tileRatioChanged) {
     const context = painter.context;

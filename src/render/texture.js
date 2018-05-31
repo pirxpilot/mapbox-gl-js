@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import window from '../util/window';
+const window = require('../util/window');
 const { HTMLImageElement, HTMLCanvasElement, HTMLVideoElement, ImageData } = window;
 
 
@@ -86,4 +86,4 @@ class Texture {
     }
 }
 
-export default Texture;
+module.exports = Texture;

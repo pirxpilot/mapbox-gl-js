@@ -1,8 +1,8 @@
-import { test } from 'mapbox-gl-js-test';
-import WorkerTile from '../../../src/source/worker_tile';
-import Wrapper from '../../../src/source/geojson_wrapper';
-import { OverscaledTileID } from '../../../src/source/tile_id';
-import StyleLayerIndex from '../../../src/style/style_layer_index';
+const { test } = require('mapbox-gl-js-test');
+const WorkerTile = require('../../../src/source/worker_tile');
+const Wrapper = require('../../../src/source/geojson_wrapper');
+const { OverscaledTileID } = require('../../../src/source/tile_id');
+const StyleLayerIndex = require('../../../src/style/style_layer_index');
 
 function createWorkerTile() {
     return new WorkerTile({

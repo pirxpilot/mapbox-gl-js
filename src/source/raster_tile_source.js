@@ -1,13 +1,13 @@
-// 
+'use strict';
 
-import { extend, pick } from '../util/util';
+const { extend, pick } = require('../util/util');
 
-import { getImage, ResourceType } from '../util/ajax';
-import { Event, ErrorEvent, Evented } from '../util/evented';
-import loadTileJSON from './load_tilejson';
-import { normalizeTileURL as normalizeURL } from '../util/mapbox';
-import TileBounds from './tile_bounds';
-import Texture from '../render/texture';
+const { getImage, ResourceType } = require('../util/ajax');
+const { Event, ErrorEvent, Evented } = require('../util/evented');
+const loadTileJSON = require('./load_tilejson');
+const { normalizeTileURL: normalizeURL } = require('../util/mapbox');
+const TileBounds = require('./tile_bounds');
+const Texture = require('../render/texture');
 
 
 class RasterTileSource extends Evented {
@@ -118,4 +118,4 @@ class RasterTileSource extends Evented {
     }
 }
 
-export default RasterTileSource;
+module.exports = RasterTileSource;
