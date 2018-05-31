@@ -1,14 +1,13 @@
-// @flow
+// 
 
 import assert from 'assert';
 
 import extend from '../util/extend';
 
-import type {StylePropertySpecification} from '../style-spec';
 
 export default convertFunction;
 
-function convertFunction(parameters: PropertyValueSpecification<any>, propertySpec: StylePropertySpecification) {
+function convertFunction(parameters, propertySpec) {
     let expression;
 
     parameters = extend({}, parameters);
@@ -225,7 +224,7 @@ function getFunctionType(parameters, propertySpec) {
         return parameters.type;
     } else {
         assert(propertySpec.expression);
-        return (propertySpec.expression: any).interpolated ? 'exponential' : 'interval';
+        return (propertySpec.expression).interpolated ? 'exponential' : 'interval';
     }
 }
 

@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { getJSON } from '../util/ajax';
 
@@ -11,35 +11,14 @@ import geojsonvt from 'geojson-vt';
 import assert from 'assert';
 import VectorTileWorkerSource from './vector_tile_worker_source';
 
-import type {
-    WorkerTileParameters,
-    WorkerTileCallback,
-} from '../source/worker_source';
 
-import type Actor from '../util/actor';
-import type StyleLayerIndex from '../style/style_layer_index';
 
-import type {LoadVectorDataCallback} from './vector_tile_worker_source';
-import type {RequestParameters} from '../util/ajax';
-import type { Callback } from '../types/callback';
 
-export type GeoJSON = Object;
 
-export type LoadGeoJSONParameters = {
-    request?: RequestParameters,
-    data?: string,
-    source: string,
-    cluster: boolean,
-    superclusterOptions?: Object,
-    geojsonVtOptions?: Object
-};
 
-export type LoadGeoJSON = (params: LoadGeoJSONParameters, callback: Callback<mixed>) => void;
 
-export interface GeoJSONIndex {
-}
 
-function loadGeoJSONTile(params: WorkerTileParameters, callback: LoadVectorDataCallback) {
+function loadGeoJSONTile(params, callback) {
     const canonical = params.tileID.canonical;
 
     if (!this._geoJSONIndex) {
@@ -68,10 +47,7 @@ function loadGeoJSONTile(params: WorkerTileParameters, callback: LoadVectorDataC
     });
 }
 
-export type SourceState =
-    | 'Idle'            // Source empty or data loaded
-    | 'Coalescing'      // Data finished loading, but discard 'loadData' messages until receiving 'coalesced'
-    | 'NeedsLoadData';  // 'loadData' received while coalescing, trigger one more 'loadData' on receiving 'coalesced'
+  // 'loadData' received while coalescing, trigger one more 'loadData' on receiving 'coalesced'
 
 /**
  * The {@link WorkerSource} implementation that supports {@link GeoJSONSource}.
@@ -84,20 +60,13 @@ export type SourceState =
  * @private
  */
 class GeoJSONWorkerSource extends VectorTileWorkerSource {
-    loadGeoJSON: LoadGeoJSON;
-    _state: SourceState;
-    _pendingCallback: Callback<{
-        resourceTiming?: {[string]: Array<PerformanceResourceTiming>},
-        abandoned?: boolean }>;
-    _pendingLoadDataParams: LoadGeoJSONParameters;
-    _geoJSONIndex: GeoJSONIndex
 
     /**
      * @param [loadGeoJSON] Optional method for custom loading/parsing of
      * GeoJSON based on parameters passed from the main-thread Source.
      * See {@link GeoJSONWorkerSource#loadGeoJSON}.
      */
-    constructor(actor: Actor, layerIndex: StyleLayerIndex, loadGeoJSON: ?LoadGeoJSON) {
+    constructor(actor, layerIndex, loadGeoJSON) {
         super(actor, layerIndex, loadGeoJSONTile);
         if (loadGeoJSON) {
             this.loadGeoJSON = loadGeoJSON;
@@ -120,9 +89,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * @param params
      * @param callback
      */
-    loadData(params: LoadGeoJSONParameters, callback: Callback<{
-        resourceTiming?: {[string]: Array<PerformanceResourceTiming>},
-        abandoned?: boolean }>) {
+    loadData(params, callback) {
         if (this._pendingCallback) {
             // Tell the foreground the previous call has been abandoned
             this._pendingCallback(null, { abandoned: true });
@@ -223,7 +190,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
     * @param params
     * @param params.uid The UID for this tile.
     */
-    reloadTile(params: WorkerTileParameters, callback: WorkerTileCallback) {
+    reloadTile(params, callback) {
         const loaded = this.loaded,
             uid = params.uid;
 
@@ -245,7 +212,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * @param [params.url] A URL to the remote GeoJSON data.
      * @param [params.data] Literal GeoJSON data. Must be provided if `params.url` is not.
      */
-    loadGeoJSON(params: LoadGeoJSONParameters, callback: Callback<mixed>) {
+    loadGeoJSON(params, callback) {
         // Because of same origin issues, urls must either include an explicit
         // origin or absolute path.
         // ie: /foo/bar.json or http://example.com/bar.json
@@ -263,7 +230,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
         }
     }
 
-    removeSource(params: {source: string}, callback: Callback<mixed>) {
+    removeSource(params, callback) {
         if (this._pendingCallback) {
             // Don't leak callbacks
             this._pendingCallback(null, { abandoned: true });

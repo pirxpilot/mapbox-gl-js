@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import drawCollisionDebug from './draw_collision_debug';
 
@@ -12,15 +12,10 @@ const symbolLayoutProperties = properties.layout;
 import StencilMode from '../gl/stencil_mode';
 import DepthMode from '../gl/depth_mode';
 
-import type Painter from './painter';
-import type SourceCache from '../source/source_cache';
-import type SymbolStyleLayer from '../style/style_layer/symbol_style_layer';
-import type SymbolBucket from '../data/bucket/symbol_bucket';
-import type {OverscaledTileID} from '../source/tile_id';
 
 export default drawSymbols;
 
-function drawSymbols(painter: Painter, sourceCache: SourceCache, layer: SymbolStyleLayer, coords: Array<OverscaledTileID>) {
+function drawSymbols(painter, sourceCache, layer, coords) {
     if (painter.renderPass !== 'translucent') return;
 
     const context = painter.context;
@@ -77,7 +72,7 @@ function drawLayerSymbols(painter, sourceCache, layer, coords, isText, translate
 
     for (const coord of coords) {
         const tile = sourceCache.getTile(coord);
-        const bucket: SymbolBucket = (tile.getBucket(layer): any);
+        const bucket = (tile.getBucket(layer));
         if (!bucket) continue;
         const buffers = isText ? bucket.text : bucket.icon;
         if (!buffers || !buffers.segments.get().length) continue;

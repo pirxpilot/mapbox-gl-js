@@ -1,55 +1,22 @@
-// @flow
+// 
 
 import window from '../util/window';
 const { HTMLImageElement, HTMLCanvasElement, HTMLVideoElement, ImageData } = window;
 
-import type Context from '../gl/context';
-import type {RGBAImage, AlphaImage} from '../util/image';
 
-export type TextureFormat =
-    | $PropertyType<WebGLRenderingContext, 'RGBA'>
-    | $PropertyType<WebGLRenderingContext, 'ALPHA'>;
-export type TextureFilter =
-    | $PropertyType<WebGLRenderingContext, 'LINEAR'>
-    | $PropertyType<WebGLRenderingContext, 'LINEAR_MIPMAP_NEAREST'>
-    | $PropertyType<WebGLRenderingContext, 'NEAREST'>;
-export type TextureWrap =
-    | $PropertyType<WebGLRenderingContext, 'REPEAT'>
-    | $PropertyType<WebGLRenderingContext, 'CLAMP_TO_EDGE'>
-    | $PropertyType<WebGLRenderingContext, 'MIRRORED_REPEAT'>;
 
-type EmptyImage = {
-    width: number,
-    height: number,
-    data: null
-}
 
-export type TextureImage =
-    | RGBAImage
-    | AlphaImage
-    | HTMLImageElement
-    | HTMLCanvasElement
-    | HTMLVideoElement
-    | ImageData
-    | EmptyImage;
 
 class Texture {
-    context: Context;
-    size: Array<number>;
-    texture: WebGLTexture;
-    format: TextureFormat;
-    filter: ?TextureFilter;
-    wrap: ?TextureWrap;
-    useMipmap: boolean;
 
-    constructor(context: Context, image: TextureImage, format: TextureFormat, options: ?{ premultiply?: boolean, useMipmap?: boolean }) {
+    constructor(context, image, format, options) {
         this.context = context;
         this.format = format;
         this.texture = context.gl.createTexture();
         this.update(image, options);
     }
 
-    update(image: TextureImage, options: ?{premultiply?: boolean, useMipmap?: boolean}) {
+    update(image, options) {
         const {width, height} = image;
         const resize = !this.size || this.size[0] !== width || this.size[1] !== height;
         const {context} = this;
@@ -86,7 +53,7 @@ class Texture {
         }
     }
 
-    bind(filter: TextureFilter, wrap: TextureWrap, minFilter: ?TextureFilter) {
+    bind(filter, wrap, minFilter) {
         const {context} = this;
         const {gl} = context;
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
@@ -115,7 +82,7 @@ class Texture {
     destroy() {
         const {gl} = this.context;
         gl.deleteTexture(this.texture);
-        this.texture = (null: any);
+        this.texture = (null);
     }
 }
 

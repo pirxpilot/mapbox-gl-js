@@ -1,16 +1,12 @@
-// @flow
+// 
 import { RGBAImage } from '../util/image';
 
 import { warnOnce, clamp } from '../util/util';
 import { register } from '../util/web_worker_transfer';
 
 export class Level {
-    dim: number;
-    border: number;
-    stride: number;
-    data: Int32Array;
 
-    constructor(dim: number, border: number, data: ?Int32Array) {
+    constructor(dim, border, data) {
         if (dim <= 0) throw new RangeError('Level must have positive dimension');
         this.dim = dim;
         this.border = border;
@@ -18,15 +14,15 @@ export class Level {
         this.data = data || new Int32Array((this.dim + 2 * this.border) * (this.dim + 2 * this.border));
     }
 
-    set(x: number, y: number, value: number) {
+    set(x, y, value) {
         this.data[this._idx(x, y)] = value + 65536;
     }
 
-    get(x: number, y: number) {
+    get(x, y) {
         return this.data[this._idx(x, y)] - 65536;
     }
 
-    _idx(x: number, y: number) {
+    _idx(x, y) {
         if (x < -this.border || x >= this.dim + this.border ||  y < -this.border || y >= this.dim + this.border) throw new RangeError('out of range source coordinates for DEM data');
         return (y + this.border) * this.stride + (x + this.border);
     }
@@ -45,12 +41,8 @@ register('Level', Level);
 // tile's edge without backfilling from neighboring tiles.
 
 export default class DEMData {
-    uid: string;
-    scale: number;
-    level: Level;
-    loaded: boolean;
 
-    constructor(uid: string, scale: ?number, data: ?Level) {
+    constructor(uid, scale, data) {
         this.uid = uid;
         this.scale = scale || 1;
         // if no data is provided, use a temporary empty level to satisfy flow
@@ -58,7 +50,7 @@ export default class DEMData {
         this.loaded = !!data;
     }
 
-    loadFromImage(data: RGBAImage, encoding: "mapbox" | "terrarium") {
+    loadFromImage(data, encoding) {
         if (data.height !== data.width) throw new RangeError('DEM tiles must be square');
         if (encoding && encoding !== "mapbox" && encoding !== "terrarium") return warnOnce(
             `"${encoding}" is not a valid encoding type. Valid types include "mapbox" and "terrarium".`
@@ -90,19 +82,19 @@ export default class DEMData {
         this.loaded = true;
     }
 
-    _unpackMapbox(r: number, g: number, b: number) {
+    _unpackMapbox(r, g, b) {
         // unpacking formula for mapbox.terrain-rgb:
         // https://www.mapbox.com/help/access-elevation-data/#mapbox-terrain-rgb
         return ((r * 256 * 256 + g * 256.0 + b) / 10.0 - 10000.0);
     }
 
-    _unpackTerrarium(r: number, g: number, b: number) {
+    _unpackTerrarium(r, g, b) {
         // unpacking formula for mapzen terrarium:
         // https://aws.amazon.com/public-datasets/terrain/
         return ((r * 256 + g + b / 256) - 32768.0);
     }
 
-    _unpackData(level: Level, pixels: Uint8Array | Uint8ClampedArray, encoding: string) {
+    _unpackData(level, pixels, encoding) {
         const unpackFunctions = {"mapbox": this._unpackMapbox, "terrarium": this._unpackTerrarium};
         const unpack = unpackFunctions[encoding];
         for (let y = 0; y < level.dim; y++) {
@@ -118,7 +110,7 @@ export default class DEMData {
         return new RGBAImage({width: this.level.dim + 2 * this.level.border, height: this.level.dim + 2 * this.level.border}, new Uint8Array(this.level.data.buffer));
     }
 
-    backfillBorder(borderTile: DEMData, dx: number, dy: number) {
+    backfillBorder(borderTile, dx, dy) {
         const t = this.level;
         const o = borderTile.level;
 

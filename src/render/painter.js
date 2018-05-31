@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import browser from '../util/browser';
 
@@ -46,26 +46,8 @@ const draw = {
     debug
 };
 
-import type Transform from '../geo/transform';
-import type Tile from '../source/tile';
-import type {OverscaledTileID} from '../source/tile_id';
-import type Style from '../style/style';
-import type StyleLayer from '../style/style_layer';
-import type LineAtlas from './line_atlas';
-import type ImageManager from './image_manager';
-import type GlyphManager from './glyph_manager';
-import type VertexBuffer from '../gl/vertex_buffer';
-import type {DepthMaskType, DepthFuncType} from '../gl/types';
 
-export type RenderPass = 'offscreen' | 'opaque' | 'translucent';
 
-type PainterOptions = {
-    showOverdrawInspector: boolean,
-    showTileBoundaries: boolean,
-    rotating: boolean,
-    zooming: boolean,
-    fadeDuration: number
-}
 
 /**
  * Initialize a new painter object.
@@ -74,41 +56,8 @@ type PainterOptions = {
  * @private
  */
 class Painter {
-    context: Context;
-    transform: Transform;
-    _tileTextures: { [number]: Array<Texture> };
-    numSublayers: number;
-    depthEpsilon: number;
-    emptyProgramConfiguration: ProgramConfiguration;
-    width: number;
-    height: number;
-    depthRbo: WebGLRenderbuffer;
-    depthRboNeedsClear: boolean;
-    tileExtentBuffer: VertexBuffer;
-    tileExtentVAO: VertexArrayObject;
-    tileExtentPatternVAO: VertexArrayObject;
-    debugBuffer: VertexBuffer;
-    debugVAO: VertexArrayObject;
-    rasterBoundsBuffer: VertexBuffer;
-    rasterBoundsVAO: VertexArrayObject;
-    viewportBuffer: VertexBuffer;
-    viewportVAO: VertexArrayObject;
-    _tileClippingMaskIDs: { [number]: number };
-    style: Style;
-    options: PainterOptions;
-    lineAtlas: LineAtlas;
-    imageManager: ImageManager;
-    glyphManager: GlyphManager;
-    depthRange: number;
-    renderPass: RenderPass;
-    currentLayer: number;
-    id: string;
-    _showOverdrawInspector: boolean;
-    cache: { [string]: Program };
-    crossTileSymbolIndex: CrossTileSymbolIndex;
-    symbolFadeChange: number;
 
-    constructor(gl: WebGLRenderingContext, transform: Transform) {
+    constructor(gl, transform) {
         this.context = new Context(gl);
         this.transform = transform;
         this._tileTextures = {};
@@ -131,7 +80,7 @@ class Painter {
      * Update the GL viewport, projection matrix, and transforms to compensate
      * for a new width and height value.
      */
-    resize(width: number, height: number) {
+    resize(width, height) {
         const gl = this.context.gl;
 
         this.width = width * browser.devicePixelRatio;
@@ -216,7 +165,7 @@ class Painter {
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
 
-    _renderTileClippingMasks(tileIDs: Array<OverscaledTileID>) {
+    _renderTileClippingMasks(tileIDs) {
         const context = this.context;
         const gl = context.gl;
 
@@ -241,12 +190,12 @@ class Painter {
         }
     }
 
-    stencilModeForClipping(tileID: OverscaledTileID): StencilMode {
+    stencilModeForClipping(tileID) {
         const gl = this.context.gl;
         return new StencilMode({ func: gl.EQUAL, mask: 0xFF }, this._tileClippingMaskIDs[tileID.key], 0x00, gl.KEEP, gl.KEEP, gl.REPLACE);
     }
 
-    colorModeForRenderPass(): $ReadOnly<ColorMode> {
+    colorModeForRenderPass() {
         const gl = this.context.gl;
         if (this._showOverdrawInspector) {
             const numOverdrawSteps = 8;
@@ -260,13 +209,13 @@ class Painter {
         }
     }
 
-    depthModeForSublayer(n: number, mask: DepthMaskType, func: ?DepthFuncType): DepthMode {
+    depthModeForSublayer(n, mask, func) {
         const farDepth = 1 - ((1 + this.currentLayer) * this.numSublayers + n) * this.depthEpsilon;
         const nearDepth = farDepth - 1 + this.depthRange;
         return new DepthMode(func || this.context.gl.LEQUAL, mask, [nearDepth, farDepth]);
     }
 
-    render(style: Style, options: PainterOptions) {
+    render(style, options) {
         this.style = style;
         this.options = options;
 
@@ -323,7 +272,7 @@ class Painter {
 
                 if (!coords.length) continue;
 
-                this.renderLayer(this, (sourceCache: any), layer, coords);
+                this.renderLayer(this, (sourceCache), layer, coords);
             }
 
             // Rebind the main framebuffer now that all offscreen layers
@@ -363,7 +312,7 @@ class Painter {
                     }
                 }
 
-                this.renderLayer(this, (sourceCache: any), layer, coords);
+                this.renderLayer(this, (sourceCache), layer, coords);
             }
         }
 
@@ -394,7 +343,7 @@ class Painter {
                     coords.reverse();
                 }
 
-                this.renderLayer(this, (sourceCache: any), layer, coords);
+                this.renderLayer(this, (sourceCache), layer, coords);
             }
         }
 
@@ -406,7 +355,7 @@ class Painter {
         }
     }
 
-    setupOffscreenDepthRenderbuffer(): void {
+    setupOffscreenDepthRenderbuffer() {
         const context = this.context;
         // All of the 3D textures will use the same depth renderbuffer.
         if (!this.depthRbo) {
@@ -414,7 +363,7 @@ class Painter {
         }
     }
 
-    renderLayer(painter: Painter, sourceCache: SourceCache, layer: StyleLayer, coords: Array<OverscaledTileID>) {
+    renderLayer(painter, sourceCache, layer, coords) {
         if (layer.isHidden(this.transform.zoom)) return;
         if (layer.type !== 'background' && !coords.length) return;
         this.id = layer.id;
@@ -427,7 +376,7 @@ class Painter {
      * @param inViewportPixelUnitsUnits True when the units accepted by the matrix are in viewport pixels instead of tile units.
      * @returns {Float32Array} matrix
      */
-    translatePosMatrix(matrix: Float32Array, tile: Tile, translate: [number, number], translateAnchor: 'map' | 'viewport', inViewportPixelUnitsUnits?: boolean) {
+    translatePosMatrix(matrix, tile, translate, translateAnchor, inViewportPixelUnitsUnits) {
         if (!translate[0] && !translate[1]) return matrix;
 
         const angle = inViewportPixelUnitsUnits ?
@@ -454,7 +403,7 @@ class Painter {
         return translatedMatrix;
     }
 
-    saveTileTexture(texture: Texture) {
+    saveTileTexture(texture) {
         const textures = this._tileTextures[texture.size[0]];
         if (!textures) {
             this._tileTextures[texture.size[0]] = [texture];
@@ -463,12 +412,12 @@ class Painter {
         }
     }
 
-    getTileTexture(size: number) {
+    getTileTexture(size) {
         const textures = this._tileTextures[size];
         return textures && textures.length > 0 ? textures.pop() : null;
     }
 
-    _createProgramCached(name: string, programConfiguration: ProgramConfiguration): Program {
+    _createProgramCached(name, programConfiguration) {
         this.cache = this.cache || {};
         const key = `${name}${programConfiguration.cacheKey || ''}${this._showOverdrawInspector ? '/overdraw' : ''}`;
         if (!this.cache[key]) {
@@ -477,7 +426,7 @@ class Painter {
         return this.cache[key];
     }
 
-    useProgram(name: string, programConfiguration?: ProgramConfiguration): Program {
+    useProgram(name, programConfiguration) {
         const nextProgram = this._createProgramCached(name, programConfiguration || this.emptyProgramConfiguration);
 
         this.context.program.set(nextProgram.program);

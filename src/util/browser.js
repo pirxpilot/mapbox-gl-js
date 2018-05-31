@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import window from './window';
 
@@ -26,15 +26,15 @@ const exported = {
      */
     now,
 
-    frame(fn: Function) {
+    frame(fn) {
         return raf(fn);
     },
 
-    cancelFrame(id: number) {
+    cancelFrame(id) {
         return cancel(id);
     },
 
-    getImageData(img: CanvasImageSource): ImageData {
+    getImageData(img) {
         const canvas = window.document.createElement('canvas');
         const context = canvas.getContext('2d');
         if (!context) {

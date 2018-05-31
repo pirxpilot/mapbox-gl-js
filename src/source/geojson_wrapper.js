@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import Point from '@mapbox/point-geometry';
 
@@ -8,27 +8,11 @@ import EXTENT from '../data/extent';
 
 // The feature type used by geojson-vt and supercluster. Should be extracted to
 // global type and used in module definitions for those two modules.
-type Feature = {
-    type: 1,
-    id: mixed,
-    tags: {[string]: string | number | boolean},
-    geometry: Array<[number, number]>,
-} | {
-    type: 2 | 3,
-    id: mixed,
-    tags: {[string]: string | number | boolean},
-    geometry: Array<Array<[number, number]>>,
-}
 
-class FeatureWrapper implements VectorTileFeature {
-    _feature: Feature;
+class FeatureWrapper {
 
-    extent: number;
-    type: 1 | 2 | 3;
-    id: number;
-    properties: {[string]: string | number | boolean};
 
-    constructor(feature: Feature) {
+    constructor(feature) {
         this._feature = feature;
 
         this.extent = EXTENT;
@@ -66,19 +50,14 @@ class FeatureWrapper implements VectorTileFeature {
         }
     }
 
-    toGeoJSON(x: number, y: number, z: number) {
+    toGeoJSON(x, y, z) {
         return toGeoJSON.call(this, x, y, z);
     }
 }
 
-class GeoJSONWrapper implements VectorTile, VectorTileLayer {
-    layers: {[string]: VectorTileLayer};
-    name: string;
-    extent: number;
-    length: number;
-    _features: Array<Feature>;
+class GeoJSONWrapper {
 
-    constructor(features: Array<Feature>) {
+    constructor(features) {
         this.layers = { '_geojsonTileLayer': this };
         this.name = '_geojsonTileLayer';
         this.extent = EXTENT;
@@ -86,7 +65,7 @@ class GeoJSONWrapper implements VectorTile, VectorTileLayer {
         this._features = features;
     }
 
-    feature(i: number): VectorTileFeature {
+    feature(i) {
         return new FeatureWrapper(this._features[i]);
     }
 }

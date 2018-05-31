@@ -1,19 +1,16 @@
-// @flow
+// 
 
 import { normalizeGlyphsURL } from '../util/mapbox';
 
 import { getArrayBuffer, ResourceType } from '../util/ajax';
 import parseGlyphPBF from './parse_glyph_pbf';
 
-import type {StyleGlyph} from './style_glyph';
-import type {RequestTransformFunction} from '../ui/map';
-import type {Callback} from '../types/callback';
 
-export default function (fontstack: string,
-                           range: number,
-                           urlTemplate: string,
-                           requestTransform: RequestTransformFunction,
-                           callback: Callback<{[number]: StyleGlyph | null}>) {
+export default function (fontstack,
+                           range,
+                           urlTemplate,
+                           requestTransform,
+                           callback) {
     const begin = range * 256;
     const end = begin + 255;
 

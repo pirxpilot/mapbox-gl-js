@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import loadGlyphRange from '../style/load_glyph_range';
 
@@ -7,38 +7,23 @@ import isChar from '../util/is_char_in_unicode_block';
 import { asyncAll } from '../util/util';
 import { AlphaImage } from '../util/image';
 
-import type {StyleGlyph} from '../style/style_glyph';
-import type {RequestTransformFunction} from '../ui/map';
-import type {Callback} from '../types/callback';
 
-type Entry = {
-    // null means we've requested the range, but the glyph wasn't included in the result.
-    glyphs: {[id: number]: StyleGlyph | null},
-    requests: {[range: number]: Array<Callback<{[number]: StyleGlyph | null}>>},
-    tinySDF?: TinySDF
-};
 
 class GlyphManager {
-    requestTransform: RequestTransformFunction;
-    localIdeographFontFamily: ?string;
-    entries: {[string]: Entry};
-    url: ?string;
 
     // exposed as statics to enable stubbing in unit tests
-    static loadGlyphRange: typeof loadGlyphRange;
-    static TinySDF: Class<TinySDF>;
 
-    constructor(requestTransform: RequestTransformFunction, localIdeographFontFamily: ?string) {
+    constructor(requestTransform, localIdeographFontFamily) {
         this.requestTransform = requestTransform;
         this.localIdeographFontFamily = localIdeographFontFamily;
         this.entries = {};
     }
 
-    setURL(url: ?string) {
+    setURL(url) {
         this.url = url;
     }
 
-    getGlyphs(glyphs: {[stack: string]: Array<number>}, callback: Callback<{[stack: string]: {[id: number]: ?StyleGlyph}}>) {
+    getGlyphs(glyphs, callback) {
         const all = [];
 
         for (const stack in glyphs) {
@@ -47,7 +32,7 @@ class GlyphManager {
             }
         }
 
-        asyncAll(all, ({stack, id}, callback: Callback<{stack: string, id: number, glyph: ?StyleGlyph}>) => {
+        asyncAll(all, ({stack, id}, callback) => {
             let entry = this.entries[stack];
             if (!entry) {
                 entry = this.entries[stack] = {
@@ -77,8 +62,8 @@ class GlyphManager {
             let requests = entry.requests[range];
             if (!requests) {
                 requests = entry.requests[range] = [];
-                GlyphManager.loadGlyphRange(stack, range, (this.url: any), this.requestTransform,
-                    (err, response: ?{[number]: StyleGlyph | null}) => {
+                GlyphManager.loadGlyphRange(stack, range, (this.url), this.requestTransform,
+                    (err, response) => {
                         if (response) {
                             for (const id in response) {
                                 entry.glyphs[+id] = response[+id];
@@ -91,14 +76,14 @@ class GlyphManager {
                     });
             }
 
-            requests.push((err, result: ?{[number]: StyleGlyph | null}) => {
+            requests.push((err, result) => {
                 if (err) {
                     callback(err);
                 } else if (result) {
                     callback(null, {stack, id, glyph: result[id] || null});
                 }
             });
-        }, (err, glyphs: ?Array<{stack: string, id: number, glyph: ?StyleGlyph}>) => {
+        }, (err, glyphs) => {
             if (err) {
                 callback(err);
             } else if (glyphs) {
@@ -118,7 +103,7 @@ class GlyphManager {
         });
     }
 
-    _tinySDF(entry: Entry, stack: string, id: number): ?StyleGlyph {
+    _tinySDF(entry, stack, id) {
         const family = this.localIdeographFontFamily;
         if (!family) {
             return;

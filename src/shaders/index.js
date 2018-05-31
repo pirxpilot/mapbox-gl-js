@@ -1,4 +1,4 @@
-// @flow
+// 
 
 // We use brfs, a browserify transform, to inline shader sources during bundling. As a result:
 // - readFileSync calls must be written out long-form
@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 
-const shaders: {[string]: {fragmentSource: string, vertexSource: string}} = {
+const shaders = {
     prelude: {
         fragmentSource: fs.readFileSync(__dirname + '/../shaders/_prelude.fragment.glsl', 'utf8'),
         vertexSource: fs.readFileSync(__dirname + '/../shaders/_prelude.vertex.glsl', 'utf8')
@@ -120,9 +120,9 @@ const re = /#pragma mapbox: ([\w]+) ([\w]+) ([\w]+) ([\w]+)/g;
 
 for (const programName in shaders) {
     const program = shaders[programName];
-    const fragmentPragmas: {[string]: boolean} = {};
+    const fragmentPragmas = {};
 
-    program.fragmentSource = program.fragmentSource.replace(re, (match: string, operation: string, precision: string, type: string, name: string) => {
+    program.fragmentSource = program.fragmentSource.replace(re, (match, operation, precision, type, name) => {
         fragmentPragmas[name] = true;
         if (operation === 'define') {
             return `
@@ -141,7 +141,7 @@ uniform ${precision} ${type} u_${name};
         }
     });
 
-    program.vertexSource = program.vertexSource.replace(re, (match: string, operation: string, precision: string, type: string, name: string) => {
+    program.vertexSource = program.vertexSource.replace(re, (match, operation, precision, type, name) => {
         const attrType = type === 'float' ? 'vec2' : 'vec4';
         if (fragmentPragmas[name]) {
             if (operation === 'define') {

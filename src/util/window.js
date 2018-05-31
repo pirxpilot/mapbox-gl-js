@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import jsdom from 'jsdom';
 
@@ -14,13 +14,13 @@ restore();
 
 export default _window;
 
-function restore(): Window {
+function restore() {
     // Remove previous window from exported object
     const previousWindow = _window;
     if (previousWindow.close) previousWindow.close();
     for (const key in previousWindow) {
         if (previousWindow.hasOwnProperty(key)) {
-            delete (previousWindow: any)[key];
+            delete (previousWindow)[key];
         }
     }
 

@@ -1,17 +1,12 @@
-// @flow
+// 
 
 class ZoomHistory {
-    lastZoom: number;
-    lastFloorZoom: number;
-    lastIntegerZoom: number;
-    lastIntegerZoomTime: number;
-    first: boolean;
 
     constructor() {
         this.first = true;
     }
 
-    update(z: number, now: number) {
+    update(z, now) {
         const floorZ = Math.floor(z);
 
         if (this.first) {

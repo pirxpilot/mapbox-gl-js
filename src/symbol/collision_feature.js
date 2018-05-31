@@ -1,8 +1,6 @@
-// @flow
+// 
 
-import type {CollisionBoxArray} from '../data/array_types';
 import Point from '@mapbox/point-geometry';
-import type Anchor from './anchor';
 
 /**
  * A CollisionFeature represents the area of the tile covered by a single label.
@@ -13,8 +11,6 @@ import type Anchor from './anchor';
  * @private
  */
 class CollisionFeature {
-    boxStartIndex: number;
-    boxEndIndex: number;
 
     /**
      * Create a CollisionFeature, adding its collision box data to the given collisionBoxArray in the process.
@@ -26,18 +22,18 @@ class CollisionFeature {
      * @param padding The amount of padding to add around the label edges.
      * @param alignLine Whether the label is aligned with the line or the viewport.
      */
-    constructor(collisionBoxArray: CollisionBoxArray,
-                line: Array<Point>,
-                anchor: Anchor,
-                featureIndex: number,
-                sourceLayerIndex: number,
-                bucketIndex: number,
-                shaped: Object,
-                boxScale: number,
-                padding: number,
-                alignLine: boolean,
-                overscaling: number,
-                rotate: number) {
+    constructor(collisionBoxArray,
+                line,
+                anchor,
+                featureIndex,
+                sourceLayerIndex,
+                bucketIndex,
+                shaped,
+                boxScale,
+                padding,
+                alignLine,
+                overscaling,
+                rotate) {
         let y1 = shaped.top * boxScale - padding;
         let y2 = shaped.bottom * boxScale + padding;
         let x1 = shaped.left * boxScale - padding;
@@ -54,7 +50,7 @@ class CollisionFeature {
                 // set minimum box height to avoid very many small labels
                 height = Math.max(10 * boxScale, height);
 
-                this._addLineCollisionCircles(collisionBoxArray, line, anchor, (anchor.segment: any), length, height, featureIndex, sourceLayerIndex, bucketIndex, overscaling);
+                this._addLineCollisionCircles(collisionBoxArray, line, anchor, (anchor.segment), length, height, featureIndex, sourceLayerIndex, bucketIndex, overscaling);
             }
 
         } else {
@@ -98,16 +94,16 @@ class CollisionFeature {
      * @param boxSize The size of the collision boxes that will be created.
      * @private
      */
-    _addLineCollisionCircles(collisionBoxArray: CollisionBoxArray,
-                           line: Array<Point>,
-                           anchor: Anchor,
-                           segment: number,
-                           labelLength: number,
-                           boxSize: number,
-                           featureIndex: number,
-                           sourceLayerIndex: number,
-                           bucketIndex: number,
-                           overscaling: number) {
+    _addLineCollisionCircles(collisionBoxArray,
+                           line,
+                           anchor,
+                           segment,
+                           labelLength,
+                           boxSize,
+                           featureIndex,
+                           sourceLayerIndex,
+                           bucketIndex,
+                           overscaling) {
         const step = boxSize / 2;
         const nBoxes = Math.floor(labelLength / step);
         // We calculate line collision circles out to 300% of what would normally be our

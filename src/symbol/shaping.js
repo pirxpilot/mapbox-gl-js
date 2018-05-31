@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import {
     charHasUprightVerticalOrientation,
@@ -7,8 +7,6 @@ import {
 import verticalizePunctuation from '../util/verticalize_punctuation';
 import { plugin as rtlTextPlugin } from '../source/rtl_text_plugin';
 
-import type {StyleGlyph} from '../style/style_glyph';
-import type {ImagePosition} from '../render/image_atlas';
 
 const WritingMode = {
     horizontal: 1,
@@ -19,27 +17,11 @@ const WritingMode = {
 export { shapeText, shapeIcon, WritingMode };
 
 // The position of a glyph relative to the text's anchor point.
-export type PositionedGlyph = {
-    glyph: number,
-    x: number,
-    y: number,
-    vertical: boolean
-};
 
 // A collection of positioned glyphs and some metadata
-export type Shaping = {
-    positionedGlyphs: Array<PositionedGlyph>,
-    top: number,
-    bottom: number,
-    left: number,
-    right: number,
-    writingMode: 1 | 2
-};
 
-type SymbolAnchor = 'center' | 'left' | 'right' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-type TextJustify = 'left' | 'center' | 'right';
 
-function breakLines(text: string, lineBreakPoints: Array<number>) {
+function breakLines(text, lineBreakPoints) {
     const lines = [];
     let start = 0;
     for (const lineBreak of lineBreakPoints) {
@@ -53,16 +35,16 @@ function breakLines(text: string, lineBreakPoints: Array<number>) {
     return lines;
 }
 
-function shapeText(text: string,
-                   glyphs: {[number]: ?StyleGlyph},
-                   maxWidth: number,
-                   lineHeight: number,
-                   textAnchor: SymbolAnchor,
-                   textJustify: TextJustify,
-                   spacing: number,
-                   translate: [number, number],
-                   verticalHeight: number,
-                   writingMode: 1 | 2): Shaping | false {
+function shapeText(text,
+                   glyphs,
+                   maxWidth,
+                   lineHeight,
+                   textAnchor,
+                   textJustify,
+                   spacing,
+                   translate,
+                   verticalHeight,
+                   writingMode) {
     let logicalInput = text.trim();
     if (writingMode === WritingMode.vertical) {
         logicalInput = verticalizePunctuation(logicalInput);
@@ -79,7 +61,7 @@ function shapeText(text: string,
         writingMode
     };
 
-    let lines: Array<string>;
+    let lines;
 
     const {processBidirectionalText} = rtlTextPlugin;
     if (processBidirectionalText) {
@@ -96,7 +78,7 @@ function shapeText(text: string,
     return shaping;
 }
 
-const whitespace: {[number]: boolean} = {
+const whitespace = {
     [0x09]: true, // tab
     [0x0a]: true, // newline
     [0x0b]: true, // vertical tab
@@ -105,7 +87,7 @@ const whitespace: {[number]: boolean} = {
     [0x20]: true, // space
 };
 
-const breakable: {[number]: boolean} = {
+const breakable = {
     [0x0a]:   true, // newline
     [0x20]:   true, // space
     [0x26]:   true, // ampersand
@@ -125,10 +107,10 @@ const breakable: {[number]: boolean} = {
     // See https://github.com/mapbox/mapbox-gl-js/issues/3658
 };
 
-function determineAverageLineWidth(logicalInput: string,
-                                   spacing: number,
-                                   maxWidth: number,
-                                   glyphs: {[number]: ?StyleGlyph}) {
+function determineAverageLineWidth(logicalInput,
+                                   spacing,
+                                   maxWidth,
+                                   glyphs) {
     let totalWidth = 0;
 
     for (let index = 0; index < logicalInput.length; index++) {
@@ -142,10 +124,10 @@ function determineAverageLineWidth(logicalInput: string,
     return totalWidth / lineCount;
 }
 
-function calculateBadness(lineWidth: number,
-                          targetWidth: number,
-                          penalty: number,
-                          isLastBreak: boolean) {
+function calculateBadness(lineWidth,
+                          targetWidth,
+                          penalty,
+                          isLastBreak) {
     const raggedness = Math.pow(lineWidth - targetWidth, 2);
     if (isLastBreak) {
         // Favor finals lines shorter than average over longer than average
@@ -159,7 +141,7 @@ function calculateBadness(lineWidth: number,
     return raggedness + Math.abs(penalty) * penalty;
 }
 
-function calculatePenalty(codePoint: number, nextCodePoint: number) {
+function calculatePenalty(codePoint, nextCodePoint) {
     let penalty = 0;
     // Force break on newline
     if (codePoint === 0x0a) {
@@ -177,25 +159,19 @@ function calculatePenalty(codePoint: number, nextCodePoint: number) {
     return penalty;
 }
 
-type Break = {
-    index: number,
-    x: number,
-    priorBreak: ?Break,
-    badness: number
-};
 
-function evaluateBreak(breakIndex: number,
-                       breakX: number,
-                       targetWidth: number,
-                       potentialBreaks: Array<Break>,
-                       penalty: number,
-                       isLastBreak: boolean): Break {
+function evaluateBreak(breakIndex,
+                       breakX,
+                       targetWidth,
+                       potentialBreaks,
+                       penalty,
+                       isLastBreak) {
     // We could skip evaluating breaks where the line length (breakX - priorBreak.x) > maxWidth
     //  ...but in fact we allow lines longer than maxWidth (if there's no break points)
     //  ...and when targetWidth and maxWidth are close, strictly enforcing maxWidth can give
     //     more lopsided results.
 
-    let bestPriorBreak: ?Break = null;
+    let bestPriorBreak = null;
     let bestBreakBadness = calculateBadness(breakX, targetWidth, penalty, isLastBreak);
 
     for (const potentialBreak of potentialBreaks) {
@@ -216,17 +192,17 @@ function evaluateBreak(breakIndex: number,
     };
 }
 
-function leastBadBreaks(lastLineBreak: ?Break): Array<number> {
+function leastBadBreaks(lastLineBreak) {
     if (!lastLineBreak) {
         return [];
     }
     return leastBadBreaks(lastLineBreak.priorBreak).concat(lastLineBreak.index);
 }
 
-function determineLineBreaks(logicalInput: string,
-                             spacing: number,
-                             maxWidth: number,
-                             glyphs: {[number]: ?StyleGlyph}): Array<number> {
+function determineLineBreaks(logicalInput,
+                             spacing,
+                             maxWidth,
+                             glyphs) {
     if (!maxWidth)
         return [];
 
@@ -272,7 +248,7 @@ function determineLineBreaks(logicalInput: string,
             true));
 }
 
-function getAnchorAlignment(anchor: SymbolAnchor) {
+function getAnchorAlignment(anchor) {
     let horizontalAlign = 0.5, verticalAlign = 0.5;
 
     switch (anchor) {
@@ -304,15 +280,15 @@ function getAnchorAlignment(anchor: SymbolAnchor) {
     return { horizontalAlign, verticalAlign };
 }
 
-function shapeLines(shaping: Shaping,
-                    glyphs: {[number]: ?StyleGlyph},
-                    lines: Array<string>,
-                    lineHeight: number,
-                    textAnchor: SymbolAnchor,
-                    textJustify: TextJustify,
-                    writingMode: 1 | 2,
-                    spacing: number,
-                    verticalHeight: number) {
+function shapeLines(shaping,
+                    glyphs,
+                    lines,
+                    lineHeight,
+                    textAnchor,
+                    textJustify,
+                    writingMode,
+                    spacing,
+                    verticalHeight) {
     // the y offset *should* be part of the font metadata
     const yOffset = -17;
 
@@ -375,11 +351,11 @@ function shapeLines(shaping: Shaping,
 }
 
 // justify right = 1, left = 0, center = 0.5
-function justifyLine(positionedGlyphs: Array<PositionedGlyph>,
-                     glyphs: {[number]: ?StyleGlyph},
-                     start: number,
-                     end: number,
-                     justify: 1 | 0 | 0.5) {
+function justifyLine(positionedGlyphs,
+                     glyphs,
+                     start,
+                     end,
+                     justify) {
     if (!justify)
         return;
 
@@ -394,13 +370,13 @@ function justifyLine(positionedGlyphs: Array<PositionedGlyph>,
     }
 }
 
-function align(positionedGlyphs: Array<PositionedGlyph>,
-               justify: number,
-               horizontalAlign: number,
-               verticalAlign: number,
-               maxLineLength: number,
-               lineHeight: number,
-               lineCount: number) {
+function align(positionedGlyphs,
+               justify,
+               horizontalAlign,
+               verticalAlign,
+               maxLineLength,
+               lineHeight,
+               lineCount) {
     const shiftX = (justify - horizontalAlign) * maxLineLength;
     const shiftY = (-verticalAlign * lineCount + 0.5) * lineHeight;
 
@@ -410,15 +386,8 @@ function align(positionedGlyphs: Array<PositionedGlyph>,
     }
 }
 
-export type PositionedIcon = {
-    image: ImagePosition,
-    top: number,
-    bottom: number,
-    left: number,
-    right: number
-};
 
-function shapeIcon(image: ImagePosition, iconOffset: [number, number], iconAnchor: SymbolAnchor): PositionedIcon {
+function shapeIcon(image, iconOffset, iconAnchor) {
     const {horizontalAlign, verticalAlign} = getAnchorAlignment(iconAnchor);
     const dx = iconOffset[0];
     const dy = iconOffset[1];

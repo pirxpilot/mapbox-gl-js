@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import DOM from '../../util/dom';
 
@@ -9,9 +9,6 @@ import { number as interpolate } from '../../style-spec/util/interpolate';
 import LngLat from '../../geo/lng_lat';
 import { Event } from '../../util/evented';
 
-import type Map from '../map';
-import type Point from '@mapbox/point-geometry';
-import type {TaskID} from '../../util/task_queue';
 
 // deltaY value for mouse scroll wheel identification
 const wheelZoomDelta = 4.000244140625;
@@ -28,33 +25,16 @@ const maxScalePerFrame = 2;
  * The `ScrollZoomHandler` allows the user to zoom the map by scrolling.
  */
 class ScrollZoomHandler {
-    _map: Map;
-    _el: HTMLElement;
-    _enabled: boolean;
-    _active: boolean;
-    _aroundCenter: boolean;
-    _around: Point;
-    _aroundPoint: Point;
-    _type: 'wheel' | 'trackpad' | null;
-    _lastValue: number;
-    _timeout: ?TimeoutID; // used for delayed-handling of a single wheel movement
-    _finishTimeout: ?TimeoutID; // used to delay final '{move,zoom}end' events
+ // used for delayed-handling of a single wheel movement
+ // used to delay final '{move,zoom}end' events
 
-    _lastWheelEvent: any;
-    _lastWheelEventTime: number;
 
-    _startZoom: number;
-    _targetZoom: number;
-    _delta: number;
-    _easing: (number) => number;
-    _prevEase: {start: number, duration: number, easing: (number) => number};
 
-    _frameId: ?TaskID;
 
     /**
      * @private
      */
-    constructor(map: Map) {
+    constructor(map) {
         this._map = map;
         this._el = map.getCanvasContainer();
 
@@ -92,7 +72,7 @@ class ScrollZoomHandler {
      * @example
      *  map.scrollZoom.enable({ around: 'center' })
      */
-    enable(options: any) {
+    enable(options) {
         if (this.isEnabled()) return;
         this._enabled = true;
         this._aroundCenter = options && options.around === 'center';
@@ -109,11 +89,11 @@ class ScrollZoomHandler {
         this._enabled = false;
     }
 
-    onWheel(e: WheelEvent) {
+    onWheel(e) {
         if (!this.isEnabled()) return;
 
         // Remove `any` cast when https://github.com/facebook/flow/issues/4879 is fixed.
-        let value = e.deltaMode === (window.WheelEvent: any).DOM_DELTA_LINE ? e.deltaY * 40 : e.deltaY;
+        let value = e.deltaMode === (window.WheelEvent).DOM_DELTA_LINE ? e.deltaY * 40 : e.deltaY;
         const now = browser.now(),
             timeDelta = now - (this._lastWheelEventTime || 0);
 
@@ -164,7 +144,7 @@ class ScrollZoomHandler {
         e.preventDefault();
     }
 
-    _onTimeout(initialEvent: any) {
+    _onTimeout(initialEvent) {
         this._type = 'wheel';
         this._delta -= this._lastValue;
         if (!this.isActive()) {
@@ -172,7 +152,7 @@ class ScrollZoomHandler {
         }
     }
 
-    _start(e: any) {
+    _start(e) {
         if (!this._delta) return;
 
         if (this._frameId) {
@@ -260,7 +240,7 @@ class ScrollZoomHandler {
         }
     }
 
-    _smoothOutEasing(duration: number) {
+    _smoothOutEasing(duration) {
         let easing = _ease;
 
         if (this._prevEase) {

@@ -1,4 +1,4 @@
-// @flow
+// 
 import { createLayout } from '../../util/struct_array';
 
 const layout = createLayout([

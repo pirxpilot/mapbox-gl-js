@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import styleSpec from '../style-spec/reference/latest';
 
@@ -12,35 +12,22 @@ import {
 import Color from '../style-spec/util/color';
 import { number as interpolate } from '../style-spec/util/interpolate';
 
-import type {StylePropertySpecification} from '../style-spec/style-spec';
-import type EvaluationParameters from './evaluation_parameters';
 
 import { Properties, Transitionable, Transitioning, PossiblyEvaluated, DataConstantProperty } from './properties';
 
-import type {
-    Property,
-    PropertyValue,
-    TransitionParameters
-} from './properties';
 
-type LightPosition = {
-    x: number,
-    y: number,
-    z: number
-};
 
-class LightPositionProperty implements Property<[number, number, number], LightPosition> {
-    specification: StylePropertySpecification;
+class LightPositionProperty {
 
     constructor() {
         this.specification = styleSpec.light.position;
     }
 
-    possiblyEvaluate(value: PropertyValue<[number, number, number], LightPosition>, parameters: EvaluationParameters): LightPosition {
+    possiblyEvaluate(value, parameters) {
         return sphericalToCartesian(value.expression.evaluate(parameters));
     }
 
-    interpolate(a: LightPosition, b: LightPosition, t: number): LightPosition {
+    interpolate(a, b, t) {
         return {
             x: interpolate(a.x, b.x, t),
             y: interpolate(a.y, b.y, t),
@@ -49,14 +36,8 @@ class LightPositionProperty implements Property<[number, number, number], LightP
     }
 }
 
-type Props = {|
-    "anchor": DataConstantProperty<"map" | "viewport">,
-    "position": LightPositionProperty,
-    "color": DataConstantProperty<Color>,
-    "intensity": DataConstantProperty<number>,
-|};
 
-const properties: Properties<Props> = new Properties({
+const properties = new Properties({
     "anchor": new DataConstantProperty(styleSpec.light.anchor),
     "position": new LightPositionProperty(),
     "color": new DataConstantProperty(styleSpec.light.color),
@@ -69,11 +50,8 @@ const TRANSITION_SUFFIX = '-transition';
  * Represents the light used to light extruded features.
  */
 class Light extends Evented {
-    _transitionable: Transitionable<Props>;
-    _transitioning: Transitioning<Props>;
-    properties: PossiblyEvaluated<Props>;
 
-    constructor(lightOptions?: LightSpecification) {
+    constructor(lightOptions) {
         super();
         this._transitionable = new Transitionable(properties);
         this.setLight(lightOptions);
@@ -84,7 +62,7 @@ class Light extends Evented {
         return this._transitionable.serialize();
     }
 
-    setLight(options?: LightSpecification) {
+    setLight(options) {
         if (this._validate(validateLight, options)) {
             return;
         }
@@ -99,7 +77,7 @@ class Light extends Evented {
         }
     }
 
-    updateTransitions(parameters: TransitionParameters) {
+    updateTransitions(parameters) {
         this._transitioning = this._transitionable.transitioned(parameters, this._transitioning);
     }
 
@@ -107,11 +85,11 @@ class Light extends Evented {
         return this._transitioning.hasTransition();
     }
 
-    recalculate(parameters: EvaluationParameters) {
+    recalculate(parameters) {
         this.properties = this._transitioning.possiblyEvaluate(parameters);
     }
 
-    _validate(validate: Function, value: mixed) {
+    _validate(validate, value) {
         return emitValidationErrors(this, validate.call(validateStyle, extend({
             value: value,
             // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/2407

@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import {
     charHasRotatedVerticalOrientation,
@@ -90,7 +90,7 @@ export const verticalizedCharacterMap = {
     '｣': '﹂'
 };
 
-export default function verticalizePunctuation(input: string) {
+export default function verticalizePunctuation(input) {
     let output = '';
 
     for (let i = 0; i < input.length; i++) {

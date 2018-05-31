@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import DOM from '../util/dom';
 import window from '../util/window';
@@ -6,20 +6,9 @@ import LngLat from '../geo/lng_lat';
 import Point from '@mapbox/point-geometry';
 import smartWrap from '../util/smart_wrap';
 import { bindAll, extend } from '../util/util';
-import { type Anchor, anchorTranslate, applyAnchorClass } from './anchor';
+import { anchorTranslate, applyAnchorClass } from './anchor';
 import { Event, Evented } from '../util/evented';
-import type Map from './map';
-import type Popup from './popup';
-import type {LngLatLike} from "../geo/lng_lat";
-import type {MapMouseEvent, MapTouchEvent} from './events';
 
-type Options = {
-    element?: HTMLElement,
-    offset?: PointLike,
-    anchor?: Anchor,
-    color?: string,
-    draggable?: boolean
-};
 
 /**
  * Creates a marker component
@@ -37,20 +26,9 @@ type Options = {
  * @see [Add custom icons with Markers](https://www.mapbox.com/mapbox-gl-js/example/custom-marker-icons/)
  */
 export default class Marker extends Evented {
-    _map: Map;
-    _anchor: Anchor;
-    _offset: Point;
-    _element: HTMLElement;
-    _popup: ?Popup;
-    _lngLat: LngLat;
-    _pos: ?Point;
-    _color: ?string;
-    _defaultMarker: boolean;
-    _draggable: boolean;
-    _state: 'inactive' | 'pending' | 'active'; // used for handling drag events
-    _positionDelta: ?number;
+ // used for handling drag events
 
-    constructor(options?: Options) {
+    constructor(options) {
         super();
         // For backward compatibility -- the constructor used to accept the element as a
         // required first argument, before it was made optional.
@@ -188,7 +166,7 @@ export default class Marker extends Evented {
      * @param {Map} map
      * @returns {Marker} `this`
      */
-    addTo(map: Map) {
+    addTo(map) {
         this.remove();
         this._map = map;
         map.getCanvasContainer().appendChild(this._element);
@@ -243,7 +221,7 @@ export default class Marker extends Evented {
      * Set the marker's geographical position and move it.
      * @returns {Marker} `this`
      */
-    setLngLat(lnglat: LngLatLike) {
+    setLngLat(lnglat) {
         this._lngLat = LngLat.convert(lnglat);
         this._pos = null;
         if (this._popup) this._popup.setLngLat(this._lngLat);
@@ -265,7 +243,7 @@ export default class Marker extends Evented {
      * set on this `Marker` instance is unset
      * @returns {Marker} `this`
      */
-    setPopup(popup: ?Popup) {
+    setPopup(popup) {
         if (this._popup) {
             this._popup.remove();
             this._popup = null;
@@ -294,11 +272,11 @@ export default class Marker extends Evented {
         return this;
     }
 
-    _onMapClick(e: MapMouseEvent) {
+    _onMapClick(e) {
         const targetElement = e.originalEvent.target;
         const element = this._element;
 
-        if (this._popup && (targetElement === element || element.contains((targetElement: any)))) {
+        if (this._popup && (targetElement === element || element.contains((targetElement)))) {
             this.togglePopup();
         }
     }
@@ -324,7 +302,7 @@ export default class Marker extends Evented {
         return this;
     }
 
-    _update(e?: {type: 'move' | 'moveend'}) {
+    _update(e) {
         if (!this._map) return;
 
         if (this._map.transform.renderWorldCopies) {
@@ -357,13 +335,13 @@ export default class Marker extends Evented {
      * @param {PointLike} offset The offset in pixels as a {@link PointLike} object to apply relative to the element's center. Negatives indicate left and up.
      * @returns {Marker} `this`
      */
-    setOffset(offset: PointLike) {
+    setOffset(offset) {
         this._offset = Point.convert(offset);
         this._update();
         return this;
     }
 
-    _onMove(e: MapMouseEvent | MapTouchEvent) {
+    _onMove(e) {
         this._pos = e.point.sub(this._positionDelta);
         this._lngLat = this._map.unproject(this._pos);
         this.setLngLat(this._lngLat);
@@ -424,8 +402,8 @@ export default class Marker extends Evented {
         this._state = 'inactive';
     }
 
-    _addDragHandler(e: MapMouseEvent | MapTouchEvent) {
-        if (this._element.contains((e.originalEvent.target: any))) {
+    _addDragHandler(e) {
+        if (this._element.contains((e.originalEvent.target))) {
             e.preventDefault();
 
             // We need to calculate the pixel distance between the click point
@@ -449,7 +427,7 @@ export default class Marker extends Evented {
      * @param {boolean} [shouldBeDraggable=false] Turns drag functionality on/off
      * @returns {Marker} `this`
      */
-    setDraggable(shouldBeDraggable: boolean) {
+    setDraggable(shouldBeDraggable) {
         this._draggable = !!shouldBeDraggable; // convert possible undefined value to false
 
         // handle case where map may not exist yet

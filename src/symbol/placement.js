@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import CollisionIndex from './collision_index';
 
@@ -10,19 +10,9 @@ const symbolLayoutProperties = properties.layout;
 import assert from 'assert';
 import pixelsToTileUnits from '../source/pixels_to_tile_units';
 
-import type Transform from '../geo/transform';
-import type StyleLayer from '../style/style_layer';
-import type Tile from '../source/tile';
-import type SymbolBucket from '../data/bucket/symbol_bucket';
-import type {mat4} from 'gl-matrix';
-import type {CollisionBoxArray, CollisionVertexArray} from '../data/array_types';
-import type FeatureIndex from '../data/feature_index';
-import type {OverscaledTileID} from '../source/tile_id';
 
 class OpacityState {
-    opacity: number;
-    placed: boolean;
-    constructor(prevState: ?OpacityState, increment: number, placed: boolean, skipFade: ?boolean) {
+    constructor(prevState, increment, placed, skipFade) {
         if (prevState) {
             this.opacity = Math.max(0, Math.min(1, prevState.opacity + (prevState.placed ? increment : -increment)));
         } else {
@@ -36,9 +26,7 @@ class OpacityState {
 }
 
 class JointOpacityState {
-    text: OpacityState;
-    icon: OpacityState;
-    constructor(prevState: ?JointOpacityState, increment: number, placedText: boolean, placedIcon: boolean, skipFade: ?boolean) {
+    constructor(prevState, increment, placedText, placedIcon, skipFade) {
         this.text = new OpacityState(prevState ? prevState.text : null, increment, placedText, skipFade);
         this.icon = new OpacityState(prevState ? prevState.icon : null, increment, placedIcon, skipFade);
     }
@@ -48,14 +36,11 @@ class JointOpacityState {
 }
 
 class JointPlacement {
-    text: boolean;
-    icon: boolean;
     // skipFade = outside viewport, but within CollisionIndex::viewportPadding px of the edge
     // Because these symbols aren't onscreen yet, we can skip the "fade in" animation,
     // and if a subsequent viewport change brings them into view, they'll be fully
     // visible right away.
-    skipFade: boolean;
-    constructor(text: boolean, icon: boolean, skipFade: boolean) {
+    constructor(text, icon, skipFade) {
         this.text = text;
         this.icon = icon;
         this.skipFade = skipFade;
@@ -63,18 +48,12 @@ class JointPlacement {
 }
 
 export class RetainedQueryData {
-    bucketInstanceId: number;
-    featureIndex: FeatureIndex;
-    sourceLayerIndex: number;
-    bucketIndex: number;
-    tileID: OverscaledTileID;
-    featureSortOrder: ?Array<number>
 
-    constructor(bucketInstanceId: number,
-                featureIndex: FeatureIndex,
-                sourceLayerIndex: number,
-                bucketIndex: number,
-                tileID: OverscaledTileID) {
+    constructor(bucketInstanceId,
+                featureIndex,
+                sourceLayerIndex,
+                bucketIndex,
+                tileID) {
         this.bucketInstanceId = bucketInstanceId;
         this.featureIndex = featureIndex;
         this.sourceLayerIndex = sourceLayerIndex;
@@ -84,17 +63,8 @@ export class RetainedQueryData {
 }
 
 export class Placement {
-    transform: Transform;
-    collisionIndex: CollisionIndex;
-    placements: { [string | number]: JointPlacement };
-    opacities: { [string | number]: JointOpacityState };
-    commitTime: number;
-    lastPlacementChangeTime: number;
-    stale: boolean;
-    fadeDuration: number;
-    retainedQueryData: {[number]: RetainedQueryData};
 
-    constructor(transform: Transform, fadeDuration: number) {
+    constructor(transform, fadeDuration) {
         this.transform = transform.clone();
         this.collisionIndex = new CollisionIndex(this.transform);
         this.placements = {};
@@ -104,8 +74,8 @@ export class Placement {
         this.retainedQueryData = {};
     }
 
-    placeLayerTile(styleLayer: StyleLayer, tile: Tile, showCollisionBoxes: boolean, seenCrossTileIDs: { [string | number]: boolean }) {
-        const symbolBucket = ((tile.getBucket(styleLayer): any): SymbolBucket);
+    placeLayerTile(styleLayer, tile, showCollisionBoxes, seenCrossTileIDs) {
+        const symbolBucket = ((tile.getBucket(styleLayer)));
         const bucketFeatureIndex = tile.latestFeatureIndex;
         if (!symbolBucket || !bucketFeatureIndex || styleLayer.id !== symbolBucket.layerIds[0])
             return;
@@ -145,9 +115,9 @@ export class Placement {
                 showCollisionBoxes, seenCrossTileIDs, collisionBoxArray);
     }
 
-    placeLayerBucket(bucket: SymbolBucket, posMatrix: mat4, textLabelPlaneMatrix: mat4, iconLabelPlaneMatrix: mat4,
-            scale: number, textPixelRatio: number, showCollisionBoxes: boolean, seenCrossTileIDs: { [string | number]: boolean },
-            collisionBoxArray: ?CollisionBoxArray) {
+    placeLayerBucket(bucket, posMatrix, textLabelPlaneMatrix, iconLabelPlaneMatrix,
+            scale, textPixelRatio, showCollisionBoxes, seenCrossTileIDs,
+            collisionBoxArray) {
         const layout = bucket.layers[0].layout;
 
         const partiallyEvaluatedTextSize = symbolSize.evaluateSizeForZoom(bucket.textSizeData, this.transform.zoom, symbolLayoutProperties.properties['text-size']);
@@ -171,7 +141,7 @@ export class Placement {
 
                 if (!symbolInstance.collisionArrays) {
                     symbolInstance.collisionArrays = bucket.deserializeCollisionBoxes(
-                            ((collisionBoxArray: any): CollisionBoxArray),
+                            ((collisionBoxArray)),
                             symbolInstance.textBoxStartIndex, symbolInstance.textBoxEndIndex, symbolInstance.iconBoxStartIndex, symbolInstance.iconBoxEndIndex);
                 }
 
@@ -252,7 +222,7 @@ export class Placement {
         bucket.justReloaded = false;
     }
 
-    commit(prevPlacement: ?Placement, now: number): void {
+    commit(prevPlacement, now) {
         this.commitTime = now;
 
         let placementChanged = false;
@@ -301,18 +271,18 @@ export class Placement {
         }
     }
 
-    updateLayerOpacities(styleLayer: StyleLayer, tiles: Array<Tile>) {
+    updateLayerOpacities(styleLayer, tiles) {
         const seenCrossTileIDs = {};
 
         for (const tile of tiles) {
-            const symbolBucket = ((tile.getBucket(styleLayer): any): SymbolBucket);
+            const symbolBucket = ((tile.getBucket(styleLayer)));
             if (symbolBucket && tile.latestFeatureIndex && styleLayer.id === symbolBucket.layerIds[0]) {
                 this.updateBucketOpacities(symbolBucket, seenCrossTileIDs, tile.collisionBoxArray);
             }
         }
     }
 
-    updateBucketOpacities(bucket: SymbolBucket, seenCrossTileIDs: { [string | number]: boolean }, collisionBoxArray: ?CollisionBoxArray) {
+    updateBucketOpacities(bucket, seenCrossTileIDs, collisionBoxArray) {
         if (bucket.hasTextData()) bucket.text.opacityVertexArray.clear();
         if (bucket.hasIconData()) bucket.icon.opacityVertexArray.clear();
         if (bucket.hasCollisionBoxData()) bucket.collisionBox.collisionVertexArray.clear();
@@ -354,7 +324,7 @@ export class Placement {
                     const placedSymbol = bucket.text.placedSymbolArray.get(placedTextSymbolIndex);
                     // If this label is completely faded, mark it so that we don't have to calculate
                     // its position at render time
-                    placedSymbol.hidden = (opacityState.text.isHidden(): any);
+                    placedSymbol.hidden = (opacityState.text.isHidden());
                 }
             }
 
@@ -364,12 +334,12 @@ export class Placement {
                     bucket.icon.opacityVertexArray.emplaceBack(packedOpacity);
                 }
                 const placedSymbol = bucket.icon.placedSymbolArray.get(s);
-                placedSymbol.hidden = (opacityState.icon.isHidden(): any);
+                placedSymbol.hidden = (opacityState.icon.isHidden());
             }
 
             if (!symbolInstance.collisionArrays) {
                 symbolInstance.collisionArrays = bucket.deserializeCollisionBoxes(
-                        ((collisionBoxArray: any): CollisionBoxArray),
+                        ((collisionBoxArray)),
                         symbolInstance.textBoxStartIndex, symbolInstance.textBoxEndIndex, symbolInstance.iconBoxStartIndex, symbolInstance.iconBoxEndIndex);
             }
 
@@ -415,18 +385,18 @@ export class Placement {
         assert(bucket.icon.opacityVertexArray.length === bucket.icon.layoutVertexArray.length / 4);
     }
 
-    symbolFadeChange(now: number) {
+    symbolFadeChange(now) {
         return this.fadeDuration === 0 ?
             1 :
             (now - this.commitTime) / this.fadeDuration;
     }
 
-    hasTransitions(now: number) {
+    hasTransitions(now) {
         return this.stale ||
             now - this.lastPlacementChangeTime < this.fadeDuration;
     }
 
-    stillRecent(now: number) {
+    stillRecent(now) {
         return this.commitTime !== 'undefined' &&
             this.commitTime + this.fadeDuration > now;
     }
@@ -436,7 +406,7 @@ export class Placement {
     }
 }
 
-function updateCollisionVertices(collisionVertexArray: CollisionVertexArray, placed: boolean, notUsed: boolean) {
+function updateCollisionVertices(collisionVertexArray, placed, notUsed) {
     collisionVertexArray.emplaceBack(placed ? 1 : 0, notUsed ? 1 : 0);
     collisionVertexArray.emplaceBack(placed ? 1 : 0, notUsed ? 1 : 0);
     collisionVertexArray.emplaceBack(placed ? 1 : 0, notUsed ? 1 : 0);
@@ -454,7 +424,7 @@ const shift16 = Math.pow(2, 16);
 const shift9 = Math.pow(2, 9);
 const shift8 = Math.pow(2, 8);
 const shift1 = Math.pow(2, 1);
-function packOpacity(opacityState: OpacityState): number {
+function packOpacity(opacityState) {
     if (opacityState.opacity === 0 && !opacityState.placed) {
         return 0;
     } else if (opacityState.opacity === 1 && opacityState.placed) {

@@ -1,30 +1,24 @@
-// @flow
+// 
 
 import assert from 'assert';
 import { isValue, typeOf, Color } from '../values';
 
-import type { Type } from '../types';
-import type { Value }  from '../values';
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
 
-class Literal implements Expression {
-    type: Type;
-    value: Value;
+class Literal {
 
-    constructor(type: Type, value: Value) {
+    constructor(type, value) {
         this.type = type;
         this.value = value;
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext) {
+    static parse(args, context) {
         if (args.length !== 2)
             return context.error(`'literal' expression requires exactly one argument, but found ${args.length - 1} instead.`);
 
         if (!isValue(args[1]))
             return context.error(`invalid value`);
 
-        const value = (args[1]: any);
+        const value = (args[1]);
         let type = typeOf(value);
 
         // special case: infer the item type if possible for zero-length arrays
@@ -65,7 +59,7 @@ class Literal implements Expression {
                 typeof this.value === 'string' ||
                 typeof this.value === 'number' ||
                 typeof this.value === 'boolean');
-            return (this.value: any);
+            return (this.value);
         }
     }
 }

@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import Point from '@mapbox/point-geometry';
 
@@ -15,7 +15,7 @@ export default clipLine;
  * @returns lines
  * @private
  */
-function clipLine(lines: Array<Array<Point>>, x1: number, y1: number, x2: number, y2: number): Array<Array<Point>> {
+function clipLine(lines, x1, y1, x2, y2) {
     const clippedLines = [];
 
     for (let l = 0; l < lines.length; l++) {

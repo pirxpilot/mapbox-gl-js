@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { Event, Evented } from '../../util/evented';
 import DOM from '../../util/dom';
@@ -8,17 +8,9 @@ import assert from 'assert';
 import LngLat from '../../geo/lng_lat';
 import Marker from '../marker';
 
-import type Map from '../map';
-import type { AnimationOptions, CameraOptions } from '../camera';
 
-type Options = {
-    positionOptions?: PositionOptions,
-    fitBoundsOptions?: AnimationOptions & CameraOptions,
-    trackUserLocation?: boolean,
-    showUserLocation?: boolean
-};
 
-const defaultOptions: Options = {
+const defaultOptions = {
     positionOptions: {
         enableHighAccuracy: false,
         maximumAge: 0,
@@ -87,19 +79,9 @@ function checkGeolocationSupport(callback) {
  * }));
  */
 class GeolocateControl extends Evented {
-    _map: Map;
-    options: Options;
-    _container: HTMLElement;
-    _dotElement: HTMLElement;
-    _geolocateButton: HTMLElement;
-    _geolocationWatchID: number;
-    _timeoutId: ?TimeoutID;
-    _watchState: string;
-    _lastKnownPosition: any;
-    _userLocationDotMarker: Marker;
-    _setup: boolean; // set to true once the control has been setup
+ // set to true once the control has been setup
 
-    constructor(options: Options) {
+    constructor(options) {
         super();
         this.options = extend({}, defaultOptions, options);
 
@@ -113,7 +95,7 @@ class GeolocateControl extends Evented {
         ], this);
     }
 
-    onAdd(map: Map) {
+    onAdd(map) {
         this._map = map;
         this._container = DOM.create('div', `${className} ${className}-group`);
         checkGeolocationSupport(this._setupUI);
@@ -124,7 +106,7 @@ class GeolocateControl extends Evented {
         // clear the geolocation watch if exists
         if (this._geolocationWatchID !== undefined) {
             window.navigator.geolocation.clearWatch(this._geolocationWatchID);
-            this._geolocationWatchID = (undefined: any);
+            this._geolocationWatchID = (undefined);
         }
 
         // clear the marker from the map
@@ -133,10 +115,10 @@ class GeolocateControl extends Evented {
         }
 
         DOM.remove(this._container);
-        this._map = (undefined: any);
+        this._map = (undefined);
     }
 
-    _onSuccess(position: Position) {
+    _onSuccess(position) {
         if (this.options.trackUserLocation) {
             // keep a record of the position so that if the state is BACKGROUND and the user
             // clicks the button, we can move to ACTIVE_LOCK immediately without waiting for
@@ -183,7 +165,7 @@ class GeolocateControl extends Evented {
         this._finish();
     }
 
-    _updateCamera(position: Position) {
+    _updateCamera(position) {
         const center = new LngLat(position.coords.longitude, position.coords.latitude);
         const radius = position.coords.accuracy;
 
@@ -192,7 +174,7 @@ class GeolocateControl extends Evented {
         });
     }
 
-    _updateMarker(position: ?Position) {
+    _updateMarker(position) {
         if (position) {
             this._userLocationDotMarker.setLngLat([position.coords.longitude, position.coords.latitude]).addTo(this._map);
         } else {
@@ -200,7 +182,7 @@ class GeolocateControl extends Evented {
         }
     }
 
-    _onError(error: PositionError) {
+    _onError(error) {
         if (this.options.trackUserLocation) {
             if (error.code === 1) {
                 // PERMISSION_DENIED
@@ -257,9 +239,9 @@ class GeolocateControl extends Evented {
         this._timeoutId = undefined;
     }
 
-    _setupUI(supported: boolean) {
+    _setupUI(supported) {
         if (supported === false) return;
-        this._container.addEventListener('contextmenu', (e: MouseEvent) => e.preventDefault());
+        this._container.addEventListener('contextmenu', (e) => e.preventDefault());
         this._geolocateButton = DOM.create('button',
             `${className}-icon ${className}-geolocate`,
             this._container);
@@ -399,7 +381,7 @@ class GeolocateControl extends Evented {
     _clearWatch() {
         window.navigator.geolocation.clearWatch(this._geolocationWatchID);
 
-        this._geolocationWatchID = (undefined: any);
+        this._geolocationWatchID = (undefined);
         this._geolocateButton.classList.remove('mapboxgl-ctrl-geolocate-waiting');
         this._geolocateButton.setAttribute('aria-pressed', 'false');
 

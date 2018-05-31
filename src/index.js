@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import assert from 'assert';
 import supported from '@mapbox/mapbox-gl-supported';
@@ -53,7 +53,7 @@ const exported = {
         return config.ACCESS_TOKEN;
     },
 
-    set accessToken(token: string) {
+    set accessToken(token) {
         config.ACCESS_TOKEN = token;
     },
 

@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { Event, Evented } from '../util/evented';
 
@@ -8,13 +8,11 @@ let foregroundLoadComplete = false;
 
 export const evented = new Evented();
 
-type CompletionCallback = (error?: Error) => void;
-type ErrorCallback = (error: Error) => void;
 
 let _completionCallback;
 
 export const registerForPluginAvailability = function(
-    callback: (args: {pluginURL: string, completionCallback: CompletionCallback}) => void
+    callback
 ) {
     if (pluginURL) {
         callback({ pluginURL: pluginURL, completionCallback: _completionCallback});
@@ -29,13 +27,13 @@ export const clearRTLTextPlugin = function() {
     pluginURL = null;
 };
 
-export const setRTLTextPlugin = function(url: string, callback: ErrorCallback) {
+export const setRTLTextPlugin = function(url, callback) {
     if (pluginRequested) {
         throw new Error('setRTLTextPlugin cannot be called multiple times.');
     }
     pluginRequested = true;
     pluginURL = url;
-    _completionCallback = (error?: Error) => {
+    _completionCallback = (error) => {
         if (error) {
             // Clear loaded state to allow retries
             clearRTLTextPlugin();
@@ -50,11 +48,7 @@ export const setRTLTextPlugin = function(url: string, callback: ErrorCallback) {
     evented.fire(new Event('pluginAvailable', { pluginURL: pluginURL, completionCallback: _completionCallback }));
 };
 
-export const plugin: {
-    applyArabicShaping: ?Function,
-    processBidirectionalText: ?(string, Array<number>) => Array<string>,
-    isLoaded: () => boolean
-} = {
+export const plugin = {
     applyArabicShaping: null,
     processBidirectionalText: null,
     isLoaded: function() {

@@ -1,22 +1,15 @@
-// @flow
+// 
 
-import type { Type } from '../types';
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
-import type EvaluationContext  from '../evaluation_context';
 
-class Var implements Expression {
-    type: Type;
-    name: string;
-    boundExpression: Expression;
+class Var {
 
-    constructor(name: string, boundExpression: Expression) {
+    constructor(name, boundExpression) {
         this.type = boundExpression.type;
         this.name = name;
         this.boundExpression = boundExpression;
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext) {
+    static parse(args, context) {
         if (args.length !== 2 || typeof args[1] !== 'string')
             return context.error(`'var' expression requires exactly one string literal argument.`);
 
@@ -28,7 +21,7 @@ class Var implements Expression {
         return new Var(name, context.scope.get(name));
     }
 
-    evaluate(ctx: EvaluationContext) {
+    evaluate(ctx) {
         return this.boundExpression.evaluate(ctx);
     }
 

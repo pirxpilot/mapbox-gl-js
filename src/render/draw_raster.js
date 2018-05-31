@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { clamp } from '../util/util';
 
@@ -7,14 +7,10 @@ import browser from '../util/browser';
 import StencilMode from '../gl/stencil_mode';
 import DepthMode from '../gl/depth_mode';
 
-import type Painter from './painter';
-import type SourceCache from '../source/source_cache';
-import type RasterStyleLayer from '../style/style_layer/raster_style_layer';
-import type {OverscaledTileID} from '../source/tile_id';
 
 export default drawRaster;
 
-function drawRaster(painter: Painter, sourceCache: SourceCache, layer: RasterStyleLayer, coords: Array<OverscaledTileID>) {
+function drawRaster(painter, sourceCache, layer, coords) {
     if (painter.renderPass !== 'translucent') return;
     if (layer.paint.get('raster-opacity') === 0) return;
 

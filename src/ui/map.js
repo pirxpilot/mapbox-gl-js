@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { extend, bindAll, warnOnce } from '../util/util';
 
@@ -25,64 +25,13 @@ import { Event, ErrorEvent } from '../util/evented';
 import { MapMouseEvent } from './events';
 import TaskQueue from '../util/task_queue';
 
-import type {LngLatLike} from '../geo/lng_lat';
-import type {LngLatBoundsLike} from '../geo/lng_lat_bounds';
-import type {RequestParameters} from '../util/ajax';
-import type {StyleOptions} from '../style/style';
-import type {MapEvent, MapDataEvent} from './events';
 
-import type ScrollZoomHandler from './handler/scroll_zoom';
-import type BoxZoomHandler from './handler/box_zoom';
-import type DragRotateHandler from './handler/drag_rotate';
-import type DragPanHandler from './handler/drag_pan';
-import type KeyboardHandler from './handler/keyboard';
-import type DoubleClickZoomHandler from './handler/dblclick_zoom';
-import type TouchZoomRotateHandler from './handler/touch_zoom_rotate';
-import type {TaskID} from '../util/task_queue';
 
-type ControlPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 /* eslint-disable no-use-before-define */
-type IControl = {
-    onAdd(map: Map): HTMLElement;
-    onRemove(map: Map): void;
-
-    +getDefaultPosition?: () => ControlPosition;
-}
 /* eslint-enable no-use-before-define */
 
-type ResourceTypeEnum = $Keys<typeof ResourceType>;
-export type RequestTransformFunction = (url: string, resourceType?: ResourceTypeEnum) => RequestParameters;
 
-type MapOptions = {
-    hash?: boolean,
-    interactive?: boolean,
-    container: HTMLElement | string,
-    bearingSnap?: number,
-    attributionControl?: boolean,
-    logoPosition?: ControlPosition,
-    failIfMajorPerformanceCaveat?: boolean,
-    preserveDrawingBuffer?: boolean,
-    refreshExpiredTiles?: boolean,
-    maxBounds?: LngLatBoundsLike,
-    scrollZoom?: boolean,
-    minZoom?: ?number,
-    maxZoom?: ?number,
-    boxZoom?: boolean,
-    dragRotate?: boolean,
-    dragPan?: boolean,
-    keyboard?: boolean,
-    doubleClickZoom?: boolean,
-    touchZoomRotate?: boolean,
-    trackResize?: boolean,
-    center?: LngLatLike,
-    zoom?: number,
-    bearing?: number,
-    pitch?: number,
-    renderWorldCopies?: boolean,
-    maxTileCacheSize?: number,
-    transformRequest?: RequestTransformFunction
-};
 
 const defaultMinZoom = 0;
 const defaultMaxZoom = 22;
@@ -214,77 +163,39 @@ const defaultOptions = {
  * @see [Display a map](https://www.mapbox.com/mapbox-gl-js/examples/)
  */
 class Map extends Camera {
-    style: Style;
-    painter: Painter;
 
-    _container: HTMLElement;
-    _missingCSSContainer: HTMLElement;
-    _canvasContainer: HTMLElement;
-    _controlContainer: HTMLElement;
-    _controlPositions: {[string]: HTMLElement};
-    _interactive: ?boolean;
-    _showTileBoundaries: ?boolean;
-    _showCollisionBoxes: ?boolean;
-    _showOverdrawInspector: boolean;
-    _repaint: ?boolean;
-    _vertices: ?boolean;
-    _canvas: HTMLCanvasElement;
-    _transformRequest: RequestTransformFunction;
-    _maxTileCacheSize: number;
-    _frameId: any;
-    _styleDirty: ?boolean;
-    _sourcesDirty: ?boolean;
-    _placementDirty: ?boolean;
-    _loaded: boolean;
-    _trackResize: boolean;
-    _preserveDrawingBuffer: boolean;
-    _failIfMajorPerformanceCaveat: boolean;
-    _refreshExpiredTiles: boolean;
-    _hash: Hash;
-    _delegatedListeners: any;
-    _fadeDuration: number;
-    _crossFadingFactor: number;
-    _collectResourceTiming: boolean;
-    _renderTaskQueue: TaskQueue;
 
     /**
      * The map's {@link ScrollZoomHandler}, which implements zooming in and out with a scroll wheel or trackpad.
      */
-    scrollZoom: ScrollZoomHandler;
 
     /**
      * The map's {@link BoxZoomHandler}, which implements zooming using a drag gesture with the Shift key pressed.
      */
-    boxZoom: BoxZoomHandler;
 
     /**
      * The map's {@link DragRotateHandler}, which implements rotating the map while dragging with the right
      * mouse button or with the Control key pressed.
      */
-    dragRotate: DragRotateHandler;
 
     /**
      * The map's {@link DragPanHandler}, which implements dragging the map with a mouse or touch gesture.
      */
-    dragPan: DragPanHandler;
 
     /**
      * The map's {@link KeyboardHandler}, which allows the user to zoom, rotate, and pan the map using keyboard
      * shortcuts.
      */
-    keyboard: KeyboardHandler;
 
     /**
      * The map's {@link DoubleClickZoomHandler}, which allows the user to zoom by double clicking.
      */
-    doubleClickZoom: DoubleClickZoomHandler;
 
     /**
      * The map's {@link TouchZoomRotateHandler}, which allows the user to zoom or rotate the map with touch gestures.
      */
-    touchZoomRotate: TouchZoomRotateHandler;
 
-    constructor(options: MapOptions) {
+    constructor(options) {
         options = extend({}, defaultOptions, options);
 
         if (options.minZoom != null && options.maxZoom != null && options.minZoom > options.maxZoom) {
@@ -387,7 +298,7 @@ class Map extends Camera {
      * @returns {Map} `this`
      * @see [Display map navigation controls](https://www.mapbox.com/mapbox-gl-js/example/navigation/)
      */
-    addControl(control: IControl, position?: ControlPosition) {
+    addControl(control, position) {
         if (position === undefined && control.getDefaultPosition) {
             position = control.getDefaultPosition();
         }
@@ -410,7 +321,7 @@ class Map extends Camera {
      * @param {IControl} control The {@link IControl} to remove.
      * @returns {Map} `this`
      */
-    removeControl(control: IControl) {
+    removeControl(control) {
         control.onRemove(this);
         return this;
     }
@@ -425,7 +336,7 @@ class Map extends Camera {
      * @param eventData Additional properties to be added to event objects of events triggered by this method.
      * @returns {Map} `this`
      */
-    resize(eventData?: Object) {
+    resize(eventData) {
         const dimensions = this._containerDimensions();
         const width = dimensions[0];
         const height = dimensions[1];
@@ -489,7 +400,7 @@ class Map extends Camera {
      * @param {LngLatBoundsLike | null | undefined} lnglatbounds The maximum bounds to set. If `null` or `undefined` is provided, the function removes the map's maximum bounds.
      * @returns {Map} `this`
      */
-    setMaxBounds(lnglatbounds: LngLatBoundsLike) {
+    setMaxBounds(lnglatbounds) {
         if (lnglatbounds) {
             const b = LngLatBounds.convert(lnglatbounds);
             this.transform.lngRange = [b.getWest(), b.getEast()];
@@ -514,7 +425,7 @@ class Map extends Camera {
      *   If `null` or `undefined` is provided, the function removes the current minimum zoom (i.e. sets it to 0).
      * @returns {Map} `this`
      */
-    setMinZoom(minZoom?: ?number) {
+    setMinZoom(minZoom) {
 
         minZoom = minZoom === null || minZoom === undefined ? defaultMinZoom : minZoom;
 
@@ -545,7 +456,7 @@ class Map extends Camera {
      *   If `null` or `undefined` is provided, the function removes the current maximum zoom (sets it to 22).
      * @returns {Map} `this`
      */
-    setMaxZoom(maxZoom?: ?number) {
+    setMaxZoom(maxZoom) {
 
         maxZoom = maxZoom === null || maxZoom === undefined ? defaultMaxZoom : maxZoom;
 
@@ -573,7 +484,7 @@ class Map extends Camera {
      * @param {boolean} renderWorldCopies If `true`, multiple copies of the world will be rendered, when zoomed out. `undefined` is treated as `true`, `null` is treated as `false`.
      * @returns {Map} `this`
      */
-    setRenderWorldCopies(renderWorldCopies?: ?boolean) {
+    setRenderWorldCopies(renderWorldCopies) {
 
         this.transform.renderWorldCopies = renderWorldCopies;
         this._update();
@@ -595,7 +506,7 @@ class Map extends Camera {
      * @param {LngLatLike} lnglat The geographical location to project.
      * @returns {Point} The {@link Point} corresponding to `lnglat`, relative to the map's `container`.
      */
-    project(lnglat: LngLatLike) {
+    project(lnglat) {
         return this.transform.locationPoint(LngLat.convert(lnglat));
     }
 
@@ -607,14 +518,14 @@ class Map extends Camera {
      * @returns {LngLat} The {@link LngLat} corresponding to `point`.
      * @see [Show polygon information on click](https://www.mapbox.com/mapbox-gl-js/example/polygon-popup-on-click/)
      */
-    unproject(point: PointLike) {
+    unproject(point) {
         return this.transform.pointLocation(Point.convert(point));
     }
 
     /**
      * Returns true if the map is panning, zooming, rotating, or pitching due to a camera animation or user gesture.
      */
-    isMoving(): boolean {
+    isMoving() {
         return this._moving ||
             this.dragPan.isActive() ||
             this.dragRotate.isActive() ||
@@ -624,7 +535,7 @@ class Map extends Camera {
     /**
      * Returns true if the map is zooming due to a camera animation or user gesture.
      */
-    isZooming(): boolean {
+    isZooming() {
         return this._zooming ||
             this.scrollZoom.isActive();
     }
@@ -632,7 +543,7 @@ class Map extends Camera {
     /**
      * Returns true if the map is rotating due to a camera animation or user gesture.
      */
-    isRotating(): boolean {
+    isRotating() {
         return this._rotating ||
             this.dragRotate.isActive();
     }
@@ -666,7 +577,7 @@ class Map extends Camera {
      * @param {Function} listener The function to be called when the event is fired.
      * @returns {Map} `this`
      */
-    on(type: MapEvent, layer: any, listener: any) {
+    on(type, layer, listener) {
         if (listener === undefined) {
             return super.on(type, layer);
         }
@@ -724,7 +635,7 @@ class Map extends Camera {
         this._delegatedListeners[type].push(delegatedListener);
 
         for (const event in delegatedListener.delegates) {
-            this.on((event: any), delegatedListener.delegates[event]);
+            this.on((event), delegatedListener.delegates[event]);
         }
 
         return this;
@@ -750,7 +661,7 @@ class Map extends Camera {
      * @param {Function} listener The function previously installed as a listener.
      * @returns {Map} `this`
      */
-    off(type: MapEvent, layer: any, listener: any) {
+    off(type, layer, listener) {
         if (listener === undefined) {
             return super.off(type, layer);
         }
@@ -761,7 +672,7 @@ class Map extends Camera {
                 const delegatedListener = listeners[i];
                 if (delegatedListener.layer === layer && delegatedListener.listener === listener) {
                     for (const event in delegatedListener.delegates) {
-                        this.off((event: any), delegatedListener.delegates[event]);
+                        this.off((event), delegatedListener.delegates[event]);
                     }
                     listeners.splice(i, 1);
                     return this;
@@ -846,7 +757,7 @@ class Map extends Camera {
      * @see [Highlight features within a bounding box](https://www.mapbox.com/mapbox-gl-js/example/using-box-queryrenderedfeatures/)
      * @see [Center the map on a clicked symbol](https://www.mapbox.com/mapbox-gl-js/example/center-on-symbol/)
      */
-    queryRenderedFeatures(geometry?: PointLike | [PointLike, PointLike], options?: Object) {
+    queryRenderedFeatures(geometry, options) {
         // The first parameter can be omitted entirely, making this effectively an overloaded method
         // with two signatures:
         //
@@ -884,7 +795,7 @@ class Map extends Camera {
         }
     }
 
-    _makeQueryGeometry(pointOrBox?: PointLike | [PointLike, PointLike]) {
+    _makeQueryGeometry(pointOrBox) {
         if (pointOrBox === undefined) {
             // bounds was omitted: use full viewport
             pointOrBox = [
@@ -948,7 +859,7 @@ class Map extends Camera {
      * @see [Filter features within map view](https://www.mapbox.com/mapbox-gl-js/example/filter-features-within-map-view/)
      * @see [Highlight features containing similar data](https://www.mapbox.com/mapbox-gl-js/example/query-similar-features/)
      */
-    querySourceFeatures(sourceID: string, parameters: ?{sourceLayer: ?string, filter: ?Array<any>}) {
+    querySourceFeatures(sourceID, parameters) {
         return this.style.querySourceFeatures(sourceID, parameters);
     }
 
@@ -969,7 +880,7 @@ class Map extends Camera {
      * @returns {Map} `this`
      * @see [Change a map's style](https://www.mapbox.com/mapbox-gl-js/example/setstyle/)
      */
-    setStyle(style: StyleSpecification | string | null, options?: {diff?: boolean} & StyleOptions) {
+    setStyle(style, options) {
         const shouldTryDiff = (!options || (options.diff !== false && !options.localIdeographFontFamily)) && this.style;
         if (shouldTryDiff && style && typeof style === 'object') {
             try {
@@ -1041,7 +952,7 @@ class Map extends Camera {
      * @see [Style circles using data-driven styling](https://www.mapbox.com/mapbox-gl-js/example/data-driven-circle-colors/)
      * @see [Set a point after Geocoder result](https://www.mapbox.com/mapbox-gl-js/example/point-from-geocoder-result/)
      */
-    addSource(id: string, source: SourceSpecification) {
+    addSource(id, source) {
         this.style.addSource(id, source);
         this._update(true);
         return this;
@@ -1053,7 +964,7 @@ class Map extends Camera {
      * @param {string} id The ID of the source to be checked.
      * @returns {boolean} A Boolean indicating whether the source is loaded.
      */
-    isSourceLoaded(id: string) {
+    isSourceLoaded(id) {
         const source = this.style && this.style.sourceCaches[id];
         if (source === undefined) {
             this.fire(new ErrorEvent(new Error(`There is no source with ID '${id}'`)));
@@ -1090,7 +1001,7 @@ class Map extends Camera {
      * @param {Function} SourceType A {@link Source} constructor.
      * @param {Function} callback Called when the source type is ready or with an error argument if there is an error.
      */
-    addSourceType(name: string, SourceType: any, callback: Function) {
+    addSourceType(name, SourceType, callback) {
         return this.style.addSourceType(name, SourceType, callback);
     }
 
@@ -1100,7 +1011,7 @@ class Map extends Camera {
      * @param {string} id The ID of the source to remove.
      * @returns {Map} `this`
      */
-    removeSource(id: string) {
+    removeSource(id) {
         this.style.removeSource(id);
         this._update(true);
         return this;
@@ -1116,7 +1027,7 @@ class Map extends Camera {
      * @see [Animate a point](https://www.mapbox.com/mapbox-gl-js/example/animate-point-along-line/)
      * @see [Add live realtime data](https://www.mapbox.com/mapbox-gl-js/example/live-geojson/)
      */
-    getSource(id: string) {
+    getSource(id) {
         return this.style.getSource(id);
     }
 
@@ -1135,9 +1046,9 @@ class Map extends Camera {
      * @param options.pixelRatio The ratio of pixels in the image to physical pixels on the screen
      * @param options.sdf Whether the image should be interpreted as an SDF image
      */
-    addImage(id: string,
-             image: HTMLImageElement | ImageData | {width: number, height: number, data: Uint8Array | Uint8ClampedArray},
-             {pixelRatio = 1, sdf = false}: {pixelRatio?: number, sdf?: boolean} = {}) {
+    addImage(id,
+             image,
+             {pixelRatio = 1, sdf = false} = {}) {
         if (image instanceof HTMLImageElement) {
             const {width, height, data} = browser.getImageData(image);
             this.style.addImage(id, { data: new RGBAImage({width, height}, data), pixelRatio, sdf });
@@ -1156,7 +1067,7 @@ class Map extends Camera {
      *
      * @param id The ID of the image.
      */
-    hasImage(id: string): boolean {
+    hasImage(id) {
         if (!id) {
             this.fire(new ErrorEvent(new Error('Missing required image id')));
             return false;
@@ -1170,7 +1081,7 @@ class Map extends Camera {
      *
      * @param id The ID of the image.
      */
-    removeImage(id: string) {
+    removeImage(id) {
         this.style.removeImage(id);
     }
 
@@ -1182,7 +1093,7 @@ class Map extends Camera {
      * @param {Function} callback Expecting `callback(error, data)`. Called when the image has loaded or with an error argument if there is an error.
      * @see [Add an icon to the map](https://www.mapbox.com/mapbox-gl-js/example/add-image/)
      */
-    loadImage(url: string, callback: Function) {
+    loadImage(url, callback) {
         getImage(this._transformRequest(url, ResourceType.Image), callback);
     }
 
@@ -1211,7 +1122,7 @@ class Map extends Camera {
      * @see [Add a vector tile source](https://www.mapbox.com/mapbox-gl-js/example/vector-source/)
      * @see [Add a WMS source](https://www.mapbox.com/mapbox-gl-js/example/wms/)
      */
-    addLayer(layer: LayerSpecification, before?: string) {
+    addLayer(layer, before) {
         this.style.addLayer(layer, before);
         this._update(true);
         return this;
@@ -1225,7 +1136,7 @@ class Map extends Camera {
      *   If this argument is omitted, the layer will be appended to the end of the layers array.
      * @returns {Map} `this`
      */
-    moveLayer(id: string, beforeId?: string) {
+    moveLayer(id, beforeId) {
         this.style.moveLayer(id, beforeId);
         this._update(true);
         return this;
@@ -1239,7 +1150,7 @@ class Map extends Camera {
      * @param {string} id id of the layer to remove
      * @fires error
      */
-    removeLayer(id: string) {
+    removeLayer(id) {
         this.style.removeLayer(id);
         this._update(true);
         return this;
@@ -1254,7 +1165,7 @@ class Map extends Camera {
      * @see [Filter symbols by toggling a list](https://www.mapbox.com/mapbox-gl-js/example/filter-markers/)
      * @see [Filter symbols by text input](https://www.mapbox.com/mapbox-gl-js/example/filter-markers-by-input/)
      */
-    getLayer(id: string) {
+    getLayer(id) {
         return this.style.getLayer(id);
     }
 
@@ -1271,7 +1182,7 @@ class Map extends Camera {
      * @see [Highlight features containing similar data](https://www.mapbox.com/mapbox-gl-js/example/query-similar-features/)
      * @see [Create a timeline animation](https://www.mapbox.com/mapbox-gl-js/example/timeline-animation/)
      */
-    setFilter(layer: string, filter: ?FilterSpecification) {
+    setFilter(layer, filter) {
         this.style.setFilter(layer, filter);
         this._update(true);
         return this;
@@ -1287,7 +1198,7 @@ class Map extends Camera {
      * @example
      * map.setLayerZoomRange('my-layer', 2, 5);
      */
-    setLayerZoomRange(layerId: string, minzoom: number, maxzoom: number) {
+    setLayerZoomRange(layerId, minzoom, maxzoom) {
         this.style.setLayerZoomRange(layerId, minzoom, maxzoom);
         this._update(true);
         return this;
@@ -1299,7 +1210,7 @@ class Map extends Camera {
      * @param {string} layer The ID of the style layer whose filter to get.
      * @returns {Array} The layer's filter.
      */
-    getFilter(layer: string) {
+    getFilter(layer) {
         return this.style.getFilter(layer);
     }
 
@@ -1317,7 +1228,7 @@ class Map extends Camera {
      * @see [Adjust a layer's opacity](https://www.mapbox.com/mapbox-gl-js/example/adjust-layer-opacity/)
      * @see [Create a draggable point](https://www.mapbox.com/mapbox-gl-js/example/drag-a-point/)
      */
-    setPaintProperty(layer: string, name: string, value: any) {
+    setPaintProperty(layer, name, value) {
         this.style.setPaintProperty(layer, name, value);
         this._update(true);
         return this;
@@ -1330,7 +1241,7 @@ class Map extends Camera {
      * @param {string} name The name of a paint property to get.
      * @returns {*} The value of the specified paint property.
      */
-    getPaintProperty(layer: string, name: string) {
+    getPaintProperty(layer, name) {
         return this.style.getPaintProperty(layer, name);
     }
 
@@ -1344,7 +1255,7 @@ class Map extends Camera {
      * @example
      * map.setLayoutProperty('my-layer', 'visibility', 'none');
      */
-    setLayoutProperty(layer: string, name: string, value: any) {
+    setLayoutProperty(layer, name, value) {
         this.style.setLayoutProperty(layer, name, value);
         this._update(true);
         return this;
@@ -1357,7 +1268,7 @@ class Map extends Camera {
      * @param {string} name The name of the layout property to get.
      * @returns {*} The value of the specified layout property.
      */
-    getLayoutProperty(layer: string, name: string) {
+    getLayoutProperty(layer, name) {
         return this.style.getLayoutProperty(layer, name);
     }
 
@@ -1367,7 +1278,7 @@ class Map extends Camera {
      * @param light Light properties to set. Must conform to the [Mapbox Style Specification](https://www.mapbox.com/mapbox-gl-style-spec/).
      * @returns {Map} `this`
      */
-    setLight(light: LightSpecification) {
+    setLight(light) {
         this.style.setLight(light);
         this._update(true);
         return this;
@@ -1393,7 +1304,7 @@ class Map extends Camera {
      * @param {string} [feature.id] Unique id of the feature.
      * @param {Object} state A set of key-value pairs. The values should be valid JSON types.
      */
-    setFeatureState(feature: { source: string; sourceLayer?: string; id: string; }, state: Object) {
+    setFeatureState(feature, state) {
         this.style.setFeatureState(feature, state);
         this._update();
     }
@@ -1410,7 +1321,7 @@ class Map extends Camera {
      *
      * @returns {Object} The state of the feature.
      */
-    getFeatureState(feature: { source: string; sourceLayer?: string; id: string; }): any {
+    getFeatureState(feature) {
         return this.style.getFeatureState(feature);
     }
 
@@ -1493,7 +1404,7 @@ class Map extends Camera {
         });
     }
 
-    _resizeCanvas(width: number, height: number) {
+    _resizeCanvas(width, height) {
         const pixelRatio = window.devicePixelRatio || 1;
 
         // Request the required canvas size taking the pixelratio into account.
@@ -1522,7 +1433,7 @@ class Map extends Camera {
         this.painter = new Painter(gl, this.transform);
     }
 
-    _contextLost(event: *) {
+    _contextLost(event) {
         event.preventDefault();
         if (this._frameId) {
             browser.cancelFrame(this._frameId);
@@ -1531,7 +1442,7 @@ class Map extends Camera {
         this.fire(new Event('webglcontextlost', {originalEvent: event}));
     }
 
-    _contextRestored(event: *) {
+    _contextRestored(event) {
         this._setupPainter();
         this.resize();
         this._update();
@@ -1563,7 +1474,7 @@ class Map extends Camera {
      * @returns {Map} this
      * @private
      */
-    _update(updateStyle?: boolean) {
+    _update(updateStyle) {
         if (!this.style) return;
 
         this._styleDirty = this._styleDirty || updateStyle;
@@ -1578,12 +1489,12 @@ class Map extends Camera {
      * @returns An id that can be used to cancel the callback
      * @private
      */
-    _requestRenderFrame(callback: () => void): TaskID {
+    _requestRenderFrame(callback) {
         this._update();
         return this._renderTaskQueue.add(callback);
     }
 
-    _cancelRenderFrame(id: TaskID) {
+    _cancelRenderFrame(id) {
         this._renderTaskQueue.remove(id);
     }
 
@@ -1726,8 +1637,8 @@ class Map extends Camera {
      * @instance
      * @memberof Map
      */
-    get showTileBoundaries(): boolean { return !!this._showTileBoundaries; }
-    set showTileBoundaries(value: boolean) {
+    get showTileBoundaries() { return !!this._showTileBoundaries; }
+    set showTileBoundaries(value) {
         if (this._showTileBoundaries === value) return;
         this._showTileBoundaries = value;
         this._update();
@@ -1744,8 +1655,8 @@ class Map extends Camera {
      * @instance
      * @memberof Map
      */
-    get showCollisionBoxes(): boolean { return !!this._showCollisionBoxes; }
-    set showCollisionBoxes(value: boolean) {
+    get showCollisionBoxes() { return !!this._showCollisionBoxes; }
+    set showCollisionBoxes(value) {
         if (this._showCollisionBoxes === value) return;
         this._showCollisionBoxes = value;
         if (value) {
@@ -1770,8 +1681,8 @@ class Map extends Camera {
      * @instance
      * @memberof Map
      */
-    get showOverdrawInspector(): boolean { return !!this._showOverdrawInspector; }
-    set showOverdrawInspector(value: boolean) {
+    get showOverdrawInspector() { return !!this._showOverdrawInspector; }
+    set showOverdrawInspector(value) {
         if (this._showOverdrawInspector === value) return;
         this._showOverdrawInspector = value;
         this._update();
@@ -1786,19 +1697,19 @@ class Map extends Camera {
      * @instance
      * @memberof Map
      */
-    get repaint(): boolean { return !!this._repaint; }
-    set repaint(value: boolean) { this._repaint = value; this._update(); }
+    get repaint() { return !!this._repaint; }
+    set repaint(value) { this._repaint = value; this._update(); }
 
     // show vertices
-    get vertices(): boolean { return !!this._vertices; }
-    set vertices(value: boolean) { this._vertices = value; this._update(); }
+    get vertices() { return !!this._vertices; }
+    set vertices(value) { this._vertices = value; this._update(); }
 
-    _onData(event: MapDataEvent) {
+    _onData(event) {
         this._update(event.dataType === 'style');
         this.fire(new Event(`${event.dataType}data`, event));
     }
 
-    _onDataLoading(event: MapDataEvent) {
+    _onDataLoading(event) {
         this.fire(new Event(`${event.dataType}dataloading`, event));
     }
 }

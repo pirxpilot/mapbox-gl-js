@@ -1,4 +1,4 @@
-// @flow
+// 
 export default resolveTokens;
 
 /**
@@ -9,8 +9,8 @@ export default resolveTokens;
  * @returns the template with tokens replaced
  * @private
  */
-function resolveTokens(properties: {+[string]: mixed}, text: string): string {
-    return text.replace(/{([^{}]+)}/g, (match, key: string) => {
+function resolveTokens(properties, text) {
+    return text.replace(/{([^{}]+)}/g, (match, key) => {
         return key in properties ? String(properties[key]) : '';
     });
 }

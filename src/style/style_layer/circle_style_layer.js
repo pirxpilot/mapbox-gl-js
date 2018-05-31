@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import StyleLayer from '../style_layer';
 
@@ -10,39 +10,32 @@ import { Transitionable, Transitioning, PossiblyEvaluated } from '../properties'
 import { vec4 } from 'gl-matrix';
 import Point from '@mapbox/point-geometry';
 
-import type { FeatureState } from '../../style-spec/expression';
-import type Transform from '../../geo/transform';
-import type {Bucket, BucketParameters} from '../../data/bucket';
-import type {PaintProps} from './circle_style_layer_properties';
 
 class CircleStyleLayer extends StyleLayer {
-    _transitionablePaint: Transitionable<PaintProps>;
-    _transitioningPaint: Transitioning<PaintProps>;
-    paint: PossiblyEvaluated<PaintProps>;
 
-    constructor(layer: LayerSpecification) {
+    constructor(layer) {
         super(layer, properties);
     }
 
-    createBucket(parameters: BucketParameters<*>) {
+    createBucket(parameters) {
         return new CircleBucket(parameters);
     }
 
-    queryRadius(bucket: Bucket): number {
-        const circleBucket: CircleBucket<CircleStyleLayer> = (bucket: any);
+    queryRadius(bucket) {
+        const circleBucket = (bucket);
         return getMaximumPaintValue('circle-radius', this, circleBucket) +
             getMaximumPaintValue('circle-stroke-width', this, circleBucket) +
             translateDistance(this.paint.get('circle-translate'));
     }
 
-    queryIntersectsFeature(queryGeometry: Array<Array<Point>>,
-                           feature: VectorTileFeature,
-                           featureState: FeatureState,
-                           geometry: Array<Array<Point>>,
-                           zoom: number,
-                           transform: Transform,
-                           pixelsToTileUnits: number,
-                           posMatrix: Float32Array): boolean {
+    queryIntersectsFeature(queryGeometry,
+                           feature,
+                           featureState,
+                           geometry,
+                           zoom,
+                           transform,
+                           pixelsToTileUnits,
+                           posMatrix) {
         const translatedPolygon = translate(queryGeometry,
             this.paint.get('circle-translate'),
             this.paint.get('circle-translate-anchor'),
@@ -80,14 +73,14 @@ class CircleStyleLayer extends StyleLayer {
     }
 }
 
-function projectPoint(p: Point, posMatrix: Float32Array, transform: Transform) {
+function projectPoint(p, posMatrix, transform) {
     const point = vec4.transformMat4([], [p.x, p.y, 0, 1], posMatrix);
     return new Point(
             (point[0] / point[3] + 1) * transform.width * 0.5,
             (point[1] / point[3] + 1) * transform.height * 0.5);
 }
 
-function projectQueryGeometry(queryGeometry: Array<Array<Point>>, posMatrix: Float32Array, transform: Transform) {
+function projectQueryGeometry(queryGeometry, posMatrix, transform) {
     return queryGeometry.map((r) => {
         return r.map((p) => {
             return projectPoint(p, posMatrix, transform);

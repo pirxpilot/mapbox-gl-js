@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { uniqueId, deepEqual, parseCacheControl } from '../util/util';
 import { deserialize as deserializeBucket } from '../data/bucket';
@@ -19,28 +19,8 @@ import SourceFeatureState from '../source/source_state';
 
 const CLOCK_SKEW_RETRY_TIMEOUT = 30000;
 
-import type {Bucket} from '../data/bucket';
-import type StyleLayer from '../style/style_layer';
-import type {WorkerTileResult} from './worker_source';
-import type DEMData from '../data/dem_data';
-import type {RGBAImage, AlphaImage} from '../util/image';
-import type Mask from '../render/tile_mask';
-import type Context from '../gl/context';
-import type IndexBuffer from '../gl/index_buffer';
-import type VertexBuffer from '../gl/vertex_buffer';
-import type {OverscaledTileID} from './tile_id';
-import type Framebuffer from '../gl/framebuffer';
-import type {PerformanceResourceTiming} from '../types/performance_resource_timing';
-import type Transform from '../geo/transform';
-import type {LayerFeatureStates} from './source_state';
 
-export type TileState =
-    | 'loading'   // Tile data is in the process of loading.
-    | 'loaded'    // Tile data has been loaded. Tile can be rendered.
-    | 'reloading' // Tile data has been loaded and is being updated. Tile can be rendered.
-    | 'unloaded'  // Tile data has been deleted.
-    | 'errored'   // Tile data was not loaded because of an error.
-    | 'expired';  /* Tile data was previously loaded, but has expired per its
+  /* Tile data was previously loaded, but has expired per its
                    * HTTP headers and is in the process of refreshing. */
 
 /**
@@ -50,51 +30,13 @@ export type TileState =
  * @private
  */
 class Tile {
-    tileID: OverscaledTileID;
-    uid: number;
-    uses: number;
-    tileSize: number;
-    buckets: {[string]: Bucket};
-    latestFeatureIndex: ?FeatureIndex;
-    latestRawTileData: ?ArrayBuffer;
-    iconAtlasImage: ?RGBAImage;
-    iconAtlasTexture: Texture;
-    glyphAtlasImage: ?AlphaImage;
-    glyphAtlasTexture: Texture;
-    expirationTime: any;
-    expiredRequestCount: number;
-    state: TileState;
-    timeAdded: any;
-    fadeEndTime: any;
-    collisionBoxArray: ?CollisionBoxArray;
-    redoWhenDone: boolean;
-    showCollisionBoxes: boolean;
-    placementSource: any;
-    workerID: number | void;
-    vtLayers: {[string]: VectorTileLayer};
-    mask: Mask;
 
-    neighboringTiles: ?Object;
-    dem: ?DEMData;
-    aborted: ?boolean;
-    maskedBoundsBuffer: ?VertexBuffer;
-    maskedIndexBuffer: ?IndexBuffer;
-    segments: ?SegmentVector;
-    needsHillshadePrepare: ?boolean
-    request: any;
-    texture: any;
-    fbo: ?Framebuffer;
-    demTexture: ?Texture;
-    refreshedUponExpiration: boolean;
-    reloadCallback: any;
-    resourceTiming: ?Array<PerformanceResourceTiming>;
-    queryPadding: number;
 
     /**
      * @param {OverscaledTileID} tileID
      * @param size
      */
-    constructor(tileID: OverscaledTileID, size: number) {
+    constructor(tileID, size) {
         this.tileID = tileID;
         this.uid = uniqueId();
         this.uses = 0;
@@ -112,7 +54,7 @@ class Tile {
         this.state = 'loading';
     }
 
-    registerFadeDuration(duration: number) {
+    registerFadeDuration(duration) {
         const fadeEndTime = duration + this.timeAdded;
         if (fadeEndTime < browser.now()) return;
         if (this.fadeEndTime && fadeEndTime < this.fadeEndTime) return;
@@ -134,7 +76,7 @@ class Tile {
      * @returns {undefined}
      * @private
      */
-    loadVectorData(data: WorkerTileResult, painter: any, justReloaded: ?boolean) {
+    loadVectorData(data, painter, justReloaded) {
         if (this.hasData()) {
             this.unloadVectorData();
         }
@@ -214,11 +156,11 @@ class Tile {
         this.state = 'unloaded';
     }
 
-    getBucket(layer: StyleLayer) {
+    getBucket(layer) {
         return this.buckets[layer.id];
     }
 
-    upload(context: Context) {
+    upload(context) {
         for (const id in this.buckets) {
             const bucket = this.buckets[id];
             if (bucket.uploadPending()) {
@@ -241,14 +183,14 @@ class Tile {
 
     // Queries non-symbol features rendered for this tile.
     // Symbol features are queried globally
-    queryRenderedFeatures(layers: {[string]: StyleLayer},
-                          sourceFeatureState: SourceFeatureState,
-                          queryGeometry: Array<Array<Point>>,
-                          scale: number,
-                          params: { filter: FilterSpecification, layers: Array<string> },
-                          transform: Transform,
-                          maxPitchScaleFactor: number,
-                          posMatrix: Float32Array): {[string]: Array<{ featureIndex: number, feature: GeoJSONFeature }>} {
+    queryRenderedFeatures(layers,
+                          sourceFeatureState,
+                          queryGeometry,
+                          scale,
+                          params,
+                          transform,
+                          maxPitchScaleFactor,
+                          posMatrix) {
         if (!this.latestFeatureIndex || !this.latestFeatureIndex.rawTileData)
             return {};
 
@@ -263,7 +205,7 @@ class Tile {
         }, layers, sourceFeatureState);
     }
 
-    querySourceFeatures(result: Array<GeoJSONFeature>, params: any) {
+    querySourceFeatures(result, params) {
         if (!this.latestFeatureIndex || !this.latestFeatureIndex.rawTileData) return;
 
         const vtLayers = this.latestFeatureIndex.loadVTLayers();
@@ -280,7 +222,7 @@ class Tile {
             const feature = layer.feature(i);
             if (filter(new EvaluationParameters(this.tileID.overscaledZ), feature)) {
                 const geojsonFeature = new GeoJSONFeature(feature, coord.z, coord.x, coord.y);
-                (geojsonFeature: any).tile = coord;
+                (geojsonFeature).tile = coord;
                 result.push(geojsonFeature);
             }
         }
@@ -301,7 +243,7 @@ class Tile {
         }
     }
 
-    setMask(mask: Mask, context: Context) {
+    setMask(mask, context) {
 
         // don't redo buffer work if the mask is the same;
         if (deepEqual(this.mask, mask)) return;
@@ -329,7 +271,7 @@ class Tile {
             const brVertex = new Point(tlVertex.x + vertexExtent, tlVertex.y + vertexExtent);
 
             // not sure why flow is complaining here because it doesn't complain at L401
-            const segment = (this.segments: any).prepareSegment(4, maskedBoundsArray, indexArray);
+            const segment = (this.segments).prepareSegment(4, maskedBoundsArray, indexArray);
 
             maskedBoundsArray.emplaceBack(tlVertex.x, tlVertex.y, tlVertex.x, tlVertex.y);
             maskedBoundsArray.emplaceBack(brVertex.x, tlVertex.y, brVertex.x, tlVertex.y);
@@ -354,7 +296,7 @@ class Tile {
         return this.state === 'loaded' || this.state === 'reloading' || this.state === 'expired';
     }
 
-    setExpiryData(data: any) {
+    setExpiryData(data) {
         const prior = this.expirationTime;
 
         if (data.cacheControl) {
@@ -414,7 +356,7 @@ class Tile {
         }
     }
 
-    setFeatureState(states: LayerFeatureStates, painter: any) {
+    setFeatureState(states, painter) {
         if (!this.latestFeatureIndex ||
             !this.latestFeatureIndex.rawTileData ||
             Object.keys(states).length === 0) {

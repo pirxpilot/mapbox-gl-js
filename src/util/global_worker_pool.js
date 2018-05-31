@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import WorkerPool from './worker_pool';
 

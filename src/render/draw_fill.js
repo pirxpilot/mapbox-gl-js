@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import {
     isPatternMissing,
@@ -9,16 +9,10 @@ import {
 import Color from '../style-spec/util/color';
 import DepthMode from '../gl/depth_mode';
 
-import type Painter from './painter';
-import type SourceCache from '../source/source_cache';
-import type FillStyleLayer from '../style/style_layer/fill_style_layer';
-import type FillBucket from '../data/bucket/fill_bucket';
-import type {OverscaledTileID} from '../source/tile_id';
-import type {CrossFaded} from '../style/cross_faded';
 
 export default drawFill;
 
-function drawFill(painter: Painter, sourceCache: SourceCache, layer: FillStyleLayer, coords: Array<OverscaledTileID>) {
+function drawFill(painter, sourceCache, layer, coords) {
     const color = layer.paint.get('fill-color');
     const opacity = layer.paint.get('fill-opacity');
 
@@ -65,7 +59,7 @@ function drawFillTiles(painter, sourceCache, layer, coords, drawFn) {
     let firstTile = true;
     for (const coord of coords) {
         const tile = sourceCache.getTile(coord);
-        const bucket: ?FillBucket = (tile.getBucket(layer): any);
+        const bucket = (tile.getBucket(layer));
         if (!bucket) continue;
 
         painter.context.setStencilMode(painter.stencilModeForClipping(coord));
@@ -108,7 +102,7 @@ function drawStrokeTile(painter, sourceCache, layer, tile, coord, bucket, firstT
         programConfiguration);
 }
 
-function setFillProgram(programId, pat: ?CrossFaded<string>, painter, programConfiguration, layer, tile, coord, firstTile) {
+function setFillProgram(programId, pat, painter, programConfiguration, layer, tile, coord, firstTile) {
     let program;
     const prevProgram = painter.context.program.get();
     if (!pat) {

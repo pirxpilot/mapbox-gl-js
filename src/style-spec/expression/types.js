@@ -1,32 +1,7 @@
-// @flow
+// 
 
-export type NullTypeT = { kind: 'null' };
-export type NumberTypeT = { kind: 'number' };
-export type StringTypeT = { kind: 'string' };
-export type BooleanTypeT = { kind: 'boolean' };
-export type ColorTypeT = { kind: 'color' };
-export type ObjectTypeT = { kind: 'object' };
-export type ValueTypeT = { kind: 'value' };
-export type ErrorTypeT = { kind: 'error' };
-export type CollatorTypeT = { kind: 'collator' };
 
-export type Type =
-    NullTypeT |
-    NumberTypeT |
-    StringTypeT |
-    BooleanTypeT |
-    ColorTypeT |
-    ObjectTypeT |
-    ValueTypeT |
-    ArrayType | // eslint-disable-line no-use-before-define
-    ErrorTypeT |
-    CollatorTypeT
 
-export type ArrayType = {
-    kind: 'array',
-    itemType: Type,
-    N: ?number
-}
 
 export const NullType = { kind: 'null' };
 export const NumberType = { kind: 'number' };
@@ -38,7 +13,7 @@ export const ValueType = { kind: 'value' };
 export const ErrorType = { kind: 'error' };
 export const CollatorType = { kind: 'collator' };
 
-export function array(itemType: Type, N: ?number): ArrayType {
+export function array(itemType, N) {
     return {
         kind: 'array',
         itemType,
@@ -46,7 +21,7 @@ export function array(itemType: Type, N: ?number): ArrayType {
     };
 }
 
-export function toString(type: Type): string {
+export function toString(type) {
     if (type.kind === 'array') {
         const itemType = toString(type.itemType);
         return typeof type.N === 'number' ?
@@ -72,7 +47,7 @@ const valueMemberTypes = [
  * error message.
  * @private
  */
-export function checkSubtype(expected: Type, t: Type): ?string {
+export function checkSubtype(expected, t) {
     if (t.kind === 'error') {
         // Error is a subtype of every type
         return null;

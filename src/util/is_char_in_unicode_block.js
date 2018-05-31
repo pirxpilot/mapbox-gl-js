@@ -1,11 +1,10 @@
-// @flow
+// 
 
 // The following table comes from <http://www.unicode.org/Public/10.0.0/ucd/Blocks.txt>.
 // Keep it synchronized with <http://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt>.
 
-type UnicodeBlockLookup = {[key: string]: (char: number) => boolean};
 
-const unicodeBlockLookup: UnicodeBlockLookup = {
+const unicodeBlockLookup = {
     // 'Basic Latin': (char) => char >= 0x0000 && char <= 0x007F,
     'Latin-1 Supplement': (char) => char >= 0x0080 && char <= 0x00FF,
     // 'Latin Extended-A': (char) => char >= 0x0100 && char <= 0x017F,

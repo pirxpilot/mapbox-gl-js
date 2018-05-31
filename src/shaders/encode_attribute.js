@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { clamp } from '../util/util';
 
@@ -9,7 +9,7 @@ import { clamp } from '../util/util';
  *
  * @private
  */
-export const packUint8ToFloat = function pack(a: number, b: number) {
+export const packUint8ToFloat = function pack(a, b) {
     // coerce a and b to 8-bit ints
     a = clamp(Math.floor(a), 0, 255);
     b = clamp(Math.floor(b), 0, 255);

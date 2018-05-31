@@ -1,14 +1,10 @@
-// @flow
+// 
 
 import DOM from '../../util/dom';
 import { bindAll } from '../../util/util';
 import config from '../../util/config';
 
-import type Map from '../map';
 
-type Options = {
-    compact?: boolean
-};
 
 /**
  * An `AttributionControl` control presents the map's [attribution information](https://www.mapbox.com/help/attribution/).
@@ -23,14 +19,8 @@ type Options = {
  *     }));
  */
 class AttributionControl {
-    options: Options;
-    _map: Map;
-    _container: HTMLElement;
-    _editLink: ?HTMLAnchorElement;
-    styleId: string;
-    styleOwner: string;
 
-    constructor(options: Options = {}) {
+    constructor(options = {}) {
         this.options = options;
 
         bindAll([
@@ -44,7 +34,7 @@ class AttributionControl {
         return 'bottom-right';
     }
 
-    onAdd(map: Map) {
+    onAdd(map) {
         const compact = this.options && this.options.compact;
 
         this._map = map;
@@ -75,13 +65,13 @@ class AttributionControl {
         this._map.off('moveend', this._updateEditLink);
         this._map.off('resize', this._updateCompact);
 
-        this._map = (undefined: any);
+        this._map = (undefined);
     }
 
     _updateEditLink() {
         let editLink = this._editLink;
         if (!editLink) {
-            editLink = this._editLink = (this._container.querySelector('.mapbox-improve-map'): any);
+            editLink = this._editLink = (this._container.querySelector('.mapbox-improve-map'));
         }
 
         const params = [
@@ -101,7 +91,7 @@ class AttributionControl {
         }
     }
 
-    _updateData(e: any) {
+    _updateData(e) {
         if (e && e.sourceDataType === 'metadata') {
             this._updateAttributions();
             this._updateEditLink();
@@ -110,10 +100,10 @@ class AttributionControl {
 
     _updateAttributions() {
         if (!this._map.style) return;
-        let attributions: Array<string> = [];
+        let attributions = [];
 
         if (this._map.style.stylesheet) {
-            const stylesheet: any = this._map.style.stylesheet;
+            const stylesheet = this._map.style.stylesheet;
             this.styleOwner = stylesheet.owner;
             this.styleId = stylesheet.id;
         }

@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import { Event, ErrorEvent, Evented } from '../util/evented';
 
@@ -9,33 +9,11 @@ import TileBounds from './tile_bounds';
 import { ResourceType } from '../util/ajax';
 import browser from '../util/browser';
 
-import type {Source} from './source';
-import type {OverscaledTileID} from './tile_id';
-import type Map from '../ui/map';
-import type Dispatcher from '../util/dispatcher';
-import type Tile from './tile';
-import type {Callback} from '../types/callback';
 
-class VectorTileSource extends Evented implements Source {
-    type: 'vector';
-    id: string;
-    minzoom: number;
-    maxzoom: number;
-    url: string;
-    scheme: string;
-    tileSize: number;
+class VectorTileSource extends Evented {
 
-    _options: VectorSourceSpecification;
-    _collectResourceTiming: boolean;
-    dispatcher: Dispatcher;
-    map: Map;
-    bounds: ?[number, number, number, number];
-    tiles: Array<string>;
-    tileBounds: TileBounds;
-    reparseOverscaled: boolean;
-    isTileClipped: boolean;
 
-    constructor(id: string, options: VectorSourceSpecification & {collectResourceTiming: boolean}, dispatcher: Dispatcher, eventedParent: Evented) {
+    constructor(id, options, dispatcher, eventedParent) {
         super();
         this.id = id;
         this.dispatcher = dispatcher;
@@ -79,11 +57,11 @@ class VectorTileSource extends Evented implements Source {
         });
     }
 
-    hasTile(tileID: OverscaledTileID) {
+    hasTile(tileID) {
         return !this.tileBounds || this.tileBounds.contains(tileID.canonical);
     }
 
-    onAdd(map: Map) {
+    onAdd(map) {
         this.map = map;
         this.load();
     }
@@ -92,7 +70,7 @@ class VectorTileSource extends Evented implements Source {
         return extend({}, this._options);
     }
 
-    loadTile(tile: Tile, callback: Callback<void>) {
+    loadTile(tile, callback) {
         const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url);
         const params = {
             request: this.map._transformRequest(url, ResourceType.Tile),
@@ -139,11 +117,11 @@ class VectorTileSource extends Evented implements Source {
         }
     }
 
-    abortTile(tile: Tile) {
+    abortTile(tile) {
         this.dispatcher.send('abortTile', { uid: tile.uid, type: this.type, source: this.id }, undefined, tile.workerID);
     }
 
-    unloadTile(tile: Tile) {
+    unloadTile(tile) {
         tile.unloadVectorData();
         this.dispatcher.send('removeTile', { uid: tile.uid, type: this.type, source: this.id }, undefined, tile.workerID);
     }

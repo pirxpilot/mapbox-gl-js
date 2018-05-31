@@ -1,8 +1,7 @@
-// @flow
+// 
 
 import { bindAll } from '../../util/util';
 
-import type Map from '../map';
 
 const panStep = 100,
     bearingStep = 15,
@@ -23,14 +22,11 @@ const panStep = 100,
  * - `Shift+⇣`: Decrease the pitch by 10 degrees.
  */
 class KeyboardHandler {
-    _map: Map;
-    _el: HTMLElement;
-    _enabled: boolean;
 
     /**
      * @private
      */
-    constructor(map: Map) {
+    constructor(map) {
         this._map = map;
         this._el = map.getCanvasContainer();
 
@@ -72,7 +68,7 @@ class KeyboardHandler {
         this._enabled = false;
     }
 
-    _onKeyDown(e: KeyboardEvent) {
+    _onKeyDown(e) {
         if (e.altKey || e.ctrlKey || e.metaKey) return;
 
         let zoomDir = 0;

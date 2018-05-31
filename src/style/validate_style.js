@@ -1,26 +1,19 @@
-// @flow
+// 
 import validateStyleMin from '../style-spec/validate_style.min';
 import { ErrorEvent } from '../util/evented';
 
-import type {Evented} from '../util/evented';
 
-type ValidationError = {
-    message: string,
-    line: number,
-    identifier?: string
-};
 
-type Validator = (Object) => $ReadOnlyArray<ValidationError>;
 
-export const validateStyle = (validateStyleMin: (Object, ?Object) => $ReadOnlyArray<ValidationError>);
+export const validateStyle = (validateStyleMin);
 
-export const validateSource = (validateStyleMin.source: Validator);
-export const validateLight = (validateStyleMin.light: Validator);
-export const validateFilter = (validateStyleMin.filter: Validator);
-export const validatePaintProperty = (validateStyleMin.paintProperty: Validator);
-export const validateLayoutProperty = (validateStyleMin.layoutProperty: Validator);
+export const validateSource = (validateStyleMin.source);
+export const validateLight = (validateStyleMin.light);
+export const validateFilter = (validateStyleMin.filter);
+export const validatePaintProperty = (validateStyleMin.paintProperty);
+export const validateLayoutProperty = (validateStyleMin.layoutProperty);
 
-export function emitValidationErrors(emitter: Evented, errors: ?$ReadOnlyArray<{message: string, identifier?: string}>): boolean {
+export function emitValidationErrors(emitter, errors) {
     let hasErrors = false;
     if (errors && errors.length) {
         for (const error of errors) {

@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import assert from 'assert';
 
@@ -10,39 +10,11 @@ import expressions from '../style-spec/expression/definitions';
 import window from './window';
 const { ImageData } = window;
 
-import type {Transferable} from '../types/transferable';
 
-export type Serialized =
-    | null
-    | void
-    | boolean
-    | number
-    | string
-    | Boolean
-    | Number
-    | String
-    | Date
-    | RegExp
-    | ArrayBuffer
-    | $ArrayBufferView
-    | ImageData
-    | Array<Serialized>
-    | {| name: string, properties: {+[string]: Serialized} |};
 
-type Registry = {
-    [string]: {
-        klass: Class<any>,
-        omit: $ReadOnlyArray<string>,
-        shallow: $ReadOnlyArray<string>
-    }
-};
 
-type RegisterOptions<T> = {
-    omit?: $ReadOnlyArray<$Keys<T>>,
-    shallow?: $ReadOnlyArray<$Keys<T>>
-}
 
-const registry: Registry = {};
+const registry = {};
 
 /**
  * Register the given class as serializable.
@@ -53,9 +25,9 @@ const registry: Registry = {};
  *
  * @private
  */
-export function register<T: any>(name: string, klass: Class<T>, options: RegisterOptions<T> = {}) {
+export function register(name, klass, options = {}) {
     assert(!registry[name], `${name} is already registered.`);
-    (Object.defineProperty: any)(klass, '_classRegistryKey', {
+    (Object.defineProperty)(klass, '_classRegistryKey', {
         value: name,
         writeable: false
     });
@@ -68,7 +40,7 @@ export function register<T: any>(name: string, klass: Class<T>, options: Registe
 
 register('Object', Object);
 
-Grid.serialize = function serializeGrid(grid: Grid, transferables?: Array<Transferable>): Serialized {
+Grid.serialize = function serializeGrid(grid, transferables) {
     const ab = grid.toArrayBuffer();
     if (transferables) {
         transferables.push(ab);
@@ -76,7 +48,7 @@ Grid.serialize = function serializeGrid(grid: Grid, transferables?: Array<Transf
     return ab;
 };
 
-Grid.deserialize = function deserializeGrid(serialized: ArrayBuffer): Grid {
+Grid.deserialize = function deserializeGrid(serialized) {
     return new Grid(serialized);
 };
 register('Grid', Grid);
@@ -91,7 +63,7 @@ register('ZoomDependentExpression', ZoomDependentExpression);
 register('ZoomConstantExpression', ZoomConstantExpression);
 register('CompoundExpression', CompoundExpression, {omit: ['_evaluate']});
 for (const name in expressions) {
-    if ((expressions[name]: any)._classRegistryKey) continue;
+    if ((expressions[name])._classRegistryKey) continue;
     register(`Expression_${name}`, expressions[name]);
 }
 
@@ -109,7 +81,7 @@ for (const name in expressions) {
  *
  * @private
  */
-export function serialize(input: mixed, transferables?: Array<Transferable>): Serialized {
+export function serialize(input, transferables) {
     if (input === null ||
         input === undefined ||
         typeof input === 'boolean' ||
@@ -131,7 +103,7 @@ export function serialize(input: mixed, transferables?: Array<Transferable>): Se
     }
 
     if (ArrayBuffer.isView(input)) {
-        const view: $ArrayBufferView = (input: any);
+        const view = (input);
         if (transferables) {
             transferables.push(view.buffer);
         }
@@ -154,14 +126,14 @@ export function serialize(input: mixed, transferables?: Array<Transferable>): Se
     }
 
     if (typeof input === 'object') {
-        const klass = (input.constructor: any);
+        const klass = (input.constructor);
         const name = klass._classRegistryKey;
         if (!name) {
             throw new Error(`can't serialize object of unregistered class`);
         }
         assert(registry[name]);
 
-        const properties: {[string]: Serialized} = {};
+        const properties = {};
 
         if (klass.serialize) {
             // (Temporary workaround) allow a class to provide static
@@ -171,13 +143,13 @@ export function serialize(input: mixed, transferables?: Array<Transferable>): Se
             // approach for objects whose members include instances of dynamic
             // StructArray types. Once we refactor StructArray to be static,
             // we can remove this complexity.
-            properties._serialized = (klass.serialize: typeof serialize)(input, transferables);
+            properties._serialized = (klass.serialize)(input, transferables);
         } else {
             for (const key in input) {
                 // any cast due to https://github.com/facebook/flow/issues/5393
-                if (!(input: any).hasOwnProperty(key)) continue;
+                if (!(input).hasOwnProperty(key)) continue;
                 if (registry[name].omit.indexOf(key) >= 0) continue;
-                const property = (input: any)[key];
+                const property = (input)[key];
                 properties[key] = registry[name].shallow.indexOf(key) >= 0 ?
                     property :
                     serialize(property, transferables);
@@ -194,7 +166,7 @@ export function serialize(input: mixed, transferables?: Array<Transferable>): Se
     throw new Error(`can't serialize object of type ${typeof input}`);
 }
 
-export function deserialize(input: Serialized): mixed {
+export function deserialize(input) {
     if (input === null ||
         input === undefined ||
         typeof input === 'boolean' ||
@@ -216,7 +188,7 @@ export function deserialize(input: Serialized): mixed {
     }
 
     if (typeof input === 'object') {
-        const {name, properties} = (input: any);
+        const {name, properties} = (input);
         if (!name) {
             throw new Error(`can't deserialize object of anonymous class`);
         }
@@ -227,7 +199,7 @@ export function deserialize(input: Serialized): mixed {
         }
 
         if (klass.deserialize) {
-            return (klass.deserialize: typeof deserialize)(properties._serialized);
+            return (klass.deserialize)(properties._serialized);
         }
 
         const result = Object.create(klass.prototype);

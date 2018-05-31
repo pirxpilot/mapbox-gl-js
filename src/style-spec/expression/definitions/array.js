@@ -1,14 +1,10 @@
-// @flow
+// 
 
 import { toString, array, ValueType, StringType, NumberType, BooleanType, checkSubtype } from '../types';
 
 import { typeOf } from '../values';
 import RuntimeError from '../runtime_error';
 
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
-import type EvaluationContext from '../evaluation_context';
-import type { ArrayType } from '../types';
 
 const types = {
     string: StringType,
@@ -16,16 +12,14 @@ const types = {
     boolean: BooleanType
 };
 
-class ArrayAssertion implements Expression {
-    type: ArrayType;
-    input: Expression;
+class ArrayAssertion {
 
-    constructor(type: ArrayType, input: Expression) {
+    constructor(type, input) {
         this.type = type;
         this.input = input;
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext): ?Expression {
+    static parse(args, context) {
         if (args.length < 2 || args.length > 4)
             return context.error(`Expected 1, 2, or 3 arguments, but found ${args.length - 1} instead.`);
 
@@ -59,7 +53,7 @@ class ArrayAssertion implements Expression {
         return new ArrayAssertion(type, input);
     }
 
-    evaluate(ctx: EvaluationContext) {
+    evaluate(ctx) {
         const value = this.input.evaluate(ctx);
         const error = checkSubtype(this.type, typeOf(value));
         if (error) {
@@ -68,7 +62,7 @@ class ArrayAssertion implements Expression {
         return value;
     }
 
-    eachChild(fn: (Expression) => void) {
+    eachChild(fn) {
         fn(this.input);
     }
 

@@ -1,12 +1,12 @@
-// @flow
+// 
 
 import Color from './color';
 
-export function number(a: number, b: number, t: number) {
+export function number(a, b, t) {
     return (a * (1 - t)) + (b * t);
 }
 
-export function color(from: Color, to: Color, t: number) {
+export function color(from, to, t) {
     return new Color(
         number(from.r, to.r, t),
         number(from.g, to.g, t),
@@ -15,7 +15,7 @@ export function color(from: Color, to: Color, t: number) {
     );
 }
 
-export function array(from: Array<number>, to: Array<number>, t: number) {
+export function array(from, to, t) {
     return from.map((d, i) => {
         return number(d, to[i], t);
     });

@@ -1,11 +1,9 @@
-// @flow
+// 
 
 import { extend } from './util';
 
-type Listener = (Object) => any;
-type Listeners = { [string]: Array<Listener> };
 
-function _addEventListener(type: string, listener: Listener, listenerList: Listeners) {
+function _addEventListener(type, listener, listenerList) {
     const listenerExists = listenerList[type] && listenerList[type].indexOf(listener) !== -1;
     if (!listenerExists) {
         listenerList[type] = listenerList[type] || [];
@@ -13,7 +11,7 @@ function _addEventListener(type: string, listener: Listener, listenerList: Liste
     }
 }
 
-function _removeEventListener(type: string, listener: Listener, listenerList: Listeners) {
+function _removeEventListener(type, listener, listenerList) {
     if (listenerList && listenerList[type]) {
         const index = listenerList[type].indexOf(listener);
         if (index !== -1) {
@@ -23,18 +21,16 @@ function _removeEventListener(type: string, listener: Listener, listenerList: Li
 }
 
 export class Event {
-    +type: string;
 
-    constructor(type: string, data: Object = {}) {
+    constructor(type, data = {}) {
         extend(this, data);
         this.type = type;
     }
 }
 
 export class ErrorEvent extends Event {
-    error: Error;
 
-    constructor(error: Error, data: Object = {}) {
+    constructor(error, data = {}) {
         super('error', extend({error}, data));
     }
 }
@@ -45,10 +41,6 @@ export class ErrorEvent extends Event {
  * @mixin Evented
  */
 export class Evented {
-    _listeners: Listeners;
-    _oneTimeListeners: Listeners;
-    _eventedParent: ?Evented;
-    _eventedParentData: ?(Object | () => Object);
 
     /**
      * Adds a listener to a specified event type.
@@ -59,7 +51,7 @@ export class Evented {
      *   extended with `target` and `type` properties.
      * @returns {Object} `this`
      */
-    on(type: *, listener: Listener): this {
+    on(type, listener) {
         this._listeners = this._listeners || {};
         _addEventListener(type, listener, this._listeners);
 
@@ -73,7 +65,7 @@ export class Evented {
      * @param {Function} listener The listener function to remove.
      * @returns {Object} `this`
      */
-    off(type: *, listener: Listener) {
+    off(type, listener) {
         _removeEventListener(type, listener, this._listeners);
         _removeEventListener(type, listener, this._oneTimeListeners);
 
@@ -89,14 +81,14 @@ export class Evented {
      * @param {Function} listener The function to be called when the event is fired the first time.
      * @returns {Object} `this`
      */
-    once(type: string, listener: Listener) {
+    once(type, listener) {
         this._oneTimeListeners = this._oneTimeListeners || {};
         _addEventListener(type, listener, this._oneTimeListeners);
 
         return this;
     }
 
-    fire(event: Event) {
+    fire(event) {
         // Compatibility with (type: string, properties: Object) signature from previous versions.
         // See https://github.com/mapbox/mapbox-gl-js/issues/6522,
         //     https://github.com/mapbox/mapbox-gl-draw/issues/766
@@ -107,7 +99,7 @@ export class Evented {
         const type = event.type;
 
         if (this.listens(type)) {
-            (event: any).target = this;
+            (event).target = this;
 
             // make sure adding or removing listeners inside other listeners won't cause an infinite loop
             const listeners = this._listeners && this._listeners[type] ? this._listeners[type].slice() : [];
@@ -146,7 +138,7 @@ export class Evented {
      * @returns {boolean} `true` if there is at least one registered listener for specified event type, `false` otherwise
      * @private
      */
-    listens(type: string) {
+    listens(type) {
         return (
             (this._listeners && this._listeners[type] && this._listeners[type].length > 0) ||
             (this._oneTimeListeners && this._oneTimeListeners[type] && this._oneTimeListeners[type].length > 0) ||
@@ -161,7 +153,7 @@ export class Evented {
      * @returns {Object} `this`
      * @private
      */
-    setEventedParent(parent: ?Evented, data?: Object | () => Object) {
+    setEventedParent(parent, data) {
         this._eventedParent = parent;
         this._eventedParentData = data;
 

@@ -1,30 +1,19 @@
-// @flow
+// 
 
 import { warnOnce } from '../util/util';
 
 import { register } from '../util/web_worker_transfer';
 
-import type VertexArrayObject from '../render/vertex_array_object';
-import type {StructArray} from '../util/struct_array';
 
-export type Segment = {
-    vertexOffset: number,
-    primitiveOffset: number,
-    vertexLength: number,
-    primitiveLength: number,
-    vaos: {[string]: VertexArrayObject}
-}
 
 class SegmentVector {
-    static MAX_VERTEX_ARRAY_LENGTH: number;
-    segments: Array<Segment>;
 
-    constructor(segments?: Array<Segment> = []) {
+    constructor(segments = []) {
         this.segments = segments;
     }
 
-    prepareSegment(numVertices: number, layoutVertexArray: StructArray, indexArray: StructArray): Segment {
-        let segment: Segment = this.segments[this.segments.length - 1];
+    prepareSegment(numVertices, layoutVertexArray, indexArray) {
+        let segment = this.segments[this.segments.length - 1];
         if (numVertices > SegmentVector.MAX_VERTEX_ARRAY_LENGTH) warnOnce(`Max vertices per segment is ${SegmentVector.MAX_VERTEX_ARRAY_LENGTH}: bucket requested ${numVertices}`);
         if (!segment || segment.vertexLength + numVertices > SegmentVector.MAX_VERTEX_ARRAY_LENGTH) {
             segment = ({
@@ -32,7 +21,7 @@ class SegmentVector {
                 primitiveOffset: indexArray.length,
                 vertexLength: 0,
                 primitiveLength: 0
-            }: any);
+            });
             this.segments.push(segment);
         }
         return segment;

@@ -1,10 +1,9 @@
-// @flow
+// 
 
 // Note: all "sizes" are measured in bytes
 
 import assert from 'assert';
 
-import type {Transferable} from '../types/transferable';
 
 const viewTypes = {
     'Int8': Int8Array,
@@ -16,28 +15,21 @@ const viewTypes = {
     'Float32': Float32Array
 };
 
-export type ViewType = $Keys<typeof viewTypes>;
 
 /**
  * @private
  */
 class Struct {
-    _pos1: number;
-    _pos2: number;
-    _pos4: number;
-    _pos8: number;
-    +_structArray: StructArray;
 
     // The following properties are defined on the prototype of sub classes.
-    size: number;
 
     /**
      * @param {StructArray} structArray The StructArray the struct is stored in
      * @param {number} index The index of the struct in the StructArray.
      * @private
      */
-    constructor(structArray: StructArray, index: number) {
-        (this: any)._structArray = structArray;
+    constructor(structArray, index) {
+        (this)._structArray = structArray;
         this._pos1 = index * this.size;
         this._pos2 = this._pos1 / 2;
         this._pos4 = this._pos1 / 4;
@@ -48,23 +40,8 @@ class Struct {
 const DEFAULT_CAPACITY = 128;
 const RESIZE_MULTIPLIER = 5;
 
-export type StructArrayMember = {
-    name: string,
-    type: ViewType,
-    components: number,
-    offset: number
-};
 
-export type StructArrayLayout = {
-    members: Array<StructArrayMember>,
-    size: number,
-    alignment: ?number
-}
 
-export type SerializedStructArray = {
-    length: number,
-    arrayBuffer: ArrayBuffer
-};
 
 /**
  * `StructArray` provides an abstraction over `ArrayBuffer` and `TypedArray`
@@ -88,17 +65,8 @@ export type SerializedStructArray = {
  * @private
  */
 class StructArray {
-    capacity: number;
-    length: number;
-    isTransferred: boolean;
-    arrayBuffer: ArrayBuffer;
-    uint8: Uint8Array;
 
     // The following properties are defined on the prototype.
-    members: Array<StructArrayMember>;
-    bytesPerElement: number;
-    +emplaceBack: Function;
-    +emplace: Function;
 
     constructor() {
         this.isTransferred = false;
@@ -111,7 +79,7 @@ class StructArray {
      * metadata needed to reconstruct the StructArray base class during
      * deserialization.
      */
-    static serialize(array: StructArray, transferables?: Array<Transferable>): SerializedStructArray {
+    static serialize(array, transferables) {
         assert(!array.isTransferred);
 
         array._trim();
@@ -127,7 +95,7 @@ class StructArray {
         };
     }
 
-    static deserialize(input: SerializedStructArray) {
+    static deserialize(input) {
         const structArray = Object.create(this.prototype);
         structArray.arrayBuffer = input.arrayBuffer;
         structArray.length = input.length;
@@ -160,7 +128,7 @@ class StructArray {
      * If `n` is less than the current length then the array will be reduced to the first `n` elements.
      * @param {number} n The new size of the array.
      */
-    resize(n: number) {
+    resize(n) {
         assert(!this.isTransferred);
         this.reserve(n);
         this.length = n;
@@ -171,7 +139,7 @@ class StructArray {
      * be done once, ahead of time.
      * @param {number} n The expected size of the array.
      */
-    reserve(n: number) {
+    reserve(n) {
         if (n > this.capacity) {
             this.capacity = Math.max(n, Math.floor(this.capacity * RESIZE_MULTIPLIER), DEFAULT_CAPACITY);
             this.arrayBuffer = new ArrayBuffer(this.capacity * this.bytesPerElement);
@@ -199,9 +167,9 @@ class StructArray {
  * @private
  */
 function createLayout(
-    members: Array<{ name: string, type: ViewType, +components?: number, }>,
-    alignment: number = 1
-): StructArrayLayout {
+    members,
+    alignment = 1
+) {
 
     let offset = 0;
     let maxSize = 0;
@@ -231,11 +199,11 @@ function createLayout(
     };
 }
 
-function sizeOf(type: ViewType): number {
+function sizeOf(type) {
     return viewTypes[type].BYTES_PER_ELEMENT;
 }
 
-function align(offset: number, size: number): number {
+function align(offset, size) {
     return Math.ceil(offset / size) * size;
 }
 

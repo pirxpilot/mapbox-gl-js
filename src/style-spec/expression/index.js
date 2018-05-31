@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import assert from 'assert';
 
@@ -17,37 +17,14 @@ import RuntimeError from './runtime_error';
 import { success, error } from '../util/result';
 import { supportsPropertyExpression, supportsZoomExpression, supportsInterpolation } from '../util/properties';
 
-import type {Type} from './types';
-import type {Value} from './values';
-import type {Expression} from './expression';
-import type {StylePropertySpecification} from '../style-spec';
-import type {Result} from '../util/result';
-import type {InterpolationType} from './definitions/interpolate';
 
-export type Feature = {
-    +type: 1 | 2 | 3 | 'Unknown' | 'Point' | 'MultiPoint' | 'LineString' | 'MultiLineString' | 'Polygon' | 'MultiPolygon',
-    +id?: any,
-    +properties: {[string]: any}
-};
 
-export type FeatureState = {[string]: any};
 
-export type GlobalProperties = $ReadOnly<{
-    zoom: number,
-    heatmapDensity?: number,
-    lineProgress?: number,
-    isSupportedScript?: (string) => boolean
-}>;
 
 export class StyleExpression {
-    expression: Expression;
 
-    _evaluator: EvaluationContext;
-    _defaultValue: Value;
-    _warningHistory: {[key: string]: boolean};
-    _enumValues: {[string]: any};
 
-    constructor(expression: Expression, propertySpec: StylePropertySpecification) {
+    constructor(expression, propertySpec) {
         this.expression = expression;
         this._warningHistory = {};
         this._defaultValue = getDefaultValue(propertySpec);
@@ -56,7 +33,7 @@ export class StyleExpression {
         }
     }
 
-    evaluateWithoutErrorHandling(globals: GlobalProperties, feature?: Feature, featureState?: FeatureState): any {
+    evaluateWithoutErrorHandling(globals, feature, featureState) {
         if (!this._evaluator) {
             this._evaluator = new EvaluationContext();
         }
@@ -68,7 +45,7 @@ export class StyleExpression {
         return this.expression.evaluate(this._evaluator);
     }
 
-    evaluate(globals: GlobalProperties, feature?: Feature, featureState?: FeatureState): any {
+    evaluate(globals, feature, featureState) {
         if (!this._evaluator) {
             this._evaluator = new EvaluationContext();
         }
@@ -98,7 +75,7 @@ export class StyleExpression {
     }
 }
 
-export function isExpression(expression: mixed) {
+export function isExpression(expression) {
     return Array.isArray(expression) && expression.length > 0 &&
         typeof expression[0] === 'string' && expression[0] in definitions;
 }
@@ -112,7 +89,7 @@ export function isExpression(expression: mixed) {
  *
  * @private
  */
-export function createExpression(expression: mixed, propertySpec: StylePropertySpecification): Result<StyleExpression, Array<ParsingError>> {
+export function createExpression(expression, propertySpec) {
     const parser = new ParsingContext(definitions, [], getExpectedType(propertySpec));
     const parsed = parser.parse(expression);
     if (!parsed) {
@@ -123,35 +100,27 @@ export function createExpression(expression: mixed, propertySpec: StylePropertyS
     return success(new StyleExpression(parsed, propertySpec));
 }
 
-export class ZoomConstantExpression<Kind> {
-    kind: Kind;
-    isStateDependent: boolean;
-    _styleExpression: StyleExpression;
+export class ZoomConstantExpression {
 
-    constructor(kind: Kind, expression: StyleExpression) {
+    constructor(kind, expression) {
         this.kind = kind;
         this._styleExpression = expression;
         this.isStateDependent = kind !== 'constant' && !isConstant.isStateConstant(expression.expression);
     }
 
-    evaluateWithoutErrorHandling(globals: GlobalProperties, feature?: Feature, featureState?: FeatureState): any {
+    evaluateWithoutErrorHandling(globals, feature, featureState) {
         return this._styleExpression.evaluateWithoutErrorHandling(globals, feature, featureState);
     }
 
-    evaluate(globals: GlobalProperties, feature?: Feature, featureState?: FeatureState): any {
+    evaluate(globals, feature, featureState) {
         return this._styleExpression.evaluate(globals, feature, featureState);
     }
 }
 
-export class ZoomDependentExpression<Kind> {
-    kind: Kind;
-    zoomStops: Array<number>;
-    isStateDependent: boolean;
+export class ZoomDependentExpression {
 
-    _styleExpression: StyleExpression;
-    _interpolationType: ?InterpolationType;
 
-    constructor(kind: Kind, expression: StyleExpression, zoomCurve: Step | Interpolate) {
+    constructor(kind, expression, zoomCurve) {
         this.kind = kind;
         this.zoomStops = zoomCurve.labels;
         this._styleExpression = expression;
@@ -161,15 +130,15 @@ export class ZoomDependentExpression<Kind> {
         }
     }
 
-    evaluateWithoutErrorHandling(globals: GlobalProperties, feature?: Feature, featureState?: FeatureState): any {
+    evaluateWithoutErrorHandling(globals, feature, featureState) {
         return this._styleExpression.evaluateWithoutErrorHandling(globals, feature, featureState);
     }
 
-    evaluate(globals: GlobalProperties, feature?: Feature, featureState?: FeatureState): any {
+    evaluate(globals, feature, featureState) {
         return this._styleExpression.evaluate(globals, feature, featureState);
     }
 
-    interpolationFactor(input: number, lower: number, upper: number): number {
+    interpolationFactor(input, lower, upper) {
         if (this._interpolationType) {
             return Interpolate.interpolationFactor(this._interpolationType, input, lower, upper);
         } else {
@@ -178,39 +147,12 @@ export class ZoomDependentExpression<Kind> {
     }
 }
 
-export type ConstantExpression = {
-    kind: 'constant',
-    +evaluate: (globals: GlobalProperties, feature?: Feature) => any,
-}
 
-export type SourceExpression = {
-    kind: 'source',
-    isStateDependent: boolean,
-    +evaluate: (globals: GlobalProperties, feature?: Feature, featureState?: FeatureState) => any,
-};
 
-export type CameraExpression = {
-    kind: 'camera',
-    +evaluate: (globals: GlobalProperties, feature?: Feature, featureState?: FeatureState) => any,
-    +interpolationFactor: (input: number, lower: number, upper: number) => number,
-    zoomStops: Array<number>
-};
 
-export type CompositeExpression = {
-    kind: 'composite',
-    isStateDependent: boolean,
-    +evaluate: (globals: GlobalProperties, feature?: Feature, featureState?: FeatureState) => any,
-    +interpolationFactor: (input: number, lower: number, upper: number) => number,
-    zoomStops: Array<number>
-};
 
-export type StylePropertyExpression =
-    | ConstantExpression
-    | SourceExpression
-    | CameraExpression
-    | CompositeExpression;
 
-export function createPropertyExpression(expression: mixed, propertySpec: StylePropertySpecification): Result<StylePropertyExpression, Array<ParsingError>> {
+export function createPropertyExpression(expression, propertySpec) {
     expression = createExpression(expression, propertySpec);
     if (expression.result === 'error') {
         return expression;
@@ -239,13 +181,13 @@ export function createPropertyExpression(expression: mixed, propertySpec: StyleP
 
     if (!zoomCurve) {
         return success(isFeatureConstant ?
-            (new ZoomConstantExpression('constant', expression.value): ConstantExpression) :
-            (new ZoomConstantExpression('source', expression.value): SourceExpression));
+            (new ZoomConstantExpression('constant', expression.value)) :
+            (new ZoomConstantExpression('source', expression.value)));
     }
 
     return success(isFeatureConstant ?
-        (new ZoomDependentExpression('camera', expression.value, zoomCurve): CameraExpression) :
-        (new ZoomDependentExpression('composite', expression.value, zoomCurve): CompositeExpression));
+        (new ZoomDependentExpression('camera', expression.value, zoomCurve)) :
+        (new ZoomDependentExpression('composite', expression.value, zoomCurve)));
 }
 
 import { isFunction, createFunction } from '../function';
@@ -253,26 +195,20 @@ import { Color } from './values';
 
 // serialization wrapper for old-style stop functions normalized to the
 // expression interface
-export class StylePropertyFunction<T> {
-    _parameters: PropertyValueSpecification<T>;
-    _specification: StylePropertySpecification;
+export class StylePropertyFunction {
 
-    kind: 'constant' | 'source' | 'camera' | 'composite';
-    evaluate: (globals: GlobalProperties, feature?: Feature) => any;
-    interpolationFactor: ?(input: number, lower: number, upper: number) => number;
-    zoomStops: ?Array<number>;
 
-    constructor(parameters: PropertyValueSpecification<T>, specification: StylePropertySpecification) {
+    constructor(parameters, specification) {
         this._parameters = parameters;
         this._specification = specification;
         extend(this, createFunction(this._parameters, this._specification));
     }
 
-    static deserialize(serialized: {_parameters: PropertyValueSpecification<T>, _specification: StylePropertySpecification}) {
-        return ((new StylePropertyFunction(serialized._parameters, serialized._specification)): StylePropertyFunction<T>);
+    static deserialize(serialized) {
+        return ((new StylePropertyFunction(serialized._parameters, serialized._specification)));
     }
 
-    static serialize(input: StylePropertyFunction<T>) {
+    static serialize(input) {
         return {
             _parameters: input._parameters,
             _specification: input._specification
@@ -280,9 +216,9 @@ export class StylePropertyFunction<T> {
     }
 }
 
-export function normalizePropertyExpression<T>(value: PropertyValueSpecification<T>, specification: StylePropertySpecification): StylePropertyExpression {
+export function normalizePropertyExpression(value, specification) {
     if (isFunction(value)) {
-        return (new StylePropertyFunction(value, specification): any);
+        return (new StylePropertyFunction(value, specification));
 
     } else if (isExpression(value)) {
         const expression = createPropertyExpression(value, specification);
@@ -293,7 +229,7 @@ export function normalizePropertyExpression<T>(value: PropertyValueSpecification
         return expression.value;
 
     } else {
-        let constant: any = value;
+        let constant = value;
         if (typeof value === 'string' && specification.type === 'color') {
             constant = Color.parse(value);
         }
@@ -307,7 +243,7 @@ export function normalizePropertyExpression<T>(value: PropertyValueSpecification
 // Zoom-dependent expressions may only use ["zoom"] as the input to a top-level "step" or "interpolate"
 // expression (collectively referred to as a "curve"). The curve may be wrapped in one or more "let" or
 // "coalesce" expressions.
-function findZoomCurve(expression: Expression): Step | Interpolate | ParsingError | null {
+function findZoomCurve(expression) {
     let result = null;
     if (expression instanceof Let) {
         result = findZoomCurve(expression.result);
@@ -347,7 +283,7 @@ function findZoomCurve(expression: Expression): Step | Interpolate | ParsingErro
 
 import { ColorType, StringType, NumberType, BooleanType, ValueType, array } from './types';
 
-function getExpectedType(spec: StylePropertySpecification): Type | null {
+function getExpectedType(spec) {
     const types = {
         color: ColorType,
         string: StringType,
@@ -363,7 +299,7 @@ function getExpectedType(spec: StylePropertySpecification): Type | null {
     return types[spec.type] || null;
 }
 
-function getDefaultValue(spec: StylePropertySpecification): Value {
+function getDefaultValue(spec) {
     if (spec.type === 'color' && isFunction(spec.default)) {
         // Special case for heatmap-color: it uses the 'default:' to define a
         // default color ramp, but createExpression expects a simple value to fall

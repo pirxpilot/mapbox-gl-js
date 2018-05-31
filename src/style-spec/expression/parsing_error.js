@@ -1,9 +1,7 @@
-// @flow
+// 
 
 class ParsingError extends Error {
-    key: string;
-    message: string;
-    constructor(key: string, message: string) {
+    constructor(key, message) {
         super(message);
         this.message = message;
         this.key = key;

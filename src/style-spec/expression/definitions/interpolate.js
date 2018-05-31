@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import UnitBezier from '@mapbox/unitbezier';
 
@@ -6,26 +6,12 @@ import * as interpolate from '../../util/interpolate';
 import { toString, NumberType } from '../types';
 import { findStopLessThanOrEqualTo } from '../stops';
 
-import type { Stops } from '../stops';
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
-import type EvaluationContext from '../evaluation_context';
-import type { Type } from '../types';
 
-export type InterpolationType =
-    { name: 'linear' } |
-    { name: 'exponential', base: number } |
-    { name: 'cubic-bezier', controlPoints: [number, number, number, number] };
 
-class Interpolate implements Expression {
-    type: Type;
+class Interpolate {
 
-    interpolation: InterpolationType;
-    input: Expression;
-    labels: Array<number>;
-    outputs: Array<Expression>;
 
-    constructor(type: Type, interpolation: InterpolationType, input: Expression, stops: Stops) {
+    constructor(type, interpolation, input, stops) {
         this.type = type;
         this.interpolation = interpolation;
         this.input = input;
@@ -38,7 +24,7 @@ class Interpolate implements Expression {
         }
     }
 
-    static interpolationFactor(interpolation: InterpolationType, input: number, lower: number, upper: number) {
+    static interpolationFactor(interpolation, input, lower, upper) {
         let t = 0;
         if (interpolation.name === 'exponential') {
             t = exponentialInterpolation(input, interpolation.base, lower, upper);
@@ -52,7 +38,7 @@ class Interpolate implements Expression {
         return t;
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext) {
+    static parse(args, context) {
         let [ , interpolation, input, ...rest] = args;
 
         if (!Array.isArray(interpolation) || interpolation.length === 0) {
@@ -80,7 +66,7 @@ class Interpolate implements Expression {
 
             interpolation = {
                 name: 'cubic-bezier',
-                controlPoints: (controlPoints: any)
+                controlPoints: (controlPoints)
             };
         } else {
             return context.error(`Unknown interpolation type ${String(interpolation[0])}`, 1, 0);
@@ -97,9 +83,9 @@ class Interpolate implements Expression {
         input = context.parse(input, 2, NumberType);
         if (!input) return null;
 
-        const stops: Stops = [];
+        const stops = [];
 
-        let outputType: Type = (null: any);
+        let outputType = (null);
         if (context.expectedType && context.expectedType.kind !== 'value') {
             outputType = context.expectedType;
         }
@@ -139,7 +125,7 @@ class Interpolate implements Expression {
         return new Interpolate(outputType, interpolation, input, stops);
     }
 
-    evaluate(ctx: EvaluationContext) {
+    evaluate(ctx) {
         const labels = this.labels;
         const outputs = this.outputs;
 
@@ -147,7 +133,7 @@ class Interpolate implements Expression {
             return outputs[0].evaluate(ctx);
         }
 
-        const value = ((this.input.evaluate(ctx): any): number);
+        const value = ((this.input.evaluate(ctx)));
         if (value <= labels[0]) {
             return outputs[0].evaluate(ctx);
         }
@@ -165,10 +151,10 @@ class Interpolate implements Expression {
         const outputLower = outputs[index].evaluate(ctx);
         const outputUpper = outputs[index + 1].evaluate(ctx);
 
-        return (interpolate[this.type.kind.toLowerCase()]: any)(outputLower, outputUpper, t); // eslint-disable-line import/namespace
+        return (interpolate[this.type.kind.toLowerCase()])(outputLower, outputUpper, t); // eslint-disable-line import/namespace
     }
 
-    eachChild(fn: (Expression) => void) {
+    eachChild(fn) {
         fn(this.input);
         for (const expression of this.outputs) {
             fn(expression);
