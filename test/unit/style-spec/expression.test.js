@@ -15,12 +15,6 @@ test('v8.json includes all definitions from style-spec', (t) => {
     t.end();
 });
 
-test('expression metadata includes all definitions from style-spec', (t) => {
-    const definitionMetadataList = Object.keys(definitionMetadata);
-    t.deepEquals(definitionList, definitionMetadataList.sort());
-    t.end();
-});
-
 test('createPropertyExpression', (t) => {
     test('prohibits non-interpolable properties from using an "interpolate" expression', (t) => {
         const {result, value} = createPropertyExpression([
