@@ -1,10 +1,10 @@
-// 
+'use strict';
 
-import { createExpression } from '../expression';
+const { createExpression } = require('../expression');
 
+module.exports = createFilter;
 
-export default createFilter;
-export { isExpressionFilter };
+createFilter.isExpressionFilter = isExpressionFilter;
 
 function isExpressionFilter(filter) {
     if (!Array.isArray(filter) || filter.length === 0) {

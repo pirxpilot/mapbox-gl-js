@@ -1,10 +1,8 @@
-// 
+'use strict';
 
-import UnitBezier from '@mapbox/unitbezier';
+const UnitBezier = require('@mapbox/unitbezier');
 
-import Coordinate from '../geo/coordinate';
-import Point from '@mapbox/point-geometry';
-
+const Coordinate = require('../geo/coordinate');
 
 /**
  * @module util
@@ -18,7 +16,7 @@ import Point from '@mapbox/point-geometry';
  *
  * @private
  */
-export function easeCubicInOut(t) {
+function easeCubicInOut(t) {
     if (t <= 0) return 0;
     if (t >= 1) return 1;
     const t2 = t * t,
@@ -36,7 +34,7 @@ export function easeCubicInOut(t) {
  * @param p2y control point 2 y coordinate
  * @private
  */
-export function bezier(p1x, p1y, p2x, p2y) {
+function bezier(p1x, p1y, p2x, p2y) {
     const bezier = new UnitBezier(p1x, p1y, p2x, p2y);
     return function(t) {
         return bezier.solve(t);
@@ -49,7 +47,7 @@ export function bezier(p1x, p1y, p2x, p2y) {
  *
  * @private
  */
-export const ease = bezier(0.25, 0.1, 0.25, 1);
+const ease = bezier(0.25, 0.1, 0.25, 1);
 
 /**
  * constrain n to the given range via min + max
@@ -60,7 +58,7 @@ export const ease = bezier(0.25, 0.1, 0.25, 1);
  * @returns the clamped value
  * @private
  */
-export function clamp(n, min, max) {
+function clamp(n, min, max) {
     return Math.min(max, Math.max(min, n));
 }
 
@@ -73,7 +71,7 @@ export function clamp(n, min, max) {
  * @returns constrained number
  * @private
  */
-export function wrap(n, min, max) {
+function wrap(n, min, max) {
     const d = max - min;
     const w = ((n - min) % d + d) % d + min;
     return (w === min) ? max : w;
@@ -89,7 +87,7 @@ export function wrap(n, min, max) {
  * called with an array, containing the results of each async call.
  * @private
  */
-export function asyncAll(
+function asyncAll(
     array,
     fn,
     callback
@@ -113,7 +111,7 @@ export function asyncAll(
  *
  * @private
  */
-export function values(obj) {
+function values(obj) {
     const result = [];
     for (const k in obj) {
         result.push(obj[k]);
@@ -128,7 +126,7 @@ export function values(obj) {
  * @returns keys difference
  * @private
  */
-export function keysDifference(obj, other) {
+function keysDifference(obj, other) {
     const difference = [];
     for (const i in obj) {
         if (!(i in other)) {
@@ -148,7 +146,7 @@ export function keysDifference(obj, other) {
  * @param sources sources from which properties are pulled
  * @private
  */
-export function extend(dest, ...sources) {
+function extend(dest, ...sources) {
     for (const src of sources) {
         for (const k in src) {
             dest[k] = src[k];
@@ -171,7 +169,7 @@ export function extend(dest, ...sources) {
  * // justName = { name: 'Charlie' }
  * @private
  */
-export function pick(src, properties) {
+function pick(src, properties) {
     const result = {};
     for (let i = 0; i < properties.length; i++) {
         const k = properties[i];
@@ -191,7 +189,7 @@ let id = 1;
  * @returns unique numeric id.
  * @private
  */
-export function uniqueId() {
+function uniqueId() {
     return id++;
 }
 
@@ -216,7 +214,7 @@ export function uniqueId() {
  * setTimeout(myClass.ontimer, 100);
  * @private
  */
-export function bindAll(fns, context) {
+function bindAll(fns, context) {
     fns.forEach((fn) => {
         if (!context[fn]) { return; }
         context[fn] = context[fn].bind(context);
@@ -229,7 +227,7 @@ export function bindAll(fns, context) {
  * @returns centerpoint
  * @private
  */
-export function getCoordinatesCenter(coords) {
+function getCoordinatesCenter(coords) {
     let minX = Infinity;
     let minY = Infinity;
     let maxX = -Infinity;
@@ -255,7 +253,7 @@ export function getCoordinatesCenter(coords) {
  *
  * @private
  */
-export function endsWith(string, suffix) {
+function endsWith(string, suffix) {
     return string.indexOf(suffix, string.length - suffix.length) !== -1;
 }
 
@@ -265,7 +263,7 @@ export function endsWith(string, suffix) {
  *
  * @private
  */
-export function mapObject(input, iterator, context) {
+function mapObject(input, iterator, context) {
     const output = {};
     for (const key in input) {
         output[key] = iterator.call(context || this, input[key], key, input);
@@ -278,7 +276,7 @@ export function mapObject(input, iterator, context) {
  *
  * @private
  */
-export function filterObject(input, iterator, context) {
+function filterObject(input, iterator, context) {
     const output = {};
     for (const key in input) {
         if (iterator.call(context || this, input[key], key, input)) {
@@ -288,15 +286,14 @@ export function filterObject(input, iterator, context) {
     return output;
 }
 
-import deepEqual from '../style-spec/util/deep_equal';
-export { deepEqual };
+const deepEqual = require('../style-spec/util/deep_equal');
 
 /**
  * Deeply clones two objects.
  *
  * @private
  */
-export function clone(input) {
+function clone(input) {
     if (Array.isArray(input)) {
         return input.map(clone);
     } else if (typeof input === 'object' && input) {
@@ -311,7 +308,7 @@ export function clone(input) {
  *
  * @private
  */
-export function arraysIntersect(a, b) {
+function arraysIntersect(a, b) {
     for (let l = 0; l < a.length; l++) {
         if (b.indexOf(a[l]) >= 0) return true;
     }
@@ -326,7 +323,7 @@ export function arraysIntersect(a, b) {
  */
 const warnOnceHistory = {};
 
-export function warnOnce(message) {
+function warnOnce(message) {
     if (!warnOnceHistory[message]) {
         // console isn't defined in some WebWorkers, see #2558
         if (typeof console !== "undefined") console.warn(message);
@@ -341,7 +338,7 @@ export function warnOnce(message) {
  * @returns true for a counter clockwise set of points
  */
 // http://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
-export function isCounterClockwise(a, b, c) {
+function isCounterClockwise(a, b, c) {
     return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
 }
 
@@ -353,7 +350,7 @@ export function isCounterClockwise(a, b, c) {
  * @private
  * @param ring Exterior or interior ring
  */
-export function calculateSignedArea(ring) {
+function calculateSignedArea(ring) {
     let sum = 0;
     for (let i = 0, len = ring.length, j = len - 1, p1, p2; i < len; j = i++) {
         p1 = ring[i];
@@ -370,7 +367,7 @@ export function calculateSignedArea(ring) {
  * @param points array of points
  * @return true if the points are a closed polygon
  */
-export function isClosedPolygon(points) {
+function isClosedPolygon(points) {
     // If it is 2 points that are the same then it is a point
     // If it is 3 points with start and end the same then it is a line
     if (points.length < 4)
@@ -396,7 +393,7 @@ export function isClosedPolygon(points) {
  * @return cartesian coordinates in [x, y, z]
  */
 
-export function sphericalToCartesian([r, azimuthal, polar]) {
+function sphericalToCartesian([r, azimuthal, polar]) {
     // We abstract "north"/"up" (compass-wise) to be 0° when really this is 90° (π/2):
     // correct for that here
     azimuthal += 90;
@@ -419,8 +416,8 @@ export function sphericalToCartesian([r, azimuthal, polar]) {
  * @param cacheControl Value of 'Cache-Control' header
  * @return object containing parsed header info.
  */
-
-export function parseCacheControl(cacheControl) {
+/* eslint-disable no-control-regex */
+function parseCacheControl(cacheControl) {
     // Taken from [Wreck](https://github.com/hapijs/wreck)
     const re = /(?:^|(?:\s*\,\s*))([^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)(?:\=(?:([^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)|(?:\"((?:[^"\\]|\\.)*)\")))?/g;
 
@@ -439,3 +436,32 @@ export function parseCacheControl(cacheControl) {
 
     return header;
 }
+/* eslint-enable no-control-regex */
+
+module.exports = {
+    easeCubicInOut,
+    bezier,
+    ease,
+    clamp,
+    wrap,
+    asyncAll,
+    values,
+    keysDifference,
+    extend,
+    pick,
+    uniqueId,
+    bindAll,
+    getCoordinatesCenter,
+    endsWith,
+    mapObject,
+    filterObject,
+    deepEqual,
+    clone,
+    arraysIntersect,
+    warnOnce,
+    isCounterClockwise,
+    calculateSignedArea,
+    isClosedPolygon,
+    sphericalToCartesian,
+    parseCacheControl
+};

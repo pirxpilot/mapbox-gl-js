@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import Color from './color';
+const Color = require('./color');
 
-import {number as interpolateNumber} from './interpolate';
+const {number: interpolateNumber} = require('./interpolate');
 
 
 
@@ -114,14 +114,19 @@ function interpolateHcl(from, to, t) {
     };
 }
 
-export const lab = {
+const lab = {
     forward: rgbToLab,
     reverse: labToRgb,
     interpolate: interpolateLab
 };
 
-export const hcl = {
+const hcl = {
     forward: rgbToHcl,
     reverse: hclToRgb,
     interpolate: interpolateHcl
+};
+
+module.exports = {
+    lab,
+    hcl
 };

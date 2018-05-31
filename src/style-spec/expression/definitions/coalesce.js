@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import { checkSubtype, ValueType } from '../types';
+const { checkSubtype, ValueType } = require('../types');
 
 
 class Coalesce {
@@ -68,4 +68,4 @@ class Coalesce {
     }
 }
 
-export default Coalesce;
+module.exports = Coalesce;

@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import { array, ValueType, NumberType } from '../types';
+const { array, ValueType, NumberType } = require('../types');
 
-import RuntimeError from '../runtime_error';
+const RuntimeError = require('../runtime_error');
 
 
 class At {
@@ -59,4 +59,4 @@ class At {
     }
 }
 
-export default At;
+module.exports = At;

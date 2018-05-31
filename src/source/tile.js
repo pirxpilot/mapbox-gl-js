@@ -1,21 +1,19 @@
-// 
+'use strict';
 
-import { uniqueId, deepEqual, parseCacheControl } from '../util/util';
-import { deserialize as deserializeBucket } from '../data/bucket';
-import FeatureIndex from '../data/feature_index';
-import GeoJSONFeature from '../util/vectortile_to_geojson';
-import featureFilter from '../style-spec/feature_filter';
-import SymbolBucket from '../data/bucket/symbol_bucket';
-import { RasterBoundsArray, CollisionBoxArray } from '../data/array_types';
-import rasterBoundsAttributes from '../data/raster_bounds_attributes';
-import EXTENT from '../data/extent';
-import Point from '@mapbox/point-geometry';
-import Texture from '../render/texture';
-import SegmentVector from '../data/segment';
-import { TriangleIndexArray } from '../data/index_array_type';
-import browser from '../util/browser';
-import EvaluationParameters from '../style/evaluation_parameters';
-import SourceFeatureState from '../source/source_state';
+const { uniqueId, deepEqual, parseCacheControl } = require('../util/util');
+const { deserialize: deserializeBucket } = require('../data/bucket');
+const GeoJSONFeature = require('../util/vectortile_to_geojson');
+const featureFilter = require('../style-spec/feature_filter');
+const SymbolBucket = require('../data/bucket/symbol_bucket');
+const { RasterBoundsArray, CollisionBoxArray } = require('../data/array_types');
+const rasterBoundsAttributes = require('../data/raster_bounds_attributes');
+const EXTENT = require('../data/extent');
+const Point = require('@mapbox/point-geometry');
+const Texture = require('../render/texture');
+const SegmentVector = require('../data/segment');
+const { TriangleIndexArray } = require('../data/index_array_type');
+const browser = require('../util/browser');
+const EvaluationParameters = require('../style/evaluation_parameters');
 
 const CLOCK_SKEW_RETRY_TIMEOUT = 30000;
 
@@ -381,4 +379,4 @@ class Tile {
     }
 }
 
-export default Tile;
+module.exports = Tile;

@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import ValidationError from '../error/validation_error';
+const ValidationError = require('../error/validation_error');
 
-import { createExpression, createPropertyExpression } from '../expression';
-import { deepUnbundle } from '../util/unbundle_jsonlint';
-import { isStateConstant } from '../expression/is_constant';
+const { createExpression, createPropertyExpression } = require('../expression');
+const { deepUnbundle } = require('../util/unbundle_jsonlint');
+const { isStateConstant } = require('../expression/is_constant');
 
-export default function validateExpression(options) {
+module.exports = function validateExpression(options) {
     const expression = (options.expressionContext === 'property' ? createPropertyExpression : createExpression)(deepUnbundle(options.value), options.valueSpec);
     if (expression.result === 'error') {
         return expression.value.map((error) => {
@@ -24,4 +24,4 @@ export default function validateExpression(options) {
         return [new ValidationError(options.key, options.value, '"feature-state" data expressions are not supported with layout properties.')];
     }
     return [];
-}
+};

@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import {
+const {
     ObjectType,
     ValueType,
     StringType,
@@ -10,9 +10,9 @@ import {
     BooleanType,
     checkSubtype,
     toString
-} from '../types';
-import RuntimeError from '../runtime_error';
-import { typeOf } from '../values';
+} = require('../types');
+const RuntimeError = require('../runtime_error');
+const { typeOf } = require('../values');
 
 
 const types = {
@@ -76,4 +76,4 @@ class Assertion {
     }
 }
 
-export default Assertion;
+module.exports = Assertion;

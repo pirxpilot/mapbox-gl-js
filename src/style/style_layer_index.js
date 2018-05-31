@@ -1,11 +1,10 @@
-// 
+'use strict';
 
-import StyleLayer from './style_layer';
-import createStyleLayer from './create_style_layer';
+const createStyleLayer = require('./create_style_layer');
 
-import { values } from '../util/util';
-import featureFilter from '../style-spec/feature_filter';
-import groupByLayout from '../style-spec/group_by_layout';
+const { values } = require('../util/util');
+const featureFilter = require('../style-spec/feature_filter');
+const groupByLayout = require('../style-spec/group_by_layout');
 
 
 
@@ -65,4 +64,4 @@ class StyleLayerIndex {
     }
 }
 
-export default StyleLayerIndex;
+module.exports = StyleLayerIndex;

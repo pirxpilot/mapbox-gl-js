@@ -1,16 +1,16 @@
-// 
+'use strict';
 
-import Point from '@mapbox/point-geometry';
+const Point = require('@mapbox/point-geometry');
 
-import { mat4, vec4 } from 'gl-matrix';
-import * as symbolSize from './symbol_size';
-import { addDynamicAttributes } from '../data/bucket/symbol_bucket';
-import properties from '../style/style_layer/symbol_style_layer_properties';
+const { mat4, vec4 } = require('gl-matrix');
+const symbolSize = require('./symbol_size');
+const { addDynamicAttributes } = require('../data/bucket/symbol_bucket');
+const properties = require('../style/style_layer/symbol_style_layer_properties');
 const symbolLayoutProperties = properties.layout;
 
-import { WritingMode } from '../symbol/shaping';
+const { WritingMode } = require('../symbol/shaping');
 
-export { updateLineLabels, getLabelPlaneMatrix, getGlCoordMatrix, project, placeFirstAndLastGlyph, xyTransformMat4 };
+module.exports = { updateLineLabels, getLabelPlaneMatrix, getGlCoordMatrix, project, placeFirstAndLastGlyph, xyTransformMat4 };
 
 /*
  * # Overview of coordinate spaces

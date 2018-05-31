@@ -1,6 +1,6 @@
-import { test } from 'mapbox-gl-js-test';
-import TileCache from '../../../src/source/tile_cache';
-import { OverscaledTileID } from '../../../src/source/tile_id';
+const { test } = require('mapbox-gl-js-test');
+const TileCache = require('../../../src/source/tile_cache');
+const { OverscaledTileID } = require('../../../src/source/tile_id');
 
 const idA = new OverscaledTileID(10, 0, 10, 0, 1);
 const idB = new OverscaledTileID(10, 0, 10, 0, 2);

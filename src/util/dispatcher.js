@@ -1,7 +1,7 @@
-// 
+'use strict';
 
-import { uniqueId, asyncAll } from './util';
-import Actor from './actor';
+const { uniqueId, asyncAll } = require('./util');
+const Actor = require('./actor');
 
 
 /**
@@ -62,4 +62,4 @@ class Dispatcher {
 
 Dispatcher.Actor = Actor;
 
-export default Dispatcher;
+module.exports = Dispatcher;

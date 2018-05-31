@@ -1,20 +1,20 @@
-// 
+'use strict';
 
-import {
+const {
     bindAll,
     extend,
     deepEqual,
     warnOnce,
     clamp,
     wrap,
-    ease as defaultEasing
-} from '../util/util';
-import { number as interpolate } from '../style-spec/util/interpolate';
-import browser from '../util/browser';
-import LngLat from '../geo/lng_lat';
-import LngLatBounds from '../geo/lng_lat_bounds';
-import Point from '@mapbox/point-geometry';
-import { Event, Evented } from '../util/evented';
+    ease: defaultEasing
+} = require('../util/util');
+const { number: interpolate } = require('../style-spec/util/interpolate');
+const browser = require('../util/browser');
+const LngLat = require('../geo/lng_lat');
+const LngLatBounds = require('../geo/lng_lat_bounds');
+const Point = require('@mapbox/point-geometry');
+const { Event, Evented } = require('../util/evented');
 
 
 /**
@@ -916,4 +916,4 @@ class Camera extends Evented {
     }
 }
 
-export default Camera;
+module.exports = Camera;

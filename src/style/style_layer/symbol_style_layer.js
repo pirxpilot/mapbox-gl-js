@@ -1,14 +1,12 @@
-// 
+'use strict';
 
-import StyleLayer from '../style_layer';
+const StyleLayer = require('../style_layer');
 
-import SymbolBucket from '../../data/bucket/symbol_bucket';
-import resolveTokens from '../../util/token';
-import { isExpression } from '../../style-spec/expression';
-import assert from 'assert';
-import properties from './symbol_style_layer_properties';
-import { Transitionable, Transitioning, Layout, PossiblyEvaluated } from '../properties';
-
+const SymbolBucket = require('../../data/bucket/symbol_bucket');
+const resolveTokens = require('../../util/token');
+const { isExpression } = require('../../style-spec/expression');
+const assert = require('assert');
+const properties = require('./symbol_style_layer_properties');
 
 class SymbolStyleLayer extends StyleLayer {
 
@@ -69,4 +67,4 @@ class SymbolStyleLayer extends StyleLayer {
     }
 }
 
-export default SymbolStyleLayer;
+module.exports = SymbolStyleLayer;

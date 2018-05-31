@@ -1,37 +1,36 @@
-// 
+'use strict';
 
-import browser from '../util/browser';
+const browser = require('../util/browser');
 
-import { mat4 } from 'gl-matrix';
-import SourceCache from '../source/source_cache';
-import EXTENT from '../data/extent';
-import pixelsToTileUnits from '../source/pixels_to_tile_units';
-import { filterObject } from '../util/util';
-import VertexArrayObject from './vertex_array_object';
-import { RasterBoundsArray, PosArray } from '../data/array_types';
-import rasterBoundsAttributes from '../data/raster_bounds_attributes';
-import posAttributes from '../data/pos_attributes';
-import ProgramConfiguration from '../data/program_configuration';
-import CrossTileSymbolIndex from '../symbol/cross_tile_symbol_index';
-import shaders from '../shaders';
-import Program from './program';
-import Context from '../gl/context';
-import DepthMode from '../gl/depth_mode';
-import StencilMode from '../gl/stencil_mode';
-import ColorMode from '../gl/color_mode';
-import Texture from './texture';
-import updateTileMasks from './tile_mask';
-import Color from '../style-spec/util/color';
-import symbol from './draw_symbol';
-import circle from './draw_circle';
-import heatmap from './draw_heatmap';
-import line from './draw_line';
-import fill from './draw_fill';
-import fillExtrusion from './draw_fill_extrusion';
-import hillshade from './draw_hillshade';
-import raster from './draw_raster';
-import background from './draw_background';
-import debug from './draw_debug';
+const { mat4 } = require('gl-matrix');
+const SourceCache = require('../source/source_cache');
+const EXTENT = require('../data/extent');
+const pixelsToTileUnits = require('../source/pixels_to_tile_units');
+const { filterObject } = require('../util/util');
+const VertexArrayObject = require('./vertex_array_object');
+const { RasterBoundsArray, PosArray } = require('../data/array_types');
+const rasterBoundsAttributes = require('../data/raster_bounds_attributes');
+const posAttributes = require('../data/pos_attributes');
+const ProgramConfiguration = require('../data/program_configuration');
+const CrossTileSymbolIndex = require('../symbol/cross_tile_symbol_index');
+const shaders = require('../shaders');
+const Program = require('./program');
+const Context = require('../gl/context');
+const DepthMode = require('../gl/depth_mode');
+const StencilMode = require('../gl/stencil_mode');
+const ColorMode = require('../gl/color_mode');
+const updateTileMasks = require('./tile_mask');
+const Color = require('../style-spec/util/color');
+const symbol = require('./draw_symbol');
+const circle = require('./draw_circle');
+const heatmap = require('./draw_heatmap');
+const line = require('./draw_line');
+const fill = require('./draw_fill');
+const fillExtrusion = require('./draw_fill_extrusion');
+const hillshade = require('./draw_hillshade');
+const raster = require('./draw_raster');
+const background = require('./draw_background');
+const debug = require('./draw_debug');
 
 const draw = {
     symbol,
@@ -435,4 +434,4 @@ class Painter {
     }
 }
 
-export default Painter;
+module.exports = Painter;

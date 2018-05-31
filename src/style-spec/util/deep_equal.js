@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 /**
  * Deeply compares two object literals.
@@ -25,4 +25,4 @@ function deepEqual(a, b) {
     return a === b;
 }
 
-export default deepEqual;
+module.exports = deepEqual;

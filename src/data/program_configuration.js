@@ -1,12 +1,11 @@
-// 
+'use strict';
 
-import { packUint8ToFloat } from '../shaders/encode_attribute';
-import Color from '../style-spec/util/color';
-import { supportsPropertyExpression } from '../style-spec/util/properties';
-import { register } from '../util/web_worker_transfer';
-import { PossiblyEvaluatedPropertyValue } from '../style/properties';
-import { StructArrayLayout1f4, StructArrayLayout2f8, StructArrayLayout4f16 } from './array_types';
-import EvaluationParameters from '../style/evaluation_parameters';
+const { packUint8ToFloat } = require('../shaders/encode_attribute');
+const { supportsPropertyExpression } = require('../style-spec/util/properties');
+const { register } = require('../util/web_worker_transfer');
+const { PossiblyEvaluatedPropertyValue } = require('../style/properties');
+const { StructArrayLayout1f4, StructArrayLayout2f8, StructArrayLayout4f16 } = require('./array_types');
+const EvaluationParameters = require('../style/evaluation_parameters');
 
 
 
@@ -267,9 +266,7 @@ class CompositeExpressionBinder {
  *
  * @private
  */
-export default class ProgramConfiguration {
-
-
+class ProgramConfiguration {
 
     constructor() {
         this.binders = {};
@@ -398,7 +395,7 @@ export default class ProgramConfiguration {
     }
 }
 
-export class ProgramConfigurationSet {
+class ProgramConfigurationSet {
 
     constructor(layoutAttributes, layers, zoom, filterProperties = () => true) {
         this.programConfigurations = {};
@@ -465,3 +462,7 @@ register('SourceExpressionBinder', SourceExpressionBinder);
 register('CompositeExpressionBinder', CompositeExpressionBinder);
 register('ProgramConfiguration', ProgramConfiguration, {omit: ['_buffers']});
 register('ProgramConfigurationSet', ProgramConfigurationSet);
+
+ProgramConfiguration.ProgramConfigurationSet = ProgramConfigurationSet;
+
+module.exports = ProgramConfiguration;

@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import { RGBAImage } from './image';
+const { RGBAImage } = require('./image');
 
 
 /**
@@ -9,7 +9,7 @@ import { RGBAImage } from './image';
  *
  * @private
  */
-export default function renderColorRamp(expression, colorRampEvaluationParameter) {
+module.exports = function renderColorRamp(expression, colorRampEvaluationParameter) {
     const colorRampData = new Uint8Array(256 * 4);
     const evaluationGlobals = {};
     for (let i = 0, j = 0; i < 256; i++, j += 4) {
@@ -24,4 +24,4 @@ export default function renderColorRamp(expression, colorRampEvaluationParameter
     }
 
     return new RGBAImage({width: 256, height: 1}, colorRampData);
-}
+};

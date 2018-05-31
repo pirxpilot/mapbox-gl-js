@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import { bindAll } from '../../util/util';
+const { bindAll } = require('../../util/util');
 
 
 /**
@@ -96,4 +96,4 @@ class DoubleClickZoomHandler {
     }
 }
 
-export default DoubleClickZoomHandler;
+module.exports = DoubleClickZoomHandler;

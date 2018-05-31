@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import { warnOnce } from '../util/util';
+const { warnOnce } = require('../util/util');
 
 
 /**
@@ -143,4 +143,4 @@ class LineAtlas {
     }
 }
 
-export default LineAtlas;
+module.exports = LineAtlas;

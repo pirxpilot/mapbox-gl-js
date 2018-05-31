@@ -1,5 +1,5 @@
-import { test } from 'mapbox-gl-js-test';
-import Wrapper from '../../../src/source/geojson_wrapper';
+const { test } = require('mapbox-gl-js-test');
+const Wrapper = require('../../../src/source/geojson_wrapper');
 
 test('geojsonwrapper', (t) => {
 

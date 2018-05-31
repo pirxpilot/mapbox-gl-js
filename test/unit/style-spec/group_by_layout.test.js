@@ -1,5 +1,5 @@
-import { test as t } from 'mapbox-gl-js-test';
-import group from '../../../src/style-spec/group_by_layout';
+const { test: t } = require('mapbox-gl-js-test');
+const group = require('../../../src/style-spec/group_by_layout');
 
 t('group layers whose ref properties are identical', (t) => {
     const a = {

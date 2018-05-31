@@ -1,5 +1,5 @@
-import { test } from 'mapbox-gl-js-test';
-import filter from '../../../src/style-spec/feature_filter';
+const { test } = require('mapbox-gl-js-test');
+const filter = require('../../../src/style-spec/feature_filter');
 
 test('filter', (t) => {
     t.test('expression, zoom', (t) => {

@@ -1,9 +1,10 @@
+'use strict';
 
-import ValidationError from '../error/validation_error';
-import getType from '../util/get_type';
-import validate from './validate';
+const ValidationError = require('../error/validation_error');
+const getType = require('../util/get_type');
+const validate = require('./validate');
 
-export default function validateLight(options) {
+module.exports = function validateLight(options) {
     const light = options.value;
     const styleSpec = options.styleSpec;
     const lightSpec = styleSpec.light;
@@ -44,4 +45,4 @@ export default function validateLight(options) {
     }
 
     return errors;
-}
+};

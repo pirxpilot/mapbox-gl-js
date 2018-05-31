@@ -1,17 +1,16 @@
-// 
+'use strict';
 
-import { Event, Evented } from '../util/evented';
+const { Event, Evented } = require('../util/evented');
 
 let pluginRequested = false;
 let pluginURL = null;
 let foregroundLoadComplete = false;
 
-export const evented = new Evented();
-
+const evented = new Evented();
 
 let _completionCallback;
 
-export const registerForPluginAvailability = function(
+function registerForPluginAvailability(
     callback
 ) {
     if (pluginURL) {
@@ -20,14 +19,14 @@ export const registerForPluginAvailability = function(
         evented.once('pluginAvailable', callback);
     }
     return callback;
-};
+}
 
-export const clearRTLTextPlugin = function() {
+function clearRTLTextPlugin() {
     pluginRequested = false;
     pluginURL = null;
-};
+}
 
-export const setRTLTextPlugin = function(url, callback) {
+function setRTLTextPlugin(url, callback) {
     if (pluginRequested) {
         throw new Error('setRTLTextPlugin cannot be called multiple times.');
     }
@@ -46,13 +45,21 @@ export const setRTLTextPlugin = function(url, callback) {
         }
     };
     evented.fire(new Event('pluginAvailable', { pluginURL: pluginURL, completionCallback: _completionCallback }));
-};
+}
 
-export const plugin = {
+const plugin = {
     applyArabicShaping: null,
     processBidirectionalText: null,
     isLoaded: function() {
         return foregroundLoadComplete ||       // Foreground: loaded if the completion callback returned successfully
             plugin.applyArabicShaping != null; // Background: loaded if the plugin functions have been compiled
     }
+};
+
+module.exports = {
+    registerForPluginAvailability,
+    clearRTLTextPlugin,
+    setRTLTextPlugin,
+    plugin,
+    evented
 };

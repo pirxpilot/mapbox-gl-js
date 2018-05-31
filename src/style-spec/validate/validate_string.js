@@ -1,8 +1,9 @@
+'use strict';
 
-import getType from '../util/get_type';
-import ValidationError from '../error/validation_error';
+const getType = require('../util/get_type');
+const ValidationError = require('../error/validation_error');
 
-export default function validateString(options) {
+module.exports = function validateString(options) {
     const value = options.value;
     const key = options.key;
     const type = getType(value);
@@ -12,4 +13,4 @@ export default function validateString(options) {
     }
 
     return [];
-}
+};

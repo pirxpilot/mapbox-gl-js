@@ -1,11 +1,19 @@
-// 
+'use strict';
 
-import config from './config';
+const config = require('./config');
 
-import browser from './browser';
+const browser = require('./browser');
 
 const help = 'See https://www.mapbox.com/api-documentation/#access-tokens';
 
+module.exports = {
+    isMapboxURL,
+    normalizeStyleURL,
+    normalizeGlyphsURL,
+    normalizeSourceURL,
+    normalizeSpriteURL,
+    normalizeTileURL
+};
 
 function makeAPIURL(urlObject, accessToken) {
     const apiUrlObject = parseUrl(config.API_URL);
@@ -32,23 +40,21 @@ function isMapboxURL(url) {
     return url.indexOf('mapbox:') === 0;
 }
 
-export { isMapboxURL };
-
-export const normalizeStyleURL = function(url, accessToken) {
+function normalizeStyleURL(url, accessToken) {
     if (!isMapboxURL(url)) return url;
     const urlObject = parseUrl(url);
     urlObject.path = `/styles/v1${urlObject.path}`;
     return makeAPIURL(urlObject, accessToken);
-};
+}
 
-export const normalizeGlyphsURL = function(url, accessToken) {
+function normalizeGlyphsURL(url, accessToken) {
     if (!isMapboxURL(url)) return url;
     const urlObject = parseUrl(url);
     urlObject.path = `/fonts/v1${urlObject.path}`;
     return makeAPIURL(urlObject, accessToken);
-};
+}
 
-export const normalizeSourceURL = function(url, accessToken) {
+function normalizeSourceURL(url, accessToken) {
     if (!isMapboxURL(url)) return url;
     const urlObject = parseUrl(url);
     urlObject.path = `/v4/${urlObject.authority}.json`;
@@ -56,9 +62,9 @@ export const normalizeSourceURL = function(url, accessToken) {
     // that the server knows to send SSL-ified resource references.
     urlObject.params.push('secure');
     return makeAPIURL(urlObject, accessToken);
-};
+}
 
-export const normalizeSpriteURL = function(url, format, extension, accessToken) {
+function normalizeSpriteURL(url, format, extension, accessToken) {
     const urlObject = parseUrl(url);
     if (!isMapboxURL(url)) {
         urlObject.path += `${format}${extension}`;
@@ -66,11 +72,11 @@ export const normalizeSpriteURL = function(url, format, extension, accessToken) 
     }
     urlObject.path = `/styles/v1${urlObject.path}/sprite${format}${extension}`;
     return makeAPIURL(urlObject, accessToken);
-};
+}
 
 const imageExtensionRe = /(\.(png|jpg)\d*)(?=$)/;
 
-export const normalizeTileURL = function(tileURL, sourceURL, tileSize) {
+function normalizeTileURL(tileURL, sourceURL, tileSize) {
     if (!sourceURL || !isMapboxURL(sourceURL)) return tileURL;
 
     const urlObject = parseUrl(tileURL);
@@ -84,7 +90,7 @@ export const normalizeTileURL = function(tileURL, sourceURL, tileSize) {
 
     replaceTempAccessToken(urlObject.params);
     return formatUrl(urlObject);
-};
+}
 
 function replaceTempAccessToken(params) {
     for (let i = 0; i < params.length; i++) {

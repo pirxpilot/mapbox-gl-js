@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import {getTileBBox} from '@mapbox/whoots-js';
+const {getTileBBox} = require('@mapbox/whoots-js');
 
-import assert from 'assert';
-import { register } from '../util/web_worker_transfer';
-import Coordinate from '../geo/coordinate';
+const assert = require('assert');
+const { register } = require('../util/web_worker_transfer');
+const Coordinate = require('../geo/coordinate');
 
-export class CanonicalTileID {
+class CanonicalTileID {
 
     constructor(z, x, y) {
         assert(z >= 0 && z <= 25);
@@ -37,7 +37,7 @@ export class CanonicalTileID {
     }
 }
 
-export class UnwrappedTileID {
+class UnwrappedTileID {
 
     constructor(wrap, canonical) {
         this.wrap = wrap;
@@ -46,7 +46,7 @@ export class UnwrappedTileID {
     }
 }
 
-export class OverscaledTileID {
+class OverscaledTileID {
 
     constructor(overscaledZ, wrap, z, x, y) {
         assert(overscaledZ >= z);
@@ -154,3 +154,9 @@ function getQuadkey(z, x, y) {
 
 register('CanonicalTileID', CanonicalTileID);
 register('OverscaledTileID', OverscaledTileID, {omit: ['posMatrix']});
+
+module.exports = {
+    CanonicalTileID,
+    UnwrappedTileID,
+    OverscaledTileID
+};

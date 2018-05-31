@@ -1,25 +1,25 @@
-// 
+'use strict';
 
-import { NumberType, StringType, BooleanType, ColorType, ObjectType, ValueType, ErrorType, CollatorType, array, toString } from '../types';
+const { NumberType, StringType, BooleanType, ColorType, ObjectType, ValueType, ErrorType, CollatorType, array, toString } = require('../types');
 
-import { typeOf, Color, validateRGBA } from '../values';
-import CompoundExpression from '../compound_expression';
-import RuntimeError from '../runtime_error';
-import Let from './let';
-import Var from './var';
-import Literal from './literal';
-import Assertion from './assertion';
-import ArrayAssertion from './array';
-import Coercion from './coercion';
-import At from './at';
-import Match from './match';
-import Case from './case';
-import Step from './step';
-import Interpolate from './interpolate';
-import Coalesce from './coalesce';
-import { Equals, NotEquals } from './equals';
-import { CollatorExpression } from './collator';
-import Length from './length';
+const { typeOf, Color, validateRGBA } = require('../values');
+const CompoundExpression = require('../compound_expression');
+const RuntimeError = require('../runtime_error');
+const Let = require('./let');
+const Var = require('./var');
+const Literal = require('./literal');
+const Assertion = require('./assertion');
+const ArrayAssertion = require('./array');
+const Coercion = require('./coercion');
+const At = require('./at');
+const Match = require('./match');
+const Case = require('./case');
+const Step = require('./step');
+const Interpolate = require('./interpolate');
+const Coalesce = require('./coalesce');
+const { Equals, NotEquals } = require('./equals');
+const { CollatorExpression } = require('./collator');
+const Length = require('./length');
 
 
 const expressions = {
@@ -579,4 +579,4 @@ CompoundExpression.register(expressions, {
     ]
 });
 
-export default expressions;
+module.exports = expressions;

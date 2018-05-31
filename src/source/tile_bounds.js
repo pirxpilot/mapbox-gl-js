@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import LngLatBounds from '../geo/lng_lat_bounds';
+const LngLatBounds = require('../geo/lng_lat_bounds');
 
-import { clamp } from '../util/util';
+const { clamp } = require('../util/util');
 
 
 class TileBounds {
@@ -41,4 +41,4 @@ class TileBounds {
     }
 }
 
-export default TileBounds;
+module.exports = TileBounds;

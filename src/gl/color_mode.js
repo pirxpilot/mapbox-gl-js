@@ -1,5 +1,5 @@
-// 
-import Color from '../style-spec/util/color';
+'use strict';
+const Color = require('../style-spec/util/color');
 
 
 const ZERO = 0x0000;
@@ -23,4 +23,4 @@ ColorMode.disabled = new ColorMode(ColorMode.Replace, Color.transparent, [false,
 ColorMode.unblended = new ColorMode(ColorMode.Replace, Color.transparent, [true, true, true, true]);
 ColorMode.alphaBlended = new ColorMode([ONE, ONE_MINUS_SRC_ALPHA], Color.transparent, [true, true, true, true]);
 
-export default ColorMode;
+module.exports = ColorMode;

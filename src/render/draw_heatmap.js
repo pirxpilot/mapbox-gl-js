@@ -1,16 +1,16 @@
-// 
+'use strict';
 
-import { mat4 } from 'gl-matrix';
+const { mat4 } = require('gl-matrix');
 
-import Texture from './texture';
-import pixelsToTileUnits from '../source/pixels_to_tile_units';
-import Color from '../style-spec/util/color';
-import DepthMode from '../gl/depth_mode';
-import StencilMode from '../gl/stencil_mode';
-import ColorMode from '../gl/color_mode';
+const Texture = require('./texture');
+const pixelsToTileUnits = require('../source/pixels_to_tile_units');
+const Color = require('../style-spec/util/color');
+const DepthMode = require('../gl/depth_mode');
+const StencilMode = require('../gl/stencil_mode');
+const ColorMode = require('../gl/color_mode');
 
 
-export default drawHeatmap;
+module.exports = drawHeatmap;
 
 function drawHeatmap(painter, sourceCache, layer, coords) {
     if (layer.paint.get('heatmap-opacity') === 0) {

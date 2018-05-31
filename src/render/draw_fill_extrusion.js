@@ -1,19 +1,19 @@
-// 
+'use strict';
 
-import { mat3, mat4, vec3 } from 'gl-matrix';
+const { mat3, mat4, vec3 } = require('gl-matrix');
 
-import {
+const {
     isPatternMissing,
     setPatternUniforms,
-    prepare as preparePattern
-} from './pattern';
-import Texture from './texture';
-import Color from '../style-spec/util/color';
-import DepthMode from '../gl/depth_mode';
-import StencilMode from '../gl/stencil_mode';
+    prepare: preparePattern
+} = require('./pattern');
+const Texture = require('./texture');
+const Color = require('../style-spec/util/color');
+const DepthMode = require('../gl/depth_mode');
+const StencilMode = require('../gl/stencil_mode');
 
 
-export default draw;
+module.exports = draw;
 
 function draw(painter, source, layer, coords) {
     if (layer.paint.get('fill-extrusion-opacity') === 0) {

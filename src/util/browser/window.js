@@ -1,3 +1,3 @@
-// 
+'use strict';
 /* eslint-env browser */
-export default (self);
+module.exports = (self);

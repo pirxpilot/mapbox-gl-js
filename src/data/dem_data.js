@@ -1,10 +1,10 @@
-// 
-import { RGBAImage } from '../util/image';
+'use strict';
+const { RGBAImage } = require('../util/image');
 
-import { warnOnce, clamp } from '../util/util';
-import { register } from '../util/web_worker_transfer';
+const { warnOnce, clamp } = require('../util/util');
+const { register } = require('../util/web_worker_transfer');
 
-export class Level {
+class Level {
 
     constructor(dim, border, data) {
         if (dim <= 0) throw new RangeError('Level must have positive dimension');
@@ -40,7 +40,7 @@ register('Level', Level);
 // surrounding pixel values to compute the slope at that pixel, and we cannot accurately calculate the slope at pixels on a
 // tile's edge without backfilling from neighboring tiles.
 
-export default class DEMData {
+class DEMData {
 
     constructor(uid, scale, data) {
         this.uid = uid;
@@ -155,3 +155,6 @@ export default class DEMData {
 }
 
 register('DEMData', DEMData);
+
+DEMData.Level = Level;
+module.exports = DEMData;

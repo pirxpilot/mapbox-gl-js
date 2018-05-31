@@ -1,9 +1,9 @@
-// 
+'use strict';
 
-import DOM from '../../util/dom';
+const DOM = require('../../util/dom');
 
-import { bindAll, warnOnce } from '../../util/util';
-import window from '../../util/window';
+const { bindAll, warnOnce } = require('../../util/util');
+const window = require('../../util/window');
 
 
 /**
@@ -112,4 +112,4 @@ class FullscreenControl {
     }
 }
 
-export default FullscreenControl;
+module.exports = FullscreenControl;

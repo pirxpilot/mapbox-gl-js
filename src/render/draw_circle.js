@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import pixelsToTileUnits from '../source/pixels_to_tile_units';
+const pixelsToTileUnits = require('../source/pixels_to_tile_units');
 
-import StencilMode from '../gl/stencil_mode';
-import DepthMode from '../gl/depth_mode';
+const StencilMode = require('../gl/stencil_mode');
+const DepthMode = require('../gl/depth_mode');
 
 
-export default drawCircles;
+module.exports = drawCircles;
 
 function drawCircles(painter, sourceCache, layer, coords) {
     if (painter.renderPass !== 'translucent') return;

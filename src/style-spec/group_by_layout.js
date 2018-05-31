@@ -1,5 +1,6 @@
+'use strict';
 
-import refProperties from './util/ref_properties';
+const refProperties = require('./util/ref_properties');
 
 function stringify(obj) {
     const type = typeof obj;
@@ -31,7 +32,7 @@ function getKey(layer) {
     return key;
 }
 
-export default groupByLayout;
+module.exports = groupByLayout;
 
 /**
  * Given an array of layers, return an array of arrays of layers where all

@@ -1,11 +1,11 @@
-import { test } from 'mapbox-gl-js-test';
-import assert from 'assert';
-import ImageSource from '../../../src/source/image_source';
-import { Evented } from '../../../src/util/evented';
-import Transform from '../../../src/geo/transform';
-import { extend } from '../../../src/util/util';
-import browser from '../../../src/util/browser';
-import window from '../../../src/util/window';
+const { test } = require('mapbox-gl-js-test');
+const assert = require('assert');
+const ImageSource = require('../../../src/source/image_source');
+const { Evented } = require('../../../src/util/evented');
+const Transform = require('../../../src/geo/transform');
+const { extend } = require('../../../src/util/util');
+const browser = require('../../../src/util/browser');
+const window = require('../../../src/util/window');
 
 function createSource(options) {
     options = extend({

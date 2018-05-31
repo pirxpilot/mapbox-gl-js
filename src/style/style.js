@@ -1,39 +1,38 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import { Event, ErrorEvent, Evented } from '../util/evented';
-import StyleLayer from './style_layer';
-import createStyleLayer from './create_style_layer';
-import loadSprite from './load_sprite';
-import ImageManager from '../render/image_manager';
-import GlyphManager from '../render/glyph_manager';
-import Light from './light';
-import LineAtlas from '../render/line_atlas';
-import { pick, clone, extend, deepEqual, filterObject, mapObject } from '../util/util';
-import { getJSON, ResourceType } from '../util/ajax';
-import { isMapboxURL, normalizeStyleURL } from '../util/mapbox';
-import browser from '../util/browser';
-import Dispatcher from '../util/dispatcher';
-import { validateStyle, emitValidationErrors as _emitValidationErrors } from './validate_style';
-import {
-    getType as getSourceType,
-    setType as setSourceType,
-} from '../source/source';
-import { queryRenderedFeatures, queryRenderedSymbols, querySourceFeatures } from '../source/query_features';
-import SourceCache from '../source/source_cache';
-import GeoJSONSource from '../source/geojson_source';
-import styleSpec from '../style-spec/reference/latest';
-import getWorkerPool from '../util/global_worker_pool';
-import deref from '../style-spec/deref';
-import diffStyles, {operations as diffOperations} from '../style-spec/diff';
-import {
+const { Event, ErrorEvent, Evented } = require('../util/evented');
+const createStyleLayer = require('./create_style_layer');
+const loadSprite = require('./load_sprite');
+const ImageManager = require('../render/image_manager');
+const GlyphManager = require('../render/glyph_manager');
+const Light = require('./light');
+const LineAtlas = require('../render/line_atlas');
+const { pick, clone, extend, deepEqual, filterObject, mapObject } = require('../util/util');
+const { getJSON, ResourceType } = require('../util/ajax');
+const { isMapboxURL, normalizeStyleURL } = require('../util/mapbox');
+const browser = require('../util/browser');
+const Dispatcher = require('../util/dispatcher');
+const { validateStyle, emitValidationErrors: _emitValidationErrors } = require('./validate_style');
+const {
+    getType: getSourceType,
+    setType: setSourceType,
+} = require('../source/source');
+const { queryRenderedFeatures, queryRenderedSymbols, querySourceFeatures } = require('../source/query_features');
+const SourceCache = require('../source/source_cache');
+const styleSpec = require('../style-spec/reference/latest');
+const getWorkerPool = require('../util/global_worker_pool');
+const deref = require('../style-spec/deref');
+const diffStyles = require('../style-spec/diff');
+const { operations: diffOperations } = diffStyles;
+const {
     registerForPluginAvailability,
-    evented as rtlTextPluginEvented
-} from '../source/rtl_text_plugin';
-import PauseablePlacement from './pauseable_placement';
-import ZoomHistory from './zoom_history';
-import CrossTileSymbolIndex from '../symbol/cross_tile_symbol_index';
+    evented: rtlTextPluginEvented
+} = require('../source/rtl_text_plugin');
+const PauseablePlacement = require('./pauseable_placement');
+const ZoomHistory = require('./zoom_history');
+const CrossTileSymbolIndex = require('../symbol/cross_tile_symbol_index');
 
 // We're skipping validation errors with the `source.canvas` identifier in order
 // to continue to allow canvas sources to be added at runtime/updated in
@@ -1044,4 +1043,4 @@ Style.getSourceType = getSourceType;
 Style.setSourceType = setSourceType;
 Style.registerForPluginAvailability = registerForPluginAvailability;
 
-export default Style;
+module.exports = Style;

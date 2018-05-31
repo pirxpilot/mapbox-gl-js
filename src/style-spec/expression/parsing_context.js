@@ -1,19 +1,17 @@
-// 
+'use strict';
 
-import Scope from './scope';
+const Scope = require('./scope');
 
-import { checkSubtype } from './types';
-import ParsingError from './parsing_error';
-import Literal from './definitions/literal';
-import Assertion from './definitions/assertion';
-import ArrayAssertion from './definitions/array';
-import Coercion from './definitions/coercion';
-import EvaluationContext from './evaluation_context';
-import CompoundExpression from './compound_expression';
-import { CollatorExpression } from './definitions/collator';
-import {isGlobalPropertyConstant, isFeatureConstant} from './is_constant';
-import Var from './definitions/var';
-
+const { checkSubtype } = require('./types');
+const ParsingError = require('./parsing_error');
+const Literal = require('./definitions/literal');
+const Assertion = require('./definitions/assertion');
+const ArrayAssertion = require('./definitions/array');
+const Coercion = require('./definitions/coercion');
+const EvaluationContext = require('./evaluation_context');
+const { CollatorExpression } = require('./definitions/collator');
+const {isGlobalPropertyConstant, isFeatureConstant} = require('./is_constant');
+const Var = require('./definitions/var');
 
 
 /**
@@ -179,9 +177,11 @@ class ParsingContext {
     }
 }
 
-export default ParsingContext;
+module.exports = ParsingContext;
 
 function isConstant(expression) {
+    const CompoundExpression = require('./compound_expression');
+
     if (expression instanceof Var) {
         return isConstant(expression.boundExpression);
     } else if (expression instanceof CompoundExpression && expression.name === 'error') {

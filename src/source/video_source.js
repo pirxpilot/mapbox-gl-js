@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import { getVideo, ResourceType } from '../util/ajax';
+const { getVideo, ResourceType } = require('../util/ajax');
 
-import ImageSource from './image_source';
-import rasterBoundsAttributes from '../data/raster_bounds_attributes';
-import VertexArrayObject from '../render/vertex_array_object';
-import Texture from '../render/texture';
-import { ErrorEvent } from '../util/evented';
+const ImageSource = require('./image_source');
+const rasterBoundsAttributes = require('../data/raster_bounds_attributes');
+const VertexArrayObject = require('../render/vertex_array_object');
+const Texture = require('../render/texture');
+const { ErrorEvent } = require('../util/evented');
 
 
 /**
@@ -162,4 +162,4 @@ class VideoSource extends ImageSource {
     }
 }
 
-export default VideoSource;
+module.exports = VideoSource;

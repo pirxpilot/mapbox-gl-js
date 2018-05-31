@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import DOM from '../../util/dom';
+const DOM = require('../../util/dom');
 
-import { bindAll } from '../../util/util';
+const { bindAll } = require('../../util/util');
 
 
 /**
@@ -86,4 +86,4 @@ class LogoControl {
 }
 
 
-export default LogoControl;
+module.exports = LogoControl;

@@ -1,14 +1,14 @@
-// 
+'use strict';
 
-import CollisionIndex from './collision_index';
+const CollisionIndex = require('./collision_index');
 
-import EXTENT from '../data/extent';
-import * as symbolSize from './symbol_size';
-import * as projection from './projection';
-import properties from '../style/style_layer/symbol_style_layer_properties';
+const EXTENT = require('../data/extent');
+const symbolSize = require('./symbol_size');
+const projection = require('./projection');
+const properties = require('../style/style_layer/symbol_style_layer_properties');
 const symbolLayoutProperties = properties.layout;
-import assert from 'assert';
-import pixelsToTileUnits from '../source/pixels_to_tile_units';
+const assert = require('assert');
+const pixelsToTileUnits = require('../source/pixels_to_tile_units');
 
 
 class OpacityState {
@@ -47,7 +47,7 @@ class JointPlacement {
     }
 }
 
-export class RetainedQueryData {
+class RetainedQueryData {
 
     constructor(bucketInstanceId,
                 featureIndex,
@@ -62,7 +62,7 @@ export class RetainedQueryData {
     }
 }
 
-export class Placement {
+class Placement {
 
     constructor(transform, fadeDuration) {
         this.transform = transform.clone();
@@ -437,3 +437,8 @@ function packOpacity(opacityState) {
         opacityBits * shift9 + targetBit * shift8 +
         opacityBits * shift1 + targetBit;
 }
+
+module.exports = {
+    RetainedQueryData,
+    Placement
+};

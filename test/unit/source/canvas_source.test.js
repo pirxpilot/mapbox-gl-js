@@ -1,9 +1,9 @@
-import { test } from 'mapbox-gl-js-test';
-import CanvasSource from '../../../src/source/canvas_source';
-import Transform from '../../../src/geo/transform';
-import { Event, Evented } from '../../../src/util/evented';
-import { extend } from '../../../src/util/util';
-import window from '../../../src/util/window';
+const { test } = require('mapbox-gl-js-test');
+const CanvasSource = require('../../../src/source/canvas_source');
+const Transform = require('../../../src/geo/transform');
+const { Event, Evented } = require('../../../src/util/evented');
+const { extend } = require('../../../src/util/util');
+const window = require('../../../src/util/window');
 
 function createSource(options) {
     window.useFakeHTMLCanvasGetContext();

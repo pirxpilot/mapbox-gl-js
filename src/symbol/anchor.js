@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import Point from '@mapbox/point-geometry';
+const Point = require('@mapbox/point-geometry');
 
-import { register } from '../util/web_worker_transfer';
+const { register } = require('../util/web_worker_transfer');
 
 class Anchor extends Point {
 
@@ -21,4 +21,4 @@ class Anchor extends Point {
 
 register('Anchor', Anchor);
 
-export default Anchor;
+module.exports = Anchor;

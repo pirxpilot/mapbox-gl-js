@@ -1,15 +1,8 @@
-// 
+'use strict';
 
-import { StringType, BooleanType, CollatorType } from '../types';
+const { StringType, BooleanType, CollatorType } = require('../types');
 
-
-// Flow type declarations for Intl cribbed from
-// https://github.com/facebook/flow/issues/1270
-
-
-
-
-export class Collator {
+class Collator {
 
     constructor(caseSensitive, diacriticSensitive, locale) {
         if (caseSensitive)
@@ -34,7 +27,7 @@ export class Collator {
     }
 }
 
-export class CollatorExpression {
+class CollatorExpression {
 
     constructor(caseSensitive, diacriticSensitive, locale) {
         this.type = CollatorType;
@@ -98,3 +91,8 @@ export class CollatorExpression {
         return ["collator", options];
     }
 }
+
+module.exports = {
+    Collator,
+    CollatorExpression
+};

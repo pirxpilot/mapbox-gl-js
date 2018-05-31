@@ -1,18 +1,16 @@
 // This file is generated. Edit build/generate-style-code.js, then run `yarn run codegen`.
-// 
+'use strict';
 /* eslint-disable */
 
-import styleSpec from '../../style-spec/reference/latest';
+const styleSpec = require('../../style-spec/reference/latest');
 
-import {
+const {
     Properties,
     DataConstantProperty,
     DataDrivenProperty,
     CrossFadedProperty,
     ColorRampProperty
-} from '../properties';
-
-
+} = require ('../properties');
 
 const layout = new Properties({
     "line-cap": new DataConstantProperty(styleSpec["layout_line"]["line-cap"]),
@@ -36,4 +34,4 @@ const paint = new Properties({
     "line-gradient": new ColorRampProperty(styleSpec["paint_line"]["line-gradient"]),
 });
 
-export default { paint, layout };
+module.exports = { paint, layout };

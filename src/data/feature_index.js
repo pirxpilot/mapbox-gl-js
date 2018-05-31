@@ -1,23 +1,19 @@
-// 
+'use strict';
 
-import Point from '@mapbox/point-geometry';
-
-import loadGeometry from './load_geometry';
-import EXTENT from './extent';
-import featureFilter from '../style-spec/feature_filter';
-import Grid from 'grid-index';
-import DictionaryCoder from '../util/dictionary_coder';
-import vt from '@mapbox/vector-tile';
-import Protobuf from 'pbf';
-import GeoJSONFeature from '../util/vectortile_to_geojson';
-import { arraysIntersect } from '../util/util';
-import { OverscaledTileID } from '../source/tile_id';
-import { register } from '../util/web_worker_transfer';
-import EvaluationParameters from '../style/evaluation_parameters';
-import SourceFeatureState from '../source/source_state';
+const loadGeometry = require('./load_geometry');
+const EXTENT = require('./extent');
+const featureFilter = require('../style-spec/feature_filter');
+const Grid = require('grid-index');
+const DictionaryCoder = require('../util/dictionary_coder');
+const vt = require('@mapbox/vector-tile');
+const Protobuf = require('pbf');
+const GeoJSONFeature = require('../util/vectortile_to_geojson');
+const { arraysIntersect } = require('../util/util');
+const { register } = require('../util/web_worker_transfer');
+const EvaluationParameters = require('../style/evaluation_parameters');
 
 
-import { FeatureIndexArray } from './array_types';
+const { FeatureIndexArray } = require('./array_types');
 
 
 class FeatureIndex {
@@ -223,7 +219,7 @@ register(
     { omit: ['rawTileData', 'sourceLayerCoder'] }
 );
 
-export default FeatureIndex;
+module.exports = FeatureIndex;
 
 function topDownFeatureComparator(a, b) {
     return b - a;

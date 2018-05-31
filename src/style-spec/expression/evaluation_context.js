@@ -1,12 +1,10 @@
-// 
+'use strict';
 
-import { Color } from './values';
-
+const { Color } = require('./values');
 
 const geometryTypes = ['Unknown', 'Point', 'LineString', 'Polygon'];
 
 class EvaluationContext {
-
 
     constructor() {
         this._parseColorCache = {};
@@ -33,4 +31,4 @@ class EvaluationContext {
     }
 }
 
-export default EvaluationContext;
+module.exports = EvaluationContext;

@@ -1,7 +1,7 @@
-import { test } from 'mapbox-gl-js-test';
-import window from '../../../../src/util/window';
-import Map from '../../../../src/ui/map';
-import DOM from '../../../../src/util/dom';
+const { test } = require('mapbox-gl-js-test');
+const window = require('../../../../src/util/window');
+const Map = require('../../../../src/ui/map');
+const DOM = require('../../../../src/util/dom');
 
 function createMap() {
     return new Map({

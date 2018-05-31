@@ -1,7 +1,7 @@
-// 
+'use strict';
 
-import DOM from '../../util/dom';
-import { extend, bindAll } from '../../util/util';
+const DOM = require('../../util/dom');
+const { extend, bindAll } = require('../../util/util');
 
 
 
@@ -73,7 +73,7 @@ class ScaleControl {
     }
 }
 
-export default ScaleControl;
+module.exports = ScaleControl;
 
 function updateScale(map, container, options) {
     // A horizontal scale is imagined to be present at center of the map

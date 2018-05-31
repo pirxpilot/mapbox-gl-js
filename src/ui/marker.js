@@ -1,13 +1,13 @@
-// 
+'use strict';
 
-import DOM from '../util/dom';
-import window from '../util/window';
-import LngLat from '../geo/lng_lat';
-import Point from '@mapbox/point-geometry';
-import smartWrap from '../util/smart_wrap';
-import { bindAll, extend } from '../util/util';
-import { anchorTranslate, applyAnchorClass } from './anchor';
-import { Event, Evented } from '../util/evented';
+const DOM = require('../util/dom');
+const window = require('../util/window');
+const LngLat = require('../geo/lng_lat');
+const Point = require('@mapbox/point-geometry');
+const smartWrap = require('../util/smart_wrap');
+const { bindAll, extend } = require('../util/util');
+const { anchorTranslate, applyAnchorClass } = require('./anchor');
+const { Event, Evented } = require('../util/evented');
 
 
 /**
@@ -25,7 +25,7 @@ import { Event, Evented } from '../util/evented';
  *   .addTo(map);
  * @see [Add custom icons with Markers](https://www.mapbox.com/mapbox-gl-js/example/custom-marker-icons/)
  */
-export default class Marker extends Evented {
+module.exports = class Marker extends Evented {
  // used for handling drag events
 
     constructor(options) {
@@ -452,4 +452,4 @@ export default class Marker extends Evented {
     isDraggable() {
         return this._draggable;
     }
-}
+};

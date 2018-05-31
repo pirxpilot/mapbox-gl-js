@@ -1,26 +1,22 @@
-// 
+'use strict';
 
-import { endsWith, filterObject } from '../util/util';
+const { endsWith, filterObject } = require('../util/util');
 
-import styleSpec from '../style-spec/reference/latest';
-import {
+const styleSpec = require('../style-spec/reference/latest');
+const {
     validateStyle,
     validateLayoutProperty,
     validatePaintProperty,
     emitValidationErrors
-} from './validate_style';
-import { Evented } from '../util/evented';
-import { Layout, Transitionable, Transitioning, Properties, PossiblyEvaluatedPropertyValue } from './properties';
-import { supportsPropertyExpression } from '../style-spec/util/properties';
+} = require('./validate_style');
+const { Evented } = require('../util/evented');
+const { Layout, Transitionable, PossiblyEvaluatedPropertyValue } = require('./properties');
+const { supportsPropertyExpression } = require('../style-spec/util/properties');
 
 
 const TRANSITION_SUFFIX = '-transition';
 
 class StyleLayer extends Evented {
-
-
-
-
 
     constructor(layer, properties) {
         super();
@@ -108,7 +104,7 @@ class StyleLayer extends Evented {
         }
     }
 
-    _handleSpecialPaintPropertyUpdate(_) {
+    _handleSpecialPaintPropertyUpdate() {
         // No-op; can be overridden by derived classes.
     }
 
@@ -199,6 +195,6 @@ class StyleLayer extends Evented {
     }
 }
 
-export default StyleLayer;
+module.exports = StyleLayer;
 
 

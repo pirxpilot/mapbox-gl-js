@@ -1,14 +1,14 @@
-// 
-import Coordinate from '../geo/coordinate';
+'use strict';
+const Coordinate = require('../geo/coordinate');
 
-import Texture from './texture';
-import EXTENT from '../data/extent';
-import { mat4 } from 'gl-matrix';
-import StencilMode from '../gl/stencil_mode';
-import DepthMode from '../gl/depth_mode';
+const Texture = require('./texture');
+const EXTENT = require('../data/extent');
+const { mat4 } = require('gl-matrix');
+const StencilMode = require('../gl/stencil_mode');
+const DepthMode = require('../gl/depth_mode');
 
 
-export default drawHillshade;
+module.exports = drawHillshade;
 
 function drawHillshade(painter, sourceCache, layer, tileIDs) {
     if (painter.renderPass !== 'offscreen' && painter.renderPass !== 'translucent') return;

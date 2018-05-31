@@ -1,5 +1,5 @@
-// 
-import assert from 'assert';
+'use strict';
+const assert = require('assert');
 
 
 
@@ -53,4 +53,4 @@ class IndexBuffer {
     }
 }
 
-export default IndexBuffer;
+module.exports = IndexBuffer;

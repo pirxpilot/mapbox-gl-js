@@ -1,19 +1,19 @@
-// 
+'use strict';
 
-import drawCollisionDebug from './draw_collision_debug';
+const drawCollisionDebug = require('./draw_collision_debug');
 
-import pixelsToTileUnits from '../source/pixels_to_tile_units';
-import * as symbolProjection from '../symbol/projection';
-import * as symbolSize from '../symbol/symbol_size';
-import { mat4 } from 'gl-matrix';
+const pixelsToTileUnits = require('../source/pixels_to_tile_units');
+const symbolProjection = require('../symbol/projection');
+const symbolSize = require('../symbol/symbol_size');
+const { mat4 } = require('gl-matrix');
 const identityMat4 = mat4.identity(new Float32Array(16));
-import properties from '../style/style_layer/symbol_style_layer_properties';
+const properties = require('../style/style_layer/symbol_style_layer_properties');
 const symbolLayoutProperties = properties.layout;
-import StencilMode from '../gl/stencil_mode';
-import DepthMode from '../gl/depth_mode';
+const StencilMode = require('../gl/stencil_mode');
+const DepthMode = require('../gl/depth_mode');
 
 
-export default drawSymbols;
+module.exports = drawSymbols;
 
 function drawSymbols(painter, sourceCache, layer, coords) {
     if (painter.renderPass !== 'translucent') return;

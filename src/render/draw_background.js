@@ -1,16 +1,16 @@
-// 
+'use strict';
 
-import {
+const {
     isPatternMissing,
     setPatternUniforms,
-    prepare as preparePattern
-} from './pattern';
+    prepare: preparePattern
+} = require('./pattern');
 
-import StencilMode from '../gl/stencil_mode';
-import DepthMode from '../gl/depth_mode';
+const StencilMode = require('../gl/stencil_mode');
+const DepthMode = require('../gl/depth_mode');
 
 
-export default drawBackground;
+module.exports = drawBackground;
 
 function drawBackground(painter, sourceCache, layer) {
     const color = layer.paint.get('background-color');

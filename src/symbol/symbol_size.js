@@ -1,13 +1,13 @@
-// 
+'use strict';
 
-import { normalizePropertyExpression } from '../style-spec/expression';
+const { normalizePropertyExpression } = require('../style-spec/expression');
 
-import { number as interpolate } from '../style-spec/util/interpolate';
-import { clamp } from '../util/util';
-import EvaluationParameters from '../style/evaluation_parameters';
+const { number: interpolate } = require('../style-spec/util/interpolate');
+const { clamp } = require('../util/util');
+const EvaluationParameters = require('../style/evaluation_parameters');
 
 
-export { getSizeData, evaluateSizeForFeature, evaluateSizeForZoom };
+module.exports = { getSizeData, evaluateSizeForFeature, evaluateSizeForZoom };
 
 
 // For {text,icon}-size, get the bucket-level data that will be needed by

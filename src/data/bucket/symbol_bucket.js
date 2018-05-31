@@ -1,27 +1,22 @@
-// 
+'use strict';
 
-import { symbolLayoutAttributes, collisionVertexAttributes, collisionBoxLayout, collisionCircleLayout, dynamicLayoutAttributes } from './symbol_attributes';
+const { symbolLayoutAttributes, collisionVertexAttributes, collisionBoxLayout, collisionCircleLayout, dynamicLayoutAttributes } = require('./symbol_attributes');
 
-import { SymbolLayoutArray, SymbolDynamicLayoutArray, SymbolOpacityArray, CollisionBoxLayoutArray, CollisionCircleLayoutArray, CollisionVertexArray, PlacedSymbolArray, GlyphOffsetArray, SymbolLineVertexArray } from '../array_types';
-import Point from '@mapbox/point-geometry';
-import SegmentVector from '../segment';
-import { ProgramConfigurationSet } from '../program_configuration';
-import { TriangleIndexArray, LineIndexArray } from '../index_array_type';
-import transformText from '../../symbol/transform_text';
-import mergeLines from '../../symbol/mergelines';
-import {allowsVerticalWritingMode} from '../../util/script_detection';
-import loadGeometry from '../load_geometry';
-import mvt from '@mapbox/vector-tile';
+const { SymbolLayoutArray, SymbolDynamicLayoutArray, SymbolOpacityArray, CollisionBoxLayoutArray, CollisionCircleLayoutArray, CollisionVertexArray, PlacedSymbolArray, GlyphOffsetArray, SymbolLineVertexArray } = require('../array_types');
+const Point = require('@mapbox/point-geometry');
+const SegmentVector = require('../segment');
+const { ProgramConfigurationSet } = require('../program_configuration');
+const { TriangleIndexArray, LineIndexArray } = require('../index_array_type');
+const transformText = require('../../symbol/transform_text');
+const mergeLines = require('../../symbol/mergelines');
+const {allowsVerticalWritingMode} = require('../../util/script_detection');
+const loadGeometry = require('../load_geometry');
+const mvt = require('@mapbox/vector-tile');
 const vectorTileFeatureTypes = mvt.VectorTileFeature.types;
-import {verticalizedCharacterMap} from '../../util/verticalize_punctuation';
-import Anchor from '../../symbol/anchor';
-import { getSizeData } from '../../symbol/symbol_size';
-import { register } from '../../util/web_worker_transfer';
-import EvaluationParameters from '../../style/evaluation_parameters';
-
-
-
-
+const {verticalizedCharacterMap} = require('../../util/verticalize_punctuation');
+const { getSizeData } = require('../../symbol/symbol_size');
+const { register } = require('../../util/web_worker_transfer');
+const EvaluationParameters = require('../../style/evaluation_parameters');
 
 
 // Opacity arrays are frequently updated but don't contain a lot of information, so we pack them
@@ -60,12 +55,6 @@ function addDynamicAttributes(dynamicLayoutVertexArray, p, angle) {
 }
 
 class SymbolBuffers {
-
-
-
-
-
-
 
     constructor(programConfigurations) {
         this.layoutVertexArray = new SymbolLayoutArray();
@@ -106,9 +95,6 @@ class SymbolBuffers {
 register('SymbolBuffers', SymbolBuffers);
 
 class CollisionBuffers {
-
-
-
 
     constructor(LayoutArray,
                 layoutAttributes,
@@ -170,10 +156,6 @@ register('CollisionBuffers', CollisionBuffers);
  * @private
  */
 class SymbolBucket {
-
-
-
-
 
     constructor(options) {
         this.collisionBoxArray = options.collisionBoxArray;
@@ -601,5 +583,4 @@ SymbolBucket.MAX_GLYPHS = 65535;
 
 SymbolBucket.addDynamicAttributes = addDynamicAttributes;
 
-export default SymbolBucket;
-export { addDynamicAttributes };
+module.exports = SymbolBucket;

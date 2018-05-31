@@ -1,9 +1,9 @@
-import { test } from 'mapbox-gl-js-test';
-import fs from 'fs';
-import path from 'path';
-import Protobuf from 'pbf';
-import { VectorTile } from '@mapbox/vector-tile';
-import classifyRings from '../../../src/util/classify_rings';
+const { test } = require('mapbox-gl-js-test');
+const fs = require('fs');
+const path = require('path');
+const Protobuf = require('pbf');
+const { VectorTile } = require('@mapbox/vector-tile');
+const classifyRings = require('../../../src/util/classify_rings');
 
 // Load a fill feature from fixture tile.
 const vt = new VectorTile(new Protobuf(fs.readFileSync(path.join(__dirname, '/../../fixtures/mbsv5-6-18-23.vector.pbf'))));

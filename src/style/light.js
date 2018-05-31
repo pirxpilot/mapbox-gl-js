@@ -1,19 +1,18 @@
-// 
+'use strict';
 
-import styleSpec from '../style-spec/reference/latest';
+const styleSpec = require('../style-spec/reference/latest');
 
-import { endsWith, extend, sphericalToCartesian } from '../util/util';
-import { Evented } from '../util/evented';
-import {
+const { endsWith, extend, sphericalToCartesian } = require('../util/util');
+const { Evented } = require('../util/evented');
+const {
     validateStyle,
     validateLight,
     emitValidationErrors
-} from './validate_style';
-import Color from '../style-spec/util/color';
-import { number as interpolate } from '../style-spec/util/interpolate';
+} = require('./validate_style');
+const { number: interpolate } = require('../style-spec/util/interpolate');
 
 
-import { Properties, Transitionable, Transitioning, PossiblyEvaluated, DataConstantProperty } from './properties';
+const { Properties, Transitionable, DataConstantProperty } = require('./properties');
 
 
 
@@ -99,4 +98,4 @@ class Light extends Evented {
     }
 }
 
-export default Light;
+module.exports = Light;

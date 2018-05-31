@@ -1,7 +1,6 @@
-// 
+'use strict';
 
-import { toString, ValueType, BooleanType, CollatorType } from '../types';
-
+const { toString, ValueType, BooleanType, CollatorType } = require('../types');
 
 function isComparableType(type) {
     return type.kind === 'string' ||
@@ -91,5 +90,7 @@ function makeComparison(op, negate) {
     };
 }
 
-export const Equals = makeComparison('==', false);
-export const NotEquals = makeComparison('!=', true);
+module.exports = {
+    Equals: makeComparison('==', false),
+    NotEquals: makeComparison('!=', true)
+};

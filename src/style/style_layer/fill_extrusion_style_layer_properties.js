@@ -1,16 +1,15 @@
 // This file is generated. Edit build/generate-style-code.js, then run `yarn run codegen`.
-// 
+'use strict';
 /* eslint-disable */
 
-import styleSpec from '../../style-spec/reference/latest';
+const styleSpec = require('../../style-spec/reference/latest');
 
-import {
+const {
     Properties,
     DataConstantProperty,
     DataDrivenProperty,
-    CrossFadedProperty,
-    ColorRampProperty
-} from '../properties';
+    CrossFadedProperty
+} = require ('../properties');
 
 
 
@@ -25,4 +24,4 @@ const paint = new Properties({
     "fill-extrusion-base": new DataDrivenProperty(styleSpec["paint_fill-extrusion"]["fill-extrusion-base"]),
 });
 
-export default { paint };
+module.exports = { paint };

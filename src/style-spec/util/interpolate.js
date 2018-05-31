@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import Color from './color';
+const Color = require('./color');
 
-export function number(a, b, t) {
+function number(a, b, t) {
     return (a * (1 - t)) + (b * t);
 }
 
-export function color(from, to, t) {
+function color(from, to, t) {
     return new Color(
         number(from.r, to.r, t),
         number(from.g, to.g, t),
@@ -15,8 +15,14 @@ export function color(from, to, t) {
     );
 }
 
-export function array(from, to, t) {
+function array(from, to, t) {
     return from.map((d, i) => {
         return number(d, to[i], t);
     });
 }
+
+module.exports = {
+    number,
+    color,
+    array
+};

@@ -1,15 +1,15 @@
-// 
+'use strict';
 
-import { CircleLayoutArray } from '../array_types';
+const { CircleLayoutArray } = require('../array_types');
 
-import { members as layoutAttributes } from './circle_attributes';
-import SegmentVector from '../segment';
-import { ProgramConfigurationSet } from '../program_configuration';
-import { TriangleIndexArray } from '../index_array_type';
-import loadGeometry from '../load_geometry';
-import EXTENT from '../extent';
-import { register } from '../../util/web_worker_transfer';
-import EvaluationParameters from '../../style/evaluation_parameters';
+const { members: layoutAttributes } = require('./circle_attributes');
+const SegmentVector = require('../segment');
+const { ProgramConfigurationSet } = require('../program_configuration');
+const { TriangleIndexArray } = require('../index_array_type');
+const loadGeometry = require('../load_geometry');
+const EXTENT = require('../extent');
+const { register } = require('../../util/web_worker_transfer');
+const EvaluationParameters = require('../../style/evaluation_parameters');
 
 
 function addCircleVertex(layoutVertexArray, x, y, extrudeX, extrudeY) {
@@ -124,4 +124,4 @@ class CircleBucket {
 
 register('CircleBucket', CircleBucket, {omit: ['layers']});
 
-export default CircleBucket;
+module.exports = CircleBucket;

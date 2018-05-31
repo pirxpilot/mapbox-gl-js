@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import EXTENT from '../data/extent';
+const EXTENT = require('../data/extent');
 
 
 /*
@@ -271,4 +271,4 @@ class CrossTileSymbolIndex {
     }
 }
 
-export default CrossTileSymbolIndex;
+module.exports = CrossTileSymbolIndex;

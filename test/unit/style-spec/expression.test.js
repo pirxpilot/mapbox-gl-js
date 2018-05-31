@@ -1,8 +1,7 @@
-import { test } from 'mapbox-gl-js-test';
-import { createPropertyExpression } from '../../../src/style-spec/expression';
-import definitions from '../../../src/style-spec/expression/definitions';
-import v8 from '../../../src/style-spec/reference/v8';
-import {expressions as definitionMetadata} from '../../../docs/components/expression-metadata';
+const { test } = require('mapbox-gl-js-test');
+const { createPropertyExpression } = require('../../../src/style-spec/expression');
+const definitions = require('../../../src/style-spec/expression/definitions');
+const v8 = require('../../../src/style-spec/reference/v8');
 
 // filter out interal "error" and "filter-*" expressions from definition list
 const filterExpressionRegex = /filter-/;

@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
 
 class VertexArrayObject {
@@ -147,4 +147,4 @@ class VertexArrayObject {
     }
 }
 
-export default VertexArrayObject;
+module.exports = VertexArrayObject;

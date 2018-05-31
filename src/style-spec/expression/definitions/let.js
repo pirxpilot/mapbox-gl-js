@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 
 class Let {
@@ -62,4 +62,4 @@ class Let {
     }
 }
 
-export default Let;
+module.exports = Let;

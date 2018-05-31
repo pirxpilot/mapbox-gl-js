@@ -1,13 +1,13 @@
-// 
+'use strict';
 
-import { extend, bindAll } from '../util/util';
-import { Event, Evented } from '../util/evented';
-import DOM from '../util/dom';
-import LngLat from '../geo/lng_lat';
-import Point from '@mapbox/point-geometry';
-import window from '../util/window';
-import smartWrap from '../util/smart_wrap';
-import { anchorTranslate, applyAnchorClass } from './anchor';
+const { extend, bindAll } = require('../util/util');
+const { Event, Evented } = require('../util/evented');
+const DOM = require('../util/dom');
+const LngLat = require('../geo/lng_lat');
+const Point = require('@mapbox/point-geometry');
+const window = require('../util/window');
+const smartWrap = require('../util/smart_wrap');
+const { anchorTranslate, applyAnchorClass } = require('./anchor');
 
 
 const defaultOptions = {
@@ -59,7 +59,7 @@ const defaultOptions = {
  * @see [Display a popup on hover](https://www.mapbox.com/mapbox-gl-js/example/popup-on-hover/)
  * @see [Display a popup on click](https://www.mapbox.com/mapbox-gl-js/example/popup-on-click/)
  */
-export default class Popup extends Evented {
+module.exports = class Popup extends Evented {
 
     constructor(options) {
         super();
@@ -304,7 +304,7 @@ export default class Popup extends Evented {
     _onClickClose() {
         this.remove();
     }
-}
+};
 
 function normalizeOffset(offset) {
     if (!offset) {

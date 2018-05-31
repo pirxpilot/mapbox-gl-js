@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 /**
  * GridIndex is a data structure for testing the intersection of
@@ -313,4 +313,4 @@ class GridIndex {
     }
 }
 
-export default GridIndex;
+module.exports = GridIndex;

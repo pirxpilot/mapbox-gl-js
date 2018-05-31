@@ -1,7 +1,6 @@
-// 
+'use strict';
 
-import CompoundExpression from './compound_expression';
-
+const CompoundExpression = require('./compound_expression');
 
 function isFeatureConstant(e) {
     if (e instanceof CompoundExpression) {
@@ -51,4 +50,8 @@ function isGlobalPropertyConstant(e, properties) {
     return result;
 }
 
-export { isFeatureConstant, isGlobalPropertyConstant, isStateConstant };
+module.exports = {
+    isFeatureConstant,
+    isGlobalPropertyConstant,
+    isStateConstant
+};

@@ -1,29 +1,29 @@
-// 
+'use strict';
 
-import { extend, bindAll, warnOnce } from '../util/util';
+const { extend, bindAll, warnOnce } = require('../util/util');
 
-import browser from '../util/browser';
-import window from '../util/window';
+const browser = require('../util/browser');
+const window = require('../util/window');
 const { HTMLImageElement, HTMLElement } = window;
-import DOM from '../util/dom';
-import { getImage, ResourceType } from '../util/ajax';
-import Style from '../style/style';
-import EvaluationParameters from '../style/evaluation_parameters';
-import Painter from '../render/painter';
-import Transform from '../geo/transform';
-import Hash from './hash';
-import bindHandlers from './bind_handlers';
-import Camera from './camera';
-import LngLat from '../geo/lng_lat';
-import LngLatBounds from '../geo/lng_lat_bounds';
-import Point from '@mapbox/point-geometry';
-import AttributionControl from './control/attribution_control';
-import LogoControl from './control/logo_control';
-import isSupported from '@mapbox/mapbox-gl-supported';
-import { RGBAImage } from '../util/image';
-import { Event, ErrorEvent } from '../util/evented';
-import { MapMouseEvent } from './events';
-import TaskQueue from '../util/task_queue';
+const DOM = require('../util/dom');
+const { getImage, ResourceType } = require('../util/ajax');
+const Style = require('../style/style');
+const EvaluationParameters = require('../style/evaluation_parameters');
+const Painter = require('../render/painter');
+const Transform = require('../geo/transform');
+const Hash = require('./hash');
+const bindHandlers = require('./bind_handlers');
+const Camera = require('./camera');
+const LngLat = require('../geo/lng_lat');
+const LngLatBounds = require('../geo/lng_lat_bounds');
+const Point = require('@mapbox/point-geometry');
+const AttributionControl = require('./control/attribution_control');
+const LogoControl = require('./control/logo_control');
+const isSupported = require('@mapbox/mapbox-gl-supported');
+const { RGBAImage } = require('../util/image');
+const { Event, ErrorEvent } = require('../util/evented');
+const { MapMouseEvent } = require('./events');
+const TaskQueue = require('../util/task_queue');
 
 
 
@@ -1714,7 +1714,7 @@ class Map extends Camera {
     }
 }
 
-export default Map;
+module.exports = Map;
 
 function removeNode(node) {
     if (node.parentNode) {

@@ -1,11 +1,11 @@
-// 
+'use strict';
 
 /**
  * Throttle the given function to run at most every `period` milliseconds.
  Throttle the given function to run at most every period milliseconds.
  * @private
  */
-export default function throttle(fn, time) {
+module.exports = function throttle(fn, time) {
     let pending = false;
     let timerId = (0);
 
@@ -25,4 +25,4 @@ export default function throttle(fn, time) {
         }
         return timerId;
     };
-}
+};

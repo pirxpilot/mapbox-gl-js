@@ -1,13 +1,13 @@
-// 
+'use strict';
 
-import DOM from '../../util/dom';
+const DOM = require('../../util/dom');
 
-import { ease as _ease, bindAll, bezier } from '../../util/util';
-import browser from '../../util/browser';
-import window from '../../util/window';
-import { number as interpolate } from '../../style-spec/util/interpolate';
-import LngLat from '../../geo/lng_lat';
-import { Event } from '../../util/evented';
+const { ease: _ease, bindAll, bezier } = require('../../util/util');
+const browser = require('../../util/browser');
+const window = require('../../util/window');
+const { number: interpolate } = require('../../style-spec/util/interpolate');
+const LngLat = require('../../geo/lng_lat');
+const { Event } = require('../../util/evented');
 
 
 // deltaY value for mouse scroll wheel identification
@@ -265,4 +265,4 @@ class ScrollZoomHandler {
     }
 }
 
-export default ScrollZoomHandler;
+module.exports = ScrollZoomHandler;

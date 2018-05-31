@@ -1,10 +1,10 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import WebWorker from './web_worker';
+const WebWorker = require('./web_worker');
 
-import mapboxgl from '../';
+const mapboxgl = require('../');
 
 /**
  * Constructs a worker pool.
@@ -44,4 +44,4 @@ class WorkerPool {
     }
 }
 
-export default WorkerPool;
+module.exports = WorkerPool;

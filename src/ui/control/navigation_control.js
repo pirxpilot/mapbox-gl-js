@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import DOM from '../../util/dom';
-import { extend, bindAll } from '../../util/util';
-import DragRotateHandler from '../handler/drag_rotate';
+const DOM = require('../../util/dom');
+const { extend, bindAll } = require('../../util/util');
+const DragRotateHandler = require('../handler/drag_rotate');
 
 
 
@@ -83,4 +83,4 @@ class NavigationControl {
     }
 }
 
-export default NavigationControl;
+module.exports = NavigationControl;

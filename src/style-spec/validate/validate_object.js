@@ -1,9 +1,10 @@
+'use strict';
 
-import ValidationError from '../error/validation_error';
-import getType from '../util/get_type';
-import validateSpec from './validate';
+const ValidationError = require('../error/validation_error');
+const getType = require('../util/get_type');
+const validateSpec = require('./validate');
 
-export default function validateObject(options) {
+module.exports = function validateObject(options) {
     const key = options.key;
     const object = options.value;
     const elementSpecs = options.valueSpec || {};
@@ -58,4 +59,4 @@ export default function validateObject(options) {
     }
 
     return errors;
-}
+};

@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import Point from '@mapbox/point-geometry';
+const Point = require('@mapbox/point-geometry');
 
-import window from './window';
-import assert from 'assert';
+const window = require('./window');
+const assert = require('assert');
 
 const DOM = {};
-export default DOM;
+module.exports = DOM;
 
 DOM.create = function (tagName, className, container) {
     const el = window.document.createElement(tagName);

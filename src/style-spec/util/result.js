@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 /**
  * A type used for returning and propagating errors. The first element of the union
@@ -7,10 +7,15 @@
  * @private
  */
 
-export function success(value) {
+function success(value) {
     return { result: 'success', value };
 }
 
-export function error(value) {
+function error(value) {
     return { result: 'error', value };
 }
+
+module.exports = {
+    success,
+    error
+};

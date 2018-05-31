@@ -1,17 +1,14 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import Grid from 'grid-index';
-import Color from '../style-spec/util/color';
-import { StylePropertyFunction, StyleExpression, ZoomDependentExpression, ZoomConstantExpression } from '../style-spec/expression';
-import CompoundExpression from '../style-spec/expression/compound_expression';
-import expressions from '../style-spec/expression/definitions';
-import window from './window';
+const Grid = require('grid-index');
+const Color = require('../style-spec/util/color');
+const { StylePropertyFunction, StyleExpression, ZoomDependentExpression, ZoomConstantExpression } = require('../style-spec/expression');
+const CompoundExpression = require('../style-spec/expression/compound_expression');
+const expressions = require('../style-spec/expression/definitions');
+const window = require('./window');
 const { ImageData } = window;
-
-
-
 
 
 const registry = {};
@@ -25,7 +22,7 @@ const registry = {};
  *
  * @private
  */
-export function register(name, klass, options = {}) {
+function register(name, klass, options = {}) {
     assert(!registry[name], `${name} is already registered.`);
     (Object.defineProperty)(klass, '_classRegistryKey', {
         value: name,
@@ -81,7 +78,7 @@ for (const name in expressions) {
  *
  * @private
  */
-export function serialize(input, transferables) {
+function serialize(input, transferables) {
     if (input === null ||
         input === undefined ||
         typeof input === 'boolean' ||
@@ -166,7 +163,7 @@ export function serialize(input, transferables) {
     throw new Error(`can't serialize object of type ${typeof input}`);
 }
 
-export function deserialize(input) {
+function deserialize(input) {
     if (input === null ||
         input === undefined ||
         typeof input === 'boolean' ||
@@ -214,3 +211,9 @@ export function deserialize(input) {
 
     throw new Error(`can't deserialize object of type ${typeof input}`);
 }
+
+module.exports = {
+    register,
+    serialize,
+    deserialize
+};

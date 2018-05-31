@@ -1,8 +1,8 @@
-import { test } from 'mapbox-gl-js-test';
-import createStyleLayer from '../../../src/style/create_style_layer';
-import FillStyleLayer from '../../../src/style/style_layer/fill_style_layer';
-import { extend } from '../../../src/util/util';
-import Color from '../../../src/style-spec/util/color';
+const { test } = require('mapbox-gl-js-test');
+const createStyleLayer = require('../../../src/style/create_style_layer');
+const FillStyleLayer = require('../../../src/style/style_layer/fill_style_layer');
+const { extend } = require('../../../src/util/util');
+const Color = require('../../../src/style-spec/util/color');
 
 test('StyleLayer', (t) => {
     t.test('instantiates the correct subclass', (t) => {

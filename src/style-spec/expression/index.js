@@ -1,28 +1,23 @@
-// 
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import extend from '../util/extend';
-import ParsingError from './parsing_error';
-import ParsingContext from './parsing_context';
-import EvaluationContext from './evaluation_context';
-import CompoundExpression from './compound_expression';
-import Step from './definitions/step';
-import Interpolate from './definitions/interpolate';
-import Coalesce from './definitions/coalesce';
-import Let from './definitions/let';
-import definitions from './definitions';
-import * as isConstant from './is_constant';
-import RuntimeError from './runtime_error';
-import { success, error } from '../util/result';
-import { supportsPropertyExpression, supportsZoomExpression, supportsInterpolation } from '../util/properties';
+const extend = require('../util/extend');
+const ParsingError = require('./parsing_error');
+const ParsingContext = require('./parsing_context');
+const EvaluationContext = require('./evaluation_context');
+const CompoundExpression = require('./compound_expression');
+const Step = require('./definitions/step');
+const Interpolate = require('./definitions/interpolate');
+const Coalesce = require('./definitions/coalesce');
+const Let = require('./definitions/let');
+const definitions = require('./definitions');
+const isConstant = require('./is_constant');
+const RuntimeError = require('./runtime_error');
+const { success, error } = require('../util/result');
+const { supportsPropertyExpression, supportsZoomExpression, supportsInterpolation } = require('../util/properties');
 
-
-
-
-
-export class StyleExpression {
-
+class StyleExpression {
 
     constructor(expression, propertySpec) {
         this.expression = expression;
@@ -75,7 +70,7 @@ export class StyleExpression {
     }
 }
 
-export function isExpression(expression) {
+function isExpression(expression) {
     return Array.isArray(expression) && expression.length > 0 &&
         typeof expression[0] === 'string' && expression[0] in definitions;
 }
@@ -89,7 +84,7 @@ export function isExpression(expression) {
  *
  * @private
  */
-export function createExpression(expression, propertySpec) {
+function createExpression(expression, propertySpec) {
     const parser = new ParsingContext(definitions, [], getExpectedType(propertySpec));
     const parsed = parser.parse(expression);
     if (!parsed) {
@@ -100,7 +95,7 @@ export function createExpression(expression, propertySpec) {
     return success(new StyleExpression(parsed, propertySpec));
 }
 
-export class ZoomConstantExpression {
+class ZoomConstantExpression {
 
     constructor(kind, expression) {
         this.kind = kind;
@@ -117,7 +112,7 @@ export class ZoomConstantExpression {
     }
 }
 
-export class ZoomDependentExpression {
+class ZoomDependentExpression {
 
 
     constructor(kind, expression, zoomCurve) {
@@ -147,12 +142,7 @@ export class ZoomDependentExpression {
     }
 }
 
-
-
-
-
-
-export function createPropertyExpression(expression, propertySpec) {
+function createPropertyExpression(expression, propertySpec) {
     expression = createExpression(expression, propertySpec);
     if (expression.result === 'error') {
         return expression;
@@ -190,13 +180,12 @@ export function createPropertyExpression(expression, propertySpec) {
         (new ZoomDependentExpression('composite', expression.value, zoomCurve)));
 }
 
-import { isFunction, createFunction } from '../function';
-import { Color } from './values';
+const { isFunction, createFunction } = require('../function');
+const { Color } = require('./values');
 
 // serialization wrapper for old-style stop functions normalized to the
 // expression interface
-export class StylePropertyFunction {
-
+class StylePropertyFunction {
 
     constructor(parameters, specification) {
         this._parameters = parameters;
@@ -216,7 +205,7 @@ export class StylePropertyFunction {
     }
 }
 
-export function normalizePropertyExpression(value, specification) {
+function normalizePropertyExpression(value, specification) {
     if (isFunction(value)) {
         return (new StylePropertyFunction(value, specification));
 
@@ -281,7 +270,7 @@ function findZoomCurve(expression) {
     return result;
 }
 
-import { ColorType, StringType, NumberType, BooleanType, ValueType, array } from './types';
+const { ColorType, StringType, NumberType, BooleanType, ValueType, array } = require('./types');
 
 function getExpectedType(spec) {
     const types = {
@@ -313,3 +302,14 @@ function getDefaultValue(spec) {
         return spec.default;
     }
 }
+
+module.exports = {
+    StyleExpression,
+    isExpression,
+    createExpression,
+    ZoomConstantExpression,
+    ZoomDependentExpression,
+    createPropertyExpression,
+    StylePropertyFunction,
+    normalizePropertyExpression
+};

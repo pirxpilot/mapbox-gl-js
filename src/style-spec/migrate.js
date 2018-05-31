@@ -1,5 +1,6 @@
+'use strict';
 
-import migrateToV8 from './migrate/v8';
+const migrateToV8 = require('./migrate/v8');
 
 /**
  * Migrate a Mapbox GL Style to the latest version.
@@ -14,7 +15,7 @@ import migrateToV8 from './migrate/v8';
  * var style = fs.readFileSync('./style.json', 'utf8');
  * fs.writeFileSync('./style.json', JSON.stringify(migrate(style)));
  */
-export default function(style) {
+module.exports = function(style) {
     let migrated = false;
 
     if (style.version === 7 || style.version === 8) {
@@ -27,4 +28,4 @@ export default function(style) {
     }
 
     return style;
-}
+};

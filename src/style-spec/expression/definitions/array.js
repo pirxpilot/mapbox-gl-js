@@ -1,9 +1,9 @@
-// 
+'use strict';
 
-import { toString, array, ValueType, StringType, NumberType, BooleanType, checkSubtype } from '../types';
+const { toString, array, ValueType, StringType, NumberType, BooleanType, checkSubtype } = require('../types');
 
-import { typeOf } from '../values';
-import RuntimeError from '../runtime_error';
+const { typeOf } = require('../values');
+const RuntimeError = require('../runtime_error');
 
 
 const types = {
@@ -87,4 +87,4 @@ class ArrayAssertion {
     }
 }
 
-export default ArrayAssertion;
+module.exports = ArrayAssertion;

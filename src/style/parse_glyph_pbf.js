@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import { AlphaImage } from '../util/image';
+const { AlphaImage } = require('../util/image');
 
-import Protobuf from 'pbf';
+const Protobuf = require('pbf');
 const border = 3;
 
 
@@ -36,8 +36,10 @@ function readGlyph(tag, glyph, pbf) {
     else if (tag === 7) glyph.advance = pbf.readVarint();
 }
 
-export default function (data) {
+function parseGlyph(data) {
     return new Protobuf(data).readFields(readFontstacks, []);
 }
 
-export const GLYPH_PBF_BORDER = border;
+parseGlyph.GLYPH_PBF_BORDER = border;
+
+module.exports = parseGlyph;

@@ -1,8 +1,8 @@
-import { test } from 'mapbox-gl-js-test';
-import Dispatcher from '../../../src/util/dispatcher';
-import WebWorker from '../../../src/util/web_worker';
-import WorkerPool from '../../../src/util/worker_pool';
-import mapboxgl from '../../../src/';
+const { test } = require('mapbox-gl-js-test');
+const Dispatcher = require('../../../src/util/dispatcher');
+const WebWorker = require('../../../src/util/web_worker');
+const WorkerPool = require('../../../src/util/worker_pool');
+const mapboxgl = require('../../../src/');
 
 test('Dispatcher', (t) => {
     t.test('requests and releases workers from pool', (t) => {

@@ -1,7 +1,6 @@
-// 
+'use strict';
 
-
-export const anchorTranslate = {
+const anchorTranslate = {
     'center': 'translate(-50%,-50%)',
     'top': 'translate(-50%,0)',
     'top-left': 'translate(0,0)',
@@ -13,10 +12,15 @@ export const anchorTranslate = {
     'right': 'translate(-100%,-50%)'
 };
 
-export function applyAnchorClass(element, anchor, prefix) {
+function applyAnchorClass(element, anchor, prefix) {
     const classList = element.classList;
     for (const key in anchorTranslate) {
         classList.remove(`mapboxgl-${prefix}-anchor-${key}`);
     }
     classList.add(`mapboxgl-${prefix}-anchor-${anchor}`);
 }
+
+module.exports = {
+    anchorTranslate,
+    applyAnchorClass
+};

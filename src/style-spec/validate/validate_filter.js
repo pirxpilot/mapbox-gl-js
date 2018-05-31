@@ -1,13 +1,14 @@
+'use strict';
 
-import ValidationError from '../error/validation_error';
-import validateExpression from './validate_expression';
-import validateEnum from './validate_enum';
-import getType from '../util/get_type';
-import { unbundle, deepUnbundle } from '../util/unbundle_jsonlint';
-import extend from '../util/extend';
-import { isExpressionFilter } from '../feature_filter';
+const ValidationError = require('../error/validation_error');
+const validateExpression = require('./validate_expression');
+const validateEnum = require('./validate_enum');
+const getType = require('../util/get_type');
+const { unbundle, deepUnbundle } = require('../util/unbundle_jsonlint');
+const extend = require('../util/extend');
+const { isExpressionFilter } = require('../feature_filter');
 
-export default function validateFilter(options) {
+module.exports = function validateFilter(options) {
     if (isExpressionFilter(deepUnbundle(options.value))) {
         return validateExpression(extend({}, options, {
             expressionContext: 'filter',
@@ -16,7 +17,7 @@ export default function validateFilter(options) {
     } else {
         return validateNonExpressionFilter(options);
     }
-}
+};
 
 function validateNonExpressionFilter(options) {
     const value = options.value;

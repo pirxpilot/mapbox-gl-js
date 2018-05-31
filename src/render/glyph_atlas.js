@@ -1,16 +1,16 @@
-// 
+'use strict';
 
-import ShelfPack from '@mapbox/shelf-pack';
+const ShelfPack = require('@mapbox/shelf-pack');
 
-import { AlphaImage } from '../util/image';
-import { register } from '../util/web_worker_transfer';
+const { AlphaImage } = require('../util/image');
+const { register } = require('../util/web_worker_transfer');
 
 
 const padding = 1;
 
 
 
-export default class GlyphAtlas {
+class GlyphAtlas {
 
     constructor(stacks) {
         const image = new AlphaImage({width: 0, height: 0});
@@ -61,3 +61,5 @@ export default class GlyphAtlas {
 }
 
 register('GlyphAtlas', GlyphAtlas);
+
+module.exports = GlyphAtlas;

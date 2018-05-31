@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 const ALWAYS = 0x0207;
 
@@ -19,4 +19,4 @@ DepthMode.ReadWrite = true;
 
 DepthMode.disabled = new DepthMode(ALWAYS, DepthMode.ReadOnly, [0, 1]);
 
-export default DepthMode;
+module.exports = DepthMode;

@@ -1,6 +1,6 @@
-// 
+'use strict';
 
-import LngLat from './lng_lat';
+const LngLat = require('./lng_lat');
 
 
 /**
@@ -240,4 +240,4 @@ class LngLatBounds {
  * var v3 = [[-73.9876, 40.7661], [-73.9397, 40.8002]];
  */
 
-export default LngLatBounds;
+module.exports = LngLatBounds;

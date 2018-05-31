@@ -1,11 +1,11 @@
-// 
+'use strict';
 
-import ShelfPack from '@mapbox/shelf-pack';
+const ShelfPack = require('@mapbox/shelf-pack');
 
-import { RGBAImage } from '../util/image';
-import { ImagePosition } from './image_atlas';
-import Texture from './texture';
-import assert from 'assert';
+const { RGBAImage } = require('../util/image');
+const { ImagePosition } = require('./image_atlas');
+const Texture = require('./texture');
+const assert = require('assert');
 
 
 
@@ -186,4 +186,4 @@ class ImageManager {
     }
 }
 
-export default ImageManager;
+module.exports = ImageManager;

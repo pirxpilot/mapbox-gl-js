@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import ZoomHistory from './zoom_history';
-import {isStringInSupportedScript} from '../util/script_detection';
-import {plugin as rtlTextPlugin} from '../source/rtl_text_plugin';
+const ZoomHistory = require('./zoom_history');
+const {isStringInSupportedScript} = require('../util/script_detection');
+const {plugin: rtlTextPlugin} = require('../source/rtl_text_plugin');
 
 class EvaluationParameters {
 
@@ -36,4 +36,4 @@ class EvaluationParameters {
     }
 }
 
-export default EvaluationParameters;
+module.exports = EvaluationParameters;

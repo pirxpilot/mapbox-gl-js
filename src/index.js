@@ -1,45 +1,28 @@
-// 
+'use strict';
 
-import assert from 'assert';
-import supported from '@mapbox/mapbox-gl-supported';
+const assert = require('assert');
 
-import browser from './util/browser';
-import { version } from '../package.json';
-import Map from './ui/map';
-import NavigationControl from './ui/control/navigation_control';
-import GeolocateControl from './ui/control/geolocate_control';
-import AttributionControl from './ui/control/attribution_control';
-import ScaleControl from './ui/control/scale_control';
-import FullscreenControl from './ui/control/fullscreen_control';
-import Popup from './ui/popup';
-import Marker from './ui/marker';
-import Style from './style/style';
-import LngLat from './geo/lng_lat';
-import LngLatBounds from './geo/lng_lat_bounds';
-import Point from '@mapbox/point-geometry';
-import {Evented} from './util/evented';
-import config from './util/config';
-import {setRTLTextPlugin} from './source/rtl_text_plugin';
+const browser = require('./util/browser');
 
 const exported = {
-    version,
-    supported,
+    version: require('../package.json').version,
+    supported: require('@mapbox/mapbox-gl-supported'),
     workerCount: Math.max(Math.floor(browser.hardwareConcurrency / 2), 1),
-    setRTLTextPlugin: setRTLTextPlugin,
-    Map,
-    NavigationControl,
-    GeolocateControl,
-    AttributionControl,
-    ScaleControl,
-    FullscreenControl,
-    Popup,
-    Marker,
-    Style,
-    LngLat,
-    LngLatBounds,
-    Point,
-    Evented,
-    config,
+    setRTLTextPlugin: require('./source/rtl_text_plugin').setRTLTextPlugin,
+    Map: require('./ui/map'),
+    NavigationControl: require('./ui/control/navigation_control'),
+    GeolocateControl: require('./ui/control/geolocate_control'),
+    AttributionControl: require('./ui/control/attribution_control'),
+    ScaleControl: require('./ui/control/scale_control'),
+    FullscreenControl: require('./ui/control/fullscreen_control'),
+    Popup: require('./ui/popup'),
+    Marker: require('./ui/marker'),
+    Style: require('./style/style'),
+    LngLat: require('./geo/lng_lat'),
+    LngLatBounds: require('./geo/lng_lat_bounds'),
+    Point: require('@mapbox/point-geometry'),
+    Evented: require('./util/evented').Evented,
+    config: require('./util/config'),
 
     /**
      * Gets and sets the map's [access token](https://www.mapbox.com/help/define-access-token/).
@@ -50,11 +33,11 @@ const exported = {
      * @see [Display a map](https://www.mapbox.com/mapbox-gl-js/examples/)
      */
     get accessToken() {
-        return config.ACCESS_TOKEN;
+        return this.config.ACCESS_TOKEN;
     },
 
     set accessToken(token) {
-        config.ACCESS_TOKEN = token;
+        this.config.ACCESS_TOKEN = token;
     },
 
     workerUrl: ''
@@ -93,7 +76,7 @@ const exported = {
  * @see [Add support for right-to-left scripts](https://www.mapbox.com/mapbox-gl-js/example/mapbox-gl-rtl-text/)
  */
 
-export default exported;
+module.exports = exported;
 
 // canary assert: used to confirm that asserts have been removed from production build
 assert(true, 'canary assert');

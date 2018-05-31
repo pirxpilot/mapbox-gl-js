@@ -1,6 +1,6 @@
-import { test } from 'mapbox-gl-js-test';
-import Actor from '../../../src/util/actor';
-import WebWorker from '../../../src/util/web_worker';
+const { test } = require('mapbox-gl-js-test');
+const Actor = require('../../../src/util/actor');
+const WebWorker = require('../../../src/util/web_worker');
 
 test('Actor', (t) => {
     t.test('forwards resopnses to correct callback', (t) => {

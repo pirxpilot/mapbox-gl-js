@@ -1,7 +1,7 @@
-// 
+'use strict';
 
-import assert from 'assert';
-import { isValue, typeOf, Color } from '../values';
+const assert = require('assert');
+const { isValue, typeOf, Color } = require('../values');
 
 
 class Literal {
@@ -64,4 +64,4 @@ class Literal {
     }
 }
 
-export default Literal;
+module.exports = Literal;

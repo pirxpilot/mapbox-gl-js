@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import {getArrayBuffer} from '../util/ajax';
+const {getArrayBuffer} = require('../util/ajax');
 
-import vt from '@mapbox/vector-tile';
-import Protobuf from 'pbf';
-import WorkerTile from './worker_tile';
-import { extend } from '../util/util';
-import perf from '../util/performance';
+const vt = require('@mapbox/vector-tile');
+const Protobuf = require('pbf');
+const WorkerTile = require('./worker_tile');
+const { extend } = require('../util/util');
+const perf = require('../util/performance');
 
 
 
@@ -171,4 +171,4 @@ class VectorTileWorkerSource {
     }
 }
 
-export default VectorTileWorkerSource;
+module.exports = VectorTileWorkerSource;

@@ -1,5 +1,5 @@
-import { test as t } from 'mapbox-gl-js-test';
-import diffStyles from '../../../src/style-spec/diff';
+const { test: t } = require('mapbox-gl-js-test');
+const diffStyles = require('../../../src/style-spec/diff');
 
 t('diff', (t) => {
 

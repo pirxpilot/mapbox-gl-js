@@ -1,5 +1,5 @@
-// 
-export default resolveTokens;
+'use strict';
+module.exports = resolveTokens;
 
 /**
  * Replace tokens in a string template with values in an object

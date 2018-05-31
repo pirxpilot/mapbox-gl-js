@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 class RuntimeError {
 
@@ -12,4 +12,4 @@ class RuntimeError {
     }
 }
 
-export default RuntimeError;
+module.exports = RuntimeError;

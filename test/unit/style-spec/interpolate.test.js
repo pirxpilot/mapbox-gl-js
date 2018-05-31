@@ -1,6 +1,6 @@
-import { test } from 'mapbox-gl-js-test';
-import * as interpolate from '../../../src/style-spec/util/interpolate';
-import Color from '../../../src/style-spec/util/color';
+const { test } = require('mapbox-gl-js-test');
+const interpolate = require('../../../src/style-spec/util/interpolate');
+const Color = require('../../../src/style-spec/util/color');
 
 test('interpolate.number', (t) => {
     t.equal(interpolate.number(0, 1, 0.5), 0.5);

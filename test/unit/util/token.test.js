@@ -1,5 +1,5 @@
-import { test } from 'mapbox-gl-js-test';
-import resolveTokens from '../../../src/util/token';
+const { test } = require('mapbox-gl-js-test');
+const resolveTokens = require('../../../src/util/token');
 
 test('resolveToken', (t) => {
     t.equal('3 Fine Fields', resolveTokens({a:3, b:'Fine', c:'Fields'}, '{a} {b} {c}'));

@@ -1,17 +1,17 @@
-// 
+'use strict';
 
-import { Event } from '../util/evented';
+const { Event } = require('../util/evented');
 
-import DOM from '../util/dom';
-import Point from '@mapbox/point-geometry';
-import { extend } from '../util/util';
+const DOM = require('../util/dom');
+const Point = require('@mapbox/point-geometry');
+const { extend } = require('../util/util');
 
 
 /**
  * `MapMouseEvent` is the event type for mouse-related map events.
  * @extends {Object}
  */
-export class MapMouseEvent extends Event {
+class MapMouseEvent extends Event {
     /**
      * The event type.
      */
@@ -71,7 +71,7 @@ export class MapMouseEvent extends Event {
  * `MapTouchEvent` is the event type for touch-related map events.
  * @extends {Object}
  */
-export class MapTouchEvent extends Event {
+class MapTouchEvent extends Event {
     /**
      * The event type.
      */
@@ -144,7 +144,7 @@ export class MapTouchEvent extends Event {
  * `MapWheelEvent` is the event type for the `wheel` map event.
  * @extends {Object}
  */
-export class MapWheelEvent extends Event {
+class MapWheelEvent extends Event {
     /**
      * The event type.
      */
@@ -182,6 +182,12 @@ export class MapWheelEvent extends Event {
         this._defaultPrevented = false;
     }
 }
+
+module.exports = {
+    MapMouseEvent,
+    MapTouchEvent,
+    MapWheelEvent
+};
 
 /**
  * @typedef {Object} MapBoxZoomEvent

@@ -1,15 +1,15 @@
-// 
+'use strict';
 
-import { getJSON } from '../util/ajax';
+const { getJSON } = require('../util/ajax');
 
-import perf from '../util/performance';
-import rewind from 'geojson-rewind';
-import GeoJSONWrapper from './geojson_wrapper';
-import vtpbf from 'vt-pbf';
-import supercluster from 'supercluster';
-import geojsonvt from 'geojson-vt';
-import assert from 'assert';
-import VectorTileWorkerSource from './vector_tile_worker_source';
+const perf = require('../util/performance');
+const rewind = require('geojson-rewind');
+const GeoJSONWrapper = require('./geojson_wrapper');
+const vtpbf = require('vt-pbf');
+const supercluster = require('supercluster');
+const geojsonvt = require('geojson-vt');
+const assert = require('assert');
+const VectorTileWorkerSource = require('./vector_tile_worker_source');
 
 
 
@@ -239,4 +239,4 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
     }
 }
 
-export default GeoJSONWorkerSource;
+module.exports = GeoJSONWorkerSource;
