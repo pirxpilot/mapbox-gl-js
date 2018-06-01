@@ -416,8 +416,9 @@ class Camera extends Evented {
         options.bearing = 0;
 
         return options.linear ?
-            this.easeTo(options, eventData) :
-            this.flyTo(options, eventData);
+            this.easeTo(options, eventData) : (options.animate === false ?
+                this.jumpTo(options, eventData) :
+                this.flyTo(options, eventData));
     }
 
     /**
