@@ -1,4 +1,9 @@
 
+0.38.6 / 2018-05-31
+===================
+
+ * support option animate set to false to bypass animation in fitBounds
+
 0.38.5 / 2018-05-30
 ===================
 
