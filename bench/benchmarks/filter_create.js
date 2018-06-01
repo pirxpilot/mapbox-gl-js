@@ -1,14 +1,14 @@
-// 
+'use strict';
 
-import Benchmark from '../lib/benchmark';
+const Benchmark = require('../lib/benchmark');
 
-import createFilter from '../../src/style-spec/feature_filter';
-import filters from '../data/filters.json';
+const createFilter = require('../../src/style-spec/feature_filter');
+const filters = require('../data/filters.json');
 
-export default class FilterCreate extends Benchmark {
+module.exports = class FilterCreate extends Benchmark {
     bench() {
         for (const filter of filters) {
             createFilter(filter.filter);
         }
     }
-}
+};

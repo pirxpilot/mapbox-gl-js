@@ -1,12 +1,12 @@
 
-import Benchmark from '../lib/benchmark';
-import createMap from '../lib/create_map';
+const Benchmark = require('../lib/benchmark');
+const createMap = require('../lib/create_map');
 
 const width = 1024;
 const height = 768;
 const zooms = [4, 8, 11, 13, 15, 17];
 
-export default class QueryBox extends Benchmark {
+module.exports = class QueryBox extends Benchmark {
     setup() {
         return Promise.all(zooms.map(zoom => {
             return createMap({
@@ -30,4 +30,4 @@ export default class QueryBox extends Benchmark {
             map.remove();
         }
     }
-}
+};

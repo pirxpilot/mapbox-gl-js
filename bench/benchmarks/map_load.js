@@ -1,8 +1,8 @@
 
-import Benchmark from '../lib/benchmark';
-import createMap from '../lib/create_map';
+const Benchmark = require('../lib/benchmark');
+const createMap = require('../lib/create_map');
 
-export default class MapLoad extends Benchmark {
+module.exports = class MapLoad extends Benchmark {
     bench() {
         return createMap({
             style: {
@@ -12,4 +12,4 @@ export default class MapLoad extends Benchmark {
             }
         }).then(map => map.remove());
     }
-}
+};

@@ -1,21 +1,21 @@
-// 
+'use strict';
 
-import Benchmark from '../lib/benchmark';
+const Benchmark = require('../lib/benchmark');
 
-import createStyle from '../lib/create_style';
-import VT from '@mapbox/vector-tile';
-import Protobuf from 'pbf';
-import assert from 'assert';
-import promisify from 'pify';
-import WorkerTile from '../../src/source/worker_tile';
-import StyleLayerIndex from '../../src/style/style_layer_index';
-import deref from '../../src/style-spec/deref';
-import { OverscaledTileID } from '../../src/source/tile_id';
-import { normalizeStyleURL, normalizeSourceURL, normalizeTileURL } from '../../src/util/mapbox';
+const createStyle = require('../lib/create_style');
+const VT = require('@mapbox/vector-tile');
+const Protobuf = require('pbf');
+const assert = require('assert');
+const promisify = require('pify');
+const WorkerTile = require('../../src/source/worker_tile');
+const StyleLayerIndex = require('../../src/style/style_layer_index');
+const deref = require('../../src/style-spec/deref');
+const { OverscaledTileID } = require('../../src/source/tile_id');
+const { normalizeStyleURL, normalizeSourceURL, normalizeTileURL } = require('../../src/util/mapbox');
 
 
 // Note: this class is extended in turn by the LayoutDDS benchmark.
-export default class Layout extends Benchmark {
+module.exports = class Layout extends Benchmark {
 
     tileIDs() {
         return [
@@ -124,4 +124,4 @@ export default class Layout extends Benchmark {
 
         return promise;
     }
-}
+};

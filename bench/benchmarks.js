@@ -1,7 +1,7 @@
-// 
+//
 
-import mapboxgl from '../src';
-import accessToken from './lib/access_token';
+const mapboxgl = require('../src');
+const accessToken = require('./lib/access_token');
 mapboxgl.accessToken = accessToken;
 
 window.mapboxglVersions = window.mapboxglVersions || [];
@@ -15,19 +15,19 @@ function register(Benchmark) {
     window.mapboxglBenchmarks[Benchmark.name][version] = new Benchmark();
 }
 
-import Layout from './benchmarks/layout';
-import LayoutDDS from './benchmarks/layout_dds';
-import Paint from './benchmarks/paint';
-import PaintStates from './benchmarks/paint_states';
-import LayerBenchmarks from './benchmarks/layers';
-import Load from './benchmarks/map_load';
-import Validate from './benchmarks/style_validate';
-import StyleLayerCreate from './benchmarks/style_layer_create';
-import QueryPoint from './benchmarks/query_point';
-import QueryBox from './benchmarks/query_box';
-import ExpressionBenchmarks from './benchmarks/expressions';
-import FilterCreate from './benchmarks/filter_create';
-import FilterEvaluate from './benchmarks/filter_evaluate';
+const Layout = require('./benchmarks/layout');
+const LayoutDDS = require('./benchmarks/layout_dds');
+const Paint = require('./benchmarks/paint');
+const PaintStates = require('./benchmarks/paint_states');
+const LayerBenchmarks = require('./benchmarks/layers');
+const Load = require('./benchmarks/map_load');
+const Validate = require('./benchmarks/style_validate');
+const StyleLayerCreate = require('./benchmarks/style_layer_create');
+const QueryPoint = require('./benchmarks/query_point');
+const QueryBox = require('./benchmarks/query_box');
+const ExpressionBenchmarks = require('./benchmarks/expressions');
+const FilterCreate = require('./benchmarks/filter_create');
+const FilterEvaluate = require('./benchmarks/filter_evaluate');
 
 register(Layout);
 register(LayoutDDS);
@@ -43,7 +43,7 @@ ExpressionBenchmarks.forEach(register);
 register(FilterCreate);
 register(FilterEvaluate);
 
-import getWorkerPool from '../src/util/global_worker_pool';
+const getWorkerPool = require('../src/util/global_worker_pool');
 
 setTimeout(() => {
     // Ensure the global worker pool is never drained. Browsers have resource limits
@@ -53,5 +53,5 @@ setTimeout(() => {
     getWorkerPool().acquire(-1);
 }, 0);
 
-export default mapboxgl;
+module.exports = mapboxgl;
 
