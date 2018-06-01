@@ -42,7 +42,7 @@ function addRandomMarker() {
     var b = Math.round(Math.random() * 255);
 
     var marker = new mapboxgl.Marker({
-        color: `rgb(${r}, ${g}, ${b})`,
+        color: 'rgb(' + [ r, g, b ].join(', ') + ')',
         draggable: true
     })
         .setLngLat([lng, lat])

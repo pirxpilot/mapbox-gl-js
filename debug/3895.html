@@ -27,7 +27,7 @@ var map = window.map = new mapboxgl.Map({
 });
 
 map.on('load', function () {
-    const layer = {
+    var layer = {
         id: 'test',
         source: 'composite',
         'source-layer': 'water',
@@ -40,7 +40,7 @@ map.on('load', function () {
     map.addLayer(layer);
 
     setInterval(function() {
-        const test = map.getLayer('test');
+        var test = map.getLayer('test');
         if (test) {
             map.removeLayer('test');
             map.addLayer(layer);
