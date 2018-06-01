@@ -1,5 +1,5 @@
-import replace from 'rollup-plugin-replace';
-import {plugins as basePlugins} from '../build/rollup_plugins';
+const replace = require('rollup-plugin-replace');
+const {plugins: basePlugins} = require('../build/rollup_plugins');
 
 const plugins = () => basePlugins().concat(
     replace({
@@ -21,5 +21,5 @@ const config = [{
     plugins: plugins()
 }];
 
-export default config;
+module.exports = config;
 

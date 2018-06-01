@@ -1,6 +1,6 @@
 {
   "parserOptions": {
-    "sourceType": "module",
+    "sourceType": "script",
     "ecmaFeatures": {
       "jsx": true
     }
@@ -10,7 +10,8 @@
   ],
   "rules": {
     "react/jsx-uses-vars": [2],
-    "no-restricted-properties": "off"
+    "no-restricted-properties": "off",
+    "strict": "off"
   },
   "env": {
     "browser": true

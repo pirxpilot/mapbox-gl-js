@@ -1,7 +1,7 @@
 
-import style from '../data/empty.json';
-import Benchmark from '../lib/benchmark';
-import createMap from '../lib/create_map';
+const style = require('../data/empty.json');
+const Benchmark = require('../lib/benchmark');
+const createMap = require('../lib/create_map');
 
 function generateLayers(layer) {
     const generated = [];
@@ -16,7 +16,7 @@ const width = 1024;
 const height = 768;
 const zoom = 4;
 
-export default class PaintStates extends Benchmark {
+module.exports = class PaintStates extends Benchmark {
     setup() {
         return fetch('/bench/data/naturalearth-land.json')
             .then(response => response.json())
@@ -65,4 +65,4 @@ export default class PaintStates extends Benchmark {
     teardown() {
         this.map.remove();
     }
-}
+};

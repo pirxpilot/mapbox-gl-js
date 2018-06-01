@@ -1,12 +1,12 @@
 
-import Benchmark from '../lib/benchmark';
-import { VectorTile } from '@mapbox/vector-tile';
-import Pbf from 'pbf';
-import createFilter from '../../src/style-spec/feature_filter';
-import filters from '../data/filters.json';
-import assert from 'assert';
+const Benchmark = require('../lib/benchmark');
+const { VectorTile } = require('@mapbox/vector-tile');
+const Pbf = require('pbf');
+const createFilter = require('../../src/style-spec/feature_filter');
+const filters = require('../data/filters.json');
+const assert = require('assert');
 
-export default class FilterEvaluate extends Benchmark {
+module.exports = class FilterEvaluate extends Benchmark {
     setup() {
         return fetch('/bench/data/785.vector.pbf')
             .then(response => response.arrayBuffer())
@@ -46,4 +46,4 @@ export default class FilterEvaluate extends Benchmark {
             }
         }
     }
-}
+};

@@ -1,17 +1,17 @@
-// 
+'use strict';
 
-import Map from '../../src/ui/map';
+const Map = require('../../src/ui/map');
 
-import browser from '../../src/util/browser';
+const browser = require('../../src/util/browser');
 
-export default function (options) {
+module.exports = function (options) {
     return new Promise((resolve, reject) => {
         const container = document.createElement('div');
         container.style.width = `${options.width || 512}px`;
         container.style.height = `${options.width || 512}px`;
         container.style.margin = '0 auto';
         container.style.display = 'none';
-        (document.body).appendChild(container);
+        document.body.appendChild(container);
 
         const map = new Map(Object.assign({
             container,
@@ -34,4 +34,4 @@ export default function (options) {
             .on('error', (e) => reject(e.error))
             .on('remove', () => container.remove());
     });
-}
+};

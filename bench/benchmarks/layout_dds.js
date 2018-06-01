@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import Layout from './layout';
+const Layout = require('./layout');
 
-import { OverscaledTileID } from '../../src/source/tile_id';
+const { OverscaledTileID } = require('../../src/source/tile_id');
 
 const LAYER_COUNT = 2;
 
-export default class LayoutDDS extends Layout {
+module.exports = class LayoutDDS extends Layout {
     tileIDs() {
         return [
             new OverscaledTileID(15, 0, 15, 9373, 12535)
@@ -93,4 +93,4 @@ export default class LayoutDDS extends Layout {
 
         return Promise.resolve(style);
     }
-}
+};

@@ -1,8 +1,8 @@
-// 
+'use strict';
 
-import Style from '../../src/style/style';
+const Style = require('../../src/style/style');
 
-import { Evented } from '../../src/util/evented';
+const { Evented } = require('../../src/util/evented');
 
 class StubMap extends Evented {
     _transformRequest(url) {
@@ -10,7 +10,7 @@ class StubMap extends Evented {
     }
 }
 
-export default function (styleJSON) {
+module.exports = function (styleJSON) {
     return new Promise((resolve, reject) => {
         const style = new Style((new StubMap()));
         style.loadJSON(styleJSON);
@@ -19,4 +19,4 @@ export default function (styleJSON) {
             .on('style.load', () => resolve(style))
             .on('error', reject);
     });
-}
+};

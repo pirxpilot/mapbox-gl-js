@@ -1,4 +1,4 @@
-// 
+'use strict';
 
 // According to https://developer.mozilla.org/en-US/docs/Web/API/Performance/now,
 // performance.now() should be accurate to 0.005ms. Set the minimum running
@@ -116,4 +116,4 @@ class Benchmark {
     }
 }
 
-export default Benchmark;
+module.exports = Benchmark;

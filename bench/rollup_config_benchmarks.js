@@ -1,7 +1,7 @@
-import fs from 'fs';
-import sourcemaps from 'rollup-plugin-sourcemaps';
-import replace from 'rollup-plugin-replace';
-import {plugins as basePlugins} from '../build/rollup_plugins';
+const fs = require('fs');
+const sourcemaps = require('rollup-plugin-sourcemaps');
+const replace = require('rollup-plugin-replace');
+const {plugins: basePlugins} = require('../build/rollup_plugins');
 
 const plugins = () => basePlugins().concat(
     replace({
@@ -34,5 +34,5 @@ const config = [{
     plugins: [sourcemaps()],
 }];
 
-export default config;
+module.exports = config;
 

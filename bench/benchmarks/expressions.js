@@ -1,12 +1,12 @@
-// 
+'use strict';
 
-import Benchmark from '../lib/benchmark';
+const Benchmark = require('../lib/benchmark');
 
-import accessToken from '../lib/access_token';
-import spec from '../../src/style-spec/reference/latest';
-import convertFunction from '../../src/style-spec/function/convert';
-import { isFunction, createFunction } from '../../src/style-spec/function';
-import { createPropertyExpression } from '../../src/style-spec/expression';
+const accessToken = require('../lib/access_token');
+const spec = require('../../src/style-spec/reference/latest');
+const convertFunction = require('../../src/style-spec/function/convert');
+const { isFunction, createFunction } = require('../../src/style-spec/function');
+const { createPropertyExpression } = require('../../src/style-spec/expression');
 
 
 class ExpressionBenchmark extends Benchmark {
@@ -94,7 +94,7 @@ class ExpressionEvaluate extends ExpressionBenchmark {
     }
 }
 
-export default [
+module.exports = [
     FunctionCreate,
     FunctionConvert,
     FunctionEvaluate,
