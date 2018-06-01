@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import Benchmark from '../lib/benchmark';
 
@@ -13,17 +13,11 @@ import deref from '../../src/style-spec/deref';
 import { OverscaledTileID } from '../../src/source/tile_id';
 import { normalizeStyleURL, normalizeSourceURL, normalizeTileURL } from '../../src/util/mapbox';
 
-import type {TileJSON} from '../../src/types/tilejson';
 
 // Note: this class is extended in turn by the LayoutDDS benchmark.
 export default class Layout extends Benchmark {
-    glyphs: Object;
-    icons: Object;
-    workerTile: WorkerTile;
-    layerIndex: StyleLayerIndex;
-    tiles: Array<{tileID: OverscaledTileID, buffer: ArrayBuffer}>;
 
-    tileIDs(): Array<OverscaledTileID> {
+    tileIDs() {
         return [
             new OverscaledTileID(12, 0, 12, 655, 1583),
             new OverscaledTileID(8, 0, 8, 40, 98),
@@ -32,20 +26,20 @@ export default class Layout extends Benchmark {
         ];
     }
 
-    sourceID(): string {
+    sourceID() {
         return 'composite';
     }
 
-    fetchStyle(): Promise<StyleSpecification> {
+    fetchStyle() {
         return fetch(normalizeStyleURL(`mapbox://styles/mapbox/streets-v9`))
             .then(response => response.json());
     }
 
-    fetchTiles(styleJSON: StyleSpecification): Promise<Array<{tileID: OverscaledTileID, buffer: ArrayBuffer}>> {
-        const sourceURL: string = (styleJSON.sources[this.sourceID()]: any).url;
+    fetchTiles(styleJSON) {
+        const sourceURL = (styleJSON.sources[this.sourceID()]).url;
         return fetch(normalizeSourceURL(sourceURL))
             .then(response => response.json())
-            .then((tileJSON: TileJSON) => {
+            .then((tileJSON) => {
                 return Promise.all(this.tileIDs().map(tileID => {
                     return fetch((normalizeTileURL(tileID.canonical.url(tileJSON.tiles))))
                         .then(response => response.arrayBuffer())
@@ -54,7 +48,7 @@ export default class Layout extends Benchmark {
             });
     }
 
-    setup(): Promise<void> {
+    setup() {
         return this.fetchStyle()
             .then((styleJSON) => {
                 this.layerIndex = new StyleLayerIndex(deref(styleJSON.layers));
@@ -83,8 +77,8 @@ export default class Layout extends Benchmark {
             });
     }
 
-    bench(getGlyphs: Function = (params, callback) => callback(null, this.glyphs[JSON.stringify(params)]),
-          getImages: Function = (params, callback) => callback(null, this.icons[JSON.stringify(params)])) {
+    bench(getGlyphs = (params, callback) => callback(null, this.glyphs[JSON.stringify(params)]),
+          getImages = (params, callback) => callback(null, this.icons[JSON.stringify(params)])) {
 
         const actor = {
             send(action, params, callback) {
@@ -98,7 +92,7 @@ export default class Layout extends Benchmark {
             }
         };
 
-        let promise: Promise<void> = Promise.resolve();
+        let promise = Promise.resolve();
 
         for (const {tileID, buffer} of this.tiles) {
             promise = promise.then(() => {

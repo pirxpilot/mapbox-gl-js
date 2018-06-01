@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import Benchmark from '../lib/benchmark';
 
@@ -8,17 +8,8 @@ import convertFunction from '../../src/style-spec/function/convert';
 import { isFunction, createFunction } from '../../src/style-spec/function';
 import { createPropertyExpression } from '../../src/style-spec/expression';
 
-import type {StylePropertySpecification} from '../../src/style-spec/style-spec';
-import type {StylePropertyExpression} from '../../src/style-spec/expression';
 
 class ExpressionBenchmark extends Benchmark {
-    data: Array<{
-        propertySpec: StylePropertySpecification,
-        rawValue: mixed,
-        rawExpression: mixed,
-        compiledFunction: StylePropertyExpression,
-        compiledExpression: StylePropertyExpression
-    }>;
 
     setup() {
         return fetch(`https://api.mapbox.com/styles/v1/mapbox/streets-v9?access_token=${accessToken}`)
@@ -31,7 +22,7 @@ class ExpressionBenchmark extends Benchmark {
                         continue;
                     }
 
-                    const expressionData = function(rawValue, propertySpec: StylePropertySpecification) {
+                    const expressionData = function(rawValue, propertySpec) {
                         const rawExpression = convertFunction(rawValue, propertySpec);
                         const compiledFunction = createFunction(rawValue, propertySpec);
                         const compiledExpression = createPropertyExpression(rawExpression, propertySpec);

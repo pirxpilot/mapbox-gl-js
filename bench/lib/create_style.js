@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import Style from '../../src/style/style';
 
@@ -10,9 +10,9 @@ class StubMap extends Evented {
     }
 }
 
-export default function (styleJSON: StyleSpecification): Promise<Style> {
+export default function (styleJSON) {
     return new Promise((resolve, reject) => {
-        const style = new Style((new StubMap(): any));
+        const style = new Style((new StubMap()));
         style.loadJSON(styleJSON);
 
         style

@@ -1,17 +1,17 @@
-// @flow
+// 
 
 import Map from '../../src/ui/map';
 
 import browser from '../../src/util/browser';
 
-export default function (options: any): Promise<Map> {
+export default function (options) {
     return new Promise((resolve, reject) => {
         const container = document.createElement('div');
         container.style.width = `${options.width || 512}px`;
         container.style.height = `${options.width || 512}px`;
         container.style.margin = '0 auto';
         container.style.display = 'none';
-        (document.body: any).appendChild(container);
+        (document.body).appendChild(container);
 
         const map = new Map(Object.assign({
             container,

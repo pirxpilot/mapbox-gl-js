@@ -1,4 +1,4 @@
-// @flow
+// 
 
 import Benchmark from '../lib/benchmark';
 
