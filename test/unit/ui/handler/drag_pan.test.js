@@ -210,7 +210,7 @@ test('DragPanHandler requests a new render frame after each mousemove event', (t
     map._renderTaskQueue.run();
 
     // https://github.com/mapbox/mapbox-gl-js/issues/6063
-    requestFrame.reset();
+    requestFrame.resetHistory();
     simulate.mousemove(map.getCanvas());
     t.equal(requestFrame.callCount, 1);
 
