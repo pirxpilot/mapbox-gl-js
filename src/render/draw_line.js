@@ -11,7 +11,8 @@ module.exports = function drawLine(painter, sourceCache, layer, coords) {
     if (painter.renderPass !== 'translucent') return;
 
     const opacity = layer.paint.get('line-opacity');
-    if (opacity.constantOr(1) === 0) return;
+    const width = layer.paint.get('line-width');
+    if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0) return;
 
     const context = painter.context;
 
