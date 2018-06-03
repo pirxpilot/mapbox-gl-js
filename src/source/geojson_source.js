@@ -4,7 +4,6 @@ const { Event, ErrorEvent, Evented } = require('../util/evented');
 
 const window = require('../util/window');
 const EXTENT = require('../data/extent');
-const { ResourceType } = require('../util/ajax');
 const browser = require('../util/browser');
 
 
@@ -173,7 +172,7 @@ class GeoJSONSource extends Evented {
         const options = Object.assign({}, this.workerOptions);
         const data = this._data;
         if (typeof data === 'string') {
-            options.request = this.map._transformRequest(resolveURL(data), ResourceType.Source);
+            options.request = { url: resolveURL(data) };
             options.request.collectResourceTiming = this._collectResourceTiming;
         } else {
             options.data = JSON.stringify(data);

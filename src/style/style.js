@@ -45,7 +45,7 @@ class Style extends Evented {
         this.map = map;
         this.dispatcher = new Dispatcher(getWorkerPool(), this);
         this.imageManager = new ImageManager();
-        this.glyphManager = new GlyphManager(map._transformRequest, options.localIdeographFontFamily);
+        this.glyphManager = new GlyphManager(options.localIdeographFontFamily);
         this.lineAtlas = new LineAtlas(256, 512);
         this.crossTileSymbolIndex = new CrossTileSymbolIndex();
 
@@ -93,9 +93,7 @@ class Style extends Evented {
         this.fire(new Event('dataloading', {dataType: 'style'}));
 
         url = normalizeStyleURL(url, options.accessToken);
-        const request = this.map._transformRequest(url, ResourceType.Style);
-
-        getJSON(request, (error, json) => {
+        getJSON({ url }, (error, json) => {
             if (error) {
                 this.fire(new ErrorEvent(error));
             } else if (json) {
@@ -121,7 +119,7 @@ class Style extends Evented {
         }
 
         if (json.sprite) {
-            loadSprite(json.sprite, this.map._transformRequest, (err, images) => {
+            loadSprite(json.sprite, (err, images) => {
                 if (err) {
                     this.fire(new ErrorEvent(err));
                 } else if (images) {

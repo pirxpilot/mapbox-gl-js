@@ -5,34 +5,12 @@ const request = require('request');
 const browser = require('./browser'); // eslint-disable-line import/no-unresolved
 const cache = {};
 
-/**
- * The type of a resource.
- * @private
- * @readonly
- * @enum {string}
- */
-const ResourceType = {
-    Unknown: 'Unknown',
-    Style: 'Style',
-    Source: 'Source',
-    Tile: 'Tile',
-    Glyphs: 'Glyphs',
-    SpriteImage: 'SpriteImage',
-    SpriteJSON: 'SpriteJSON',
-    Image: 'Image'
-};
-
 module.exports = {
-    ResourceType,
     getJSON,
     getArrayBuffer,
     getImage,
     getVideo,
 };
-
-if (typeof Object.freeze === 'function') {
-    Object.freeze(ResourceType);
-}
 
 function cached(data, callback) {
     setImmediate(() => {

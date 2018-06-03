@@ -8,13 +8,11 @@ const async = require('../util/async');
 const { AlphaImage } = require('../util/image');
 
 
-
 class GlyphManager {
 
     // exposed as statics to enable stubbing in unit tests
 
-    constructor(requestTransform, localIdeographFontFamily) {
-        this.requestTransform = requestTransform;
+    constructor(localIdeographFontFamily) {
         this.localIdeographFontFamily = localIdeographFontFamily;
         this.entries = {};
     }
@@ -62,7 +60,7 @@ class GlyphManager {
             let requests = entry.requests[range];
             if (!requests) {
                 requests = entry.requests[range] = [];
-                GlyphManager.loadGlyphRange(stack, range, (this.url), this.requestTransform,
+                GlyphManager.loadGlyphRange(stack, range, this.url,
                     (err, response) => {
                         if (response) {
                             for (const id in response) {

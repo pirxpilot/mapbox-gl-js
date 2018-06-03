@@ -13,15 +13,11 @@ test('loadGlyphRange', (t) => {
         window.restore();
     });
 
-    const transform = t.stub().callsFake((url) => ({url}));
-
     let request;
     window.XMLHttpRequest.onCreate = (req) => { request = req; };
 
-    loadGlyphRange('Arial Unicode MS', 0, 'https://localhost/fonts/v1/{fontstack}/{range}.pbf', transform, (err, result) => {
+    loadGlyphRange('Arial Unicode MS', 0, 'https://localhost/fonts/v1/{fontstack}/{range}.pbf', (err, result) => {
         t.ifError(err);
-        t.ok(transform.calledOnce);
-        t.deepEqual(transform.getCall(0).args, ['https://localhost/fonts/v1/Arial Unicode MS/0-255.pbf', 'Glyphs']);
 
         if (!result) return t.fail(); // appease flow
 

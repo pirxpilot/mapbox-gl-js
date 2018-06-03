@@ -6,7 +6,6 @@ const { pick } = require('../util/object');
 const loadTileJSON = require('./load_tilejson');
 const { normalizeTileURL: normalizeURL } = require('../util/mapbox');
 const TileBounds = require('./tile_bounds');
-const { ResourceType } = require('../util/ajax');
 const browser = require('../util/browser');
 
 
@@ -41,7 +40,7 @@ class VectorTileSource extends Evented {
     load() {
         this.fire(new Event('dataloading', {dataType: 'source'}));
 
-        loadTileJSON(this._options, this.map._transformRequest, (err, tileJSON) => {
+        loadTileJSON(this._options, (err, tileJSON) => {
             if (err) {
                 this.fire(new ErrorEvent(err));
             } else if (tileJSON) {
@@ -73,7 +72,7 @@ class VectorTileSource extends Evented {
     loadTile(tile, callback) {
         const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url);
         const params = {
-            request: this.map._transformRequest(url, ResourceType.Tile),
+            request: { url },
             uid: tile.uid,
             tileID: tile.tileID,
             zoom: tile.tileID.overscaledZ,
