@@ -9,16 +9,14 @@ for (const glyph of parseGlyphPBF(fs.readFileSync('./test/fixtures/0-255.pbf')))
 }
 
 test('GlyphManager requests 0-255 PBF', (t) => {
-    const identityTransform = (url) => ({url});
-    t.stub(GlyphManager, 'loadGlyphRange').callsFake((stack, range, urlTemplate, transform, callback) => {
+    t.stub(GlyphManager, 'loadGlyphRange').callsFake((stack, range, urlTemplate, callback) => {
         t.equal(stack, 'Arial Unicode MS');
         t.equal(range, 0);
         t.equal(urlTemplate, 'https://localhost/fonts/v1/{fontstack}/{range}.pbf');
-        t.equal(transform, identityTransform);
         setImmediate(() => callback(null, glyphs));
     });
 
-    const manager = new GlyphManager(identityTransform);
+    const manager = new GlyphManager();
     manager.setURL('https://localhost/fonts/v1/{fontstack}/{range}.pbf');
 
     manager.getGlyphs({'Arial Unicode MS': [55]}, (err, glyphs) => {
@@ -29,11 +27,11 @@ test('GlyphManager requests 0-255 PBF', (t) => {
 });
 
 test('GlyphManager requests remote CJK PBF', (t) => {
-    t.stub(GlyphManager, 'loadGlyphRange').callsFake((stack, range, urlTemplate, transform, callback) => {
+    t.stub(GlyphManager, 'loadGlyphRange').callsFake((stack, range, urlTemplate, callback) => {
         setImmediate(() => callback(null, glyphs));
     });
 
-    const manager = new GlyphManager((url) => ({url}));
+    const manager = new GlyphManager();
     manager.setURL('https://localhost/fonts/v1/{fontstack}/{range}.pbf');
 
     manager.getGlyphs({'Arial Unicode MS': [0x5e73]}, (err, glyphs) => {
@@ -51,7 +49,7 @@ test('GlyphManager generates CJK PBF locally', (t) => {
         }
     });
 
-    const manager = new GlyphManager((url) => ({url}), 'sans-serif');
+    const manager = new GlyphManager('sans-serif');
     manager.setURL('https://localhost/fonts/v1/{fontstack}/{range}.pbf');
 
     manager.getGlyphs({'Arial Unicode MS': [0x5e73]}, (err, glyphs) => {

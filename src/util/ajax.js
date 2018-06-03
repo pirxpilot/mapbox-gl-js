@@ -2,34 +2,11 @@
 
 const window = require('./window');
 
-
-/**
- * The type of a resource.
- * @private
- * @readonly
- * @enum {string}
- */
-const ResourceType = {
-    Unknown: 'Unknown',
-    Style: 'Style',
-    Source: 'Source',
-    Tile: 'Tile',
-    Glyphs: 'Glyphs',
-    SpriteImage: 'SpriteImage',
-    SpriteJSON: 'SpriteJSON',
-    Image: 'Image'
-};
-
 module.exports = {
-    ResourceType,
     getJSON,
     getArrayBuffer,
     getImage
 };
-
-if (typeof Object.freeze == 'function') {
-    Object.freeze(ResourceType);
-}
 
 /**
  * A `RequestParameters` object to be returned from Map.options.transformRequest callbacks.

@@ -48,10 +48,6 @@ class StubMap extends Evented {
         super();
         this.transform = new Transform();
     }
-
-    _transformRequest(url) {
-        return { url };
-    }
 }
 
 test('Style', (t) => {
@@ -116,19 +112,6 @@ test('Style#loadURL', (t) => {
         t.ok(spy.calledOnce);
         t.equal(spy.getCall(0).args[0].target, style);
         t.equal(spy.getCall(0).args[0].dataType, 'style');
-        t.end();
-    });
-
-    t.test('transforms style URL before request', (t) => {
-        const map = new StubMap();
-        const spy = t.spy(map, '_transformRequest');
-
-        const style = new Style(map);
-        style.loadURL('style.json');
-
-        t.ok(spy.calledOnce);
-        t.equal(spy.getCall(0).args[0], 'style.json');
-        t.equal(spy.getCall(0).args[1], 'Style');
         t.end();
     });
 
@@ -265,27 +248,6 @@ test('Style#loadJSON', (t) => {
                 "type": "fill"
             }]
         });
-    });
-
-    t.test('transforms sprite json and image URLs before request', (t) => {
-        window.useFakeXMLHttpRequest();
-
-        const map = new StubMap();
-        const transformSpy = t.spy(map, '_transformRequest');
-        const style = new Style(map);
-
-        style.on('style.load', () => {
-            t.equal(transformSpy.callCount, 2);
-            t.equal(transformSpy.getCall(0).args[0], 'http://example.com/sprites/bright-v8.json');
-            t.equal(transformSpy.getCall(0).args[1], 'SpriteJSON');
-            t.equal(transformSpy.getCall(1).args[0], 'http://example.com/sprites/bright-v8.png');
-            t.equal(transformSpy.getCall(1).args[1], 'SpriteImage');
-            t.end();
-        });
-
-        style.loadJSON(Object.assign(createStyleJSON(), {
-            "sprite": "http://example.com/sprites/bright-v8"
-        }));
     });
 
     t.test('emits an error on non-existant vector source layer', (t) => {

@@ -7,7 +7,7 @@ const browser = require('../util/browser');
 const window = require('../util/window');
 const { HTMLImageElement, HTMLElement } = window;
 const DOM = require('../util/dom');
-const { getImage, ResourceType } = require('../util/ajax');
+const { getImage } = require('../util/ajax');
 const Style = require('../style/style');
 const EvaluationParameters = require('../style/evaluation_parameters');
 const Painter = require('../render/painter');
@@ -60,7 +60,6 @@ const defaultOptions = {
 
     maxTileCacheSize: null,
 
-    transformRequest: null,
     fadeDuration: 300
 };
 
@@ -126,8 +125,6 @@ const defaultOptions = {
  *   for locally overriding generation of glyphs in the 'CJK Unified Ideographs' and 'Hangul Syllables' ranges.
  *   In these ranges, font settings from the map's style will be ignored, except for font-weight keywords (light/regular/medium/bold).
  *   The purpose of this option is to avoid bandwidth-intensive glyph server requests. (see [Use locally generated ideographs](https://www.mapbox.com/mapbox-gl-js/example/local-ideographs))
- * @param {RequestTransformFunction} [options.transformRequest=null] A callback run before the Map makes a request for an external URL. The callback can be used to modify the url, set headers, or set the credentials property for cross-origin requests.
- *   Expected to return an object with a `url` property and optionally `headers` and `credentials` properties.
  * @param {boolean} [options.collectResourceTiming=false] If `true`, Resource Timing API information will be collected for requests made by GeoJSON and Vector Tile web workers (this information is normally inaccessible from the main Javascript thread). Information will be returned in a `resourceTiming` property of relevant `data` events.
  * @param {number} [options.fadeDuration=300] Controls the duration of the fade-in/fade-out animation for label collisions, in milliseconds. This setting affects all symbol layers. This setting does not affect the duration of runtime styling transitions or raster tile cross-fading.
  * @example
@@ -135,16 +132,7 @@ const defaultOptions = {
  *   container: 'map',
  *   center: [-122.420679, 37.772537],
  *   zoom: 13,
- *   style: style_object,
- *   transformRequest: (url, resourceType)=> {
- *     if(resourceType === 'Source' && url.startsWith('http://myHost')) {
- *       return {
- *        url: url.replace('http', 'https'),
- *        headers: { 'my-custom-header': true},
- *        credentials: 'include'  // Include cookies for cross-origin requests
- *      }
- *     }
- *   }
+ *   style: style_object
  * });
  * @see [Display a map](https://www.mapbox.com/mapbox-gl-js/examples/)
  */
@@ -202,9 +190,6 @@ class Map extends Camera {
         this._crossFadingFactor = 1;
         this._collectResourceTiming = options.collectResourceTiming;
         this._renderTaskQueue = new TaskQueue();
-
-        const transformRequestFn = options.transformRequest;
-        this._transformRequest = transformRequestFn ?  (url, type) => transformRequestFn(url, type) || ({ url }) : (url) => ({ url });
 
         if (typeof options.container === 'string') {
             const container = window.document.getElementById(options.container);
@@ -1061,7 +1046,7 @@ class Map extends Camera {
      * @see [Add an icon to the map](https://www.mapbox.com/mapbox-gl-js/example/add-image/)
      */
     loadImage(url, callback) {
-        getImage(this._transformRequest(url, ResourceType.Image), callback);
+        getImage({ url }, callback);
     }
 
     /**
