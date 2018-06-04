@@ -80,9 +80,6 @@ class GeoJSONSource extends Evented {
         this._data = (options.data);
         this._options = Object.assign({}, options);
 
-        this._collectResourceTiming = options.collectResourceTiming;
-        this._resourceTiming = [];
-
         if (options.maxzoom !== undefined) this.maxzoom = options.maxzoom;
         if (options.type) this.type = options.type;
 
@@ -122,10 +119,6 @@ class GeoJSONSource extends Evented {
             }
 
             const data = { dataType: 'source', sourceDataType: 'metadata' };
-            if (this._collectResourceTiming && this._resourceTiming && (this._resourceTiming.length > 0)) {
-                data.resourceTiming = this._resourceTiming;
-                this._resourceTiming = [];
-            }
 
             // although GeoJSON sources contain no metadata, we fire this event to let the SourceCache
             // know its ok to start requesting tiles.
@@ -153,10 +146,6 @@ class GeoJSONSource extends Evented {
             }
 
             const data = { dataType: 'source', sourceDataType: 'content' };
-            if (this._collectResourceTiming && this._resourceTiming && (this._resourceTiming.length > 0)) {
-                data.resourceTiming = this._resourceTiming;
-                this._resourceTiming = [];
-            }
             this.fire(new Event('data', data));
         });
 
@@ -173,7 +162,6 @@ class GeoJSONSource extends Evented {
         const data = this._data;
         if (typeof data === 'string') {
             options.request = { url: resolveURL(data) };
-            options.request.collectResourceTiming = this._collectResourceTiming;
         } else {
             options.data = JSON.stringify(data);
         }

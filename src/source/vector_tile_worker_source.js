@@ -5,10 +5,6 @@ const {getArrayBuffer} = require('../util/ajax');
 const vt = require('@mapbox/vector-tile');
 const Protobuf = require('pbf');
 const WorkerTile = require('./worker_tile');
-const perf = require('../util/performance');
-
-
-
 
 /**
  * @callback LoadVectorDataCallback
@@ -88,21 +84,13 @@ class VectorTileWorkerSource {
             const cacheControl = {};
             if (response.expires) cacheControl.expires = response.expires;
             if (response.cacheControl) cacheControl.cacheControl = response.cacheControl;
-            const resourceTiming = {};
-            if (params.request && params.request.collectResourceTiming) {
-                const resourceTimingData = perf.getEntriesByName(params.request.url);
-                // it's necessary to eval the result of getEntriesByName() here via parse/stringify
-                // late evaluation in the main thread causes TypeError: illegal invocation
-                if (resourceTimingData)
-                    resourceTiming.resourceTiming = JSON.parse(JSON.stringify(resourceTimingData));
-            }
 
             workerTile.vectorTile = response.vectorTile;
             workerTile.parse(response.vectorTile, this.layerIndex, this.actor, (err, result) => {
                 if (err || !result) return callback(err);
 
                 // Transferring a copy of rawTileData because the worker needs to retain its copy.
-                callback(null, Object.assign({rawTileData: rawTileData.slice(0)}, result, cacheControl, resourceTiming));
+                callback(null, Object.assign({rawTileData: rawTileData.slice(0)}, result, cacheControl));
             });
 
             this.loaded = this.loaded || {};

@@ -10,7 +10,7 @@ const GlyphManager = require('../render/glyph_manager');
 const Light = require('./light');
 const LineAtlas = require('../render/line_atlas');
 const { clone, deepEqual, filterObject, mapObject } = require('../util/object');
-const { getJSON, ResourceType } = require('../util/ajax');
+const { getJSON } = require('../util/ajax');
 const { normalizeStyleURL } = require('../util/mapbox');
 const browser = require('../util/browser');
 const Dispatcher = require('../util/dispatcher');
@@ -331,7 +331,6 @@ class Style extends Evented {
             throw new Error(`The type property must be defined, but the only the following properties were given: ${Object.keys(source).join(', ')}.`);
         }
 
-        if (this.map && this.map._collectResourceTiming) (source).collectResourceTiming = true;
         const sourceCache = this.sourceCaches[id] = new SourceCache(id, source, this.dispatcher);
         sourceCache.style = this;
         sourceCache.setEventedParent(this, () => ({
