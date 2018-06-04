@@ -28,7 +28,6 @@ class WorkerTile {
         this.source = params.source;
         this.overscaling = this.tileID.overscaleFactor();
         this.showCollisionBoxes = params.showCollisionBoxes;
-        this.collectResourceTiming = !!params.collectResourceTiming;
     }
 
     parse(data, layerIndex, actor, callback) {

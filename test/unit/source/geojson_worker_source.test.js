@@ -2,7 +2,6 @@ const { test } = require('mapbox-gl-js-test');
 const GeoJSONWorkerSource = require('../../../src/source/geojson_worker_source');
 const StyleLayerIndex = require('../../../src/style/style_layer_index');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
-const perf = require('../../../src/util/performance');
 
 test('reloadTile', (t) => {
     t.test('does not rebuild vector data unless data has changed', (t) => {
@@ -100,40 +99,6 @@ test('resourceTiming', (t) => {
             "coordinates": [0, 0]
         }
     };
-
-    t.test('loadData - url', (t) => {
-        const exampleResourceTiming = {
-            connectEnd: 473,
-            connectStart: 473,
-            decodedBodySize: 86494,
-            domainLookupEnd: 473,
-            domainLookupStart: 473,
-            duration: 341,
-            encodedBodySize: 52528,
-            entryType: "resource",
-            fetchStart: 473.5,
-            initiatorType: "xmlhttprequest",
-            name: "http://localhost:2900/fake.geojson",
-            nextHopProtocol: "http/1.1",
-            redirectEnd: 0,
-            redirectStart: 0,
-            requestStart: 477,
-            responseEnd: 815,
-            responseStart: 672,
-            secureConnectionStart: 0
-        };
-
-        t.stub(perf, 'getEntriesByName').callsFake(() => { return [ exampleResourceTiming ]; });
-
-        const layerIndex = new StyleLayerIndex(layers);
-        const source = new GeoJSONWorkerSource(null, layerIndex, (params, callback) => { return callback(null, geoJson); });
-
-        source.loadData({ source: 'testSource', request: { url: 'http://localhost/nonexistent', collectResourceTiming: true } }, (err, result) => {
-            t.equal(err, null);
-            t.deepEquals(result.resourceTiming.testSource, [ exampleResourceTiming ], 'got expected resource timing');
-            t.end();
-        });
-    });
 
     t.test('loadData - data', (t) => {
         const layerIndex = new StyleLayerIndex(layers);

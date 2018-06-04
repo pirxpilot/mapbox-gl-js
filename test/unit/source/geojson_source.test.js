@@ -77,19 +77,6 @@ test('GeoJSONSource#setData', (t) => {
         source.load();
     });
 
-    t.test('respects collectResourceTiming parameter on source', (t) => {
-        const source = createSource({ collectResourceTiming: true });
-        source.dispatcher.send = function(type, params, cb) {
-            if (type === 'geojson.loadData') {
-                t.true(params.request.collectResourceTiming, 'collectResourceTiming is true on dispatcher message');
-                setTimeout(cb, 0);
-                t.end();
-            }
-            return 1;
-        };
-        source.setData('http://localhost/nonexistent');
-    });
-
     t.end();
 });
 

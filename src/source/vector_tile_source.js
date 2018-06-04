@@ -28,8 +28,6 @@ class VectorTileSource extends Evented {
         Object.assign(this, pick(options, ['url', 'scheme', 'tileSize']));
         this._options = Object.assign({ type: 'vector' }, options);
 
-        this._collectResourceTiming = options.collectResourceTiming;
-
         if (this.tileSize !== 512) {
             throw new Error('vector tile sources must have a tileSize of 512');
         }
@@ -82,7 +80,6 @@ class VectorTileSource extends Evented {
             pixelRatio: browser.devicePixelRatio,
             showCollisionBoxes: this.map.showCollisionBoxes,
         };
-        params.request.collectResourceTiming = this._collectResourceTiming;
 
         if (tile.workerID === undefined || tile.state === 'expired') {
             tile.workerID = this.dispatcher.send('loadTile', params, done.bind(this));
