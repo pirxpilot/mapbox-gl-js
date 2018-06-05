@@ -2,8 +2,6 @@
 
 const Color = require('../style-spec/util/color');
 
-const { clamp } = require('../util/util');
-
 class ClearColor {
 
     constructor(context) {
@@ -304,24 +302,6 @@ class Program {
     }
 }
 
-class LineWidth {
-
-    constructor(context) {
-        this.context = context;
-        this.current = 1;
-    }
-
-    get() { return this.current; }
-
-    set(v) {
-        const range = this.context.lineWidthRange;
-        const clamped = clamp(v, range[0], range[1]);
-        if (this.current !== clamped) {
-            this.context.gl.lineWidth(clamped);
-            this.current = v;
-        }
-    }
-}
 
 class ActiveTextureUnit {
 
@@ -570,7 +550,6 @@ module.exports = {
     BlendFunc,
     BlendColor,
     Program,
-    LineWidth,
     ActiveTextureUnit,
     Viewport,
     BindFramebuffer,
