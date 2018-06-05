@@ -5,42 +5,38 @@ const { normalizeSpriteURL } = require('../util/mapbox');
 const { RGBAImage } = require('../util/image');
 const loadImage = require('../util/loader/image');
 const loadJSON = require('../util/loader/json');
+const async = require('../util/async');
 
-module.exports = function(baseURL, callback) {
-    let json, image, error;
+module.exports = loadSprite;
+
+function loadSprite(baseURL, fn) {
     const format = browser.devicePixelRatio > 1 ? '@2x' : '';
 
-    loadJSON(normalizeSpriteURL(baseURL, format, '.json'), (err, data) => {
-        if (!error) {
-            error = err;
-            json = data;
-            maybeComplete();
+    const urls = [
+        '.json',
+        '.png'
+    ].map(suffix => normalizeSpriteURL(baseURL, format, suffix));
+
+    async.all(
+        urls,
+        (url, i, fn) => i > 0 ? loadImage(url, fn) : loadJSON(url, fn),
+        done
+    );
+
+    function done(err, [ json, image ] = []) {
+        if (err) return fn(err);
+
+        const imageData = browser.getImageData(image);
+
+        function convert(result, { width, height, x, y, sdf, pixelRatio }, id) {
+            const data = new RGBAImage({width, height});
+            RGBAImage.copy(imageData, data, {x, y}, {x: 0, y: 0}, {width, height});
+            result[id] = { data, pixelRatio, sdf };
+            return result;
         }
-    });
 
-    loadImage(normalizeSpriteURL(baseURL, format, '.png'), (err, img) => {
-        if (!error) {
-            error = err;
-            image = img;
-            maybeComplete();
-        }
-    });
+        const result = json.reduce(convert, {});
 
-    function maybeComplete() {
-        if (error) {
-            callback(error);
-        } else if (json && image) {
-            const imageData = browser.getImageData(image);
-            const result = {};
-
-            for (const id in json) {
-                const {width, height, x, y, sdf, pixelRatio} = json[id];
-                const data = new RGBAImage({width, height});
-                RGBAImage.copy(imageData, data, {x, y}, {x: 0, y: 0}, {width, height});
-                result[id] = {data, pixelRatio, sdf};
-            }
-
-            callback(null, result);
-        }
+        fn(null, result);
     }
-};
+}
