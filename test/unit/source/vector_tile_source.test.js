@@ -5,7 +5,10 @@ const window = require('../../../src/util/window');
 const { Evented } = require('../../../src/util/evented');
 
 function createSource(options) {
-    const source = new VectorTileSource('id', options, { send: function() {} }, options.eventedParent);
+    const source = new VectorTileSource('id', options, {
+        send: function() {},
+        broadcast: function() {}
+    }, options.eventedParent);
     source.onAdd({
         transform: { showCollisionBoxes: false }
     });
