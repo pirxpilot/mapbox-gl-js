@@ -1,7 +1,5 @@
 'use strict';
 
-const browser = require('../util/browser');
-
 const { mat4 } = require('@mapbox/gl-matrix');
 const EXTENT = require('../data/extent');
 const VertexArrayObject = require('./vertex_array_object');
@@ -22,8 +20,6 @@ function drawDebug(painter, sourceCache, coords) {
 function drawDebugTile(painter, sourceCache, coord) {
     const context = painter.context;
     const gl = context.gl;
-
-    context.lineWidth.set(1 * browser.devicePixelRatio);
 
     const posMatrix = coord.posMatrix;
     const program = painter.useProgram('debug');

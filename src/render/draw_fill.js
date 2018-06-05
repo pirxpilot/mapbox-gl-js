@@ -37,7 +37,6 @@ function drawFill(painter, sourceCache, layer, coords) {
 
     // Draw stroke
     if (painter.renderPass === 'translucent' && layer.paint.get('fill-antialias')) {
-        context.lineWidth.set(2);
 
         // If we defined a different color for the fill outline, we are
         // going to ignore the bits in 0x07 and just care about the global
