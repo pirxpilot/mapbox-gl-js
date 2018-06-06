@@ -13,7 +13,7 @@ const { clone, deepEqual, filterObject, mapObject } = require('../util/object');
 const { getJSON } = require('../util/ajax');
 const { normalizeStyleURL } = require('../util/mapbox');
 const browser = require('../util/browser');
-const Dispatcher = require('../util/dispatcher');
+const dispatcher = require('../util/dispatcher');
 const {
     getType: getSourceType,
     setType: setSourceType,
@@ -43,7 +43,7 @@ class Style extends Evented {
         super();
 
         this.map = map;
-        this.dispatcher = new Dispatcher(getWorkerPool(), this);
+        this.dispatcher = dispatcher(getWorkerPool(), this);
         this.imageManager = new ImageManager();
         this.glyphManager = new GlyphManager(options.localIdeographFontFamily);
         this.lineAtlas = new LineAtlas(256, 512);

@@ -1,6 +1,6 @@
 'use strict';
 
-const WorkerPool = require('./worker_pool');
+const workerPool = require('./worker_pool');
 
 let globalWorkerPool;
 
@@ -11,7 +11,7 @@ let globalWorkerPool;
  */
 module.exports = function getGlobalWorkerPool () {
     if (!globalWorkerPool) {
-        globalWorkerPool = new WorkerPool();
+        globalWorkerPool = workerPool();
     }
     return globalWorkerPool;
 };

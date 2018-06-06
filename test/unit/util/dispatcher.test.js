@@ -1,11 +1,21 @@
 const { test } = require('mapbox-gl-js-test');
-const Dispatcher = require('../../../src/util/dispatcher');
+const makeDispatcher = require('../../../src/util/dispatcher');
 const WebWorker = require('../../../src/util/web_worker');
-const WorkerPool = require('../../../src/util/worker_pool');
+const makeWorkerPool = require('../../../src/util/worker_pool');
 
 test('Dispatcher', (t) => {
     t.test('requests and releases workers from pool', (t) => {
         const workers = [new WebWorker(), new WebWorker()];
+        const targets = [];
+        let removeCalled = 0;
+
+        function Actor (target) {
+            targets.push(target);
+            return {
+                remove: function() { removeCalled++; }
+            };
+        }
+
 
         const releaseCalled = [];
         const workerPool = {
@@ -17,11 +27,11 @@ test('Dispatcher', (t) => {
             }
         };
 
-        const dispatcher = new Dispatcher(workerPool, {});
-        t.same(dispatcher.actors.map((actor) => { return actor.target; }), workers);
+        const dispatcher = makeDispatcher(workerPool, {}, Actor);
+        t.same(targets, workers);
         dispatcher.remove();
-        t.equal(dispatcher.actors.length, 0, 'actors discarded');
         t.same(releaseCalled, [dispatcher.id]);
+        t.equal(removeCalled, workers.length);
 
         t.end();
     });
@@ -29,11 +39,13 @@ test('Dispatcher', (t) => {
     t.test('creates Actors with unique map id', (t) => {
         const ids = [];
         function Actor (target, parent, mapId) { ids.push(mapId); }
-        t.stub(Dispatcher, 'Actor').callsFake(Actor);
 
-        const workerPool = new WorkerPool(1);
-        const dispatchers = [new Dispatcher(workerPool, {}), new Dispatcher(workerPool, {})];
-        t.same(ids, dispatchers.map((d) => { return d.id; }));
+        const workerPool = makeWorkerPool(1);
+        const dispatchers = [
+            makeDispatcher(workerPool, {}, Actor),
+            makeDispatcher(workerPool, {}, Actor)
+        ];
+        t.same(ids, dispatchers.map(d => d.id));
 
         t.end();
     });
@@ -41,12 +53,13 @@ test('Dispatcher', (t) => {
     t.test('#remove destroys actors', (t) => {
         const actorsRemoved = [];
         function Actor() {
-            this.remove = function() { actorsRemoved.push(this); };
+            return {
+                remove: function() { actorsRemoved.push(this); }
+            };
         }
-        t.stub(Dispatcher, 'Actor').callsFake(Actor);
 
-        const workerPool = new WorkerPool(4);
-        const dispatcher = new Dispatcher(workerPool, {});
+        const workerPool = makeWorkerPool(4);
+        const dispatcher = makeDispatcher(workerPool, {}, Actor);
         dispatcher.remove();
         t.equal(actorsRemoved.length, 4);
         t.end();

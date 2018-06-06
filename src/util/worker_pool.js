@@ -4,42 +4,40 @@ const assert = require('assert');
 const WebWorker = require('./web_worker');
 const config = require('./config');
 
+module.exports = workerPool;
+
 /**
  * Constructs a worker pool.
  * @private
  */
-class WorkerPool {
+function workerPool(workerCount = config.WORKER_COUNT) {
+    const active = {};
+    let workers;
 
-    constructor(workerCount = config.WORKER_COUNT) {
-        this.active = {};
-        this.workerCount = workerCount;
-    }
+    function acquire(mapId) {
+        if (!workers) {
+            assert(typeof workerCount === 'number' && workerCount < Infinity);
 
-    acquire(mapId) {
-        if (!this.workers) {
-            // Lazily look up the value of mapboxgl.workerCount so that
-            // client code has had a chance to set it.
-            assert(typeof this.workerCount === 'number' && this.workerCount < Infinity);
-
-            this.workers = [];
-            while (this.workers.length < this.workerCount) {
-                this.workers.push(new WebWorker());
+            workers = new Array(workerCount);
+            for (let i = 0; i < workerCount; i++) {
+                workers[i] = new WebWorker();
             }
         }
 
-        this.active[mapId] = true;
-        return this.workers.slice();
+        active[mapId] = true;
+        return workers.slice();
     }
 
-    release(mapId) {
-        delete this.active[mapId];
-        if (Object.keys(this.active).length === 0) {
-            this.workers.forEach((w) => {
-                w.terminate();
-            });
-            this.workers = (null);
+    function release(mapId) {
+        delete active[mapId];
+        if (Object.keys(active).length === 0) {
+            workers.forEach(w => w.terminate());
+            workers = undefined;
         }
     }
-}
 
-module.exports = WorkerPool;
+    return {
+        acquire,
+        release
+    };
+}
