@@ -1,9 +1,9 @@
 'use strict';
 
 const window = require('../window');
-const mapboxgl = require('../../');
-
+const config = require('../config');
 
 module.exports = function () {
-    return (new window.Worker(mapboxgl.workerUrl));
+    const { WORKER_URL: workerUrl } = config;
+    return new window.Worker(workerUrl);
 };

@@ -1,10 +1,8 @@
 'use strict';
 
 const assert = require('assert');
-
 const WebWorker = require('./web_worker');
-
-const mapboxgl = require('../');
+const config = require('./config');
 
 /**
  * Constructs a worker pool.
@@ -12,19 +10,19 @@ const mapboxgl = require('../');
  */
 class WorkerPool {
 
-    constructor() {
+    constructor(workerCount = config.WORKER_COUNT) {
         this.active = {};
+        this.workerCount = workerCount;
     }
 
     acquire(mapId) {
         if (!this.workers) {
             // Lazily look up the value of mapboxgl.workerCount so that
             // client code has had a chance to set it.
-            const workerCount = mapboxgl.workerCount;
-            assert(typeof workerCount === 'number' && workerCount < Infinity);
+            assert(typeof this.workerCount === 'number' && this.workerCount < Infinity);
 
             this.workers = [];
-            while (this.workers.length < workerCount) {
+            while (this.workers.length < this.workerCount) {
                 this.workers.push(new WebWorker());
             }
         }

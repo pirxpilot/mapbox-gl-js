@@ -1,13 +1,8 @@
 'use strict';
 
-const assert = require('assert');
-
-const browser = require('./util/browser');
-
-const exported = {
+module.exports = {
     version: require('../package.json').version,
     supported: require('@mapbox/mapbox-gl-supported'),
-    workerCount: Math.max(Math.floor(browser.hardwareConcurrency / 2), 1),
     setRTLTextPlugin: require('./source/rtl_text_plugin').setRTLTextPlugin,
     Map: require('./ui/map'),
     NavigationControl: require('./ui/control/navigation_control'),
@@ -40,7 +35,21 @@ const exported = {
         this.config.ACCESS_TOKEN = token;
     },
 
-    workerUrl: ''
+    get workerCount() {
+        return this.config.WORKER_COUNT;
+    },
+
+    set workerCount(count) {
+        this.config.WORKER_COUNT = count;
+    },
+
+    get workerUrl() {
+        return this.config.WORKER_URL;
+    },
+
+    set workerUrl(url) {
+        this.config.WORKER_URL = url;
+    }
 };
 
 /**
@@ -76,7 +85,6 @@ const exported = {
  * @see [Add support for right-to-left scripts](https://www.mapbox.com/mapbox-gl-js/example/mapbox-gl-rtl-text/)
  */
 
-module.exports = exported;
-
 // canary assert: used to confirm that asserts have been removed from production build
+const assert = require('assert');
 assert(true, 'canary assert');
