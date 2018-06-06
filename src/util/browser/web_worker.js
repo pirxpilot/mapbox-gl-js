@@ -1,9 +1,9 @@
 'use strict';
 
+const WebWorkify = require('webworkify');
 const window = require('../window');
-const config = require('../config');
+const workerURL = window.URL.createObjectURL(new WebWorkify(require('../../source/worker'), {bare: true}));
 
 module.exports = function () {
-    const { WORKER_URL: workerUrl } = config;
-    return new window.Worker(workerUrl);
+    return new window.Worker(workerURL);
 };

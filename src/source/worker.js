@@ -172,12 +172,6 @@ class Worker {
     }
 }
 
-module.exports = Worker;
-
-/* global self, WorkerGlobalScope */
-if (typeof WorkerGlobalScope !== 'undefined' &&
-    typeof self !== 'undefined' &&
-    self instanceof WorkerGlobalScope) {
-    new Worker(self);
-}
-
+module.exports = function createWorker(self) {
+    return new Worker(self);
+};
