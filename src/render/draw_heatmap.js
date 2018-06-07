@@ -1,6 +1,6 @@
 'use strict';
 
-const { mat4 } = require('gl-matrix');
+const { mat4 } = require('@mapbox/gl-matrix');
 
 const Texture = require('./texture');
 const pixelsToTileUnits = require('../source/pixels_to_tile_units');

@@ -2,7 +2,7 @@
 
 const Point = require('@mapbox/point-geometry');
 
-const { mat4, vec4 } = require('gl-matrix');
+const { mat4, vec4 } = require('@mapbox/gl-matrix');
 const symbolSize = require('./symbol_size');
 const { addDynamicAttributes } = require('../data/bucket/symbol_bucket');
 const properties = require('../style/style_layer/symbol_style_layer_properties');

@@ -9,7 +9,7 @@ const { number: interpolate } = require('../style-spec/util/interpolate');
 const tileCover = require('../util/tile_cover');
 const { UnwrappedTileID } = require('../source/tile_id');
 const EXTENT = require('../data/extent');
-const { vec4, mat4, mat2 } = require('gl-matrix');
+const { vec4, mat4, mat2 } = require('@mapbox/gl-matrix');
 
 /**
  * A single transform, generally used for a single tile to be

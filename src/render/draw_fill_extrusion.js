@@ -1,6 +1,6 @@
 'use strict';
 
-const { mat3, mat4, vec3 } = require('gl-matrix');
+const { mat3, mat4, vec3 } = require('@mapbox/gl-matrix');
 
 const {
     isPatternMissing,

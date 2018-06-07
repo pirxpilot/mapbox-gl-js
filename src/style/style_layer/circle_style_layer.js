@@ -6,7 +6,7 @@ const CircleBucket = require('../../data/bucket/circle_bucket');
 const { multiPolygonIntersectsBufferedPoint } = require('../../util/intersection_tests');
 const { getMaximumPaintValue, translateDistance, translate } = require('../query_utils');
 const properties = require('./circle_style_layer_properties');
-const { vec4 } = require('gl-matrix');
+const { vec4 } = require('@mapbox/gl-matrix');
 const Point = require('@mapbox/point-geometry');
 
 
