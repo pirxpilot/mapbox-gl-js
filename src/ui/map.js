@@ -17,7 +17,6 @@ const LngLat = require('../geo/lng_lat');
 const LngLatBounds = require('../geo/lng_lat_bounds');
 const Point = require('@mapbox/point-geometry');
 const AttributionControl = require('./control/attribution_control');
-const LogoControl = require('./control/logo_control');
 const isSupported = require('@mapbox/mapbox-gl-supported');
 const { RGBAImage } = require('../util/image');
 const { Event, ErrorEvent } = require('../util/evented');
@@ -267,7 +266,6 @@ class Map extends Camera {
         if (options.style) this.setStyle(options.style, { localIdeographFontFamily: options.localIdeographFontFamily });
 
         if (options.attributionControl) this.addControl(new AttributionControl());
-        this.addControl(new LogoControl(), options.logoPosition);
 
         this.on('style.load', function() {
             if (this.transform.unmodified) {
