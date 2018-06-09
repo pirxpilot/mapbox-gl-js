@@ -4,8 +4,7 @@ const window = require('./window');
 
 module.exports = {
     getJSON,
-    getArrayBuffer,
-    getImage
+    getArrayBuffer
 };
 
 /**
@@ -57,7 +56,7 @@ function getJSON(requestParameters, callback) {
             } catch (err) {
                 return callback(err);
             }
-            callback(null, data);
+            callback(null, { data });
         } else {
             if (xhr.status === 401 && requestParameters.url.match(/mapbox.com/)) {
                 callback(new AJAXError(`${xhr.statusText}: you may have provided an invalid Mapbox access token. See https://www.mapbox.com/api-documentation/#access-tokens`, xhr.status, requestParameters.url));
@@ -93,27 +92,4 @@ function getArrayBuffer(requestParameters, callback) {
     };
     xhr.send();
     return xhr;
-}
-
-const transparentPngUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=';
-
-function getImage(requestParameters, callback) {
-    // request the image with XHR to work around caching issues
-    // see https://github.com/mapbox/mapbox-gl-js/issues/1470
-    return getArrayBuffer(requestParameters, (err, imgData) => {
-        if (err) {
-            callback(err);
-        } else if (imgData) {
-            const img = new window.Image();
-            const URL = window.URL || window.webkitURL;
-            img.onload = () => {
-                callback(null, img);
-                URL.revokeObjectURL(img.src);
-            };
-            const blob = new window.Blob([new Uint8Array(imgData.data)], { type: 'image/png' });
-            (img).cacheControl = imgData.cacheControl;
-            (img).expires = imgData.expires;
-            img.src = imgData.data.byteLength ? URL.createObjectURL(blob) : transparentPngUrl;
-        }
-    });
 }

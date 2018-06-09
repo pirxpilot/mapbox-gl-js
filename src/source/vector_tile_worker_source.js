@@ -1,39 +1,22 @@
 'use strict';
 
-const {getArrayBuffer} = require('../util/ajax');
-
 const vt = require('@mapbox/vector-tile');
+const loader = require('../util/loader');
 const Protobuf = require('pbf');
 const WorkerTile = require('./worker_tile');
 
-/**
- * @callback LoadVectorDataCallback
- * @param error
- * @param vectorTile
- * @private
- */
-
-
-/**
- * @private
- */
-function loadVectorTile(params, callback) {
-    const xhr = getArrayBuffer(params.request, (err, response) => {
-        if (err) {
-            callback(err);
-        } else if (response) {
-            callback(null, {
-                vectorTile: new vt.VectorTile(new Protobuf(response.data)),
-                rawData: response.data,
-                cacheControl: response.cacheControl,
-                expires: response.expires
-            });
-        }
-    });
-    return () => {
-        xhr.abort();
-        callback();
-    };
+function loadVectorTile({ request }, callback) {
+    const { loader } = this;
+    return loader(request, done);
+    function done(err, { data, cacheControl, expires } = {}) {
+        if (err) return callback(err);
+        callback(err, {
+            vectorTile: new vt.VectorTile(new Protobuf(data)),
+            rawData: data,
+            cacheControl,
+            expires
+        });
+    }
 }
 
 /**
@@ -56,9 +39,10 @@ class VectorTileWorkerSource {
     constructor(actor, layerIndex, loadVectorData) {
         this.actor = actor;
         this.layerIndex = layerIndex;
-        this.loadVectorData = loadVectorData || loadVectorTile;
+        this.loadVectorData = loadVectorData || loadVectorTile.bind(this);
         this.loading = {};
         this.loaded = {};
+        this.loader = loader();
     }
 
     /**
@@ -155,6 +139,10 @@ class VectorTileWorkerSource {
             delete loaded[uid];
         }
         callback();
+    }
+
+    setLoaderStrategy(strategy) {
+        this.loader = loader(strategy);
     }
 }
 

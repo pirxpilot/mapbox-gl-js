@@ -1,8 +1,7 @@
 'use strict';
 
 const { pick } = require('../util/object');
-
-const { getJSON } = require('../util/ajax');
+const loadJSON = require('../util/loader/json');
 const browser = require('../util/browser');
 const { normalizeSourceURL: normalizeURL } = require('../util/mapbox');
 
@@ -27,7 +26,7 @@ module.exports = function(options, callback) {
     };
 
     if (options.url) {
-        getJSON({ url: normalizeURL(options.url) }, loaded);
+        loadJSON(normalizeURL(options.url), loaded);
     } else {
         browser.frame(() => loaded(null, options));
     }

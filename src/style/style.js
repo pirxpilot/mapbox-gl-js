@@ -10,7 +10,7 @@ const GlyphManager = require('../render/glyph_manager');
 const Light = require('./light');
 const LineAtlas = require('../render/line_atlas');
 const { clone, deepEqual, filterObject, mapObject } = require('../util/object');
-const { getJSON } = require('../util/ajax');
+const loadJSON = require('../util/loader/json');
 const { normalizeStyleURL } = require('../util/mapbox');
 const browser = require('../util/browser');
 const dispatcher = require('../util/dispatcher');
@@ -93,7 +93,7 @@ class Style extends Evented {
         this.fire(new Event('dataloading', {dataType: 'style'}));
 
         url = normalizeStyleURL(url, options.accessToken);
-        getJSON({ url }, (error, json) => {
+        loadJSON(url, (error, json) => {
             if (error) {
                 this.fire(new ErrorEvent(error));
             } else if (json) {

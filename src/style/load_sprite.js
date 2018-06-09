@@ -1,18 +1,16 @@
 'use strict';
 
-const { getJSON, getImage } = require('../util/ajax');
-
 const browser = require('../util/browser');
 const { normalizeSpriteURL } = require('../util/mapbox');
 const { RGBAImage } = require('../util/image');
+const loadImage = require('../util/loader/image');
+const loadJSON = require('../util/loader/json');
 
-
-module.exports = function(baseURL,
-                          callback) {
+module.exports = function(baseURL, callback) {
     let json, image, error;
     const format = browser.devicePixelRatio > 1 ? '@2x' : '';
 
-    getJSON({ url: normalizeSpriteURL(baseURL, format, '.json') }, (err, data) => {
+    loadJSON(normalizeSpriteURL(baseURL, format, '.json'), (err, data) => {
         if (!error) {
             error = err;
             json = data;
@@ -20,7 +18,7 @@ module.exports = function(baseURL,
         }
     });
 
-    getImage({ url: normalizeSpriteURL(baseURL, format, '.png') }, (err, img) => {
+    loadImage(normalizeSpriteURL(baseURL, format, '.png'), (err, img) => {
         if (!error) {
             error = err;
             image = img;

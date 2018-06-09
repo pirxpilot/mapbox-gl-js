@@ -1,7 +1,7 @@
 'use strict';
 
+const config = require('../util/config');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
-
 const { pick } = require('../util/object');
 const loadTileJSON = require('./load_tilejson');
 const { normalizeTileURL: normalizeURL } = require('../util/mapbox');
@@ -31,6 +31,9 @@ class VectorTileSource extends Evented {
         if (this.tileSize !== 512) {
             throw new Error('vector tile sources must have a tileSize of 512');
         }
+
+        this.setLoaderStrategy(config.TILE_LOADER_STRATEGY);
+        config.on('change', c => this.setLoaderStrategy(c.TILE_LOADER_STRATEGY));
 
         this.setEventedParent(eventedParent);
     }
@@ -124,6 +127,10 @@ class VectorTileSource extends Evented {
 
     hasTransition() {
         return false;
+    }
+
+    setLoaderStrategy(strategy) {
+        this.dispatcher.broadcast('vector.setLoaderStrategy', strategy);
     }
 }
 
