@@ -89,6 +89,7 @@
     "postinstall": "cd src/style-spec && yarn || npm install"
   },
   "files": [
-    "src"
+    "src",
+    "build/minifyify_style_spec.js"
   ]
 }
