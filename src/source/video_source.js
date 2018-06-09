@@ -1,16 +1,13 @@
-// @flow
+'use strict';
 
-import { getVideo, ResourceType } from '../util/ajax';
+const { getVideo, ResourceType } = require('../util/ajax');
 
-import ImageSource from './image_source';
-import rasterBoundsAttributes from '../data/raster_bounds_attributes';
-import VertexArrayObject from '../render/vertex_array_object';
-import Texture from '../render/texture';
-import { ErrorEvent } from '../util/evented';
+const ImageSource = require('./image_source');
+const rasterBoundsAttributes = require('../data/raster_bounds_attributes');
+const VertexArrayObject = require('../render/vertex_array_object');
+const Texture = require('../render/texture');
+const { ErrorEvent } = require('../util/evented');
 
-import type Map from '../ui/map';
-import type Dispatcher from '../util/dispatcher';
-import type {Evented} from '../util/evented';
 
 /**
  * A data source containing video.
@@ -45,15 +42,11 @@ import type {Evented} from '../util/evented';
  * @see [Add a video](https://www.mapbox.com/mapbox-gl-js/example/video-on-a-map/)
  */
 class VideoSource extends ImageSource {
-    options: VideoSourceSpecification;
-    urls: Array<string>;
-    video: HTMLVideoElement;
-    roundZoom: boolean;
 
     /**
      * @private
      */
-    constructor(id: string, options: VideoSourceSpecification, dispatcher: Dispatcher, eventedParent: Evented) {
+    constructor(id, options, dispatcher, eventedParent) {
         super(id, options, dispatcher, eventedParent);
         this.roundZoom = true;
         this.type = 'video';
@@ -99,7 +92,7 @@ class VideoSource extends ImageSource {
         return this.video;
     }
 
-    onAdd(map: Map) {
+    onAdd(map) {
         if (this.map) return;
         this.map = map;
         this.load();
@@ -169,4 +162,4 @@ class VideoSource extends ImageSource {
     }
 }
 
-export default VideoSource;
+module.exports = VideoSource;

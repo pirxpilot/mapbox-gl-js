@@ -1,14 +1,6 @@
-// @flow
+'use strict';
 
-import { bindAll } from '../util/util';
-
-import type Dispatcher from '../util/dispatcher';
-import type {Event, Evented} from '../util/evented';
-import type Map from '../ui/map';
-import type Tile from './tile';
-import type {OverscaledTileID} from './tile_id';
-import type {Callback} from '../types/callback';
-import {CanonicalTileID} from './tile_id';
+const { bindAll } = require('../util/util');
 
 /**
  * The `Source` interface must be implemented by each source type, including "core" types (`vector`, `raster`,
@@ -34,62 +26,14 @@ import {CanonicalTileID} from './tile_id';
  * @property {boolean} roundZoom `true` if zoom levels are rounded to the nearest integer in the source data, `false`
  * if they are floor-ed to the nearest integer.
  */
-export interface Source {
-    +type: string;
-    id: string;
-    minzoom: number,
-    maxzoom: number,
-    tileSize: number,
-    attribution?: string,
 
-    roundZoom?: boolean,
-    isTileClipped?: boolean,
-    mapbox_logo?: boolean,
-    tileID?: CanonicalTileID;
-    reparseOverscaled?: boolean,
-    vectorLayerIds?: Array<string>,
-
-    hasTransition(): boolean;
-
-    fire(event: Event): mixed;
-
-    +onAdd?: (map: Map) => void;
-    +onRemove?: (map: Map) => void;
-
-    loadTile(tile: Tile, callback: Callback<void>): void;
-    +hasTile?: (tileID: OverscaledTileID) => boolean;
-    +abortTile?: (tile: Tile, callback: Callback<void>) => void;
-    +unloadTile?: (tile: Tile, callback: Callback<void>) => void;
-
-    /**
-     * @returns A plain (stringifiable) JS object representing the current state of the source.
-     * Creating a source using the returned object as the `options` should result in a Source that is
-     * equivalent to this one.
-     * @private
-     */
-    serialize(): Object;
-
-    +prepare?: () => void;
-}
-
-type SourceStatics = {
-    /**
-     * An optional URL to a script which, when run by a Worker, registers a {@link WorkerSource}
-     * implementation for this Source type by calling `self.registerWorkerSource(workerSource: WorkerSource)`.
-     * @private
-     */
-    workerSourceURL?: URL;
-};
-
-export type SourceClass = Class<Source> & SourceStatics;
-
-import vector from '../source/vector_tile_source';
-import raster from '../source/raster_tile_source';
-import rasterDem from '../source/raster_dem_tile_source';
-import geojson from '../source/geojson_source';
-import video from '../source/video_source';
-import image from '../source/image_source';
-import canvas from '../source/canvas_source';
+const vector = require('../source/vector_tile_source');
+const raster = require('../source/raster_tile_source');
+const rasterDem = require('../source/raster_dem_tile_source');
+const geojson = require('../source/geojson_source');
+const video = require('../source/video_source');
+const image = require('../source/image_source');
+const canvas = require('../source/canvas_source');
 
 const sourceTypes = {
     vector,
@@ -111,8 +55,8 @@ const sourceTypes = {
  * @param {Dispatcher} dispatcher
  * @returns {Source}
  */
-export const create = function(id: string, specification: SourceSpecification, dispatcher: Dispatcher, eventedParent: Evented) {
-    const source = new sourceTypes[specification.type](id, (specification: any), dispatcher, eventedParent);
+function create(id, specification, dispatcher, eventedParent) {
+    const source = new sourceTypes[specification.type](id, (specification), dispatcher, eventedParent);
 
     if (source.id !== id) {
         throw new Error(`Expected Source id to be ${id} instead of ${source.id}`);
@@ -120,16 +64,18 @@ export const create = function(id: string, specification: SourceSpecification, d
 
     bindAll(['load', 'abort', 'unload', 'serialize', 'prepare'], source);
     return source;
-};
-
-export const getType = function (name: string) {
-    return sourceTypes[name];
-};
-
-export const setType = function (name: string, type: Class<Source>) {
-    sourceTypes[name] = type;
-};
-
-export interface Actor {
-    send(type: string, data: Object, callback: Callback<any>): void;
 }
+
+function getType (name) {
+    return sourceTypes[name];
+}
+
+function setType (name, type) {
+    sourceTypes[name] = type;
+}
+
+module.exports = {
+    create,
+    getType,
+    setType
+};

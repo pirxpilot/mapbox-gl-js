@@ -1,31 +1,18 @@
-// @flow
+'use strict';
 
-import { LineLayoutArray } from '../array_types';
+const { LineLayoutArray } = require('../array_types');
 
-import { members as layoutAttributes } from './line_attributes';
-import SegmentVector from '../segment';
-import { ProgramConfigurationSet } from '../program_configuration';
-import { TriangleIndexArray } from '../index_array_type';
-import loadGeometry from '../load_geometry';
-import EXTENT from '../extent';
-import mvt from '@mapbox/vector-tile';
+const { members: layoutAttributes } = require('./line_attributes');
+const SegmentVector = require('../segment');
+const { ProgramConfigurationSet } = require('../program_configuration');
+const { TriangleIndexArray } = require('../index_array_type');
+const loadGeometry = require('../load_geometry');
+const EXTENT = require('../extent');
+const mvt = require('@mapbox/vector-tile');
 const vectorTileFeatureTypes = mvt.VectorTileFeature.types;
-import { register } from '../../util/web_worker_transfer';
-import EvaluationParameters from '../../style/evaluation_parameters';
+const { register } = require('../../util/web_worker_transfer');
+const EvaluationParameters = require('../../style/evaluation_parameters');
 
-import type {
-    Bucket,
-    BucketParameters,
-    IndexedFeature,
-    PopulateParameters
-} from '../bucket';
-import type LineStyleLayer from '../../style/style_layer/line_style_layer';
-import type Point from '@mapbox/point-geometry';
-import type {Segment} from '../segment';
-import type Context from '../../gl/context';
-import type IndexBuffer from '../../gl/index_buffer';
-import type VertexBuffer from '../../gl/vertex_buffer';
-import type {FeatureStates} from '../../source/source_state';
 
 // NOTE ON EXTRUDE SCALE:
 // scale the extrusion vector so that the normal length is this value.
@@ -60,7 +47,7 @@ const LINE_DISTANCE_SCALE = 1 / 2;
 // The maximum line distance, in tile units, that fits in the buffer.
 const MAX_LINE_DISTANCE = Math.pow(2, LINE_DISTANCE_BUFFER_BITS - 1) / LINE_DISTANCE_SCALE;
 
-function addLineVertex(layoutVertexBuffer, point: Point, extrude: Point, round: boolean, up: boolean, dir: number, linesofar: number) {
+function addLineVertex(layoutVertexBuffer, point, extrude, round, up, dir, linesofar) {
     layoutVertexBuffer.emplaceBack(
         // a_pos_normal
         point.x,
@@ -84,30 +71,13 @@ function addLineVertex(layoutVertexBuffer, point: Point, extrude: Point, round: 
 /**
  * @private
  */
-class LineBucket implements Bucket {
-    distance: number;
-    e1: number;
-    e2: number;
-    e3: number;
+class LineBucket {
 
-    index: number;
-    zoom: number;
-    overscaling: number;
-    layers: Array<LineStyleLayer>;
-    layerIds: Array<string>;
-    stateDependentLayers: Array<any>;
 
-    layoutVertexArray: LineLayoutArray;
-    layoutVertexBuffer: VertexBuffer;
 
-    indexArray: TriangleIndexArray;
-    indexBuffer: IndexBuffer;
 
-    programConfigurations: ProgramConfigurationSet<LineStyleLayer>;
-    segments: SegmentVector;
-    uploaded: boolean;
 
-    constructor(options: BucketParameters<LineStyleLayer>) {
+    constructor(options) {
         this.zoom = options.zoom;
         this.overscaling = options.overscaling;
         this.layers = options.layers;
@@ -120,7 +90,7 @@ class LineBucket implements Bucket {
         this.segments = new SegmentVector();
     }
 
-    populate(features: Array<IndexedFeature>, options: PopulateParameters) {
+    populate(features, options) {
         for (const {feature, index, sourceLayerIndex} of features) {
             if (this.layers[0]._featureFilter(new EvaluationParameters(this.zoom), feature)) {
                 const geometry = loadGeometry(feature);
@@ -130,7 +100,7 @@ class LineBucket implements Bucket {
         }
     }
 
-    update(states: FeatureStates, vtLayer: VectorTileLayer) {
+    update(states, vtLayer) {
         if (!this.stateDependentLayers.length) return;
         this.programConfigurations.updatePaintArrays(states, vtLayer, this.stateDependentLayers);
     }
@@ -143,7 +113,7 @@ class LineBucket implements Bucket {
         return !this.uploaded || this.programConfigurations.needsUpload;
     }
 
-    upload(context: Context) {
+    upload(context) {
         if (!this.uploaded) {
             this.layoutVertexBuffer = context.createVertexBuffer(this.layoutVertexArray, layoutAttributes);
             this.indexBuffer = context.createIndexBuffer(this.indexArray);
@@ -160,7 +130,7 @@ class LineBucket implements Bucket {
         this.segments.destroy();
     }
 
-    addFeature(feature: VectorTileFeature, geometry: Array<Array<Point>>, index: number) {
+    addFeature(feature, geometry, index) {
         const layout = this.layers[0].layout;
         const join = layout.get('line-join').evaluate(feature, {});
         const cap = layout.get('line-cap');
@@ -172,7 +142,7 @@ class LineBucket implements Bucket {
         }
     }
 
-    addLine(vertices: Array<Point>, feature: VectorTileFeature, join: string, cap: string, miterLimit: number, roundLimit: number, index: number) {
+    addLine(vertices, feature, join, cap, miterLimit, roundLimit, index) {
         let lineDistances = null;
         if (!!feature.properties &&
             feature.properties.hasOwnProperty('mapbox_clip_start') &&
@@ -218,10 +188,10 @@ class LineBucket implements Bucket {
             endCap = isPolygon ? 'butt' : cap;
         let startOfLine = true;
         let currentVertex;
-        let prevVertex = ((undefined: any): Point);
-        let nextVertex = ((undefined: any): Point);
-        let prevNormal = ((undefined: any): Point);
-        let nextNormal = ((undefined: any): Point);
+        let prevVertex;
+        let nextVertex;
+        let prevNormal;
+        let nextNormal;
         let offsetA;
         let offsetB;
 
@@ -463,14 +433,14 @@ class LineBucket implements Bucket {
      * @param {boolean} round whether this is a round cap
      * @private
      */
-    addCurrentVertex(currentVertex: Point,
-                     distance: number,
-                     normal: Point,
-                     endLeft: number,
-                     endRight: number,
-                     round: boolean,
-                     segment: Segment,
-                     distancesForScaling: ?Object) {
+    addCurrentVertex(currentVertex,
+                     distance,
+                     normal,
+                     endLeft,
+                     endRight,
+                     round,
+                     segment,
+                     distancesForScaling) {
         let extrude;
         const layoutVertexArray = this.layoutVertexArray;
         const indexArray = this.indexArray;
@@ -522,12 +492,12 @@ class LineBucket implements Bucket {
      * @param lineTurnsLeft whether the line is turning left or right at this angle
      * @private
      */
-    addPieSliceVertex(currentVertex: Point,
-                      distance: number,
-                      extrude: Point,
-                      lineTurnsLeft: boolean,
-                      segment: Segment,
-                      distancesForScaling: ?Object) {
+    addPieSliceVertex(currentVertex,
+                      distance,
+                      extrude,
+                      lineTurnsLeft,
+                      segment,
+                      distancesForScaling) {
         extrude = extrude.mult(lineTurnsLeft ? -1 : 1);
         const layoutVertexArray = this.layoutVertexArray;
         const indexArray = this.indexArray;
@@ -563,7 +533,7 @@ class LineBucket implements Bucket {
  *
  * @private
  */
-function scaleDistance(tileDistance: number, stats: Object) {
+function scaleDistance(tileDistance, stats) {
     return ((tileDistance / stats.tileTotal) * (stats.end - stats.start) + stats.start) * (MAX_LINE_DISTANCE - 1);
 }
 
@@ -576,7 +546,7 @@ function scaleDistance(tileDistance: number, stats: Object) {
  *
  * @private
  */
-function calculateFullDistance(vertices: Array<Point>, first: number, len: number) {
+function calculateFullDistance(vertices, first, len) {
     let currentVertex, nextVertex;
     let total = 0;
     for (let i = first; i < len - 1; i++) {
@@ -589,4 +559,4 @@ function calculateFullDistance(vertices: Array<Point>, first: number, len: numbe
 
 register('LineBucket', LineBucket, {omit: ['layers']});
 
-export default LineBucket;
+module.exports = LineBucket;

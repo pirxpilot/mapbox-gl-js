@@ -1,21 +1,13 @@
-// @flow
+'use strict';
 
-import ShelfPack from '@mapbox/shelf-pack';
+const ShelfPack = require('@mapbox/shelf-pack');
 
-import { RGBAImage } from '../util/image';
-import { ImagePosition } from './image_atlas';
-import Texture from './texture';
-import assert from 'assert';
+const { RGBAImage } = require('../util/image');
+const { ImagePosition } = require('./image_atlas');
+const Texture = require('./texture');
+const assert = require('assert');
 
-import type {StyleImage} from '../style/style_image';
-import type Context from '../gl/context';
-import type {Bin} from '@mapbox/shelf-pack';
-import type {Callback} from '../types/callback';
 
-type Pattern = {
-    bin: Bin,
-    position: ImagePosition
-};
 
 // When copied into the atlas texture, image data is padded by one pixel on each side. Icon
 // images are padded with fully transparent pixels, while pattern images are padded with a
@@ -34,15 +26,7 @@ const padding = 1;
     to refactor this.
 */
 class ImageManager {
-    images: {[string]: StyleImage};
-    loaded: boolean;
-    requestors: Array<{ids: Array<string>, callback: Callback<{[string]: StyleImage}>}>;
 
-    shelfPack: ShelfPack;
-    patterns: {[string]: Pattern};
-    atlasImage: RGBAImage;
-    atlasTexture: ?Texture;
-    dirty: boolean;
 
     constructor() {
         this.images = {};
@@ -59,7 +43,7 @@ class ImageManager {
         return this.loaded;
     }
 
-    setLoaded(loaded: boolean) {
+    setLoaded(loaded) {
         if (this.loaded === loaded) {
             return;
         }
@@ -74,16 +58,16 @@ class ImageManager {
         }
     }
 
-    getImage(id: string): ?StyleImage {
+    getImage(id) {
         return this.images[id];
     }
 
-    addImage(id: string, image: StyleImage) {
+    addImage(id, image) {
         assert(!this.images[id]);
         this.images[id] = image;
     }
 
-    removeImage(id: string) {
+    removeImage(id) {
         assert(this.images[id]);
         delete this.images[id];
 
@@ -98,7 +82,7 @@ class ImageManager {
         return Object.keys(this.images);
     }
 
-    getImages(ids: Array<string>, callback: Callback<{[string]: StyleImage}>) {
+    getImages(ids, callback) {
         // If the sprite has been loaded, or if all the icon dependencies are already present
         // (i.e. if they've been addeded via runtime styling), then notify the requestor immediately.
         // Otherwise, delay notification until the sprite is loaded. At that point, if any of the
@@ -118,7 +102,7 @@ class ImageManager {
         }
     }
 
-    _notify(ids: Array<string>, callback: Callback<{[string]: StyleImage}>) {
+    _notify(ids, callback) {
         const response = {};
 
         for (const id of ids) {
@@ -145,7 +129,7 @@ class ImageManager {
         };
     }
 
-    getPattern(id: string): ?ImagePosition {
+    getPattern(id) {
         const pattern = this.patterns[id];
         if (pattern) {
             return pattern.position;
@@ -189,7 +173,7 @@ class ImageManager {
         return position;
     }
 
-    bind(context: Context) {
+    bind(context) {
         const gl = context.gl;
         if (!this.atlasTexture) {
             this.atlasTexture = new Texture(context, this.atlasImage, gl.RGBA);
@@ -202,4 +186,4 @@ class ImageManager {
     }
 }
 
-export default ImageManager;
+module.exports = ImageManager;

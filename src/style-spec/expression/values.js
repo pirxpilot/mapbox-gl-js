@@ -1,14 +1,12 @@
-// @flow
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import Color from '../util/color';
-import { Collator } from './definitions/collator';
-import { NullType, NumberType, StringType, BooleanType, ColorType, ObjectType, ValueType, CollatorType, array } from './types';
+const Color = require('../util/color');
+const { Collator } = require('./definitions/collator');
+const { NullType, NumberType, StringType, BooleanType, ColorType, ObjectType, ValueType, CollatorType, array } = require('./types');
 
-import type { Type } from './types';
-
-export function validateRGBA(r: mixed, g: mixed, b: mixed, a?: mixed): ?string {
+function validateRGBA(r, g, b, a) {
     if (!(
         typeof r === 'number' && r >= 0 && r <= 255 &&
         typeof g === 'number' && g >= 0 && g <= 255 &&
@@ -27,9 +25,7 @@ export function validateRGBA(r: mixed, g: mixed, b: mixed, a?: mixed): ?string {
     return null;
 }
 
-export type Value = null | string | boolean | number | Color | Collator | $ReadOnlyArray<Value> | { +[string]: Value }
-
-export function isValue(mixed: mixed): boolean {
+function isValue(mixed) {
     if (mixed === null) {
         return true;
     } else if (typeof mixed === 'string') {
@@ -61,7 +57,7 @@ export function isValue(mixed: mixed): boolean {
     }
 }
 
-export function typeOf(value: Value): Type {
+function typeOf(value) {
     if (value === null) {
         return NullType;
     } else if (typeof value === 'string') {
@@ -76,7 +72,7 @@ export function typeOf(value: Value): Type {
         return CollatorType;
     } else if (Array.isArray(value)) {
         const length = value.length;
-        let itemType: ?Type;
+        let itemType;
 
         for (const item of value) {
             const t = typeOf(item);
@@ -97,4 +93,10 @@ export function typeOf(value: Value): Type {
     }
 }
 
-export { Color, Collator };
+module.exports = {
+    Color,
+    Collator,
+    validateRGBA,
+    isValue,
+    typeOf
+};

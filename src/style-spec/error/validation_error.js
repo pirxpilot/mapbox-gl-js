@@ -1,5 +1,6 @@
+'use strict';
 
-export default class ValidationError {
+module.exports = class ValidationError {
     constructor(key, value, message, identifier) {
         this.message = (key ? `${key}: ` : '') + message;
         if (identifier) this.identifier = identifier;
@@ -8,4 +9,4 @@ export default class ValidationError {
             this.line = value.__line__;
         }
     }
-}
+};

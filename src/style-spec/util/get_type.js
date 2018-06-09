@@ -1,5 +1,6 @@
+'use strict';
 
-export default function getType(val) {
+module.exports = function getType(val) {
     if (val instanceof Number) {
         return 'number';
     } else if (val instanceof String) {
@@ -13,4 +14,4 @@ export default function getType(val) {
     } else {
         return typeof val;
     }
-}
+};

@@ -1,7 +1,4 @@
-// @flow
-
-import { OverscaledTileID } from './tile_id';
-import type Tile from './tile';
+'use strict';
 
 /**
  * A [least-recently-used cache](http://en.wikipedia.org/wiki/Cache_algorithms)
@@ -11,15 +8,11 @@ import type Tile from './tile';
  * @private
  */
 class TileCache {
-    max: number;
-    data: {[key: number | string]: Array<{ value: Tile, timeout: ?TimeoutID}>};
-    order: Array<number>;
-    onRemove: (element: Tile) => void;
     /**
      * @param {number} max number of permitted values
      * @param {Function} onRemove callback called with items when they expire
      */
-    constructor(max: number, onRemove: (element: Tile) => void) {
+    constructor(max, onRemove) {
         this.max = max;
         this.onRemove = onRemove;
         this.reset();
@@ -55,7 +48,7 @@ class TileCache {
      * @returns {TileCache} this cache
      * @private
      */
-    add(tileID: OverscaledTileID, data: Tile, expiryTimeout: number | void) {
+    add(tileID, data, expiryTimeout) {
         const key = tileID.wrapped().key;
         if (this.data[key] === undefined) {
             this.data[key] = [];
@@ -90,7 +83,7 @@ class TileCache {
      * @returns {boolean} whether the cache has this value
      * @private
      */
-    has(tileID: OverscaledTileID): boolean {
+    has(tileID) {
         return tileID.wrapped().key in this.data;
     }
 
@@ -102,7 +95,7 @@ class TileCache {
      * @returns {*} the data, or null if it isn't found
      * @private
      */
-    getAndRemove(tileID: OverscaledTileID): ?Tile {
+    getAndRemove(tileID) {
         if (!this.has(tileID)) { return null; }
         return this._getAndRemoveByKey(tileID.wrapped().key);
     }
@@ -110,7 +103,7 @@ class TileCache {
     /*
      * Get and remove the value with the specified key.
      */
-    _getAndRemoveByKey(key: number): ?Tile {
+    _getAndRemoveByKey(key) {
         const data = this.data[key].shift();
         if (data.timeout) clearTimeout(data.timeout);
 
@@ -130,7 +123,7 @@ class TileCache {
      * @returns {*} the data, or null if it isn't found
      * @private
      */
-    get(tileID: OverscaledTileID): ?Tile {
+    get(tileID) {
         if (!this.has(tileID)) { return null; }
 
         const data = this.data[tileID.wrapped().key][0];
@@ -145,7 +138,7 @@ class TileCache {
      * @returns {TileCache} this cache
      * @private
      */
-    remove(tileID: OverscaledTileID, value: ?{ value: Tile, timeout: ?TimeoutID}) {
+    remove(tileID, value) {
         if (!this.has(tileID)) { return this; }
         const key = tileID.wrapped().key;
 
@@ -169,7 +162,7 @@ class TileCache {
      * @returns {TileCache} this cache
      * @private
      */
-    setMaxSize(max: number): TileCache {
+    setMaxSize(max) {
         this.max = max;
 
         while (this.order.length > this.max) {
@@ -181,4 +174,4 @@ class TileCache {
     }
 }
 
-export default TileCache;
+module.exports = TileCache;

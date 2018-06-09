@@ -1,17 +1,11 @@
-// @flow
-import assert from 'assert';
+'use strict';
+const assert = require('assert');
 
-import type {StructArray} from '../util/struct_array';
-import type {TriangleIndexArray, LineIndexArray} from '../data/index_array_type';
-import type Context from '../gl/context';
 
 
 class IndexBuffer {
-    context: Context;
-    buffer: WebGLBuffer;
-    dynamicDraw: boolean;
 
-    constructor(context: Context, array: TriangleIndexArray | LineIndexArray, dynamicDraw?: boolean) {
+    constructor(context, array, dynamicDraw) {
         this.context = context;
         const gl = context.gl;
         this.buffer = gl.createBuffer();
@@ -40,7 +34,7 @@ class IndexBuffer {
         this.context.bindElementBuffer.set(this.buffer);
     }
 
-    updateData(array: StructArray) {
+    updateData(array) {
         const gl = this.context.gl;
         assert(this.dynamicDraw);
         // The right VAO will get this buffer re-bound later in VertexArrayObject#bind
@@ -59,4 +53,4 @@ class IndexBuffer {
     }
 }
 
-export default IndexBuffer;
+module.exports = IndexBuffer;

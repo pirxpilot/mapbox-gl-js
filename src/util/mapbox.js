@@ -1,19 +1,21 @@
-// @flow
+'use strict';
 
-import config from './config';
+const config = require('./config');
 
-import browser from './browser';
+const browser = require('./browser');
 
 const help = 'See https://www.mapbox.com/api-documentation/#access-tokens';
 
-type UrlObject = {|
-    protocol: string,
-    authority: string,
-    path: string,
-    params: Array<string>
-|};
+module.exports = {
+    isMapboxURL,
+    normalizeStyleURL,
+    normalizeGlyphsURL,
+    normalizeSourceURL,
+    normalizeSpriteURL,
+    normalizeTileURL
+};
 
-function makeAPIURL(urlObject: UrlObject, accessToken: string | null | void): string {
+function makeAPIURL(urlObject, accessToken) {
     const apiUrlObject = parseUrl(config.API_URL);
     urlObject.protocol = apiUrlObject.protocol;
     urlObject.authority = apiUrlObject.authority;
@@ -34,27 +36,25 @@ function makeAPIURL(urlObject: UrlObject, accessToken: string | null | void): st
     return formatUrl(urlObject);
 }
 
-function isMapboxURL(url: string) {
+function isMapboxURL(url) {
     return url.indexOf('mapbox:') === 0;
 }
 
-export { isMapboxURL };
-
-export const normalizeStyleURL = function(url: string, accessToken?: string): string {
+function normalizeStyleURL(url, accessToken) {
     if (!isMapboxURL(url)) return url;
     const urlObject = parseUrl(url);
     urlObject.path = `/styles/v1${urlObject.path}`;
     return makeAPIURL(urlObject, accessToken);
-};
+}
 
-export const normalizeGlyphsURL = function(url: string, accessToken?: string): string {
+function normalizeGlyphsURL(url, accessToken) {
     if (!isMapboxURL(url)) return url;
     const urlObject = parseUrl(url);
     urlObject.path = `/fonts/v1${urlObject.path}`;
     return makeAPIURL(urlObject, accessToken);
-};
+}
 
-export const normalizeSourceURL = function(url: string, accessToken?: string): string {
+function normalizeSourceURL(url, accessToken) {
     if (!isMapboxURL(url)) return url;
     const urlObject = parseUrl(url);
     urlObject.path = `/v4/${urlObject.authority}.json`;
@@ -62,9 +62,9 @@ export const normalizeSourceURL = function(url: string, accessToken?: string): s
     // that the server knows to send SSL-ified resource references.
     urlObject.params.push('secure');
     return makeAPIURL(urlObject, accessToken);
-};
+}
 
-export const normalizeSpriteURL = function(url: string, format: string, extension: string, accessToken?: string): string {
+function normalizeSpriteURL(url, format, extension, accessToken) {
     const urlObject = parseUrl(url);
     if (!isMapboxURL(url)) {
         urlObject.path += `${format}${extension}`;
@@ -72,11 +72,11 @@ export const normalizeSpriteURL = function(url: string, format: string, extensio
     }
     urlObject.path = `/styles/v1${urlObject.path}/sprite${format}${extension}`;
     return makeAPIURL(urlObject, accessToken);
-};
+}
 
 const imageExtensionRe = /(\.(png|jpg)\d*)(?=$)/;
 
-export const normalizeTileURL = function(tileURL: string, sourceURL?: ?string, tileSize?: ?number): string {
+function normalizeTileURL(tileURL, sourceURL, tileSize) {
     if (!sourceURL || !isMapboxURL(sourceURL)) return tileURL;
 
     const urlObject = parseUrl(tileURL);
@@ -90,9 +90,9 @@ export const normalizeTileURL = function(tileURL: string, sourceURL?: ?string, t
 
     replaceTempAccessToken(urlObject.params);
     return formatUrl(urlObject);
-};
+}
 
-function replaceTempAccessToken(params: Array<string>) {
+function replaceTempAccessToken(params) {
     for (let i = 0; i < params.length; i++) {
         if (params[i].indexOf('access_token=tk.') === 0) {
             params[i] = `access_token=${config.ACCESS_TOKEN || ''}`;
@@ -102,7 +102,7 @@ function replaceTempAccessToken(params: Array<string>) {
 
 const urlRe = /^(\w+):\/\/([^/?]*)(\/[^?]+)?\??(.+)?/;
 
-function parseUrl(url: string): UrlObject {
+function parseUrl(url) {
     const parts = url.match(urlRe);
     if (!parts) {
         throw new Error('Unable to parse URL object');
@@ -115,7 +115,7 @@ function parseUrl(url: string): UrlObject {
     };
 }
 
-function formatUrl(obj: UrlObject): string {
+function formatUrl(obj) {
     const params = obj.params.length ? `?${obj.params.join('&')}` : '';
     return `${obj.protocol}://${obj.authority}${obj.path}${params}`;
 }

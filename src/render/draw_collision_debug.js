@@ -1,17 +1,12 @@
-// @flow
+'use strict';
 
-import type Painter from './painter';
-import type SourceCache from '../source/source_cache';
-import type StyleLayer from '../style/style_layer';
-import type {OverscaledTileID} from '../source/tile_id';
-import type SymbolBucket from '../data/bucket/symbol_bucket';
-import pixelsToTileUnits from '../source/pixels_to_tile_units';
-import DepthMode from '../gl/depth_mode';
-import StencilMode from '../gl/stencil_mode';
+const pixelsToTileUnits = require('../source/pixels_to_tile_units');
+const DepthMode = require('../gl/depth_mode');
+const StencilMode = require('../gl/stencil_mode');
 
-export default drawCollisionDebug;
+module.exports = drawCollisionDebug;
 
-function drawCollisionDebugGeometry(painter: Painter, sourceCache: SourceCache, layer: StyleLayer, coords: Array<OverscaledTileID>, drawCircles: boolean) {
+function drawCollisionDebugGeometry(painter, sourceCache, layer, coords, drawCircles) {
     const context = painter.context;
     const gl = context.gl;
     const program = drawCircles ? painter.useProgram('collisionCircle') : painter.useProgram('collisionBox');
@@ -23,7 +18,7 @@ function drawCollisionDebugGeometry(painter: Painter, sourceCache: SourceCache, 
     for (let i = 0; i < coords.length; i++) {
         const coord = coords[i];
         const tile = sourceCache.getTile(coord);
-        const bucket: ?SymbolBucket = (tile.getBucket(layer): any);
+        const bucket = (tile.getBucket(layer));
         if (!bucket) continue;
         const buffers = drawCircles ? bucket.collisionCircle : bucket.collisionBox;
         if (!buffers) continue;
@@ -57,7 +52,7 @@ function drawCollisionDebugGeometry(painter: Painter, sourceCache: SourceCache, 
     }
 }
 
-function drawCollisionDebug(painter: Painter, sourceCache: SourceCache, layer: StyleLayer, coords: Array<OverscaledTileID>) {
+function drawCollisionDebug(painter, sourceCache, layer, coords) {
     drawCollisionDebugGeometry(painter, sourceCache, layer, coords, false);
     drawCollisionDebugGeometry(painter, sourceCache, layer, coords, true);
 }

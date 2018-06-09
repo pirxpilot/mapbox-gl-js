@@ -1,18 +1,12 @@
-// @flow
+'use strict';
 
-import DOM from '../../util/dom';
-import { extend, bindAll } from '../../util/util';
+const DOM = require('../../util/dom');
+const { extend, bindAll } = require('../../util/util');
 
-import type Map from '../map';
 
-type Unit = 'imperial' | 'metric' | 'nautical';
 
-type Options = {
-    maxWidth?: number,
-    unit?: Unit;
-};
 
-const defaultOptions: Options = {
+const defaultOptions = {
     maxWidth: 100,
     unit: 'metric'
 };
@@ -34,11 +28,8 @@ const defaultOptions: Options = {
  * scale.setUnit('metric');
  */
 class ScaleControl {
-    _map: Map;
-    _container: HTMLElement;
-    options: Options;
 
-    constructor(options: Options) {
+    constructor(options) {
         this.options = extend({}, defaultOptions, options);
 
         bindAll([
@@ -55,7 +46,7 @@ class ScaleControl {
         updateScale(this._map, this._container, this.options);
     }
 
-    onAdd(map: Map) {
+    onAdd(map) {
         this._map = map;
         this._container = DOM.create('div', 'mapboxgl-ctrl mapboxgl-ctrl-scale', map.getContainer());
 
@@ -68,7 +59,7 @@ class ScaleControl {
     onRemove() {
         DOM.remove(this._container);
         this._map.off('move', this._onMove);
-        this._map = (undefined: any);
+        this._map = (undefined);
     }
 
     /**
@@ -76,13 +67,13 @@ class ScaleControl {
      *
      * @param unit Unit of the distance (`'imperial'`, `'metric'` or `'nautical'`).
      */
-    setUnit(unit: Unit) {
+    setUnit(unit) {
         this.options.unit = unit;
         updateScale(this._map, this._container, this.options);
     }
 }
 
-export default ScaleControl;
+module.exports = ScaleControl;
 
 function updateScale(map, container, options) {
     // A horizontal scale is imagined to be present at center of the map

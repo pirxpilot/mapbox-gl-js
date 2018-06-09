@@ -1,6 +1,6 @@
-import { test } from 'mapbox-gl-js-test';
-import { createFunction } from '../../../src/style-spec/function';
-import Color from '../../../src/style-spec/util/color';
+const { test } = require('mapbox-gl-js-test');
+const { createFunction } = require('../../../src/style-spec/function');
+const Color = require('../../../src/style-spec/util/color');
 
 test('binary search', (t) => {
     t.test('will eventually terminate.', (t) => {

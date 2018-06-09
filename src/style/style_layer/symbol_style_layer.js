@@ -1,32 +1,21 @@
-// @flow
+'use strict';
 
-import StyleLayer from '../style_layer';
+const StyleLayer = require('../style_layer');
 
-import SymbolBucket from '../../data/bucket/symbol_bucket';
-import resolveTokens from '../../util/token';
-import { isExpression } from '../../style-spec/expression';
-import assert from 'assert';
-import properties from './symbol_style_layer_properties';
-import { Transitionable, Transitioning, Layout, PossiblyEvaluated } from '../properties';
-
-import type {BucketParameters} from '../../data/bucket';
-import type {LayoutProps, PaintProps} from './symbol_style_layer_properties';
-import type {Feature} from '../../style-spec/expression';
-import type EvaluationParameters from '../evaluation_parameters';
+const SymbolBucket = require('../../data/bucket/symbol_bucket');
+const resolveTokens = require('../../util/token');
+const { isExpression } = require('../../style-spec/expression');
+const assert = require('assert');
+const properties = require('./symbol_style_layer_properties');
 
 class SymbolStyleLayer extends StyleLayer {
-    _unevaluatedLayout: Layout<LayoutProps>;
-    layout: PossiblyEvaluated<LayoutProps>;
 
-    _transitionablePaint: Transitionable<PaintProps>;
-    _transitioningPaint: Transitioning<PaintProps>;
-    paint: PossiblyEvaluated<PaintProps>;
 
-    constructor(layer: LayerSpecification) {
+    constructor(layer) {
         super(layer, properties);
     }
 
-    recalculate(parameters: EvaluationParameters) {
+    recalculate(parameters) {
         super.recalculate(parameters);
 
         if (this.layout.get('icon-rotation-alignment') === 'auto') {
@@ -54,7 +43,7 @@ class SymbolStyleLayer extends StyleLayer {
         }
     }
 
-    getValueAndResolveTokens(name: *, feature: Feature) {
+    getValueAndResolveTokens(name, feature) {
         const value = this.layout.get(name).evaluate(feature, {});
         const unevaluated = this._unevaluatedLayout._values[name];
         if (!unevaluated.isDataDriven() && !isExpression(unevaluated.value)) {
@@ -64,18 +53,18 @@ class SymbolStyleLayer extends StyleLayer {
         return value;
     }
 
-    createBucket(parameters: BucketParameters<*>) {
+    createBucket(parameters) {
         return new SymbolBucket(parameters);
     }
 
-    queryRadius(): number {
+    queryRadius() {
         return 0;
     }
 
-    queryIntersectsFeature(): boolean {
+    queryIntersectsFeature() {
         assert(false); // Should take a different path in FeatureIndex
         return false;
     }
 }
 
-export default SymbolStyleLayer;
+module.exports = SymbolStyleLayer;

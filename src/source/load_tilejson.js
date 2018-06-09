@@ -1,21 +1,18 @@
-// @flow
+'use strict';
 
-import { pick } from '../util/util';
+const { pick } = require('../util/util');
 
-import { getJSON, ResourceType } from '../util/ajax';
-import browser from '../util/browser';
-import { normalizeSourceURL as normalizeURL } from '../util/mapbox';
+const { getJSON, ResourceType } = require('../util/ajax');
+const browser = require('../util/browser');
+const { normalizeSourceURL: normalizeURL } = require('../util/mapbox');
 
-import type {RequestTransformFunction} from '../ui/map';
-import type {Callback} from '../types/callback';
-import type {TileJSON} from '../types/tilejson';
 
-export default function(options: any, requestTransformFn: RequestTransformFunction, callback: Callback<TileJSON>) {
-    const loaded = function(err, tileJSON: any) {
+module.exports = function(options, requestTransformFn, callback) {
+    const loaded = function(err, tileJSON) {
         if (err) {
             return callback(err);
         } else if (tileJSON) {
-            const result: any = pick(
+            const result = pick(
                 tileJSON,
                 ['tiles', 'minzoom', 'maxzoom', 'attribution', 'mapbox_logo', 'bounds']
             );
@@ -34,4 +31,4 @@ export default function(options: any, requestTransformFn: RequestTransformFuncti
     } else {
         browser.frame(() => loaded(null, options));
     }
-}
+};

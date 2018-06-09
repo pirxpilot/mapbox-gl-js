@@ -1,7 +1,7 @@
-import { expression as expressionSuite } from './integration';
-import { createPropertyExpression } from '../src/style-spec/expression';
-import { toString } from '../src/style-spec/expression/types';
-import ignores from './ignores.json';
+const { expression: expressionSuite } = require('./integration');
+const { createPropertyExpression } = require('../src/style-spec/expression');
+const { toString } = require('../src/style-spec/expression/types');
+const ignores = require('./ignores.json');
 
 let tests;
 

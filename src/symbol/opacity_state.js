@@ -1,11 +1,8 @@
-// @flow
+'use strict';
 
-import { register } from '../util/web_worker_transfer';
+const { register } = require('../util/web_worker_transfer');
 
 class OpacityState {
-    opacity: number;
-    targetOpacity: number;
-    time: number
 
     constructor() {
         this.opacity = 0;
@@ -24,4 +21,4 @@ class OpacityState {
 
 register('OpacityState', OpacityState);
 
-export default OpacityState;
+module.exports = OpacityState;

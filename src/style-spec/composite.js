@@ -1,5 +1,6 @@
+'use strict';
 
-export default function (style) {
+module.exports = function (style) {
     const styleIDs = [];
     const sourceIDs = [];
     const compositedSourceLayers = [];
@@ -47,4 +48,4 @@ export default function (style) {
     });
 
     return style;
-}
+};

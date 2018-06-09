@@ -1,10 +1,9 @@
-// @flow
+'use strict';
 
-import { bindAll } from '../util/util';
-import window from '../util/window';
-import throttle from '../util/throttle';
+const { bindAll } = require('../util/util');
+const window = require('../util/window');
+const throttle = require('../util/throttle');
 
-import type Map from './map';
 
 /*
  * Adds the map's position to its page's location hash.
@@ -13,8 +12,6 @@ import type Map from './map';
  * @returns {Hash} `this`
  */
 class Hash {
-    _map: Map;
-    _updateHash: () => TimeoutID;
 
     constructor() {
         bindAll([
@@ -32,7 +29,7 @@ class Hash {
      * @param {Object} map
      * @returns {Hash} `this`
      */
-    addTo(map: Map) {
+    addTo(map) {
         this._map = map;
         window.addEventListener('hashchange', this._onHashChange, false);
         this._map.on('moveend', this._updateHash);
@@ -53,7 +50,7 @@ class Hash {
         return this;
     }
 
-    getHashString(mapFeedback?: boolean) {
+    getHashString(mapFeedback) {
         const center = this._map.getCenter(),
             zoom = Math.round(this._map.getZoom() * 100) / 100,
             // derived from equation: 512px * 2^z / 360 / 10^d < 0.5px
@@ -98,4 +95,4 @@ class Hash {
 
 }
 
-export default Hash;
+module.exports = Hash;

@@ -1,12 +1,10 @@
-// @flow
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
 class DictionaryCoder {
-    _stringToNumber: { [string]: number };
-    _numberToString: Array<string>;
 
-    constructor(strings: Array<string>) {
+    constructor(strings) {
         this._stringToNumber = {};
         this._numberToString = [];
         for (let i = 0; i < strings.length; i++) {
@@ -16,15 +14,15 @@ class DictionaryCoder {
         }
     }
 
-    encode(string: string) {
+    encode(string) {
         assert(string in this._stringToNumber);
         return this._stringToNumber[string];
     }
 
-    decode(n: number) {
+    decode(n) {
         assert(n < this._numberToString.length);
         return this._numberToString[n];
     }
 }
 
-export default DictionaryCoder;
+module.exports = DictionaryCoder;

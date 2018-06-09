@@ -1,9 +1,8 @@
-// @flow
+'use strict';
 
-import { bindAll } from './util';
-import { serialize, deserialize } from './web_worker_transfer';
+const { bindAll } = require('./util');
+const { serialize, deserialize } = require('./web_worker_transfer');
 
-import type {Transferable} from '../types/transferable';
 
 /**
  * An implementation of the [Actor design pattern](http://en.wikipedia.org/wiki/Actor_model)
@@ -17,14 +16,8 @@ import type {Transferable} from '../types/transferable';
  * @private
  */
 class Actor {
-    target: any;
-    parent: any;
-    mapId: string;
-    callbacks: any;
-    callbackID: number;
-    name: string;
 
-    constructor(target: any, parent: any, mapId: any) {
+    constructor(target, parent, mapId) {
         this.target = target;
         this.parent = parent;
         this.mapId = mapId;
@@ -42,10 +35,10 @@ class Actor {
      * @param targetMapId A particular mapId to which to send this message.
      * @private
      */
-    send(type: string, data: mixed, callback: ?Function, targetMapId: ?string) {
+    send(type, data, callback, targetMapId) {
         const id = callback ? `${this.mapId}:${this.callbackID++}` : null;
         if (callback) this.callbacks[id] = callback;
-        const buffers: Array<Transferable> = [];
+        const buffers = [];
         this.target.postMessage({
             targetMapId: targetMapId,
             sourceMapId: this.mapId,
@@ -55,7 +48,7 @@ class Actor {
         }, buffers);
     }
 
-    receive(message: Object) {
+    receive(message) {
         const data = message.data,
             id = data.id;
         let callback;
@@ -64,7 +57,7 @@ class Actor {
             return;
 
         const done = (err, data) => {
-            const buffers: Array<Transferable> = [];
+            const buffers = [];
             this.target.postMessage({
                 sourceMapId: this.mapId,
                 type: '<response>',
@@ -88,8 +81,8 @@ class Actor {
         } else if (typeof data.id !== 'undefined' && this.parent.getWorkerSource) {
             // data.type == sourcetype.method
             const keys = data.type.split('.');
-            const params = (deserialize(data.data): any);
-            const workerSource = (this.parent: any).getWorkerSource(data.sourceMapId, keys[0], params.source);
+            const params = (deserialize(data.data));
+            const workerSource = (this.parent).getWorkerSource(data.sourceMapId, keys[0], params.source);
             workerSource[keys[1]](params, done);
         } else {
             this.parent[data.type](deserialize(data.data));
@@ -101,4 +94,4 @@ class Actor {
     }
 }
 
-export default Actor;
+module.exports = Actor;

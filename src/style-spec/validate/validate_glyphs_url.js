@@ -1,8 +1,9 @@
+'use strict';
 
-import ValidationError from '../error/validation_error';
-import validateString from './validate_string';
+const ValidationError = require('../error/validation_error');
+const validateString = require('./validate_string');
 
-export default function(options) {
+module.exports = function(options) {
     const value = options.value;
     const key = options.key;
 
@@ -18,4 +19,4 @@ export default function(options) {
     }
 
     return errors;
-}
+};

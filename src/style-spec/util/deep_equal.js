@@ -1,11 +1,11 @@
-// @flow
+'use strict';
 
 /**
  * Deeply compares two object literals.
  *
  * @private
  */
-function deepEqual(a: ?mixed, b: ?mixed): boolean {
+function deepEqual(a, b) {
     if (Array.isArray(a)) {
         if (!Array.isArray(b) || a.length !== b.length) return false;
         for (let i = 0; i < a.length; i++) {
@@ -25,4 +25,4 @@ function deepEqual(a: ?mixed, b: ?mixed): boolean {
     return a === b;
 }
 
-export default deepEqual;
+module.exports = deepEqual;

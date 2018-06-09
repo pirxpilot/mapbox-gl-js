@@ -1,46 +1,36 @@
-// @flow
+'use strict';
 
-import Scope from './scope';
+const Scope = require('./scope');
 
-import { checkSubtype } from './types';
-import ParsingError from './parsing_error';
-import Literal from './definitions/literal';
-import Assertion from './definitions/assertion';
-import ArrayAssertion from './definitions/array';
-import Coercion from './definitions/coercion';
-import EvaluationContext from './evaluation_context';
-import CompoundExpression from './compound_expression';
-import { CollatorExpression } from './definitions/collator';
-import {isGlobalPropertyConstant, isFeatureConstant} from './is_constant';
-import Var from './definitions/var';
+const { checkSubtype } = require('./types');
+const ParsingError = require('./parsing_error');
+const Literal = require('./definitions/literal');
+const Assertion = require('./definitions/assertion');
+const ArrayAssertion = require('./definitions/array');
+const Coercion = require('./definitions/coercion');
+const EvaluationContext = require('./evaluation_context');
+const { CollatorExpression } = require('./definitions/collator');
+const {isGlobalPropertyConstant, isFeatureConstant} = require('./is_constant');
+const Var = require('./definitions/var');
 
-
-import type {Expression, ExpressionRegistry} from './expression';
-import type {Type} from './types';
 
 /**
  * State associated parsing at a given point in an expression tree.
  * @private
  */
 class ParsingContext {
-    registry: ExpressionRegistry;
-    path: Array<number>;
-    key: string;
-    scope: Scope;
-    errors: Array<ParsingError>;
 
     // The expected type of this expression. Provided only to allow Expression
     // implementations to infer argument types: Expression#parse() need not
     // check that the output type of the parsed expression matches
     // `expectedType`.
-    expectedType: ?Type;
 
     constructor(
-        registry: ExpressionRegistry,
-        path: Array<number> = [],
-        expectedType: ?Type,
-        scope: Scope = new Scope(),
-        errors: Array<ParsingError> = []
+        registry,
+        path = [],
+        expectedType,
+        scope = new Scope(),
+        errors = []
     ) {
         this.registry = registry;
         this.path = path;
@@ -58,19 +48,19 @@ class ParsingContext {
      * @private
      */
     parse(
-        expr: mixed,
-        index?: number,
-        expectedType?: ?Type,
-        bindings?: Array<[string, Expression]>,
-        options: {omitTypeAnnotations?: boolean} = {}
-    ): ?Expression {
+        expr,
+        index,
+        expectedType,
+        bindings,
+        options = {}
+    ) {
         if (index) {
             return this.concat(index, expectedType, bindings)._parse(expr, options);
         }
         return this._parse(expr, options);
     }
 
-    _parse(expr: mixed, options: {omitTypeAnnotations?: boolean}): ?Expression {
+    _parse(expr, options) {
 
         if (expr === null || typeof expr === 'string' || typeof expr === 'boolean' || typeof expr === 'number') {
             expr = ['literal', expr];
@@ -152,7 +142,7 @@ class ParsingContext {
      * parsing, is copied by reference rather than cloned.
      * @private
      */
-    concat(index: number, expectedType?: ?Type, bindings?: Array<[string, Expression]>) {
+    concat(index, expectedType, bindings) {
         const path = typeof index === 'number' ? this.path.concat(index) : this.path;
         const scope = bindings ? this.scope.concat(bindings) : this.scope;
         return new ParsingContext(
@@ -171,7 +161,7 @@ class ParsingContext {
      * of the current expression at `this.key`.
      * @private
      */
-    error(error: string, ...keys: Array<number>) {
+    error(error, ...keys) {
         const key = `${this.key}${keys.map(k => `[${k}]`).join('')}`;
         this.errors.push(new ParsingError(key, error));
     }
@@ -180,16 +170,18 @@ class ParsingContext {
      * Returns null if `t` is a subtype of `expected`; otherwise returns an
      * error message and also pushes it to `this.errors`.
      */
-    checkSubtype(expected: Type, t: Type): ?string {
+    checkSubtype(expected, t) {
         const error = checkSubtype(expected, t);
         if (error) this.error(error);
         return error;
     }
 }
 
-export default ParsingContext;
+module.exports = ParsingContext;
 
-function isConstant(expression: Expression) {
+function isConstant(expression) {
+    const CompoundExpression = require('./compound_expression');
+
     if (expression instanceof Var) {
         return isConstant(expression.boundExpression);
     } else if (expression instanceof CompoundExpression && expression.name === 'error') {

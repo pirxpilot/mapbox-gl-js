@@ -1,27 +1,13 @@
-// @flow
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import { clone, extend, easeCubicInOut } from '../util/util';
-import * as interpolate from '../style-spec/util/interpolate';
-import { normalizePropertyExpression } from '../style-spec/expression';
-import Color from '../style-spec/util/color';
-import { register } from '../util/web_worker_transfer';
-import EvaluationParameters from './evaluation_parameters';
+const { clone, extend, easeCubicInOut } = require('../util/util');
+const interpolate = require('../style-spec/util/interpolate');
+const { normalizePropertyExpression } = require('../style-spec/expression');
+const { register } = require('../util/web_worker_transfer');
+const EvaluationParameters = require('./evaluation_parameters');
 
-import type {StylePropertySpecification} from '../style-spec/style-spec';
-import type {CrossFaded} from './cross_faded';
-
-import type {
-    Feature,
-    FeatureState,
-    GlobalProperties,
-    StylePropertyExpression,
-    SourceExpression,
-    CompositeExpression
-} from '../style-spec/expression';
-
-type TimePoint = number;
 
 /**
  * Implements a number of classes that define state and behavior for paint and layout properties, most
@@ -58,11 +44,6 @@ type TimePoint = number;
  *
  * @private
  */
-export interface Property<T, R> {
-    specification: StylePropertySpecification;
-    possiblyEvaluate(value: PropertyValue<T, R>, parameters: EvaluationParameters): R;
-    interpolate(a: R, b: R, t: number): R;
-}
 
 /**
  *  `PropertyValue` represents the value part of a property key-value unit. It's used to represent both
@@ -83,32 +64,25 @@ export interface Property<T, R> {
  *
  *  @private
  */
-export class PropertyValue<T, R> {
-    property: Property<T, R>;
-    value: PropertyValueSpecification<T> | void;
-    expression: StylePropertyExpression;
+class PropertyValue {
 
-    constructor(property: Property<T, R>, value: PropertyValueSpecification<T> | void) {
+    constructor(property, value) {
         this.property = property;
         this.value = value;
         this.expression = normalizePropertyExpression(value === undefined ? property.specification.default : value, property.specification);
     }
 
-    isDataDriven(): boolean {
+    isDataDriven() {
         return this.expression.kind === 'source' || this.expression.kind === 'composite';
     }
 
-    possiblyEvaluate(parameters: EvaluationParameters): R {
+    possiblyEvaluate(parameters) {
         return this.property.possiblyEvaluate(this, parameters);
     }
 }
 
 // ------- Transitionable -------
 
-export type TransitionParameters = {
-    now: TimePoint,
-    transition: TransitionSpecification
-};
 
 /**
  * Paint properties are _transitionable_: they can change in a fluid manner, interpolating or cross-fading between
@@ -122,23 +96,20 @@ export type TransitionParameters = {
  *
  * @private
  */
-class TransitionablePropertyValue<T, R> {
-    property: Property<T, R>;
-    value: PropertyValue<T, R>;
-    transition: TransitionSpecification | void;
+class TransitionablePropertyValue {
 
-    constructor(property: Property<T, R>) {
+    constructor(property) {
         this.property = property;
         this.value = new PropertyValue(property, undefined);
     }
 
-    transitioned(parameters: TransitionParameters,
-                 prior: TransitioningPropertyValue<T, R>): TransitioningPropertyValue<T, R> {
+    transitioned(parameters,
+                 prior) {
         return new TransitioningPropertyValue(this.property, this.value, prior, // eslint-disable-line no-use-before-define
             extend({}, parameters.transition, this.transition), parameters.now);
     }
 
-    untransitioned(): TransitioningPropertyValue<T, R> {
+    untransitioned() {
         return new TransitioningPropertyValue(this.property, this.value, null, {}, 0); // eslint-disable-line no-use-before-define
     }
 }
@@ -149,8 +120,6 @@ class TransitionablePropertyValue<T, R> {
  *
  * @private
  */
-type TransitionablePropertyValues<Props: Object>
-    = $Exact<$ObjMap<Props, <T, R>(p: Property<T, R>) => TransitionablePropertyValue<T, R>>>
 
 /**
  * `Transitionable` stores a map of all (property name, `TransitionablePropertyValue`) pairs for paint properties of a
@@ -159,20 +128,18 @@ type TransitionablePropertyValues<Props: Object>
  *
  * @private
  */
-export class Transitionable<Props: Object> {
-    _properties: Properties<Props>;
-    _values: TransitionablePropertyValues<Props>;
+class Transitionable {
 
-    constructor(properties: Properties<Props>) {
+    constructor(properties) {
         this._properties = properties;
-        this._values = (Object.create(properties.defaultTransitionablePropertyValues): any);
+        this._values = (Object.create(properties.defaultTransitionablePropertyValues));
     }
 
-    getValue<S: string, T>(name: S): PropertyValueSpecification<T> | void {
+    getValue(name) {
         return clone(this._values[name].value.value);
     }
 
-    setValue<S: string, T>(name: S, value: PropertyValueSpecification<T> | void) {
+    setValue(name, value) {
         if (!this._values.hasOwnProperty(name)) {
             this._values[name] = new TransitionablePropertyValue(this._values[name].property);
         }
@@ -181,11 +148,11 @@ export class Transitionable<Props: Object> {
         this._values[name].value = new PropertyValue(this._values[name].property, value === null ? undefined : clone(value));
     }
 
-    getTransition<S: string>(name: S): TransitionSpecification | void {
+    getTransition(name) {
         return clone(this._values[name].transition);
     }
 
-    setTransition<S: string>(name: S, value: TransitionSpecification | void) {
+    setTransition(name, value) {
         if (!this._values.hasOwnProperty(name)) {
             this._values[name] = new TransitionablePropertyValue(this._values[name].property);
         }
@@ -193,7 +160,7 @@ export class Transitionable<Props: Object> {
     }
 
     serialize() {
-        const result: any = {};
+        const result = {};
         for (const property of Object.keys(this._values)) {
             const value = this.getValue(property);
             if (value !== undefined) {
@@ -208,7 +175,7 @@ export class Transitionable<Props: Object> {
         return result;
     }
 
-    transitioned(parameters: TransitionParameters, prior: Transitioning<Props>): Transitioning<Props> {
+    transitioned(parameters, prior) {
         const result = new Transitioning(this._properties); // eslint-disable-line no-use-before-define
         for (const property of Object.keys(this._values)) {
             result._values[property] = this._values[property].transitioned(parameters, prior._values[property]);
@@ -216,7 +183,7 @@ export class Transitionable<Props: Object> {
         return result;
     }
 
-    untransitioned(): Transitioning<Props> {
+    untransitioned() {
         const result = new Transitioning(this._properties); // eslint-disable-line no-use-before-define
         for (const property of Object.keys(this._values)) {
             result._values[property] = this._values[property].untransitioned();
@@ -236,18 +203,13 @@ export class Transitionable<Props: Object> {
  *
  * @private
  */
-class TransitioningPropertyValue<T, R> {
-    property: Property<T, R>;
-    value: PropertyValue<T, R>;
-    prior: ?TransitioningPropertyValue<T, R>;
-    begin: TimePoint;
-    end: TimePoint;
+class TransitioningPropertyValue {
 
-    constructor(property: Property<T, R>,
-                value: PropertyValue<T, R>,
-                prior: ?TransitioningPropertyValue<T, R>,
-                transition: TransitionSpecification,
-                now: TimePoint) {
+    constructor(property,
+                value,
+                prior,
+                transition,
+                now) {
         this.property = property;
         this.value = value;
         this.begin = now + transition.delay || 0;
@@ -257,7 +219,7 @@ class TransitioningPropertyValue<T, R> {
         }
     }
 
-    possiblyEvaluate(parameters: EvaluationParameters): R {
+    possiblyEvaluate(parameters) {
         const now = parameters.now || 0;
         const finalValue = this.value.possiblyEvaluate(parameters);
         const prior = this.prior;
@@ -291,8 +253,6 @@ class TransitioningPropertyValue<T, R> {
  *
  * @private
  */
-type TransitioningPropertyValues<Props: Object>
-    = $Exact<$ObjMap<Props, <T, R>(p: Property<T, R>) => TransitioningPropertyValue<T, R>>>
 
 /**
  * `Transitioning` stores a map of all (property name, `TransitioningPropertyValue`) pairs for paint properties of a
@@ -301,16 +261,14 @@ type TransitioningPropertyValues<Props: Object>
  *
  * @private
  */
-export class Transitioning<Props: Object> {
-    _properties: Properties<Props>;
-    _values: TransitioningPropertyValues<Props>;
+class Transitioning {
 
-    constructor(properties: Properties<Props>) {
+    constructor(properties) {
         this._properties = properties;
-        this._values = (Object.create(properties.defaultTransitioningPropertyValues): any);
+        this._values = (Object.create(properties.defaultTransitioningPropertyValues));
     }
 
-    possiblyEvaluate(parameters: EvaluationParameters): PossiblyEvaluated<Props> {
+    possiblyEvaluate(parameters) {
         const result = new PossiblyEvaluated(this._properties); // eslint-disable-line no-use-before-define
         for (const property of Object.keys(this._values)) {
             result._values[property] = this._values[property].possiblyEvaluate(parameters);
@@ -336,8 +294,6 @@ export class Transitioning<Props: Object> {
  *
  * @private
  */
-type PropertyValues<Props: Object>
-    = $Exact<$ObjMap<Props, <T, R>(p: Property<T, R>) => PropertyValue<T, R>>>
 
 /**
  * Because layout properties are not transitionable, they have a simpler representation and evaluation chain than
@@ -350,25 +306,23 @@ type PropertyValues<Props: Object>
  *
  * @private
  */
-export class Layout<Props: Object> {
-    _properties: Properties<Props>;
-    _values: PropertyValues<Props>;
+class Layout {
 
-    constructor(properties: Properties<Props>) {
+    constructor(properties) {
         this._properties = properties;
-        this._values = (Object.create(properties.defaultPropertyValues): any);
+        this._values = (Object.create(properties.defaultPropertyValues));
     }
 
-    getValue<S: string>(name: S) {
+    getValue(name) {
         return clone(this._values[name].value);
     }
 
-    setValue<S: string>(name: S, value: *) {
+    setValue(name, value) {
         this._values[name] = new PropertyValue(this._values[name].property, value === null ? undefined : clone(value));
     }
 
     serialize() {
-        const result: any = {};
+        const result = {};
         for (const property of Object.keys(this._values)) {
             const value = this.getValue(property);
             if (value !== undefined) {
@@ -378,7 +332,7 @@ export class Layout<Props: Object> {
         return result;
     }
 
-    possiblyEvaluate(parameters: EvaluationParameters): PossiblyEvaluated<Props> {
+    possiblyEvaluate(parameters) {
         const result = new PossiblyEvaluated(this._properties); // eslint-disable-line no-use-before-define
         for (const property of Object.keys(this._values)) {
             result._values[property] = this._values[property].possiblyEvaluate(parameters);
@@ -410,10 +364,6 @@ export class Layout<Props: Object> {
  *
  * @private
  */
-type PossiblyEvaluatedValue<T> =
-    | {kind: 'constant', value: T}
-    | SourceExpression
-    | CompositeExpression;
 
 /**
  * `PossiblyEvaluatedPropertyValue` is used for data-driven paint and layout property values. It holds a
@@ -423,22 +373,19 @@ type PossiblyEvaluatedValue<T> =
  *
  * @private
  */
-export class PossiblyEvaluatedPropertyValue<T> {
-    property: DataDrivenProperty<T>;
-    value: PossiblyEvaluatedValue<T>;
-    globals: GlobalProperties;
+class PossiblyEvaluatedPropertyValue {
 
-    constructor(property: DataDrivenProperty<T>, value: PossiblyEvaluatedValue<T>, globals: GlobalProperties) {
+    constructor(property, value, globals) {
         this.property = property;
         this.value = value;
         this.globals = globals;
     }
 
-    isConstant(): boolean {
+    isConstant() {
         return this.value.kind === 'constant';
     }
 
-    constantOr(value: T): T {
+    constantOr(value) {
         if (this.value.kind === 'constant') {
             return this.value.value;
         } else {
@@ -446,7 +393,7 @@ export class PossiblyEvaluatedPropertyValue<T> {
         }
     }
 
-    evaluate(feature: Feature, featureState: FeatureState): T {
+    evaluate(feature, featureState) {
         return this.property.evaluate(this.value, this.globals, feature, featureState);
     }
 }
@@ -468,24 +415,20 @@ export class PossiblyEvaluatedPropertyValue<T> {
  *
  * @private
  */
-type PossiblyEvaluatedPropertyValues<Props: Object>
-    = $Exact<$ObjMap<Props, <T, R>(p: Property<T, R>) => R>>
 
 /**
  * `PossiblyEvaluated` stores a map of all (property name, `R`) pairs for paint or layout properties of a
  * given layer type.
  * @private
  */
-export class PossiblyEvaluated<Props: Object> {
-    _properties: Properties<Props>;
-    _values: PossiblyEvaluatedPropertyValues<Props>;
+class PossiblyEvaluated {
 
-    constructor(properties: Properties<Props>) {
+    constructor(properties) {
         this._properties = properties;
-        this._values = (Object.create(properties.defaultPossiblyEvaluatedValues): any);
+        this._values = (Object.create(properties.defaultPossiblyEvaluatedValues));
     }
 
-    get<S: string>(name: S): $ElementType<PossiblyEvaluatedPropertyValues<Props>, S> {
+    get(name) {
         return this._values[name];
     }
 }
@@ -497,20 +440,19 @@ export class PossiblyEvaluated<Props: Object> {
  *
  * @private
  */
-export class DataConstantProperty<T> implements Property<T, T> {
-    specification: StylePropertySpecification;
+class DataConstantProperty {
 
-    constructor(specification: StylePropertySpecification) {
+    constructor(specification) {
         this.specification = specification;
     }
 
-    possiblyEvaluate(value: PropertyValue<T, T>, parameters: EvaluationParameters): T {
+    possiblyEvaluate(value, parameters) {
         assert(!value.isDataDriven());
         return value.expression.evaluate(parameters);
     }
 
-    interpolate(a: T, b: T, t: number): T {
-        const interp: ?(a: T, b: T, t: number) => T = (interpolate: any)[this.specification.type];
+    interpolate(a, b, t) {
+        const interp = (interpolate)[this.specification.type];
         if (interp) {
             return interp(a, b, t);
         } else {
@@ -526,14 +468,13 @@ export class DataConstantProperty<T> implements Property<T, T> {
  *
  * @private
  */
-export class DataDrivenProperty<T> implements Property<T, PossiblyEvaluatedPropertyValue<T>> {
-    specification: StylePropertySpecification;
+class DataDrivenProperty {
 
-    constructor(specification: StylePropertySpecification) {
+    constructor(specification) {
         this.specification = specification;
     }
 
-    possiblyEvaluate(value: PropertyValue<T, PossiblyEvaluatedPropertyValue<T>>, parameters: EvaluationParameters): PossiblyEvaluatedPropertyValue<T> {
+    possiblyEvaluate(value, parameters) {
         if (value.expression.kind === 'constant' || value.expression.kind === 'camera') {
             return new PossiblyEvaluatedPropertyValue(this, {kind: 'constant', value: value.expression.evaluate(parameters)}, parameters);
         } else {
@@ -541,9 +482,9 @@ export class DataDrivenProperty<T> implements Property<T, PossiblyEvaluatedPrope
         }
     }
 
-    interpolate(a: PossiblyEvaluatedPropertyValue<T>,
-                b: PossiblyEvaluatedPropertyValue<T>,
-                t: number): PossiblyEvaluatedPropertyValue<T> {
+    interpolate(a,
+                b,
+                t) {
         // If either possibly-evaluated value is non-constant, give up: we aren't able to interpolate data-driven values.
         if (a.value.kind !== 'constant' || b.value.kind !== 'constant') {
             return a;
@@ -557,10 +498,10 @@ export class DataDrivenProperty<T> implements Property<T, PossiblyEvaluatedPrope
         // `Properties#defaultPossiblyEvaluatedValues`, which serves as the prototype of
         // `PossiblyEvaluated#_values`.
         if (a.value.value === undefined || b.value.value === undefined) {
-            return new PossiblyEvaluatedPropertyValue(this, {kind: 'constant', value: (undefined: any)}, a.globals);
+            return new PossiblyEvaluatedPropertyValue(this, {kind: 'constant', value: (undefined)}, a.globals);
         }
 
-        const interp: ?(a: T, b: T, t: number) => T = (interpolate: any)[this.specification.type];
+        const interp = (interpolate)[this.specification.type];
         if (interp) {
             return new PossiblyEvaluatedPropertyValue(this, {kind: 'constant', value: interp(a.value.value, b.value.value, t)}, a.globals);
         } else {
@@ -568,7 +509,7 @@ export class DataDrivenProperty<T> implements Property<T, PossiblyEvaluatedPrope
         }
     }
 
-    evaluate(value: PossiblyEvaluatedValue<T>, globals: GlobalProperties, feature: Feature, featureState: FeatureState): T {
+    evaluate(value, globals, feature, featureState) {
         if (value.kind === 'constant') {
             return value.value;
         } else {
@@ -583,14 +524,13 @@ export class DataDrivenProperty<T> implements Property<T, PossiblyEvaluatedPrope
  *
  * @private
  */
-export class CrossFadedProperty<T> implements Property<T, ?CrossFaded<T>> {
-    specification: StylePropertySpecification;
+class CrossFadedProperty {
 
-    constructor(specification: StylePropertySpecification) {
+    constructor(specification) {
         this.specification = specification;
     }
 
-    possiblyEvaluate(value: PropertyValue<T, ?CrossFaded<T>>, parameters: EvaluationParameters): ?CrossFaded<T> {
+    possiblyEvaluate(value, parameters) {
         if (value.value === undefined) {
             return undefined;
         } else if (value.expression.kind === 'constant') {
@@ -606,7 +546,7 @@ export class CrossFadedProperty<T> implements Property<T, ?CrossFaded<T>> {
         }
     }
 
-    _calculate(min: T, mid: T, max: T, parameters: EvaluationParameters): ?CrossFaded<T> {
+    _calculate(min, mid, max, parameters) {
         const z = parameters.zoom;
         const fraction = z - Math.floor(z);
         const t = parameters.crossFadingFactor();
@@ -615,7 +555,7 @@ export class CrossFadedProperty<T> implements Property<T, ?CrossFaded<T>> {
             { from: max, to: mid, fromScale: 0.5, toScale: 1, t: 1 - (1 - t) * fraction };
     }
 
-    interpolate(a: ?CrossFaded<T>): ?CrossFaded<T> {
+    interpolate(a) {
         return a;
     }
 }
@@ -628,18 +568,17 @@ export class CrossFadedProperty<T> implements Property<T, ?CrossFaded<T>> {
  * @private
  */
 
-export class ColorRampProperty implements Property<Color, boolean> {
-    specification: StylePropertySpecification;
+class ColorRampProperty {
 
-    constructor(specification: StylePropertySpecification) {
+    constructor(specification) {
         this.specification = specification;
     }
 
-    possiblyEvaluate(value: PropertyValue<Color, boolean>, parameters: EvaluationParameters): boolean {
+    possiblyEvaluate(value, parameters) {
         return !!value.expression.evaluate(parameters);
     }
 
-    interpolate(): boolean { return false; }
+    interpolate() { return false; }
 }
 
 /**
@@ -653,19 +592,14 @@ export class ColorRampProperty implements Property<Color, boolean> {
  *
  * @private
  */
-export class Properties<Props: Object> {
-    properties: Props;
-    defaultPropertyValues: PropertyValues<Props>;
-    defaultTransitionablePropertyValues: TransitionablePropertyValues<Props>;
-    defaultTransitioningPropertyValues: TransitioningPropertyValues<Props>;
-    defaultPossiblyEvaluatedValues: PossiblyEvaluatedPropertyValues<Props>;
+class Properties {
 
-    constructor(properties: Props) {
+    constructor(properties) {
         this.properties = properties;
-        this.defaultPropertyValues = ({}: any);
-        this.defaultTransitionablePropertyValues = ({}: any);
-        this.defaultTransitioningPropertyValues = ({}: any);
-        this.defaultPossiblyEvaluatedValues = ({}: any);
+        this.defaultPropertyValues = ({});
+        this.defaultTransitionablePropertyValues = ({});
+        this.defaultTransitioningPropertyValues = ({});
+        this.defaultPossiblyEvaluatedValues = ({});
 
         for (const property in properties) {
             const prop = properties[property];
@@ -676,7 +610,7 @@ export class Properties<Props: Object> {
             this.defaultTransitioningPropertyValues[property] =
                 defaultTransitionablePropertyValue.untransitioned();
             this.defaultPossiblyEvaluatedValues[property] =
-                defaultPropertyValue.possiblyEvaluate(({}: any));
+                defaultPropertyValue.possiblyEvaluate(({}));
         }
     }
 }
@@ -685,3 +619,17 @@ register('DataDrivenProperty', DataDrivenProperty);
 register('DataConstantProperty', DataConstantProperty);
 register('CrossFadedProperty', CrossFadedProperty);
 register('ColorRampProperty', ColorRampProperty);
+
+module.exports = {
+    PropertyValue,
+    Transitionable,
+    Transitioning,
+    Layout,
+    PossiblyEvaluatedPropertyValue,
+    PossiblyEvaluated,
+    DataConstantProperty,
+    DataDrivenProperty,
+    CrossFadedProperty,
+    ColorRampProperty,
+    Properties
+};

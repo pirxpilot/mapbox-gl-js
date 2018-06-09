@@ -1,20 +1,17 @@
-// @flow
+'use strict';
 
-import { Event, Evented } from '../util/evented';
+const { Event, Evented } = require('../util/evented');
 
 let pluginRequested = false;
 let pluginURL = null;
 let foregroundLoadComplete = false;
 
-export const evented = new Evented();
-
-type CompletionCallback = (error?: Error) => void;
-type ErrorCallback = (error: Error) => void;
+const evented = new Evented();
 
 let _completionCallback;
 
-export const registerForPluginAvailability = function(
-    callback: (args: {pluginURL: string, completionCallback: CompletionCallback}) => void
+function registerForPluginAvailability(
+    callback
 ) {
     if (pluginURL) {
         callback({ pluginURL: pluginURL, completionCallback: _completionCallback});
@@ -22,20 +19,20 @@ export const registerForPluginAvailability = function(
         evented.once('pluginAvailable', callback);
     }
     return callback;
-};
+}
 
-export const clearRTLTextPlugin = function() {
+function clearRTLTextPlugin() {
     pluginRequested = false;
     pluginURL = null;
-};
+}
 
-export const setRTLTextPlugin = function(url: string, callback: ErrorCallback) {
+function setRTLTextPlugin(url, callback) {
     if (pluginRequested) {
         throw new Error('setRTLTextPlugin cannot be called multiple times.');
     }
     pluginRequested = true;
     pluginURL = url;
-    _completionCallback = (error?: Error) => {
+    _completionCallback = (error) => {
         if (error) {
             // Clear loaded state to allow retries
             clearRTLTextPlugin();
@@ -48,17 +45,21 @@ export const setRTLTextPlugin = function(url: string, callback: ErrorCallback) {
         }
     };
     evented.fire(new Event('pluginAvailable', { pluginURL: pluginURL, completionCallback: _completionCallback }));
-};
+}
 
-export const plugin: {
-    applyArabicShaping: ?Function,
-    processBidirectionalText: ?(string, Array<number>) => Array<string>,
-    isLoaded: () => boolean
-} = {
+const plugin = {
     applyArabicShaping: null,
     processBidirectionalText: null,
     isLoaded: function() {
         return foregroundLoadComplete ||       // Foreground: loaded if the completion callback returned successfully
             plugin.applyArabicShaping != null; // Background: loaded if the plugin functions have been compiled
     }
+};
+
+module.exports = {
+    registerForPluginAvailability,
+    clearRTLTextPlugin,
+    setRTLTextPlugin,
+    plugin,
+    evented
 };

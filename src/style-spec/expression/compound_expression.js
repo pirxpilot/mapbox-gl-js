@@ -1,41 +1,23 @@
-// @flow
+'use strict';
 
-import { toString } from './types';
+const { toString } = require('./types');
 
-import ParsingContext from './parsing_context';
-import EvaluationContext from './evaluation_context';
-import assert from 'assert';
+const assert = require('assert');
 
-import type { Expression, ExpressionRegistry } from './expression';
-import type { Type } from './types';
-import type { Value } from './values';
+class CompoundExpression {
 
-export type Varargs = {| type: Type |};
-type Signature = Array<Type> | Varargs;
-type Evaluate = (EvaluationContext, Array<Expression>) => Value;
-type Definition = [Type, Signature, Evaluate] |
-    {|type: Type, overloads: Array<[Signature, Evaluate]>|};
-
-class CompoundExpression implements Expression {
-    name: string;
-    type: Type;
-    _evaluate: Evaluate;
-    args: Array<Expression>;
-
-    static definitions: { [string]: Definition };
-
-    constructor(name: string, type: Type, evaluate: Evaluate, args: Array<Expression>) {
+    constructor(name, type, evaluate, args) {
         this.name = name;
         this.type = type;
         this._evaluate = evaluate;
         this.args = args;
     }
 
-    evaluate(ctx: EvaluationContext) {
+    evaluate(ctx) {
         return this._evaluate(ctx, this.args);
     }
 
-    eachChild(fn: (Expression) => void) {
+    eachChild(fn) {
         this.args.forEach(fn);
     }
 
@@ -47,8 +29,10 @@ class CompoundExpression implements Expression {
         return [this.name].concat(this.args.map(arg => arg.serialize()));
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext): ?Expression {
-        const op: string = (args[0]: any);
+    static parse(args, context) {
+        const ParsingContext = require('./parsing_context');
+
+        const op = (args[0]);
         const definition = CompoundExpression.definitions[op];
         if (!definition) {
             return context.error(`Unknown expression "${op}". If you wanted a literal array, use ["literal", [...]].`, 0);
@@ -68,7 +52,7 @@ class CompoundExpression implements Expression {
         ));
 
         // First parse all the args
-        const parsedArgs: Array<Expression> = [];
+        const parsedArgs = [];
         for (let i = 1; i < args.length; i++) {
             const arg = args[i];
             let expected;
@@ -83,7 +67,7 @@ class CompoundExpression implements Expression {
             parsedArgs.push(parsed);
         }
 
-        let signatureContext: ParsingContext = (null: any);
+        let signatureContext = (null);
 
         for (const [params, evaluate] of overloads) {
             // Use a fresh context for each attempted signature so that, if
@@ -127,8 +111,8 @@ class CompoundExpression implements Expression {
     }
 
     static register(
-        registry: ExpressionRegistry,
-        definitions: { [string]: Definition }
+        registry,
+        definitions
     ) {
         assert(!CompoundExpression.definitions);
         CompoundExpression.definitions = definitions;
@@ -138,7 +122,7 @@ class CompoundExpression implements Expression {
     }
 }
 
-function stringifySignature(signature: Signature): string {
+function stringifySignature(signature) {
     if (Array.isArray(signature)) {
         return `(${signature.map(toString).join(', ')})`;
     } else {
@@ -146,4 +130,4 @@ function stringifySignature(signature: Signature): string {
     }
 }
 
-export default CompoundExpression;
+module.exports = CompoundExpression;

@@ -1,3 +1,3 @@
-// @flow
+'use strict';
 /* eslint-env browser */
-export default (self: Window);
+module.exports = (self);

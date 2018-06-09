@@ -1,29 +1,23 @@
-// @flow
+'use strict';
 
-import Benchmark from '../lib/benchmark';
+const Benchmark = require('../lib/benchmark');
 
-import createStyle from '../lib/create_style';
-import VT from '@mapbox/vector-tile';
-import Protobuf from 'pbf';
-import assert from 'assert';
-import promisify from 'pify';
-import WorkerTile from '../../src/source/worker_tile';
-import StyleLayerIndex from '../../src/style/style_layer_index';
-import deref from '../../src/style-spec/deref';
-import { OverscaledTileID } from '../../src/source/tile_id';
-import { normalizeStyleURL, normalizeSourceURL, normalizeTileURL } from '../../src/util/mapbox';
+const createStyle = require('../lib/create_style');
+const VT = require('@mapbox/vector-tile');
+const Protobuf = require('pbf');
+const assert = require('assert');
+const promisify = require('pify');
+const WorkerTile = require('../../src/source/worker_tile');
+const StyleLayerIndex = require('../../src/style/style_layer_index');
+const deref = require('../../src/style-spec/deref');
+const { OverscaledTileID } = require('../../src/source/tile_id');
+const { normalizeStyleURL, normalizeSourceURL, normalizeTileURL } = require('../../src/util/mapbox');
 
-import type {TileJSON} from '../../src/types/tilejson';
 
 // Note: this class is extended in turn by the LayoutDDS benchmark.
-export default class Layout extends Benchmark {
-    glyphs: Object;
-    icons: Object;
-    workerTile: WorkerTile;
-    layerIndex: StyleLayerIndex;
-    tiles: Array<{tileID: OverscaledTileID, buffer: ArrayBuffer}>;
+module.exports = class Layout extends Benchmark {
 
-    tileIDs(): Array<OverscaledTileID> {
+    tileIDs() {
         return [
             new OverscaledTileID(12, 0, 12, 655, 1583),
             new OverscaledTileID(8, 0, 8, 40, 98),
@@ -32,20 +26,20 @@ export default class Layout extends Benchmark {
         ];
     }
 
-    sourceID(): string {
+    sourceID() {
         return 'composite';
     }
 
-    fetchStyle(): Promise<StyleSpecification> {
+    fetchStyle() {
         return fetch(normalizeStyleURL(`mapbox://styles/mapbox/streets-v9`))
             .then(response => response.json());
     }
 
-    fetchTiles(styleJSON: StyleSpecification): Promise<Array<{tileID: OverscaledTileID, buffer: ArrayBuffer}>> {
-        const sourceURL: string = (styleJSON.sources[this.sourceID()]: any).url;
+    fetchTiles(styleJSON) {
+        const sourceURL = (styleJSON.sources[this.sourceID()]).url;
         return fetch(normalizeSourceURL(sourceURL))
             .then(response => response.json())
-            .then((tileJSON: TileJSON) => {
+            .then((tileJSON) => {
                 return Promise.all(this.tileIDs().map(tileID => {
                     return fetch((normalizeTileURL(tileID.canonical.url(tileJSON.tiles))))
                         .then(response => response.arrayBuffer())
@@ -54,7 +48,7 @@ export default class Layout extends Benchmark {
             });
     }
 
-    setup(): Promise<void> {
+    setup() {
         return this.fetchStyle()
             .then((styleJSON) => {
                 this.layerIndex = new StyleLayerIndex(deref(styleJSON.layers));
@@ -83,8 +77,8 @@ export default class Layout extends Benchmark {
             });
     }
 
-    bench(getGlyphs: Function = (params, callback) => callback(null, this.glyphs[JSON.stringify(params)]),
-          getImages: Function = (params, callback) => callback(null, this.icons[JSON.stringify(params)])) {
+    bench(getGlyphs = (params, callback) => callback(null, this.glyphs[JSON.stringify(params)]),
+          getImages = (params, callback) => callback(null, this.icons[JSON.stringify(params)])) {
 
         const actor = {
             send(action, params, callback) {
@@ -98,7 +92,7 @@ export default class Layout extends Benchmark {
             }
         };
 
-        let promise: Promise<void> = Promise.resolve();
+        let promise = Promise.resolve();
 
         for (const {tileID, buffer} of this.tiles) {
             promise = promise.then(() => {
@@ -130,4 +124,4 @@ export default class Layout extends Benchmark {
 
         return promise;
     }
-}
+};

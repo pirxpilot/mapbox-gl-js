@@ -1,5 +1,5 @@
-import { test } from 'mapbox-gl-js-test';
-import Coordinate from '../../../src/geo/coordinate';
+const { test } = require('mapbox-gl-js-test');
+const Coordinate = require('../../../src/geo/coordinate');
 
 test('Coordinate', (t) => {
     t.test('#constructor', (t) => {

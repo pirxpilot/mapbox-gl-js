@@ -1,11 +1,6 @@
-// @flow
+'use strict';
 
-import { extend } from '../util/util';
-import Tile from './tile';
-import type {FeatureState} from '../style-spec/expression';
-
-export type FeatureStates = {[feature_id: string]: FeatureState};
-export type LayerFeatureStates = {[layer: string]: FeatureStates};
+const { extend } = require('../util/util');
 
 /**
  * SourceFeatureState manages the state and state changes
@@ -14,34 +9,32 @@ export type LayerFeatureStates = {[layer: string]: FeatureStates};
  * @private
 */
 class SourceFeatureState {
-    state: LayerFeatureStates;
-    stateChanges: LayerFeatureStates;
 
     constructor() {
         this.state = {};
         this.stateChanges = {};
     }
 
-    updateState(sourceLayer: string, feature: string, state: Object) {
+    updateState(sourceLayer, feature, state) {
         feature = String(feature);
         this.stateChanges[sourceLayer] = this.stateChanges[sourceLayer] || {};
         this.stateChanges[sourceLayer][feature] = this.stateChanges[sourceLayer][feature] || {};
         extend(this.stateChanges[sourceLayer][feature], state);
     }
 
-    getState(sourceLayer: string, feature: string) {
+    getState(sourceLayer, feature) {
         feature = String(feature);
         const base = this.state[sourceLayer] || {};
         const changes = this.stateChanges[sourceLayer] || {};
         return extend({}, base[feature], changes[feature]);
     }
 
-    initializeTileState(tile: Tile, painter: any) {
+    initializeTileState(tile, painter) {
         tile.setFeatureState(this.state, painter);
     }
 
-    coalesceChanges(tiles: {[any]: Tile}, painter: any) {
-        const changes: LayerFeatureStates = {};
+    coalesceChanges(tiles, painter) {
+        const changes = {};
         for (const sourceLayer in this.stateChanges) {
             this.state[sourceLayer]  = this.state[sourceLayer] || {};
             const layerStates = {};
@@ -64,4 +57,4 @@ class SourceFeatureState {
     }
 }
 
-export default SourceFeatureState;
+module.exports = SourceFeatureState;

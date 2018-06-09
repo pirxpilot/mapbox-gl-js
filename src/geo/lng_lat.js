@@ -1,7 +1,6 @@
-// @flow
+'use strict';
 
-import { wrap } from '../util/util';
-import LngLatBounds from './lng_lat_bounds';
+const { wrap } = require('../util/util');
 
 /**
  * A `LngLat` object represents a given longitude and latitude coordinate, measured in degrees.
@@ -22,10 +21,8 @@ import LngLatBounds from './lng_lat_bounds';
  * @see [Create a timeline animation](https://www.mapbox.com/mapbox-gl-js/example/timeline-animation/)
  */
 class LngLat {
-    lng: number;
-    lat: number;
 
-    constructor(lng: number, lat: number) {
+    constructor(lng, lat) {
         if (isNaN(lng) || isNaN(lat)) {
             throw new Error(`Invalid LngLat object: (${lng}, ${lat})`);
         }
@@ -82,10 +79,11 @@ class LngLat {
      * var ll = new mapboxgl.LngLat(-73.9749, 40.7736);
      * ll.toBounds(100).toArray(); // = [[-73.97501862141328, 40.77351016847229], [-73.97478137858673, 40.77368983152771]]
      */
-    toBounds(radius: number) {
+    toBounds(radius) {
         const earthCircumferenceInMetersAtEquator = 40075017;
         const latAccuracy = 360 * radius / earthCircumferenceInMetersAtEquator,
             lngAccuracy = latAccuracy / Math.cos((Math.PI / 180) * this.lat);
+        const LngLatBounds = require('./lng_lat_bounds');
 
         return new LngLatBounds(new LngLat(this.lng - lngAccuracy, this.lat - latAccuracy),
             new LngLat(this.lng + lngAccuracy, this.lat + latAccuracy));
@@ -103,7 +101,7 @@ class LngLat {
      * var ll = mapboxgl.LngLat.convert(arr);
      * ll;   // = LngLat {lng: -73.9749, lat: 40.7736}
      */
-    static convert(input: LngLatLike): LngLat {
+    static convert(input) {
         if (input instanceof LngLat) {
             return input;
         }
@@ -126,6 +124,5 @@ class LngLat {
  * var v1 = new mapboxgl.LngLat(-122.420679, 37.772537);
  * var v2 = [-122.420679, 37.772537];
  */
-export type LngLatLike = LngLat | {lng: number, lat: number} | [number, number];
 
-export default LngLat;
+module.exports = LngLat;

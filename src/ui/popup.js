@@ -1,16 +1,14 @@
-// @flow
+'use strict';
 
-import { extend, bindAll } from '../util/util';
-import { Event, Evented } from '../util/evented';
-import DOM from '../util/dom';
-import LngLat from '../geo/lng_lat';
-import Point from '@mapbox/point-geometry';
-import window from '../util/window';
-import smartWrap from '../util/smart_wrap';
-import { type Anchor, anchorTranslate, applyAnchorClass } from './anchor';
+const { extend, bindAll } = require('../util/util');
+const { Event, Evented } = require('../util/evented');
+const DOM = require('../util/dom');
+const LngLat = require('../geo/lng_lat');
+const Point = require('@mapbox/point-geometry');
+const window = require('../util/window');
+const smartWrap = require('../util/smart_wrap');
+const { anchorTranslate, applyAnchorClass } = require('./anchor');
 
-import type Map from './map';
-import type {LngLatLike} from '../geo/lng_lat';
 
 const defaultOptions = {
     closeButton: true,
@@ -18,15 +16,7 @@ const defaultOptions = {
     className: ''
 };
 
-export type Offset = number | PointLike | {[Anchor]: PointLike};
 
-export type PopupOptions = {
-    closeButton?: boolean,
-    closeOnClick?: boolean,
-    anchor?: Anchor,
-    offset?: Offset,
-    className?: string
-};
 
 /**
  * A popup component.
@@ -69,17 +59,9 @@ export type PopupOptions = {
  * @see [Display a popup on hover](https://www.mapbox.com/mapbox-gl-js/example/popup-on-hover/)
  * @see [Display a popup on click](https://www.mapbox.com/mapbox-gl-js/example/popup-on-click/)
  */
-export default class Popup extends Evented {
-    _map: Map;
-    options: PopupOptions;
-    _content: HTMLElement;
-    _container: HTMLElement;
-    _closeButton: HTMLElement;
-    _tip: HTMLElement;
-    _lngLat: LngLat;
-    _pos: ?Point;
+module.exports = class Popup extends Evented {
 
-    constructor(options: PopupOptions) {
+    constructor(options) {
         super();
         this.options = extend(Object.create(defaultOptions), options);
         bindAll(['_update', '_onClickClose'], this);
@@ -91,7 +73,7 @@ export default class Popup extends Evented {
      * @param {Map} map The Mapbox GL JS map to add the popup to.
      * @returns {Popup} `this`
      */
-    addTo(map: Map) {
+    addTo(map) {
         this._map = map;
         this._map.on('move', this._update);
         if (this.options.closeOnClick) {
@@ -177,7 +159,7 @@ export default class Popup extends Evented {
      * @param lnglat The geographical location to set as the popup's anchor.
      * @returns {Popup} `this`
      */
-    setLngLat(lnglat: LngLatLike) {
+    setLngLat(lnglat) {
         this._lngLat = LngLat.convert(lnglat);
         this._pos = null;
         this._update();
@@ -199,7 +181,7 @@ export default class Popup extends Evented {
      *   .setText('Hello, world!')
      *   .addTo(map);
      */
-    setText(text: string) {
+    setText(text) {
         return this.setDOMContent(window.document.createTextNode(text));
     }
 
@@ -213,7 +195,7 @@ export default class Popup extends Evented {
      * @param html A string representing HTML content for the popup.
      * @returns {Popup} `this`
      */
-    setHTML(html: string) {
+    setHTML(html) {
         const frag = window.document.createDocumentFragment();
         const temp = window.document.createElement('body');
         let child;
@@ -241,7 +223,7 @@ export default class Popup extends Evented {
      *   .setDOMContent(div)
      *   .addTo(map);
      */
-    setDOMContent(htmlNode: Node) {
+    setDOMContent(htmlNode) {
         this._createContent();
         this._content.appendChild(htmlNode);
         this._update();
@@ -284,7 +266,7 @@ export default class Popup extends Evented {
 
         const pos = this._pos = this._map.project(this._lngLat);
 
-        let anchor: ?Anchor = this.options.anchor;
+        let anchor = this.options.anchor;
         const offset = normalizeOffset(this.options.offset);
 
         if (!anchor) {
@@ -309,7 +291,7 @@ export default class Popup extends Evented {
             if (anchorComponents.length === 0) {
                 anchor = 'bottom';
             } else {
-                anchor = (anchorComponents.join('-'): any);
+                anchor = (anchorComponents.join('-'));
             }
         }
 
@@ -322,9 +304,9 @@ export default class Popup extends Evented {
     _onClickClose() {
         this.remove();
     }
-}
+};
 
-function normalizeOffset(offset: ?Offset) {
+function normalizeOffset(offset) {
     if (!offset) {
         return normalizeOffset(new Point(0, 0));
 

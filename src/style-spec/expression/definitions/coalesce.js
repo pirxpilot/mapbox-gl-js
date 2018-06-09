@@ -1,28 +1,22 @@
-// @flow
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import { checkSubtype, ValueType } from '../types';
+const { checkSubtype, ValueType } = require('../types');
 
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
-import type EvaluationContext from '../evaluation_context';
-import type { Type } from '../types';
 
-class Coalesce implements Expression {
-    type: Type;
-    args: Array<Expression>;
+class Coalesce {
 
-    constructor(type: Type, args: Array<Expression>) {
+    constructor(type, args) {
         this.type = type;
         this.args = args;
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext) {
+    static parse(args, context) {
         if (args.length < 2) {
             return context.error("Expectected at least one argument.");
         }
-        let outputType: Type = (null: any);
+        let outputType = (null);
         const expectedType = context.expectedType;
         if (expectedType && expectedType.kind !== 'value') {
             outputType = expectedType;
@@ -47,10 +41,10 @@ class Coalesce implements Expression {
 
         return needsAnnotation ?
             new Coalesce(ValueType, parsedArgs) :
-            new Coalesce((outputType: any), parsedArgs);
+            new Coalesce((outputType), parsedArgs);
     }
 
-    evaluate(ctx: EvaluationContext) {
+    evaluate(ctx) {
         let result = null;
         for (const arg of this.args) {
             result = arg.evaluate(ctx);
@@ -59,7 +53,7 @@ class Coalesce implements Expression {
         return result;
     }
 
-    eachChild(fn: (Expression) => void) {
+    eachChild(fn) {
         this.args.forEach(fn);
     }
 
@@ -74,4 +68,4 @@ class Coalesce implements Expression {
     }
 }
 
-export default Coalesce;
+module.exports = Coalesce;

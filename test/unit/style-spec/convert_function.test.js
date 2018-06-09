@@ -1,5 +1,5 @@
-import { test } from 'mapbox-gl-js-test';
-import convertFunction from '../../../src/style-spec/function/convert';
+const { test } = require('mapbox-gl-js-test');
+const convertFunction = require('../../../src/style-spec/function/convert');
 
 test('convertFunction', (t) => {
     t.test('boolean categorical', (t) => {

@@ -1,8 +1,7 @@
-// @flow
+'use strict';
 
-import { warnOnce } from '../util/util';
+const { warnOnce } = require('../util/util');
 
-import type Context from '../gl/context';
 
 /**
  * A LineAtlas lets us reuse rendered dashed lines
@@ -14,16 +13,8 @@ import type Context from '../gl/context';
  * @private
  */
 class LineAtlas {
-    width: number;
-    height: number;
-    nextRow: number;
-    bytes: number;
-    data: Uint8Array;
-    positions: {[string]: any};
-    dirty: boolean;
-    texture: WebGLTexture;
 
-    constructor(width: number, height: number) {
+    constructor(width, height) {
         this.width = width;
         this.height = height;
         this.nextRow = 0;
@@ -42,7 +33,7 @@ class LineAtlas {
      * @returns {Object} position of dash texture in { y, height, width }
      * @private
      */
-    getDash(dasharray: Array<number>, round: boolean) {
+    getDash(dasharray, round) {
         const key = dasharray.join(",") + String(round);
 
         if (!this.positions[key]) {
@@ -51,7 +42,7 @@ class LineAtlas {
         return this.positions[key];
     }
 
-    addDash(dasharray: Array<number>, round: boolean) {
+    addDash(dasharray, round) {
 
         const n = round ? 7 : 0;
         const height = 2 * n + 1;
@@ -130,7 +121,7 @@ class LineAtlas {
         return pos;
     }
 
-    bind(context: Context) {
+    bind(context) {
         const gl = context.gl;
         if (!this.texture) {
             this.texture = gl.createTexture();
@@ -152,4 +143,4 @@ class LineAtlas {
     }
 }
 
-export default LineAtlas;
+module.exports = LineAtlas;

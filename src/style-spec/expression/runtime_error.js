@@ -1,10 +1,8 @@
-// @flow
+'use strict';
 
 class RuntimeError {
-    name: string;
-    message: string;
 
-    constructor(message: string) {
+    constructor(message) {
         this.name = 'ExpressionEvaluationError';
         this.message = message;
     }
@@ -14,4 +12,4 @@ class RuntimeError {
     }
 }
 
-export default RuntimeError;
+module.exports = RuntimeError;

@@ -1,5 +1,6 @@
+'use strict';
 
-import refProperties from './util/ref_properties';
+const refProperties = require('./util/ref_properties');
 
 function deref(layer, parent) {
     const result = {};
@@ -19,7 +20,7 @@ function deref(layer, parent) {
     return result;
 }
 
-export default derefLayers;
+module.exports = derefLayers;
 
 /**
  * Given an array of layers, some of which may contain `ref` properties

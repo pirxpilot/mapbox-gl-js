@@ -1,35 +1,19 @@
 // This file is generated. Edit build/generate-style-code.js, then run `yarn run codegen`.
-// @flow
+'use strict';
 /* eslint-disable */
 
-import styleSpec from '../../style-spec/reference/latest';
+const styleSpec = require('../../style-spec/reference/latest');
 
-import {
+const {
     Properties,
     DataConstantProperty,
-    DataDrivenProperty,
-    CrossFadedProperty,
-    ColorRampProperty
-} from '../properties';
-
-import type Color from '../../style-spec/util/color';
+    DataDrivenProperty
+} = require ('../properties');
 
 
-export type PaintProps = {|
-    "circle-radius": DataDrivenProperty<number>,
-    "circle-color": DataDrivenProperty<Color>,
-    "circle-blur": DataDrivenProperty<number>,
-    "circle-opacity": DataDrivenProperty<number>,
-    "circle-translate": DataConstantProperty<[number, number]>,
-    "circle-translate-anchor": DataConstantProperty<"map" | "viewport">,
-    "circle-pitch-scale": DataConstantProperty<"map" | "viewport">,
-    "circle-pitch-alignment": DataConstantProperty<"map" | "viewport">,
-    "circle-stroke-width": DataDrivenProperty<number>,
-    "circle-stroke-color": DataDrivenProperty<Color>,
-    "circle-stroke-opacity": DataDrivenProperty<number>,
-|};
 
-const paint: Properties<PaintProps> = new Properties({
+
+const paint = new Properties({
     "circle-radius": new DataDrivenProperty(styleSpec["paint_circle"]["circle-radius"]),
     "circle-color": new DataDrivenProperty(styleSpec["paint_circle"]["circle-color"]),
     "circle-blur": new DataDrivenProperty(styleSpec["paint_circle"]["circle-blur"]),
@@ -43,4 +27,4 @@ const paint: Properties<PaintProps> = new Properties({
     "circle-stroke-opacity": new DataDrivenProperty(styleSpec["paint_circle"]["circle-stroke-opacity"]),
 });
 
-export default { paint };
+module.exports = { paint };

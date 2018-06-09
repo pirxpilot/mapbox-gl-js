@@ -1,20 +1,16 @@
-// @flow
+'use strict';
 
-import { clamp } from '../util/util';
+const { clamp } = require('../util/util');
 
-import ImageSource from '../source/image_source';
-import browser from '../util/browser';
-import StencilMode from '../gl/stencil_mode';
-import DepthMode from '../gl/depth_mode';
+const ImageSource = require('../source/image_source');
+const browser = require('../util/browser');
+const StencilMode = require('../gl/stencil_mode');
+const DepthMode = require('../gl/depth_mode');
 
-import type Painter from './painter';
-import type SourceCache from '../source/source_cache';
-import type RasterStyleLayer from '../style/style_layer/raster_style_layer';
-import type {OverscaledTileID} from '../source/tile_id';
 
-export default drawRaster;
+module.exports = drawRaster;
 
-function drawRaster(painter: Painter, sourceCache: SourceCache, layer: RasterStyleLayer, coords: Array<OverscaledTileID>) {
+function drawRaster(painter, sourceCache, layer, coords) {
     if (painter.renderPass !== 'translucent') return;
     if (layer.paint.get('raster-opacity') === 0) return;
 

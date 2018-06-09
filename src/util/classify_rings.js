@@ -1,13 +1,12 @@
-// @flow
+'use strict';
 
-import quickselect from 'quickselect';
+const quickselect = require('quickselect');
 
-import { calculateSignedArea } from './util';
+const { calculateSignedArea } = require('./util');
 
-import type Point from '@mapbox/point-geometry';
 
 // classifies an array of rings into polygons with outer rings and holes
-export default function classifyRings(rings: Array<Array<Point>>, maxRings: number) {
+module.exports = function classifyRings(rings, maxRings) {
     const len = rings.length;
 
     if (len <= 1) return [rings];
@@ -20,7 +19,7 @@ export default function classifyRings(rings: Array<Array<Point>>, maxRings: numb
         const area = calculateSignedArea(rings[i]);
         if (area === 0) continue;
 
-        (rings[i]: any).area = Math.abs(area);
+        (rings[i]).area = Math.abs(area);
 
         if (ccw === undefined) ccw = area < 0;
 
@@ -29,7 +28,7 @@ export default function classifyRings(rings: Array<Array<Point>>, maxRings: numb
             polygon = [rings[i]];
 
         } else {
-            (polygon: any).push(rings[i]);
+            (polygon).push(rings[i]);
         }
     }
     if (polygon) polygons.push(polygon);
@@ -45,7 +44,7 @@ export default function classifyRings(rings: Array<Array<Point>>, maxRings: numb
     }
 
     return polygons;
-}
+};
 
 function compareAreas(a, b) {
     return b.area - a.area;

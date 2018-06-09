@@ -1,8 +1,9 @@
+'use strict';
 
-import validateStyleMin from './validate_style.min';
-import ParsingError from './error/parsing_error';
-import jsonlint from '@mapbox/jsonlint-lines-primitives';
-import {v8} from './style-spec';
+const validateStyleMin = require('./validate_style.min');
+const ParsingError = require('./error/parsing_error');
+const jsonlint = require('@mapbox/jsonlint-lines-primitives');
+const {v8} = require('./style-spec');
 
 /**
  * Validate a Mapbox GL style against the style specification.
@@ -20,7 +21,7 @@ import {v8} from './style-spec';
  *   var errors = validate(style);
  */
 
-export default function validateStyle(style, styleSpec) {
+function validateStyle(style, styleSpec) {
     if (style instanceof String || typeof style === 'string' || style instanceof Buffer) {
         try {
             style = jsonlint.parse(style.toString());
@@ -34,9 +35,11 @@ export default function validateStyle(style, styleSpec) {
     return validateStyleMin(style, styleSpec);
 }
 
-export const source = validateStyleMin.source;
-export const light = validateStyleMin.light;
-export const layer = validateStyleMin.layer;
-export const filter = validateStyleMin.filter;
-export const paintProperty = validateStyleMin.paintProperty;
-export const layoutProperty = validateStyleMin.layoutProperty;
+validateStyle.source = validateStyleMin.source;
+validateStyle.light = validateStyleMin.light;
+validateStyle.layer = validateStyleMin.layer;
+validateStyle.filter = validateStyleMin.filter;
+validateStyle.paintProperty = validateStyleMin.paintProperty;
+validateStyle.layoutProperty = validateStyleMin.layoutProperty;
+
+module.exports = validateStyle;

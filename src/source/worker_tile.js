@@ -1,49 +1,24 @@
-// @flow
+'use strict';
 
-import FeatureIndex from '../data/feature_index';
+const FeatureIndex = require('../data/feature_index');
 
-import { performSymbolLayout } from '../symbol/symbol_layout';
-import { CollisionBoxArray } from '../data/array_types';
-import DictionaryCoder from '../util/dictionary_coder';
-import SymbolBucket from '../data/bucket/symbol_bucket';
-import { warnOnce, mapObject, values } from '../util/util';
-import assert from 'assert';
-import ImageAtlas from '../render/image_atlas';
-import GlyphAtlas from '../render/glyph_atlas';
-import EvaluationParameters from '../style/evaluation_parameters';
-import { OverscaledTileID } from './tile_id';
+const { performSymbolLayout } = require('../symbol/symbol_layout');
+const { CollisionBoxArray } = require('../data/array_types');
+const DictionaryCoder = require('../util/dictionary_coder');
+const SymbolBucket = require('../data/bucket/symbol_bucket');
+const { warnOnce, mapObject, values } = require('../util/util');
+const assert = require('assert');
+const ImageAtlas = require('../render/image_atlas');
+const GlyphAtlas = require('../render/glyph_atlas');
+const EvaluationParameters = require('../style/evaluation_parameters');
+const { OverscaledTileID } = require('./tile_id');
 
-import type {Bucket} from '../data/bucket';
-import type Actor from '../util/actor';
-import type StyleLayer from '../style/style_layer';
-import type StyleLayerIndex from '../style/style_layer_index';
-import type {StyleImage} from '../style/style_image';
-import type {StyleGlyph} from '../style/style_glyph';
-import type {
-    WorkerTileParameters,
-    WorkerTileCallback,
-} from '../source/worker_source';
 
 class WorkerTile {
-    tileID: OverscaledTileID;
-    uid: string;
-    zoom: number;
-    pixelRatio: number;
-    tileSize: number;
-    source: string;
-    overscaling: number;
-    showCollisionBoxes: boolean;
-    collectResourceTiming: boolean;
 
-    status: 'parsing' | 'done';
-    data: VectorTile;
-    collisionBoxArray: CollisionBoxArray;
 
-    abort: ?() => void;
-    reloadCallback: WorkerTileCallback;
-    vectorTile: VectorTile;
 
-    constructor(params: WorkerTileParameters) {
+    constructor(params) {
         this.tileID = new OverscaledTileID(params.tileID.overscaledZ, params.tileID.wrap, params.tileID.canonical.z, params.tileID.canonical.x, params.tileID.canonical.y);
         this.uid = params.uid;
         this.zoom = params.zoom;
@@ -55,7 +30,7 @@ class WorkerTile {
         this.collectResourceTiming = !!params.collectResourceTiming;
     }
 
-    parse(data: VectorTile, layerIndex: StyleLayerIndex, actor: Actor, callback: WorkerTileCallback) {
+    parse(data, layerIndex, actor, callback) {
         this.status = 'parsing';
         this.data = data;
 
@@ -65,7 +40,7 @@ class WorkerTile {
         const featureIndex = new FeatureIndex(this.tileID);
         featureIndex.bucketLayerIDs = [];
 
-        const buckets: {[string]: Bucket} = {};
+        const buckets = {};
 
         const options = {
             featureIndex: featureIndex,
@@ -117,9 +92,9 @@ class WorkerTile {
             }
         }
 
-        let error: ?Error;
-        let glyphMap: ?{[string]: {[number]: ?StyleGlyph}};
-        let imageMap: ?{[string]: StyleImage};
+        let error;
+        let glyphMap;
+        let imageMap;
 
         const stacks = mapObject(options.glyphDependencies, (glyphs) => Object.keys(glyphs).map(Number));
         if (Object.keys(stacks).length) {
@@ -178,7 +153,7 @@ class WorkerTile {
     }
 }
 
-function recalculateLayers(layers: $ReadOnlyArray<StyleLayer>, zoom: number) {
+function recalculateLayers(layers, zoom) {
     // Layers are shared and may have been used by a WorkerTile with a different zoom.
     const parameters = new EvaluationParameters(zoom);
     for (const layer of layers) {
@@ -186,4 +161,4 @@ function recalculateLayers(layers: $ReadOnlyArray<StyleLayer>, zoom: number) {
     }
 }
 
-export default WorkerTile;
+module.exports = WorkerTile;

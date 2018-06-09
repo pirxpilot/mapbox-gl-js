@@ -1,9 +1,9 @@
-// @flow
+'use strict';
 
-import {
+const {
     LineIndexArray,
     TriangleIndexArray
-} from './array_types';
+} = require('./array_types');
 
 /**
  * An index array stores Uint16 indicies of vertexes in a corresponding vertex array. We use
@@ -11,4 +11,7 @@ import {
  * arrays storing pairs of indicies, forming line segments.
  * @private
  */
-export {LineIndexArray, TriangleIndexArray};
+module.exports = {
+    LineIndexArray,
+    TriangleIndexArray
+};

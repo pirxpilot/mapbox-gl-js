@@ -1,10 +1,10 @@
-// @flow
+'use strict';
 
-import { test } from 'mapbox-gl-js-test';
+const { test } = require('mapbox-gl-js-test');
 
-import Coordinate from '../../../src/geo/coordinate';
-import { easeCubicInOut, keysDifference, extend, pick, uniqueId, getCoordinatesCenter, bindAll, asyncAll, clamp, wrap, bezier, endsWith, mapObject, filterObject, deepEqual, clone, arraysIntersect, isCounterClockwise, isClosedPolygon, parseCacheControl } from '../../../src/util/util';
-import Point from '@mapbox/point-geometry';
+const Coordinate = require('../../../src/geo/coordinate');
+const { easeCubicInOut, keysDifference, extend, pick, uniqueId, getCoordinatesCenter, bindAll, asyncAll, clamp, wrap, bezier, endsWith, mapObject, filterObject, deepEqual, clone, arraysIntersect, isCounterClockwise, isClosedPolygon, parseCacheControl } = require('../../../src/util/util');
+const Point = require('@mapbox/point-geometry');
 
 test('util', (t) => {
     t.equal(easeCubicInOut(0), 0, 'easeCubicInOut=0');

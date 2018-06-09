@@ -1,18 +1,13 @@
-// @flow
+'use strict';
 
-import ZoomHistory from './zoom_history';
-import {isStringInSupportedScript} from '../util/script_detection';
-import {plugin as rtlTextPlugin} from '../source/rtl_text_plugin';
+const ZoomHistory = require('./zoom_history');
+const {isStringInSupportedScript} = require('../util/script_detection');
+const {plugin: rtlTextPlugin} = require('../source/rtl_text_plugin');
 
 class EvaluationParameters {
-    zoom: number;
-    now: number;
-    fadeDuration: number;
-    zoomHistory: ZoomHistory;
-    transition: TransitionSpecification;
 
     // "options" may also be another EvaluationParameters to copy, see CrossFadedProperty.possiblyEvaluate
-    constructor(zoom: number, options?: *) {
+    constructor(zoom, options) {
         this.zoom = zoom;
 
         if (options) {
@@ -28,7 +23,7 @@ class EvaluationParameters {
         }
     }
 
-    isSupportedScript(str: string): boolean {
+    isSupportedScript(str) {
         return isStringInSupportedScript(str, rtlTextPlugin.isLoaded());
     }
 
@@ -41,4 +36,4 @@ class EvaluationParameters {
     }
 }
 
-export default EvaluationParameters;
+module.exports = EvaluationParameters;

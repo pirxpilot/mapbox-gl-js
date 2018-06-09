@@ -1,25 +1,25 @@
-// @flow
+'use strict';
 
-import { createLayout } from '../../util/struct_array';
+const { createLayout } = require('../../util/struct_array');
 
-export const symbolLayoutAttributes = createLayout([
+const symbolLayoutAttributes = createLayout([
     {name: 'a_pos_offset',  components: 4, type: 'Int16'},
     {name: 'a_data',        components: 4, type: 'Uint16'}
 ]);
 
-export const dynamicLayoutAttributes = createLayout([
+const dynamicLayoutAttributes = createLayout([
     { name: 'a_projected_pos', components: 3, type: 'Float32' }
 ], 4);
 
-export const placementOpacityAttributes = createLayout([
+const placementOpacityAttributes = createLayout([
     { name: 'a_fade_opacity', components: 1, type: 'Uint32' }
 ], 4);
 
-export const collisionVertexAttributes = createLayout([
+const collisionVertexAttributes = createLayout([
     { name: 'a_placed', components: 2, type: 'Uint8' }
 ], 4);
 
-export const collisionBox = createLayout([
+const collisionBox = createLayout([
     // the box is centered around the anchor point
     { type: 'Int16', name: 'anchorPointX' },
     { type: 'Int16', name: 'anchorPointY' },
@@ -44,19 +44,19 @@ export const collisionBox = createLayout([
     { type: 'Int16', name: 'signedDistanceFromAnchor' }
 ]);
 
-export const collisionBoxLayout = createLayout([ // used to render collision boxes for debugging purposes
+const collisionBoxLayout = createLayout([ // used to render collision boxes for debugging purposes
     {name: 'a_pos',        components: 2, type: 'Int16'},
     {name: 'a_anchor_pos', components: 2, type: 'Int16'},
     {name: 'a_extrude',    components: 2, type: 'Int16'}
 ], 4);
 
-export const collisionCircleLayout = createLayout([ // used to render collision circles for debugging purposes
+const collisionCircleLayout = createLayout([ // used to render collision circles for debugging purposes
     {name: 'a_pos',        components: 2, type: 'Int16'},
     {name: 'a_anchor_pos', components: 2, type: 'Int16'},
     {name: 'a_extrude',    components: 2, type: 'Int16'}
 ], 4);
 
-export const placement = createLayout([
+const placement = createLayout([
     { type: 'Int16', name: 'anchorX' },
     { type: 'Int16', name: 'anchorY' },
     { type: 'Uint16', name: 'glyphStartIndex' },
@@ -73,12 +73,25 @@ export const placement = createLayout([
     { type: 'Uint8', name: 'hidden' }
 ]);
 
-export const glyphOffset = createLayout([
+const glyphOffset = createLayout([
     { type: 'Float32', name: 'offsetX' }
 ]);
 
-export const lineVertex = createLayout([
+const lineVertex = createLayout([
     { type: 'Int16', name: 'x' },
     { type: 'Int16', name: 'y' },
     { type: 'Int16', name: 'tileUnitDistanceFromAnchor' }
 ]);
+
+module.exports = {
+    symbolLayoutAttributes,
+    dynamicLayoutAttributes,
+    placementOpacityAttributes,
+    collisionVertexAttributes,
+    collisionBox,
+    collisionBoxLayout,
+    collisionCircleLayout,
+    placement,
+    glyphOffset,
+    lineVertex
+};

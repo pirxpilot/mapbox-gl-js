@@ -1,41 +1,19 @@
-// @flow
+'use strict';
 
-import Color from '../style-spec/util/color';
+const Color = require('../style-spec/util/color');
 
-import { clamp } from '../util/util';
+const { clamp } = require('../util/util');
 
-import type Context from './context';
-import type {
-    BlendFuncType,
-    ColorMaskType,
-    DepthRangeType,
-    DepthMaskType,
-    StencilFuncType,
-    StencilOpType,
-    DepthFuncType,
-    TextureUnitType,
-    ViewportType,
-} from './types';
+class ClearColor {
 
-export interface Value<T> {
-    context: Context;
-    current: T;
-    get(): T;
-    set(value: T): void;
-}
-
-export class ClearColor implements Value<Color> {
-    context: Context;
-    current: Color;
-
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = Color.transparent;
     }
 
-    get(): Color { return this.current; }
+    get() { return this.current; }
 
-    set(v: Color): void {
+    set(v) {
         const c = this.current;
         if (v.r !== c.r || v.g !== c.g || v.b !== c.b || v.a !== c.a) {
             this.context.gl.clearColor(v.r, v.g, v.b, v.a);
@@ -44,18 +22,16 @@ export class ClearColor implements Value<Color> {
     }
 }
 
-export class ClearDepth implements Value<number> {
-    context: Context;
-    current: number;
+class ClearDepth {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = 1;
     }
 
-    get(): number { return this.current; }
+    get() { return this.current; }
 
-    set(v: number): void {
+    set(v) {
         if (this.current !== v) {
             this.context.gl.clearDepth(v);
             this.current = v;
@@ -63,18 +39,16 @@ export class ClearDepth implements Value<number> {
     }
 }
 
-export class ClearStencil implements Value<number> {
-    context: Context;
-    current: number;
+class ClearStencil {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = 0;
     }
 
-    get(): number { return this.current; }
+    get() { return this.current; }
 
-    set(v: number): void {
+    set(v) {
         if (this.current !== v) {
             this.context.gl.clearStencil(v);
             this.current = v;
@@ -82,18 +56,16 @@ export class ClearStencil implements Value<number> {
     }
 }
 
-export class ColorMask implements Value<ColorMaskType> {
-    context: Context;
-    current: ColorMaskType;
+class ColorMask {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = [true, true, true, true];
     }
 
-    get(): ColorMaskType { return this.current; }
+    get() { return this.current; }
 
-    set(v: ColorMaskType): void {
+    set(v) {
         const c = this.current;
         if (v[0] !== c[0] || v[1] !== c[1] || v[2] !== c[2] || v[3] !== c[3]) {
             this.context.gl.colorMask(v[0], v[1], v[2], v[3]);
@@ -102,18 +74,16 @@ export class ColorMask implements Value<ColorMaskType> {
     }
 }
 
-export class DepthMask implements Value<DepthMaskType> {
-    context: Context;
-    current: DepthMaskType;
+class DepthMask {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = true;
     }
 
-    get(): DepthMaskType { return this.current; }
+    get() { return this.current; }
 
-    set(v: DepthMaskType): void {
+    set(v) {
         if (this.current !== v) {
             this.context.gl.depthMask(v);
             this.current = v;
@@ -121,18 +91,16 @@ export class DepthMask implements Value<DepthMaskType> {
     }
 }
 
-export class StencilMask implements Value<number> {
-    context: Context;
-    current: number;
+class StencilMask {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = 0xFF;
     }
 
-    get(): number { return this.current; }
+    get() { return this.current; }
 
-    set(v: number): void {
+    set(v) {
         if (this.current !== v) {
             this.context.gl.stencilMask(v);
             this.current = v;
@@ -140,11 +108,9 @@ export class StencilMask implements Value<number> {
     }
 }
 
-export class StencilFunc implements Value<StencilFuncType> {
-    context: Context;
-    current: StencilFuncType;
+class StencilFunc {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = {
             func: context.gl.ALWAYS,
@@ -153,9 +119,9 @@ export class StencilFunc implements Value<StencilFuncType> {
         };
     }
 
-    get(): StencilFuncType { return this.current; }
+    get() { return this.current; }
 
-    set(v: StencilFuncType): void {
+    set(v) {
         const c = this.current;
         if (v.func !== c.func || v.ref !== c.ref || v.mask !== c.mask) {
             this.context.gl.stencilFunc(v.func, v.ref, v.mask);
@@ -164,19 +130,17 @@ export class StencilFunc implements Value<StencilFuncType> {
     }
 }
 
-export class StencilOp implements Value<StencilOpType> {
-    context: Context;
-    current: StencilOpType;
+class StencilOp {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         const gl = this.context.gl;
         this.current = [gl.KEEP, gl.KEEP, gl.KEEP];
     }
 
-    get(): StencilOpType { return this.current; }
+    get() { return this.current; }
 
-    set(v: StencilOpType): void {
+    set(v) {
         const c = this.current;
         if (v[0] !== c[0] || v[1] !== c[1] || v[2] !== c[2]) {
             this.context.gl.stencilOp(v[0], v[1], v[2]);
@@ -185,18 +149,16 @@ export class StencilOp implements Value<StencilOpType> {
     }
 }
 
-export class StencilTest implements Value<boolean> {
-    context: Context;
-    current: boolean;
+class StencilTest {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = false;
     }
 
-    get(): boolean { return this.current; }
+    get() { return this.current; }
 
-    set(v: boolean): void {
+    set(v) {
         if (this.current !== v) {
             const gl = this.context.gl;
             if (v) {
@@ -209,18 +171,16 @@ export class StencilTest implements Value<boolean> {
     }
 }
 
-export class DepthRange implements Value<DepthRangeType> {
-    context: Context;
-    current: DepthRangeType;
+class DepthRange {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = [0, 1];
     }
 
-    get(): DepthRangeType { return this.current; }
+    get() { return this.current; }
 
-    set(v: DepthRangeType): void {
+    set(v) {
         const c = this.current;
         if (v[0] !== c[0] || v[1] !== c[1]) {
             this.context.gl.depthRange(v[0], v[1]);
@@ -229,18 +189,16 @@ export class DepthRange implements Value<DepthRangeType> {
     }
 }
 
-export class DepthTest implements Value<boolean> {
-    context: Context;
-    current: boolean;
+class DepthTest {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = false;
     }
 
-    get(): boolean { return this.current; }
+    get() { return this.current; }
 
-    set(v: boolean): void {
+    set(v) {
         if (this.current !== v) {
             const gl = this.context.gl;
             if (v) {
@@ -253,18 +211,16 @@ export class DepthTest implements Value<boolean> {
     }
 }
 
-export class DepthFunc implements Value<DepthFuncType> {
-    context: Context;
-    current: DepthFuncType;
+class DepthFunc {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = context.gl.LESS;
     }
 
-    get(): DepthFuncType { return this.current; }
+    get() { return this.current; }
 
-    set(v: DepthFuncType): void {
+    set(v) {
         if (this.current !== v) {
             this.context.gl.depthFunc(v);
             this.current = v;
@@ -272,18 +228,16 @@ export class DepthFunc implements Value<DepthFuncType> {
     }
 }
 
-export class Blend implements Value<boolean> {
-    context: Context;
-    current: boolean;
+class Blend {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = false;
     }
 
-    get(): boolean { return this.current; }
+    get() { return this.current; }
 
-    set(v: boolean): void {
+    set(v) {
         if (this.current !== v) {
             const gl = this.context.gl;
             if (v) {
@@ -296,19 +250,17 @@ export class Blend implements Value<boolean> {
     }
 }
 
-export class BlendFunc implements Value<BlendFuncType> {
-    context: Context;
-    current: BlendFuncType;
+class BlendFunc {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         const gl = this.context.gl;
         this.current = [gl.ONE, gl.ZERO];
     }
 
-    get(): BlendFuncType { return this.current; }
+    get() { return this.current; }
 
-    set(v: BlendFuncType): void {
+    set(v) {
         const c = this.current;
         if (v[0] !== c[0] || v[1] !== c[1]) {
             this.context.gl.blendFunc(v[0], v[1]);
@@ -317,18 +269,16 @@ export class BlendFunc implements Value<BlendFuncType> {
     }
 }
 
-export class BlendColor implements Value<Color> {
-    context: Context;
-    current: Color;
+class BlendColor {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = Color.transparent;
     }
 
-    get(): Color { return this.current; }
+    get() { return this.current; }
 
-    set(v: Color): void {
+    set(v) {
         const c = this.current;
         if (v.r !== c.r || v.g !== c.g || v.b !== c.b || v.a !== c.a) {
             this.context.gl.blendColor(v.r, v.g, v.b, v.a);
@@ -337,18 +287,16 @@ export class BlendColor implements Value<Color> {
     }
 }
 
-export class Program implements Value<?WebGLProgram> {
-    context: Context;
-    current: ?WebGLProgram;
+class Program {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = null;
     }
 
-    get(): ?WebGLProgram { return this.current; }
+    get() { return this.current; }
 
-    set(v: ?WebGLProgram): void {
+    set(v) {
         if (this.current !== v) {
             this.context.gl.useProgram(v);
             this.current = v;
@@ -356,18 +304,16 @@ export class Program implements Value<?WebGLProgram> {
     }
 }
 
-export class LineWidth implements Value<number> {
-    context: Context;
-    current: number;
+class LineWidth {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = 1;
     }
 
-    get(): number { return this.current; }
+    get() { return this.current; }
 
-    set(v: number): void {
+    set(v) {
         const range = this.context.lineWidthRange;
         const clamped = clamp(v, range[0], range[1]);
         if (this.current !== clamped) {
@@ -377,18 +323,16 @@ export class LineWidth implements Value<number> {
     }
 }
 
-export class ActiveTextureUnit implements Value<TextureUnitType> {
-    context: Context;
-    current: TextureUnitType;
+class ActiveTextureUnit {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = context.gl.TEXTURE0;
     }
 
-    get(): TextureUnitType { return this.current; }
+    get() { return this.current; }
 
-    set(v: TextureUnitType): void {
+    set(v) {
         if (this.current !== v) {
             this.context.gl.activeTexture(v);
             this.current = v;
@@ -396,19 +340,17 @@ export class ActiveTextureUnit implements Value<TextureUnitType> {
     }
 }
 
-export class Viewport implements Value<ViewportType> {
-    context: Context;
-    current: ViewportType;
+class Viewport {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         const gl = this.context.gl;
         this.current = [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight];
     }
 
-    get(): ViewportType { return this.current; }
+    get() { return this.current; }
 
-    set(v: ViewportType): void {
+    set(v) {
         const c = this.current;
         if (v[0] !== c[0] || v[1] !== c[1] || v[2] !== c[2] || v[3] !== c[3]) {
             this.context.gl.viewport(v[0], v[1], v[2], v[3]);
@@ -417,18 +359,16 @@ export class Viewport implements Value<ViewportType> {
     }
 }
 
-export class BindFramebuffer implements Value<?WebGLFramebuffer> {
-    context: Context;
-    current: ?WebGLFramebuffer;
+class BindFramebuffer {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = null;
     }
 
-    get(): ?WebGLFramebuffer { return this.current; }
+    get() { return this.current; }
 
-    set(v: ?WebGLFramebuffer): void {
+    set(v) {
         if (this.current !== v) {
             const gl = this.context.gl;
             gl.bindFramebuffer(gl.FRAMEBUFFER, v);
@@ -437,18 +377,16 @@ export class BindFramebuffer implements Value<?WebGLFramebuffer> {
     }
 }
 
-export class BindRenderbuffer implements Value<?WebGLRenderbuffer> {
-    context: Context;
-    current: ?WebGLRenderbuffer;
+class BindRenderbuffer {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = null;
     }
 
-    get(): ?WebGLRenderbuffer { return this.current; }
+    get() { return this.current; }
 
-    set(v: ?WebGLRenderbuffer): void {
+    set(v) {
         if (this.current !== v) {
             const gl = this.context.gl;
             gl.bindRenderbuffer(gl.RENDERBUFFER, v);
@@ -457,18 +395,16 @@ export class BindRenderbuffer implements Value<?WebGLRenderbuffer> {
     }
 }
 
-export class BindTexture implements Value<?WebGLTexture> {
-    context: Context;
-    current: ?WebGLTexture;
+class BindTexture {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = null;
     }
 
-    get(): ?WebGLTexture { return this.current; }
+    get() { return this.current; }
 
-    set(v: ?WebGLTexture): void {
+    set(v) {
         if (this.current !== v) {
             const gl = this.context.gl;
             gl.bindTexture(gl.TEXTURE_2D, v);
@@ -477,18 +413,16 @@ export class BindTexture implements Value<?WebGLTexture> {
     }
 }
 
-export class BindVertexBuffer implements Value<?WebGLBuffer> {
-    context: Context;
-    current: ?WebGLBuffer;
+class BindVertexBuffer {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = null;
     }
 
-    get(): ?WebGLBuffer { return this.current; }
+    get() { return this.current; }
 
-    set(v: ?WebGLBuffer): void {
+    set(v) {
         if (this.current !== v) {
             const gl = this.context.gl;
             gl.bindBuffer(gl.ARRAY_BUFFER, v);
@@ -497,18 +431,16 @@ export class BindVertexBuffer implements Value<?WebGLBuffer> {
     }
 }
 
-export class BindElementBuffer implements Value<?WebGLBuffer> {
-    context: Context;
-    current: ?WebGLBuffer;
+class BindElementBuffer {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = null;
     }
 
-    get(): ?WebGLBuffer { return this.current; }
+    get() { return this.current; }
 
-    set(v: ?WebGLBuffer): void {
+    set(v) {
         // Always rebind
         const gl = this.context.gl;
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, v);
@@ -516,18 +448,16 @@ export class BindElementBuffer implements Value<?WebGLBuffer> {
     }
 }
 
-export class BindVertexArrayOES implements Value<any> {
-    context: Context;
-    current: any;
+class BindVertexArrayOES {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = null;
     }
 
-    get(): any { return this.current; }
+    get() { return this.current; }
 
-    set(v: any): void {
+    set(v) {
         if (this.current !== v && this.context.extVertexArrayObject) {
             this.context.extVertexArrayObject.bindVertexArrayOES(v);
             this.current = v;
@@ -535,18 +465,16 @@ export class BindVertexArrayOES implements Value<any> {
     }
 }
 
-export class PixelStoreUnpack implements Value<number> {
-    context: Context;
-    current: number;
+class PixelStoreUnpack {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = 4;
     }
 
-    get(): number { return this.current; }
+    get() { return this.current; }
 
-    set(v: number): void {
+    set(v) {
         if (this.current !== v) {
             const gl = this.context.gl;
             gl.pixelStorei(gl.UNPACK_ALIGNMENT, v);
@@ -555,21 +483,19 @@ export class PixelStoreUnpack implements Value<number> {
     }
 }
 
-export class PixelStoreUnpackPremultiplyAlpha implements Value<boolean> {
-    context: Context;
-    current: boolean;
+class PixelStoreUnpackPremultiplyAlpha {
 
-    constructor(context: Context) {
+    constructor(context) {
         this.context = context;
         this.current = false;
     }
 
-    get(): boolean { return this.current; }
+    get() { return this.current; }
 
-    set(v: boolean): void {
+    set(v) {
         if (this.current !== v) {
             const gl = this.context.gl;
-            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, (v: any));
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, (v));
             this.current = v;
         }
     }
@@ -579,29 +505,25 @@ export class PixelStoreUnpackPremultiplyAlpha implements Value<boolean> {
  * Framebuffer values
  * @private
  */
-export class FramebufferValue<T> {
-    context: Context;
-    parent: WebGLFramebuffer;
-    current: ?T;
+class FramebufferValue {
 
-    constructor(context: Context, parent: WebGLFramebuffer) {
+    constructor(context, parent) {
         this.context = context;
         this.current = null;
         this.parent = parent;
     }
 
-    get(): ?T { return this.current; }
+    get() { return this.current; }
 }
 
-export class ColorAttachment extends FramebufferValue<?WebGLTexture> implements Value<?WebGLTexture> {
-    dirty: boolean;
+class ColorAttachment extends FramebufferValue {
 
-    constructor(context: Context, parent: WebGLFramebuffer) {
+    constructor(context, parent) {
         super(context, parent);
         this.dirty = false;
     }
 
-    set(v: ?WebGLTexture): void {
+    set(v) {
         if (this.dirty || this.current !== v) {
             const gl = this.context.gl;
             this.context.bindFramebuffer.set(this.parent);
@@ -618,8 +540,8 @@ export class ColorAttachment extends FramebufferValue<?WebGLTexture> implements 
     }
 }
 
-export class DepthAttachment extends FramebufferValue<?WebGLRenderbuffer> implements Value<?WebGLRenderbuffer> {
-    set(v: ?WebGLRenderbuffer): void {
+class DepthAttachment extends FramebufferValue {
+    set(v) {
         if (this.current !== v) {
             const gl = this.context.gl;
             this.context.bindFramebuffer.set(this.parent);
@@ -630,3 +552,36 @@ export class DepthAttachment extends FramebufferValue<?WebGLRenderbuffer> implem
         }
     }
 }
+
+module.exports = {
+    ClearColor,
+    ClearDepth,
+    ClearStencil,
+    ColorMask,
+    DepthMask,
+    StencilMask,
+    StencilFunc,
+    StencilOp,
+    StencilTest,
+    DepthRange,
+    DepthTest,
+    DepthFunc,
+    Blend,
+    BlendFunc,
+    BlendColor,
+    Program,
+    LineWidth,
+    ActiveTextureUnit,
+    Viewport,
+    BindFramebuffer,
+    BindRenderbuffer,
+    BindTexture,
+    BindVertexBuffer,
+    BindElementBuffer,
+    BindVertexArrayOES,
+    PixelStoreUnpack,
+    PixelStoreUnpackPremultiplyAlpha,
+    FramebufferValue,
+    ColorAttachment,
+    DepthAttachment
+};

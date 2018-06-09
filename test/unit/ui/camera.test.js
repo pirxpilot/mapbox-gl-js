@@ -1,9 +1,9 @@
-import { test } from 'mapbox-gl-js-test';
-import Camera from '../../../src/ui/camera';
-import Transform from '../../../src/geo/transform';
-import TaskQueue from '../../../src/util/task_queue';
-import browser from '../../../src/util/browser';
-import fixed from 'mapbox-gl-js-test/fixed';
+const { test } = require('mapbox-gl-js-test');
+const Camera = require('../../../src/ui/camera');
+const Transform = require('../../../src/geo/transform');
+const TaskQueue = require('../../../src/util/task_queue');
+const browser = require('../../../src/util/browser');
+const fixed = require('mapbox-gl-js-test/fixed');
 const fixedLngLat = fixed.LngLat;
 const fixedNum = fixed.Num;
 

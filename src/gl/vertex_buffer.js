@@ -1,14 +1,8 @@
-// @flow
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import type {
-    StructArray,
-    StructArrayMember
-} from '../util/struct_array';
 
-import type Program from '../render/program';
-import type Context from '../gl/context';
 
 /**
  * @enum {string} AttributeType
@@ -31,17 +25,11 @@ const AttributeType = {
  * @private
  */
 class VertexBuffer {
-    length: number;
-    attributes: $ReadOnlyArray<StructArrayMember>;
-    itemSize: number;
-    dynamicDraw: ?boolean;
-    context: Context;
-    buffer: WebGLBuffer;
 
     /**
      * @param dynamicDraw Whether this buffer will be repeatedly updated.
      */
-    constructor(context: Context, array: StructArray, attributes: $ReadOnlyArray<StructArrayMember>, dynamicDraw?: boolean) {
+    constructor(context, array, attributes, dynamicDraw) {
         this.length = array.length;
         this.attributes = attributes;
         this.itemSize = array.bytesPerElement;
@@ -62,17 +50,17 @@ class VertexBuffer {
         this.context.bindVertexBuffer.set(this.buffer);
     }
 
-    updateData(array: StructArray) {
+    updateData(array) {
         assert(array.length === this.length);
         const gl = this.context.gl;
         this.bind();
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, array.arrayBuffer);
     }
 
-    enableAttributes(gl: WebGLRenderingContext, program: Program) {
+    enableAttributes(gl, program) {
         for (let j = 0; j < this.attributes.length; j++) {
             const member = this.attributes[j];
-            const attribIndex: number | void = program.attributes[member.name];
+            const attribIndex = program.attributes[member.name];
             if (attribIndex !== undefined) {
                 gl.enableVertexAttribArray(attribIndex);
             }
@@ -85,16 +73,16 @@ class VertexBuffer {
      * @param program The active WebGL program
      * @param vertexOffset Index of the starting vertex of the segment
      */
-    setVertexAttribPointers(gl: WebGLRenderingContext, program: Program, vertexOffset: ?number) {
+    setVertexAttribPointers(gl, program, vertexOffset) {
         for (let j = 0; j < this.attributes.length; j++) {
             const member = this.attributes[j];
-            const attribIndex: number | void = program.attributes[member.name];
+            const attribIndex = program.attributes[member.name];
 
             if (attribIndex !== undefined) {
                 gl.vertexAttribPointer(
                     attribIndex,
                     member.components,
-                    (gl: any)[AttributeType[member.type]],
+                    (gl)[AttributeType[member.type]],
                     false,
                     this.itemSize,
                     member.offset + (this.itemSize * (vertexOffset || 0))
@@ -115,4 +103,4 @@ class VertexBuffer {
     }
 }
 
-export default VertexBuffer;
+module.exports = VertexBuffer;

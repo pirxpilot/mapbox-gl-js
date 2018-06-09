@@ -1,6 +1,6 @@
-import { test } from 'mapbox-gl-js-test';
-import Worker from '../../../src/source/worker';
-import window from '../../../src/util/window';
+const { test } = require('mapbox-gl-js-test');
+const Worker = require('../../../src/source/worker');
+const window = require('../../../src/util/window');
 
 const _self = {
     addEventListener: function() {}

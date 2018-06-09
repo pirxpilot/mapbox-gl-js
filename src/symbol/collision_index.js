@@ -1,19 +1,12 @@
-// @flow
+'use strict';
 
-import Point from '@mapbox/point-geometry';
+const Point = require('@mapbox/point-geometry');
 
-import * as intersectionTests from '../util/intersection_tests';
-import Grid from './grid_index';
-import { mat4 } from 'gl-matrix';
+const intersectionTests = require('../util/intersection_tests');
+const Grid = require('./grid_index');
 
-import * as projection from '../symbol/projection';
+const projection = require('../symbol/projection');
 
-import type Transform from '../geo/transform';
-import type {SingleCollisionBox} from '../data/bucket/symbol_bucket';
-import type {
-    GlyphOffsetArray,
-    SymbolLineVertexArray
-} from '../data/array_types';
 
 // When a symbol crosses the edge that causes it to be included in
 // collision detection, it will cause changes in the symbols around
@@ -36,17 +29,11 @@ const viewportPadding = 100;
  * @private
  */
 class CollisionIndex {
-    grid: Grid;
-    ignoredGrid: Grid;
-    transform: Transform;
-    pitchfactor: number;
-    screenRightBoundary: number;
-    screenBottomBoundary: number;
 
     constructor(
-        transform: Transform,
-        grid: Grid = new Grid(transform.width + 2 * viewportPadding, transform.height + 2 * viewportPadding, 25),
-        ignoredGrid: Grid = new Grid(transform.width + 2 * viewportPadding, transform.height + 2 * viewportPadding, 25)
+        transform,
+        grid = new Grid(transform.width + 2 * viewportPadding, transform.height + 2 * viewportPadding, 25),
+        ignoredGrid = new Grid(transform.width + 2 * viewportPadding, transform.height + 2 * viewportPadding, 25)
     ) {
         this.transform = transform;
 
@@ -58,7 +45,7 @@ class CollisionIndex {
         this.screenBottomBoundary = transform.height + viewportPadding;
     }
 
-    placeCollisionBox(collisionBox: SingleCollisionBox, allowOverlap: boolean, textPixelRatio: number, posMatrix: mat4): { box: Array<number>, offscreen: boolean } {
+    placeCollisionBox(collisionBox, allowOverlap, textPixelRatio, posMatrix) {
         const projectedPoint = this.projectAndGetPerspectiveRatio(posMatrix, collisionBox.anchorPointX, collisionBox.anchorPointY);
         const tileToViewport = textPixelRatio * projectedPoint.perspectiveRatio;
         const tlX = collisionBox.x1 * tileToViewport + projectedPoint.point.x;
@@ -80,7 +67,7 @@ class CollisionIndex {
         };
     }
 
-    approximateTileDistance(tileDistance: any, lastSegmentAngle: number, pixelsToTileUnits: number, cameraToAnchorDistance: number, pitchWithMap: boolean): number {
+    approximateTileDistance(tileDistance, lastSegmentAngle, pixelsToTileUnits, cameraToAnchorDistance, pitchWithMap) {
         // This is a quick and dirty solution for chosing which collision circles to use (since collision circles are
         // laid out in tile units). Ideally, I think we should generate collision circles on the fly in viewport coordinates
         // at the time we do collision detection.
@@ -101,19 +88,19 @@ class CollisionIndex {
             (incidenceStretch - 1) * lastSegmentTile * Math.abs(Math.sin(lastSegmentAngle));
     }
 
-    placeCollisionCircles(collisionCircles: Array<number>,
-                          allowOverlap: boolean,
-                          scale: number,
-                          textPixelRatio: number,
-                          key: string,
-                          symbol: any,
-                          lineVertexArray: SymbolLineVertexArray,
-                          glyphOffsetArray: GlyphOffsetArray,
-                          fontSize: number,
-                          posMatrix: mat4,
-                          labelPlaneMatrix: mat4,
-                          showCollisionCircles: boolean,
-                          pitchWithMap: boolean): { circles: Array<number>, offscreen: boolean } {
+    placeCollisionCircles(collisionCircles,
+                          allowOverlap,
+                          scale,
+                          textPixelRatio,
+                          key,
+                          symbol,
+                          lineVertexArray,
+                          glyphOffsetArray,
+                          fontSize,
+                          posMatrix,
+                          labelPlaneMatrix,
+                          showCollisionCircles,
+                          pitchWithMap) {
         const placedCollisionCircles = [];
 
         const projectedAnchor = this.projectAnchor(posMatrix, symbol.anchorX, symbol.anchorY);
@@ -236,7 +223,7 @@ class CollisionIndex {
      *
      * @private
      */
-    queryRenderedSymbols(viewportQueryGeometry: Array<Point>) {
+    queryRenderedSymbols(viewportQueryGeometry) {
         if (viewportQueryGeometry.length === 0 || (this.grid.keysLength() === 0 && this.ignoredGrid.keysLength() === 0)) {
             return {};
         }
@@ -296,14 +283,14 @@ class CollisionIndex {
         return result;
     }
 
-    insertCollisionBox(collisionBox: Array<number>, ignorePlacement: boolean, bucketInstanceId: number, featureIndex: number) {
+    insertCollisionBox(collisionBox, ignorePlacement, bucketInstanceId, featureIndex) {
         const grid = ignorePlacement ? this.ignoredGrid : this.grid;
 
         const key = { bucketInstanceId: bucketInstanceId, featureIndex: featureIndex };
         grid.insert(key, collisionBox[0], collisionBox[1], collisionBox[2], collisionBox[3]);
     }
 
-    insertCollisionCircles(collisionCircles: Array<number>, ignorePlacement: boolean, bucketInstanceId: number, featureIndex: number) {
+    insertCollisionCircles(collisionCircles, ignorePlacement, bucketInstanceId, featureIndex) {
         const grid = ignorePlacement ? this.ignoredGrid : this.grid;
 
         const key = { bucketInstanceId: bucketInstanceId, featureIndex: featureIndex };
@@ -312,7 +299,7 @@ class CollisionIndex {
         }
     }
 
-    projectAnchor(posMatrix: mat4, x: number, y: number) {
+    projectAnchor(posMatrix, x, y) {
         const p = [x, y, 0, 1];
         projection.xyTransformMat4(p, p, posMatrix);
         return {
@@ -321,7 +308,7 @@ class CollisionIndex {
         };
     }
 
-    projectPoint(posMatrix: mat4, x: number, y: number) {
+    projectPoint(posMatrix, x, y) {
         const p = [x, y, 0, 1];
         projection.xyTransformMat4(p, p, posMatrix);
         return new Point(
@@ -330,7 +317,7 @@ class CollisionIndex {
         );
     }
 
-    projectAndGetPerspectiveRatio(posMatrix: mat4, x: number, y: number) {
+    projectAndGetPerspectiveRatio(posMatrix, x, y) {
         const p = [x, y, 0, 1];
         projection.xyTransformMat4(p, p, posMatrix);
         const a = new Point(
@@ -346,13 +333,13 @@ class CollisionIndex {
         };
     }
 
-    isOffscreen(x1: number, y1: number, x2: number, y2: number) {
+    isOffscreen(x1, y1, x2, y2) {
         return x2 < viewportPadding || x1 >= this.screenRightBoundary || y2 < viewportPadding || y1 > this.screenBottomBoundary;
     }
 }
 
-function markCollisionCircleUsed(collisionCircles: Array<number>, index: number, used: boolean) {
+function markCollisionCircleUsed(collisionCircles, index, used) {
     collisionCircles[index + 4] = used ? 1 : 0;
 }
 
-export default CollisionIndex;
+module.exports = CollisionIndex;

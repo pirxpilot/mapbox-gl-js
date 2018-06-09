@@ -1,13 +1,11 @@
-// @flow
+'use strict';
 
-import Coordinate from '../geo/coordinate';
+const { OverscaledTileID } = require('../source/tile_id');
 
-import { OverscaledTileID } from '../source/tile_id';
+module.exports = tileCover;
 
-export default tileCover;
-
-function tileCover(z: number, bounds: [Coordinate, Coordinate, Coordinate, Coordinate],
-        actualZ: number, renderWorldCopies: boolean | void) {
+function tileCover(z, bounds,
+        actualZ, renderWorldCopies) {
     if (renderWorldCopies === undefined) {
         renderWorldCopies = true;
     }
@@ -44,7 +42,7 @@ function tileCover(z: number, bounds: [Coordinate, Coordinate, Coordinate, Coord
 // Taken from polymaps src/Layer.js
 // https://github.com/simplegeo/polymaps/blob/master/src/Layer.js#L333-L383
 
-function edge(a: Coordinate, b: Coordinate) {
+function edge(a, b) {
     if (a.row > b.row) { const t = a; a = b; b = t; }
     return {
         x0: a.column,
@@ -79,7 +77,7 @@ function scanSpans(e0, e1, ymin, ymax, scanLine) {
     }
 }
 
-function scanTriangle(a: Coordinate, b: Coordinate, c: Coordinate, ymin, ymax, scanLine) {
+function scanTriangle(a, b, c, ymin, ymax, scanLine) {
     let ab = edge(a, b),
         bc = edge(b, c),
         ca = edge(c, a);

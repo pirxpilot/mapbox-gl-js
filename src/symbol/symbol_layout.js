@@ -1,35 +1,24 @@
-// @flow
+'use strict';
 
-import Anchor from './anchor';
+const Anchor = require('./anchor');
 
-import getAnchors from './get_anchors';
-import clipLine from './clip_line';
-import OpacityState from './opacity_state';
-import { shapeText, shapeIcon, WritingMode } from './shaping';
-import { getGlyphQuads, getIconQuads } from './quads';
-import CollisionFeature from './collision_feature';
-import { warnOnce } from '../util/util';
-import {
+const getAnchors = require('./get_anchors');
+const clipLine = require('./clip_line');
+const OpacityState = require('./opacity_state');
+const { shapeText, shapeIcon, WritingMode } = require('./shaping');
+const { getGlyphQuads, getIconQuads } = require('./quads');
+const CollisionFeature = require('./collision_feature');
+const { warnOnce } = require('../util/util');
+const {
     allowsVerticalWritingMode,
     allowsLetterSpacing
-} from '../util/script_detection';
-import findPoleOfInaccessibility from '../util/find_pole_of_inaccessibility';
-import classifyRings from '../util/classify_rings';
-import EXTENT from '../data/extent';
-import SymbolBucket from '../data/bucket/symbol_bucket';
-import EvaluationParameters from '../style/evaluation_parameters';
+} = require('../util/script_detection');
+const findPoleOfInaccessibility = require('../util/find_pole_of_inaccessibility');
+const classifyRings = require('../util/classify_rings');
+const EXTENT = require('../data/extent');
+const SymbolBucket = require('../data/bucket/symbol_bucket');
+const EvaluationParameters = require('../style/evaluation_parameters');
 
-import type {Shaping, PositionedIcon} from './shaping';
-import type {CollisionBoxArray} from '../data/array_types';
-import type {SymbolFeature} from '../data/bucket/symbol_bucket';
-import type {StyleImage} from '../style/style_image';
-import type {StyleGlyph} from '../style/style_glyph';
-import type SymbolStyleLayer from '../style/style_layer/symbol_style_layer';
-import type {ImagePosition} from '../render/image_atlas';
-import type {GlyphPosition} from '../render/glyph_atlas';
-import type {PossiblyEvaluatedPropertyValue} from '../style/properties';
-
-import Point from '@mapbox/point-geometry';
 
 // The symbol layout process needs `text-size` evaluated at up to five different zoom levels, and
 // `icon-size` at up to three:
@@ -45,20 +34,13 @@ import Point from '@mapbox/point-geometry';
 //
 // (1) and (2) are stored in `bucket.layers[0].layout`. The remainder are below.
 //
-type Sizes = {
-    layoutTextSize: PossiblyEvaluatedPropertyValue<number>, // (3)
-    layoutIconSize: PossiblyEvaluatedPropertyValue<number>, // (3)
-    textMaxSize: PossiblyEvaluatedPropertyValue<number>,    // (4)
-    compositeTextSizes: [PossiblyEvaluatedPropertyValue<number>, PossiblyEvaluatedPropertyValue<number>], // (5)
-    compositeIconSizes: [PossiblyEvaluatedPropertyValue<number>, PossiblyEvaluatedPropertyValue<number>], // (5)
-};
 
-export function performSymbolLayout(bucket: SymbolBucket,
-                             glyphMap: {[string]: {[number]: ?StyleGlyph}},
-                             glyphPositions: {[string]: {[number]: GlyphPosition}},
-                             imageMap: {[string]: StyleImage},
-                             imagePositions: {[string]: ImagePosition},
-                             showCollisionBoxes: boolean) {
+function performSymbolLayout(bucket,
+                             glyphMap,
+                             glyphPositions,
+                             imageMap,
+                             imagePositions,
+                             showCollisionBoxes) {
     bucket.createArrays();
     bucket.symbolInstances = [];
 
@@ -106,7 +88,7 @@ export function performSymbolLayout(bucket: SymbolBucket,
         const shapedTextOrientations = {};
         const text = feature.text;
         if (text) {
-            const textOffset: [number, number] = (layout.get('text-offset').evaluate(feature, {}).map((t)=> t * oneEm): any);
+            const textOffset = (layout.get('text-offset').evaluate(feature, {}).map((t)=> t * oneEm));
             const spacing = layout.get('text-letter-spacing').evaluate(feature, {}) * oneEm;
             const spacingIfAllowed = allowsLetterSpacing(text) ? spacing : 0;
             const textAnchor = layout.get('text-anchor').evaluate(feature, {});
@@ -160,12 +142,12 @@ export function performSymbolLayout(bucket: SymbolBucket,
  * show or hide based on collisions with symbols in other layers.)
  * @private
  */
-function addFeature(bucket: SymbolBucket,
-                    feature: SymbolFeature,
-                    shapedTextOrientations: any,
-                    shapedIcon: PositionedIcon | void,
-                    glyphPositionMap: {[number]: GlyphPosition},
-                    sizes: Sizes) {
+function addFeature(bucket,
+                    feature,
+                    shapedTextOrientations,
+                    shapedIcon,
+                    glyphPositionMap,
+                    sizes) {
     const layoutTextSize = sizes.layoutTextSize.evaluate(feature, {});
     const layoutIconSize = sizes.layoutIconSize.evaluate(feature, {});
 
@@ -251,18 +233,18 @@ function addFeature(bucket: SymbolBucket,
     }
 }
 
-function addTextVertices(bucket: SymbolBucket,
-                         anchor: Point,
-                         shapedText: Shaping,
-                         layer: SymbolStyleLayer,
-                         textAlongLine: boolean,
-                         feature: SymbolFeature,
-                         textOffset: [number, number],
-                         lineArray: {lineStartIndex: number, lineLength: number},
-                         writingMode: number,
-                         placedTextSymbolIndices: Array<number>,
-                         glyphPositionMap: {[number]: GlyphPosition},
-                         sizes: Sizes) {
+function addTextVertices(bucket,
+                         anchor,
+                         shapedText,
+                         layer,
+                         textAlongLine,
+                         feature,
+                         textOffset,
+                         lineArray,
+                         writingMode,
+                         placedTextSymbolIndices,
+                         glyphPositionMap,
+                         sizes) {
     const glyphQuads = getGlyphQuads(anchor, shapedText,
                             layer, textAlongLine, feature, glyphPositionMap);
 
@@ -305,27 +287,27 @@ function addTextVertices(bucket: SymbolBucket,
  *
  * @private
  */
-function addSymbol(bucket: SymbolBucket,
-                   anchor: Anchor,
-                   line: Array<Point>,
-                   shapedTextOrientations: any,
-                   shapedIcon: PositionedIcon | void,
-                   layer: SymbolStyleLayer,
-                   collisionBoxArray: CollisionBoxArray,
-                   featureIndex: number,
-                   sourceLayerIndex: number,
-                   bucketIndex: number,
-                   textBoxScale: number,
-                   textPadding: number,
-                   textAlongLine: boolean,
-                   textOffset: [number, number],
-                   iconBoxScale: number,
-                   iconPadding: number,
-                   iconAlongLine: boolean,
-                   iconOffset: [number, number],
-                   feature: SymbolFeature,
-                   glyphPositionMap: {[number]: GlyphPosition},
-                   sizes: Sizes) {
+function addSymbol(bucket,
+                   anchor,
+                   line,
+                   shapedTextOrientations,
+                   shapedIcon,
+                   layer,
+                   collisionBoxArray,
+                   featureIndex,
+                   sourceLayerIndex,
+                   bucketIndex,
+                   textBoxScale,
+                   textPadding,
+                   textAlongLine,
+                   textOffset,
+                   iconBoxScale,
+                   iconPadding,
+                   iconAlongLine,
+                   iconOffset,
+                   feature,
+                   glyphPositionMap,
+                   sizes) {
     const lineArray = bucket.addToLineVertexArray(anchor, line);
 
     let textCollisionFeature, iconCollisionFeature;
@@ -419,7 +401,7 @@ function addSymbol(bucket: SymbolBucket,
     };
 }
 
-function anchorIsTooClose(bucket: any, text: string, repeatDistance: number, anchor: Point) {
+function anchorIsTooClose(bucket, text, repeatDistance, anchor) {
     const compareText = bucket.compareText;
     if (!(text in compareText)) {
         compareText[text] = [];
@@ -436,3 +418,7 @@ function anchorIsTooClose(bucket: any, text: string, repeatDistance: number, anc
     compareText[text].push(anchor);
     return false;
 }
+
+module.exports = {
+    performSymbolLayout
+};

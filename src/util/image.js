@@ -1,20 +1,11 @@
-// @flow
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import { register } from './web_worker_transfer';
+const { register } = require('./web_worker_transfer');
 
-export type Size = {
-    width: number,
-    height: number
-};
 
-type Point = {
-    x: number,
-    y: number
-};
-
-function createImage(image: *, {width, height}: Size, channels: number, data?: Uint8Array | Uint8ClampedArray) {
+function createImage(image, {width, height}, channels, data) {
     if (!data) {
         data = new Uint8Array(width * height * channels);
     } else if (data.length !== width * height * channels) {
@@ -26,7 +17,7 @@ function createImage(image: *, {width, height}: Size, channels: number, data?: U
     return image;
 }
 
-function resizeImage(image: *, {width, height}: Size, channels: number) {
+function resizeImage(image, {width, height}, channels) {
     if (width === image.width && height === image.height) {
         return;
     }
@@ -43,7 +34,7 @@ function resizeImage(image: *, {width, height}: Size, channels: number) {
     image.data = newImage.data;
 }
 
-function copyImage(srcImg: *, dstImg: *, srcPt: Point, dstPt: Point, size: Size, channels: number) {
+function copyImage(srcImg, dstImg, srcPt, dstPt, size, channels) {
     if (size.width === 0 || size.height === 0) {
         return dstImg;
     }
@@ -78,16 +69,13 @@ function copyImage(srcImg: *, dstImg: *, srcPt: Point, dstPt: Point, size: Size,
     return dstImg;
 }
 
-export class AlphaImage {
-    width: number;
-    height: number;
-    data: Uint8Array | Uint8ClampedArray;
+class AlphaImage {
 
-    constructor(size: Size, data?: Uint8Array | Uint8ClampedArray) {
+    constructor(size, data) {
         createImage(this, size, 1, data);
     }
 
-    resize(size: Size) {
+    resize(size) {
         resizeImage(this, size, 1);
     }
 
@@ -95,23 +83,20 @@ export class AlphaImage {
         return new AlphaImage({width: this.width, height: this.height}, new Uint8Array(this.data));
     }
 
-    static copy(srcImg: AlphaImage, dstImg: AlphaImage, srcPt: Point, dstPt: Point, size: Size) {
+    static copy(srcImg, dstImg, srcPt, dstPt, size) {
         copyImage(srcImg, dstImg, srcPt, dstPt, size, 1);
     }
 }
 
 // Not premultiplied, because ImageData is not premultiplied.
 // UNPACK_PREMULTIPLY_ALPHA_WEBGL must be used when uploading to a texture.
-export class RGBAImage {
-    width: number;
-    height: number;
-    data: Uint8Array | Uint8ClampedArray;
+class RGBAImage {
 
-    constructor(size: Size, data?: Uint8Array | Uint8ClampedArray) {
+    constructor(size, data) {
         createImage(this, size, 4, data);
     }
 
-    resize(size: Size) {
+    resize(size) {
         resizeImage(this, size, 4);
     }
 
@@ -119,10 +104,15 @@ export class RGBAImage {
         return new RGBAImage({width: this.width, height: this.height}, new Uint8Array(this.data));
     }
 
-    static copy(srcImg: RGBAImage | ImageData, dstImg: RGBAImage, srcPt: Point, dstPt: Point, size: Size) {
+    static copy(srcImg, dstImg, srcPt, dstPt, size) {
         copyImage(srcImg, dstImg, srcPt, dstPt, size, 4);
     }
 }
 
 register('AlphaImage', AlphaImage);
 register('RGBAImage', RGBAImage);
+
+module.exports = {
+    AlphaImage,
+    RGBAImage
+};

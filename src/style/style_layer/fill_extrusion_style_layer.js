@@ -1,45 +1,34 @@
-// @flow
+'use strict';
 
-import StyleLayer from '../style_layer';
+const StyleLayer = require('../style_layer');
 
-import FillExtrusionBucket from '../../data/bucket/fill_extrusion_bucket';
-import { multiPolygonIntersectsMultiPolygon } from '../../util/intersection_tests';
-import { translateDistance, translate } from '../query_utils';
-import properties from './fill_extrusion_style_layer_properties';
-import { Transitionable, Transitioning, PossiblyEvaluated } from '../properties';
+const FillExtrusionBucket = require('../../data/bucket/fill_extrusion_bucket');
+const { multiPolygonIntersectsMultiPolygon } = require('../../util/intersection_tests');
+const { translateDistance, translate } = require('../query_utils');
+const properties = require('./fill_extrusion_style_layer_properties');
 
-import type { FeatureState } from '../../style-spec/expression';
-import type {BucketParameters} from '../../data/bucket';
-import type Point from '@mapbox/point-geometry';
-import type {PaintProps} from './fill_extrusion_style_layer_properties';
-import type Framebuffer from '../../gl/framebuffer';
-import type Transform from '../../geo/transform';
 
 class FillExtrusionStyleLayer extends StyleLayer {
-    _transitionablePaint: Transitionable<PaintProps>;
-    _transitioningPaint: Transitioning<PaintProps>;
-    paint: PossiblyEvaluated<PaintProps>;
-    viewportFrame: ?Framebuffer;
 
-    constructor(layer: LayerSpecification) {
+    constructor(layer) {
         super(layer, properties);
     }
 
-    createBucket(parameters: BucketParameters<FillExtrusionStyleLayer>) {
+    createBucket(parameters) {
         return new FillExtrusionBucket(parameters);
     }
 
-    queryRadius(): number {
+    queryRadius() {
         return translateDistance(this.paint.get('fill-extrusion-translate'));
     }
 
-    queryIntersectsFeature(queryGeometry: Array<Array<Point>>,
-                           feature: VectorTileFeature,
-                           featureState: FeatureState,
-                           geometry: Array<Array<Point>>,
-                           zoom: number,
-                           transform: Transform,
-                           pixelsToTileUnits: number): boolean {
+    queryIntersectsFeature(queryGeometry,
+                           feature,
+                           featureState,
+                           geometry,
+                           zoom,
+                           transform,
+                           pixelsToTileUnits) {
         const translatedPolygon = translate(queryGeometry,
             this.paint.get('fill-extrusion-translate'),
             this.paint.get('fill-extrusion-translate-anchor'),
@@ -59,4 +48,4 @@ class FillExtrusionStyleLayer extends StyleLayer {
     }
 }
 
-export default FillExtrusionStyleLayer;
+module.exports = FillExtrusionStyleLayer;

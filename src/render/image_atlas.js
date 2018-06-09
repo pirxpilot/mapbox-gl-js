@@ -1,45 +1,34 @@
-// @flow
+'use strict';
 
-import ShelfPack from '@mapbox/shelf-pack';
+const ShelfPack = require('@mapbox/shelf-pack');
 
-import { RGBAImage } from '../util/image';
-import { register } from '../util/web_worker_transfer';
-
-import type {StyleImage} from '../style/style_image';
+const { RGBAImage } = require('../util/image');
+const { register } = require('../util/web_worker_transfer');
 
 const padding = 1;
 
-type Rect = {
-    x: number,
-    y: number,
-    w: number,
-    h: number
-};
+class ImagePosition {
 
-export class ImagePosition {
-    paddedRect: Rect;
-    pixelRatio: number;
-
-    constructor(paddedRect: Rect, {pixelRatio}: StyleImage) {
+    constructor(paddedRect, {pixelRatio}) {
         this.paddedRect = paddedRect;
         this.pixelRatio = pixelRatio;
     }
 
-    get tl(): [number, number] {
+    get tl() {
         return [
             this.paddedRect.x + padding,
             this.paddedRect.y + padding
         ];
     }
 
-    get br(): [number, number] {
+    get br() {
         return [
             this.paddedRect.x + this.paddedRect.w - padding,
             this.paddedRect.y + this.paddedRect.h - padding
         ];
     }
 
-    get displaySize(): [number, number] {
+    get displaySize() {
         return [
             (this.paddedRect.w - padding * 2) / this.pixelRatio,
             (this.paddedRect.h - padding * 2) / this.pixelRatio
@@ -47,11 +36,9 @@ export class ImagePosition {
     }
 }
 
-export default class ImageAtlas {
-    image: RGBAImage;
-    positions: {[string]: ImagePosition};
+class ImageAtlas {
 
-    constructor(images: {[string]: StyleImage}) {
+    constructor(images) {
         const image = new RGBAImage({width: 0, height: 0});
         const positions = {};
 
@@ -93,6 +80,8 @@ export default class ImageAtlas {
     }
 }
 
+ImageAtlas.ImagePosition = ImagePosition;
+module.exports = ImageAtlas;
+
 register('ImagePosition', ImagePosition);
 register('ImageAtlas', ImageAtlas);
-

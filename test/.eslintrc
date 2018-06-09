@@ -1,9 +1,9 @@
 {
   "parserOptions": {
-    "sourceType": "module",
+    "sourceType": "script",
   },
   "rules": {
-    "flowtype/require-valid-file-annotation": [0],
-    "no-restricted-properties": "off"
+    "no-restricted-properties": "off",
+    "strict": "off"
   }
 }

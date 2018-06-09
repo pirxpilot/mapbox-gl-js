@@ -1,32 +1,20 @@
-// @flow
+'use strict';
 
-import { FillExtrusionLayoutArray } from '../array_types';
+const { FillExtrusionLayoutArray } = require('../array_types');
 
-import { members as layoutAttributes } from './fill_extrusion_attributes';
-import SegmentVector from '../segment';
-import { ProgramConfigurationSet } from '../program_configuration';
-import { TriangleIndexArray } from '../index_array_type';
-import loadGeometry from '../load_geometry';
-import EXTENT from '../extent';
-import earcut from 'earcut';
-import classifyRings from '../../util/classify_rings';
-import assert from 'assert';
+const { members: layoutAttributes } = require('./fill_extrusion_attributes');
+const SegmentVector = require('../segment');
+const { ProgramConfigurationSet } = require('../program_configuration');
+const { TriangleIndexArray } = require('../index_array_type');
+const loadGeometry = require('../load_geometry');
+const EXTENT = require('../extent');
+const earcut = require('earcut');
+const classifyRings = require('../../util/classify_rings');
+const assert = require('assert');
 const EARCUT_MAX_RINGS = 500;
-import { register } from '../../util/web_worker_transfer';
-import EvaluationParameters from '../../style/evaluation_parameters';
+const { register } = require('../../util/web_worker_transfer');
+const EvaluationParameters = require('../../style/evaluation_parameters');
 
-import type {
-    Bucket,
-    BucketParameters,
-    IndexedFeature,
-    PopulateParameters
-} from '../bucket';
-import type FillExtrusionStyleLayer from '../../style/style_layer/fill_extrusion_style_layer';
-import type Context from '../../gl/context';
-import type IndexBuffer from '../../gl/index_buffer';
-import type VertexBuffer from '../../gl/vertex_buffer';
-import type Point from '@mapbox/point-geometry';
-import type {FeatureStates} from '../../source/source_state';
 
 const FACTOR = Math.pow(2, 13);
 
@@ -45,25 +33,12 @@ function addVertex(vertexArray, x, y, nx, ny, nz, t, e) {
 }
 
 
-class FillExtrusionBucket implements Bucket {
-    index: number;
-    zoom: number;
-    overscaling: number;
-    layers: Array<FillExtrusionStyleLayer>;
-    layerIds: Array<string>;
-    stateDependentLayers: Array<FillExtrusionStyleLayer>;
+class FillExtrusionBucket {
 
-    layoutVertexArray: FillExtrusionLayoutArray;
-    layoutVertexBuffer: VertexBuffer;
 
-    indexArray: TriangleIndexArray;
-    indexBuffer: IndexBuffer;
 
-    programConfigurations: ProgramConfigurationSet<FillExtrusionStyleLayer>;
-    segments: SegmentVector;
-    uploaded: boolean;
 
-    constructor(options: BucketParameters<FillExtrusionStyleLayer>) {
+    constructor(options) {
         this.zoom = options.zoom;
         this.overscaling = options.overscaling;
         this.layers = options.layers;
@@ -76,7 +51,7 @@ class FillExtrusionBucket implements Bucket {
         this.segments = new SegmentVector();
     }
 
-    populate(features: Array<IndexedFeature>, options: PopulateParameters) {
+    populate(features, options) {
         for (const {feature, index, sourceLayerIndex} of features) {
             if (this.layers[0]._featureFilter(new EvaluationParameters(this.zoom), feature)) {
                 const geometry = loadGeometry(feature);
@@ -86,7 +61,7 @@ class FillExtrusionBucket implements Bucket {
         }
     }
 
-    update(states: FeatureStates, vtLayer: VectorTileLayer) {
+    update(states, vtLayer) {
         if (!this.stateDependentLayers.length) return;
         this.programConfigurations.updatePaintArrays(states, vtLayer, this.stateDependentLayers);
     }
@@ -99,7 +74,7 @@ class FillExtrusionBucket implements Bucket {
         return !this.uploaded || this.programConfigurations.needsUpload;
     }
 
-    upload(context: Context) {
+    upload(context) {
         if (!this.uploaded) {
             this.layoutVertexBuffer = context.createVertexBuffer(this.layoutVertexArray, layoutAttributes);
             this.indexBuffer = context.createIndexBuffer(this.indexArray);
@@ -116,7 +91,7 @@ class FillExtrusionBucket implements Bucket {
         this.segments.destroy();
     }
 
-    addFeature(feature: VectorTileFeature, geometry: Array<Array<Point>>, index: number) {
+    addFeature(feature, geometry, index) {
         for (const polygon of classifyRings(geometry, EARCUT_MAX_RINGS)) {
             let numVertices = 0;
             for (const ring of polygon) {
@@ -217,7 +192,7 @@ class FillExtrusionBucket implements Bucket {
 
 register('FillExtrusionBucket', FillExtrusionBucket, {omit: ['layers']});
 
-export default FillExtrusionBucket;
+module.exports = FillExtrusionBucket;
 
 function isBoundaryEdge(p1, p2) {
     return (p1.x === p2.x && (p1.x < 0 || p1.x > EXTENT)) ||

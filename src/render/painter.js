@@ -1,37 +1,36 @@
-// @flow
+'use strict';
 
-import browser from '../util/browser';
+const browser = require('../util/browser');
 
-import { mat4 } from 'gl-matrix';
-import SourceCache from '../source/source_cache';
-import EXTENT from '../data/extent';
-import pixelsToTileUnits from '../source/pixels_to_tile_units';
-import { filterObject } from '../util/util';
-import VertexArrayObject from './vertex_array_object';
-import { RasterBoundsArray, PosArray } from '../data/array_types';
-import rasterBoundsAttributes from '../data/raster_bounds_attributes';
-import posAttributes from '../data/pos_attributes';
-import ProgramConfiguration from '../data/program_configuration';
-import CrossTileSymbolIndex from '../symbol/cross_tile_symbol_index';
-import shaders from '../shaders';
-import Program from './program';
-import Context from '../gl/context';
-import DepthMode from '../gl/depth_mode';
-import StencilMode from '../gl/stencil_mode';
-import ColorMode from '../gl/color_mode';
-import Texture from './texture';
-import updateTileMasks from './tile_mask';
-import Color from '../style-spec/util/color';
-import symbol from './draw_symbol';
-import circle from './draw_circle';
-import heatmap from './draw_heatmap';
-import line from './draw_line';
-import fill from './draw_fill';
-import fillExtrusion from './draw_fill_extrusion';
-import hillshade from './draw_hillshade';
-import raster from './draw_raster';
-import background from './draw_background';
-import debug from './draw_debug';
+const { mat4 } = require('@mapbox/gl-matrix');
+const SourceCache = require('../source/source_cache');
+const EXTENT = require('../data/extent');
+const pixelsToTileUnits = require('../source/pixels_to_tile_units');
+const { filterObject } = require('../util/util');
+const VertexArrayObject = require('./vertex_array_object');
+const { RasterBoundsArray, PosArray } = require('../data/array_types');
+const rasterBoundsAttributes = require('../data/raster_bounds_attributes');
+const posAttributes = require('../data/pos_attributes');
+const ProgramConfiguration = require('../data/program_configuration');
+const CrossTileSymbolIndex = require('../symbol/cross_tile_symbol_index');
+const shaders = require('../shaders');
+const Program = require('./program');
+const Context = require('../gl/context');
+const DepthMode = require('../gl/depth_mode');
+const StencilMode = require('../gl/stencil_mode');
+const ColorMode = require('../gl/color_mode');
+const updateTileMasks = require('./tile_mask');
+const Color = require('../style-spec/util/color');
+const symbol = require('./draw_symbol');
+const circle = require('./draw_circle');
+const heatmap = require('./draw_heatmap');
+const line = require('./draw_line');
+const fill = require('./draw_fill');
+const fillExtrusion = require('./draw_fill_extrusion');
+const hillshade = require('./draw_hillshade');
+const raster = require('./draw_raster');
+const background = require('./draw_background');
+const debug = require('./draw_debug');
 
 const draw = {
     symbol,
@@ -46,26 +45,8 @@ const draw = {
     debug
 };
 
-import type Transform from '../geo/transform';
-import type Tile from '../source/tile';
-import type {OverscaledTileID} from '../source/tile_id';
-import type Style from '../style/style';
-import type StyleLayer from '../style/style_layer';
-import type LineAtlas from './line_atlas';
-import type ImageManager from './image_manager';
-import type GlyphManager from './glyph_manager';
-import type VertexBuffer from '../gl/vertex_buffer';
-import type {DepthMaskType, DepthFuncType} from '../gl/types';
 
-export type RenderPass = 'offscreen' | 'opaque' | 'translucent';
 
-type PainterOptions = {
-    showOverdrawInspector: boolean,
-    showTileBoundaries: boolean,
-    rotating: boolean,
-    zooming: boolean,
-    fadeDuration: number
-}
 
 /**
  * Initialize a new painter object.
@@ -74,41 +55,8 @@ type PainterOptions = {
  * @private
  */
 class Painter {
-    context: Context;
-    transform: Transform;
-    _tileTextures: { [number]: Array<Texture> };
-    numSublayers: number;
-    depthEpsilon: number;
-    emptyProgramConfiguration: ProgramConfiguration;
-    width: number;
-    height: number;
-    depthRbo: WebGLRenderbuffer;
-    depthRboNeedsClear: boolean;
-    tileExtentBuffer: VertexBuffer;
-    tileExtentVAO: VertexArrayObject;
-    tileExtentPatternVAO: VertexArrayObject;
-    debugBuffer: VertexBuffer;
-    debugVAO: VertexArrayObject;
-    rasterBoundsBuffer: VertexBuffer;
-    rasterBoundsVAO: VertexArrayObject;
-    viewportBuffer: VertexBuffer;
-    viewportVAO: VertexArrayObject;
-    _tileClippingMaskIDs: { [number]: number };
-    style: Style;
-    options: PainterOptions;
-    lineAtlas: LineAtlas;
-    imageManager: ImageManager;
-    glyphManager: GlyphManager;
-    depthRange: number;
-    renderPass: RenderPass;
-    currentLayer: number;
-    id: string;
-    _showOverdrawInspector: boolean;
-    cache: { [string]: Program };
-    crossTileSymbolIndex: CrossTileSymbolIndex;
-    symbolFadeChange: number;
 
-    constructor(gl: WebGLRenderingContext, transform: Transform) {
+    constructor(gl, transform) {
         this.context = new Context(gl);
         this.transform = transform;
         this._tileTextures = {};
@@ -131,7 +79,7 @@ class Painter {
      * Update the GL viewport, projection matrix, and transforms to compensate
      * for a new width and height value.
      */
-    resize(width: number, height: number) {
+    resize(width, height) {
         const gl = this.context.gl;
 
         this.width = width * browser.devicePixelRatio;
@@ -216,7 +164,7 @@ class Painter {
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
 
-    _renderTileClippingMasks(tileIDs: Array<OverscaledTileID>) {
+    _renderTileClippingMasks(tileIDs) {
         const context = this.context;
         const gl = context.gl;
 
@@ -241,12 +189,12 @@ class Painter {
         }
     }
 
-    stencilModeForClipping(tileID: OverscaledTileID): StencilMode {
+    stencilModeForClipping(tileID) {
         const gl = this.context.gl;
         return new StencilMode({ func: gl.EQUAL, mask: 0xFF }, this._tileClippingMaskIDs[tileID.key], 0x00, gl.KEEP, gl.KEEP, gl.REPLACE);
     }
 
-    colorModeForRenderPass(): $ReadOnly<ColorMode> {
+    colorModeForRenderPass() {
         const gl = this.context.gl;
         if (this._showOverdrawInspector) {
             const numOverdrawSteps = 8;
@@ -260,13 +208,13 @@ class Painter {
         }
     }
 
-    depthModeForSublayer(n: number, mask: DepthMaskType, func: ?DepthFuncType): DepthMode {
+    depthModeForSublayer(n, mask, func) {
         const farDepth = 1 - ((1 + this.currentLayer) * this.numSublayers + n) * this.depthEpsilon;
         const nearDepth = farDepth - 1 + this.depthRange;
         return new DepthMode(func || this.context.gl.LEQUAL, mask, [nearDepth, farDepth]);
     }
 
-    render(style: Style, options: PainterOptions) {
+    render(style, options) {
         this.style = style;
         this.options = options;
 
@@ -323,7 +271,7 @@ class Painter {
 
                 if (!coords.length) continue;
 
-                this.renderLayer(this, (sourceCache: any), layer, coords);
+                this.renderLayer(this, (sourceCache), layer, coords);
             }
 
             // Rebind the main framebuffer now that all offscreen layers
@@ -363,7 +311,7 @@ class Painter {
                     }
                 }
 
-                this.renderLayer(this, (sourceCache: any), layer, coords);
+                this.renderLayer(this, (sourceCache), layer, coords);
             }
         }
 
@@ -394,7 +342,7 @@ class Painter {
                     coords.reverse();
                 }
 
-                this.renderLayer(this, (sourceCache: any), layer, coords);
+                this.renderLayer(this, (sourceCache), layer, coords);
             }
         }
 
@@ -406,7 +354,7 @@ class Painter {
         }
     }
 
-    setupOffscreenDepthRenderbuffer(): void {
+    setupOffscreenDepthRenderbuffer() {
         const context = this.context;
         // All of the 3D textures will use the same depth renderbuffer.
         if (!this.depthRbo) {
@@ -414,7 +362,7 @@ class Painter {
         }
     }
 
-    renderLayer(painter: Painter, sourceCache: SourceCache, layer: StyleLayer, coords: Array<OverscaledTileID>) {
+    renderLayer(painter, sourceCache, layer, coords) {
         if (layer.isHidden(this.transform.zoom)) return;
         if (layer.type !== 'background' && !coords.length) return;
         this.id = layer.id;
@@ -427,7 +375,7 @@ class Painter {
      * @param inViewportPixelUnitsUnits True when the units accepted by the matrix are in viewport pixels instead of tile units.
      * @returns {Float32Array} matrix
      */
-    translatePosMatrix(matrix: Float32Array, tile: Tile, translate: [number, number], translateAnchor: 'map' | 'viewport', inViewportPixelUnitsUnits?: boolean) {
+    translatePosMatrix(matrix, tile, translate, translateAnchor, inViewportPixelUnitsUnits) {
         if (!translate[0] && !translate[1]) return matrix;
 
         const angle = inViewportPixelUnitsUnits ?
@@ -454,7 +402,7 @@ class Painter {
         return translatedMatrix;
     }
 
-    saveTileTexture(texture: Texture) {
+    saveTileTexture(texture) {
         const textures = this._tileTextures[texture.size[0]];
         if (!textures) {
             this._tileTextures[texture.size[0]] = [texture];
@@ -463,12 +411,12 @@ class Painter {
         }
     }
 
-    getTileTexture(size: number) {
+    getTileTexture(size) {
         const textures = this._tileTextures[size];
         return textures && textures.length > 0 ? textures.pop() : null;
     }
 
-    _createProgramCached(name: string, programConfiguration: ProgramConfiguration): Program {
+    _createProgramCached(name, programConfiguration) {
         this.cache = this.cache || {};
         const key = `${name}${programConfiguration.cacheKey || ''}${this._showOverdrawInspector ? '/overdraw' : ''}`;
         if (!this.cache[key]) {
@@ -477,7 +425,7 @@ class Painter {
         return this.cache[key];
     }
 
-    useProgram(name: string, programConfiguration?: ProgramConfiguration): Program {
+    useProgram(name, programConfiguration) {
         const nextProgram = this._createProgramCached(name, programConfiguration || this.emptyProgramConfiguration);
 
         this.context.program.set(nextProgram.program);
@@ -486,4 +434,4 @@ class Painter {
     }
 }
 
-export default Painter;
+module.exports = Painter;

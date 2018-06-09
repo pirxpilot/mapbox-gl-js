@@ -1,6 +1,6 @@
-// @flow
+'use strict';
 
-import { clamp } from '../util/util';
+const { clamp } = require('../util/util');
 
 /**
  * Packs two numbers, interpreted as 8-bit unsigned integers, into a single
@@ -9,10 +9,13 @@ import { clamp } from '../util/util';
  *
  * @private
  */
-export const packUint8ToFloat = function pack(a: number, b: number) {
+function pack(a, b) {
     // coerce a and b to 8-bit ints
     a = clamp(Math.floor(a), 0, 255);
     b = clamp(Math.floor(b), 0, 255);
     return 256 * a + b;
-};
+}
 
+module.exports = {
+    packUint8ToFloat: pack
+};

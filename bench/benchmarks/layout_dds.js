@@ -1,23 +1,23 @@
-// @flow
+'use strict';
 
-import Layout from './layout';
+const Layout = require('./layout');
 
-import { OverscaledTileID } from '../../src/source/tile_id';
+const { OverscaledTileID } = require('../../src/source/tile_id');
 
 const LAYER_COUNT = 2;
 
-export default class LayoutDDS extends Layout {
-    tileIDs(): Array<OverscaledTileID> {
+module.exports = class LayoutDDS extends Layout {
+    tileIDs() {
         return [
             new OverscaledTileID(15, 0, 15, 9373, 12535)
         ];
     }
 
-    sourceID(): string {
+    sourceID() {
         return 'mapbox';
     }
 
-    fetchStyle(): Promise<StyleSpecification> {
+    fetchStyle() {
         const style = {
             "version": 8,
             "sources": {
@@ -85,7 +85,7 @@ export default class LayoutDDS extends Layout {
 
         while (style.layers.length < LAYER_COUNT) {
             for (const layer of layers) {
-                style.layers.push(Object.assign(({}: any), layer, {
+                style.layers.push(Object.assign(({}), layer, {
                     id: layer.id + style.layers.length
                 }));
             }
@@ -93,4 +93,4 @@ export default class LayoutDDS extends Layout {
 
         return Promise.resolve(style);
     }
-}
+};

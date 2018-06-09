@@ -1,18 +1,13 @@
-// @flow
+'use strict';
 
-import browser from '../util/browser';
+const browser = require('../util/browser');
 
-import pixelsToTileUnits from '../source/pixels_to_tile_units';
-import DepthMode from '../gl/depth_mode';
-import Texture from './texture';
+const pixelsToTileUnits = require('../source/pixels_to_tile_units');
+const DepthMode = require('../gl/depth_mode');
+const Texture = require('./texture');
 
-import type Painter from './painter';
-import type SourceCache from '../source/source_cache';
-import type LineStyleLayer from '../style/style_layer/line_style_layer';
-import type LineBucket from '../data/bucket/line_bucket';
-import type {OverscaledTileID} from '../source/tile_id';
 
-export default function drawLine(painter: Painter, sourceCache: SourceCache, layer: LineStyleLayer, coords: Array<OverscaledTileID>) {
+module.exports = function drawLine(painter, sourceCache, layer, coords) {
     if (painter.renderPass !== 'translucent') return;
 
     const opacity = layer.paint.get('line-opacity');
@@ -33,7 +28,7 @@ export default function drawLine(painter: Painter, sourceCache: SourceCache, lay
 
     for (const coord of coords) {
         const tile = sourceCache.getTile(coord);
-        const bucket: ?LineBucket = (tile.getBucket(layer): any);
+        const bucket = (tile.getBucket(layer));
         if (!bucket) continue;
 
         const programConfiguration = bucket.programConfigurations.get(layer.id);
@@ -49,7 +44,7 @@ export default function drawLine(painter: Painter, sourceCache: SourceCache, lay
         prevTileZoom = tile.tileID.overscaledZ;
         firstTile = false;
     }
-}
+};
 
 function drawLineTile(program, painter, tile, bucket, layer, coord, programConfiguration, programChanged, tileRatioChanged) {
     const context = painter.context;
@@ -95,8 +90,8 @@ function drawLineTile(program, painter, tile, bucket, layer, coord, programConfi
             context.activeTexture.set(gl.TEXTURE0);
             painter.lineAtlas.bind(context);
 
-            gl.uniform1f(program.uniforms.u_tex_y_a, (posA: any).y);
-            gl.uniform1f(program.uniforms.u_tex_y_b, (posB: any).y);
+            gl.uniform1f(program.uniforms.u_tex_y_a, (posA).y);
+            gl.uniform1f(program.uniforms.u_tex_y_b, (posB).y);
             gl.uniform1f(program.uniforms.u_mix, dasharray.t);
 
         } else if (image) {
@@ -104,10 +99,10 @@ function drawLineTile(program, painter, tile, bucket, layer, coord, programConfi
             context.activeTexture.set(gl.TEXTURE0);
             painter.imageManager.bind(context);
 
-            gl.uniform2fv(program.uniforms.u_pattern_tl_a, (imagePosA: any).tl);
-            gl.uniform2fv(program.uniforms.u_pattern_br_a, (imagePosA: any).br);
-            gl.uniform2fv(program.uniforms.u_pattern_tl_b, (imagePosB: any).tl);
-            gl.uniform2fv(program.uniforms.u_pattern_br_b, (imagePosB: any).br);
+            gl.uniform2fv(program.uniforms.u_pattern_tl_a, (imagePosA).tl);
+            gl.uniform2fv(program.uniforms.u_pattern_br_a, (imagePosA).br);
+            gl.uniform2fv(program.uniforms.u_pattern_tl_b, (imagePosB).tl);
+            gl.uniform2fv(program.uniforms.u_pattern_br_b, (imagePosB).br);
             gl.uniform1f(program.uniforms.u_fade, image.t);
         }
     }

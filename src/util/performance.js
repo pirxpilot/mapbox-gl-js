@@ -1,9 +1,11 @@
-// @flow
+'use strict';
+
+/* global performance */
 
 // Wraps performance.getEntriesByName to facilitate testing
 // Not incorporated into browser.js because the latter is poisonous when used outside the main thread
 const exported = {
-    getEntriesByName: (url: string) => {
+    getEntriesByName: (url) => {
         if ((typeof performance !== 'undefined') && performance && performance.getEntriesByName)
             return performance.getEntriesByName(url);
         else
@@ -11,4 +13,4 @@ const exported = {
     }
 };
 
-export default exported;
+module.exports = exported;

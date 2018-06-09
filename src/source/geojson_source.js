@@ -1,19 +1,13 @@
-// @flow
+'use strict';
 
-import { Event, ErrorEvent, Evented } from '../util/evented';
+const { Event, ErrorEvent, Evented } = require('../util/evented');
 
-import { extend } from '../util/util';
-import window from '../util/window';
-import EXTENT from '../data/extent';
-import { ResourceType } from '../util/ajax';
-import browser from '../util/browser';
+const { extend } = require('../util/util');
+const window = require('../util/window');
+const EXTENT = require('../data/extent');
+const { ResourceType } = require('../util/ajax');
+const browser = require('../util/browser');
 
-import type {Source} from './source';
-import type Map from '../ui/map';
-import type Dispatcher from '../util/dispatcher';
-import type Tile from './tile';
-import type {Callback} from '../types/callback';
-import type {PerformanceResourceTiming} from '../types/performance_resource_timing';
 
 /**
  * A source containing GeoJSON.
@@ -60,30 +54,13 @@ import type {PerformanceResourceTiming} from '../types/performance_resource_timi
  * @see [Add a GeoJSON line](https://www.mapbox.com/mapbox-gl-js/example/geojson-line/)
  * @see [Create a heatmap from points](https://www.mapbox.com/mapbox-gl-js/example/heatmap/)
  */
-class GeoJSONSource extends Evented implements Source {
-    type: 'geojson';
-    id: string;
-    minzoom: number;
-    maxzoom: number;
-    tileSize: number;
+class GeoJSONSource extends Evented {
 
-    isTileClipped: boolean;
-    reparseOverscaled: boolean;
-    _data: GeoJSON | string;
-    _options: any;
-    workerOptions: any;
-    dispatcher: Dispatcher;
-    map: Map;
-    workerID: number;
-    _loaded: boolean;
-    _collectResourceTiming: boolean;
-    _resourceTiming: Array<PerformanceResourceTiming>;
-    _removed: boolean;
 
     /**
      * @private
      */
-    constructor(id: string, options: GeojsonSourceSpecification & {workerOptions?: any, collectResourceTiming: boolean}, dispatcher: Dispatcher, eventedParent: Evented) {
+    constructor(id, options, dispatcher, eventedParent) {
         super();
 
         this.id = id;
@@ -102,7 +79,7 @@ class GeoJSONSource extends Evented implements Source {
         this.dispatcher = dispatcher;
         this.setEventedParent(eventedParent);
 
-        this._data = (options.data: any);
+        this._data = (options.data);
         this._options = extend({}, options);
 
         this._collectResourceTiming = options.collectResourceTiming;
@@ -146,7 +123,7 @@ class GeoJSONSource extends Evented implements Source {
                 return;
             }
 
-            const data: Object = { dataType: 'source', sourceDataType: 'metadata' };
+            const data = { dataType: 'source', sourceDataType: 'metadata' };
             if (this._collectResourceTiming && this._resourceTiming && (this._resourceTiming.length > 0)) {
                 data.resourceTiming = this._resourceTiming;
                 this._resourceTiming = [];
@@ -158,7 +135,7 @@ class GeoJSONSource extends Evented implements Source {
         });
     }
 
-    onAdd(map: Map) {
+    onAdd(map) {
         this.map = map;
         this.load();
     }
@@ -169,7 +146,7 @@ class GeoJSONSource extends Evented implements Source {
      * @param {Object|string} data A GeoJSON data object or a URL to one. The latter is preferable in the case of large GeoJSON files.
      * @returns {GeoJSONSource} this
      */
-    setData(data: GeoJSON | string) {
+    setData(data) {
         this._data = data;
         this.fire(new Event('dataloading', {dataType: 'source'}));
         this._updateWorkerData((err) => {
@@ -177,7 +154,7 @@ class GeoJSONSource extends Evented implements Source {
                 return this.fire(new ErrorEvent(err));
             }
 
-            const data: Object = { dataType: 'source', sourceDataType: 'content' };
+            const data = { dataType: 'source', sourceDataType: 'content' };
             if (this._collectResourceTiming && this._resourceTiming && (this._resourceTiming.length > 0)) {
                 data.resourceTiming = this._resourceTiming;
                 this._resourceTiming = [];
@@ -193,7 +170,7 @@ class GeoJSONSource extends Evented implements Source {
      * handles loading the geojson data and preparing to serve it up as tiles,
      * using geojson-vt or supercluster as appropriate.
      */
-    _updateWorkerData(callback: Function) {
+    _updateWorkerData(callback) {
         const options = extend({}, this.workerOptions);
         const data = this._data;
         if (typeof data === 'string') {
@@ -228,7 +205,7 @@ class GeoJSONSource extends Evented implements Source {
         }, this.workerID);
     }
 
-    loadTile(tile: Tile, callback: Callback<void>) {
+    loadTile(tile, callback) {
         const message = tile.workerID === undefined ? 'loadTile' : 'reloadTile';
         const params = {
             type: this.type,
@@ -259,11 +236,11 @@ class GeoJSONSource extends Evented implements Source {
         }, this.workerID);
     }
 
-    abortTile(tile: Tile) {
+    abortTile(tile) {
         tile.aborted = true;
     }
 
-    unloadTile(tile: Tile) {
+    unloadTile(tile) {
         tile.unloadVectorData();
         this.dispatcher.send('removeTile', { uid: tile.uid, type: this.type, source: this.id }, null, tile.workerID);
     }
@@ -291,4 +268,4 @@ function resolveURL(url) {
     return a.href;
 }
 
-export default GeoJSONSource;
+module.exports = GeoJSONSource;

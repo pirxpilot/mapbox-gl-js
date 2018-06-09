@@ -1,31 +1,17 @@
-// @flow
+'use strict';
 
-import browser from '../util/browser';
+const browser = require('../util/browser');
 
-import shaders from '../shaders';
-import assert from 'assert';
-import ProgramConfiguration from '../data/program_configuration';
-import VertexArrayObject from './vertex_array_object';
-import Context from '../gl/context';
-
-import type SegmentVector from '../data/segment';
-import type VertexBuffer from '../gl/vertex_buffer';
-import type IndexBuffer from '../gl/index_buffer';
-
-export type DrawMode =
-    | $PropertyType<WebGLRenderingContext, 'LINES'>
-    | $PropertyType<WebGLRenderingContext, 'TRIANGLES'>;
+const shaders = require('../shaders');
+const assert = require('assert');
+const VertexArrayObject = require('./vertex_array_object');
 
 class Program {
-    program: WebGLProgram;
-    uniforms: {[string]: WebGLUniformLocation};
-    attributes: {[string]: number};
-    numAttributes: number;
 
-    constructor(context: Context,
-                source: {fragmentSource: string, vertexSource: string},
-                configuration: ProgramConfiguration,
-                showOverdrawInspector: boolean) {
+    constructor(context,
+                source,
+                configuration,
+                showOverdrawInspector) {
         const gl = context.gl;
         this.program = gl.createProgram();
 
@@ -41,13 +27,13 @@ class Program {
         const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
         gl.shaderSource(fragmentShader, fragmentSource);
         gl.compileShader(fragmentShader);
-        assert(gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS), (gl.getShaderInfoLog(fragmentShader): any));
+        assert(gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS), (gl.getShaderInfoLog(fragmentShader)));
         gl.attachShader(this.program, fragmentShader);
 
         const vertexShader = gl.createShader(gl.VERTEX_SHADER);
         gl.shaderSource(vertexShader, vertexSource);
         gl.compileShader(vertexShader);
-        assert(gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS), (gl.getShaderInfoLog(vertexShader): any));
+        assert(gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS), (gl.getShaderInfoLog(vertexShader)));
         gl.attachShader(this.program, vertexShader);
 
         // Manually bind layout attributes in the order defined by their
@@ -60,7 +46,7 @@ class Program {
         }
 
         gl.linkProgram(this.program);
-        assert(gl.getProgramParameter(this.program, gl.LINK_STATUS), (gl.getProgramInfoLog(this.program): any));
+        assert(gl.getProgramParameter(this.program, gl.LINK_STATUS), (gl.getProgramInfoLog(this.program)));
 
         this.numAttributes = gl.getProgramParameter(this.program, gl.ACTIVE_ATTRIBUTES);
 
@@ -83,15 +69,15 @@ class Program {
         }
     }
 
-    draw(context: Context,
-         drawMode: DrawMode,
-         layerID: string,
-         layoutVertexBuffer: VertexBuffer,
-         indexBuffer: IndexBuffer,
-         segments: SegmentVector,
-         configuration: ?ProgramConfiguration,
-         dynamicLayoutBuffer: ?VertexBuffer,
-         dynamicLayoutBuffer2: ?VertexBuffer) {
+    draw(context,
+         drawMode,
+         layerID,
+         layoutVertexBuffer,
+         indexBuffer,
+         segments,
+         configuration,
+         dynamicLayoutBuffer,
+         dynamicLayoutBuffer2) {
 
         const gl = context.gl;
 
@@ -102,7 +88,7 @@ class Program {
 
         for (const segment of segments.get()) {
             const vaos = segment.vaos || (segment.vaos = {});
-            const vao: VertexArrayObject = vaos[layerID] || (vaos[layerID] = new VertexArrayObject());
+            const vao = vaos[layerID] || (vaos[layerID] = new VertexArrayObject());
 
             vao.bind(
                 context,
@@ -124,4 +110,4 @@ class Program {
     }
 }
 
-export default Program;
+module.exports = Program;

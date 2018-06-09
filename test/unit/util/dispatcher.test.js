@@ -1,8 +1,7 @@
-import { test } from 'mapbox-gl-js-test';
-import Dispatcher from '../../../src/util/dispatcher';
-import WebWorker from '../../../src/util/web_worker';
-import WorkerPool from '../../../src/util/worker_pool';
-import mapboxgl from '../../../src/';
+const { test } = require('mapbox-gl-js-test');
+const Dispatcher = require('../../../src/util/dispatcher');
+const WebWorker = require('../../../src/util/web_worker');
+const WorkerPool = require('../../../src/util/worker_pool');
 
 test('Dispatcher', (t) => {
     t.test('requests and releases workers from pool', (t) => {
@@ -31,9 +30,8 @@ test('Dispatcher', (t) => {
         const ids = [];
         function Actor (target, parent, mapId) { ids.push(mapId); }
         t.stub(Dispatcher, 'Actor').callsFake(Actor);
-        t.stub(mapboxgl, 'workerCount').value(1);
 
-        const workerPool = new WorkerPool();
+        const workerPool = new WorkerPool(1);
         const dispatchers = [new Dispatcher(workerPool, {}), new Dispatcher(workerPool, {})];
         t.same(ids, dispatchers.map((d) => { return d.id; }));
 
@@ -46,9 +44,8 @@ test('Dispatcher', (t) => {
             this.remove = function() { actorsRemoved.push(this); };
         }
         t.stub(Dispatcher, 'Actor').callsFake(Actor);
-        t.stub(mapboxgl, 'workerCount').value(4);
 
-        const workerPool = new WorkerPool();
+        const workerPool = new WorkerPool(4);
         const dispatcher = new Dispatcher(workerPool, {});
         dispatcher.remove();
         t.equal(actorsRemoved.length, 4);

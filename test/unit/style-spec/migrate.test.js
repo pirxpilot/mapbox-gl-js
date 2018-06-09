@@ -1,13 +1,13 @@
-import { test as t } from 'mapbox-gl-js-test';
-import fs from 'fs';
-import glob from 'glob';
-import path from 'path';
-import validate from '../../../src/style-spec/validate_style';
-import v8 from '../../../src/style-spec/reference/v8';
-import migrate from '../../../src/style-spec/migrate';
+const { test: t } = require('mapbox-gl-js-test');
+const fs = require('fs');
+const glob = require('glob');
+const path = require('path');
+const validate = require('../../../src/style-spec/validate_style');
+const v8 = require('../../../src/style-spec/reference/v8');
+const migrate = require('../../../src/style-spec/migrate');
 
 /* eslint-disable import/namespace */
-import * as spec from '../../../src/style-spec/style-spec';
+const spec = require('../../../src/style-spec/style-spec');
 
 const UPDATE = !!process.env.UPDATE;
 

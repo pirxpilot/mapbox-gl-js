@@ -1,15 +1,11 @@
-// @flow
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import { ColorType, ValueType, NumberType } from '../types';
-import { Color, validateRGBA } from '../values';
-import RuntimeError from '../runtime_error';
+const { ColorType, ValueType, NumberType } = require('../types');
+const { Color, validateRGBA } = require('../values');
+const RuntimeError = require('../runtime_error');
 
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
-import type EvaluationContext from '../evaluation_context';
-import type { Type } from '../types';
 
 const types = {
     'to-number': NumberType,
@@ -23,20 +19,18 @@ const types = {
  *
  * @private
  */
-class Coercion implements Expression {
-    type: Type;
-    args: Array<Expression>;
+class Coercion {
 
-    constructor(type: Type, args: Array<Expression>) {
+    constructor(type, args) {
         this.type = type;
         this.args = args;
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext): ?Expression {
+    static parse(args, context) {
         if (args.length < 2)
             return context.error(`Expected at least one argument.`);
 
-        const name: string = (args[0]: any);
+        const name = (args[0]);
         assert(types[name], name);
 
         const type = types[name];
@@ -51,7 +45,7 @@ class Coercion implements Expression {
         return new Coercion(type, parsed);
     }
 
-    evaluate(ctx: EvaluationContext) {
+    evaluate(ctx) {
         if (this.type.kind === 'color') {
             let input;
             let error;
@@ -68,7 +62,7 @@ class Coercion implements Expression {
                         error = validateRGBA(input[0], input[1], input[2], input[3]);
                     }
                     if (!error) {
-                        return new Color((input[0]: any) / 255, (input[1]: any) / 255, (input[2]: any) / 255, (input[3]: any));
+                        return new Color((input[0]) / 255, (input[1]) / 255, (input[2]) / 255, (input[3]));
                     }
                 }
             }
@@ -86,7 +80,7 @@ class Coercion implements Expression {
         }
     }
 
-    eachChild(fn: (Expression) => void) {
+    eachChild(fn) {
         this.args.forEach(fn);
     }
 
@@ -101,4 +95,4 @@ class Coercion implements Expression {
     }
 }
 
-export default Coercion;
+module.exports = Coercion;

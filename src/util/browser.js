@@ -1,6 +1,6 @@
-// @flow
+'use strict';
 
-import window from './window';
+const window = require('./window');
 
 const now = window.performance && window.performance.now ?
     window.performance.now.bind(window.performance) :
@@ -26,15 +26,15 @@ const exported = {
      */
     now,
 
-    frame(fn: Function) {
+    frame(fn) {
         return raf(fn);
     },
 
-    cancelFrame(id: number) {
+    cancelFrame(id) {
         return cancel(id);
     },
 
-    getImageData(img: CanvasImageSource): ImageData {
+    getImageData(img) {
         const canvas = window.document.createElement('canvas');
         const context = canvas.getContext('2d');
         if (!context) {
@@ -51,7 +51,7 @@ const exported = {
     supportsWebp: false
 };
 
-export default exported;
+module.exports = exported;
 
 if (window.document) {
     const webpImgTest = window.document.createElement('img');

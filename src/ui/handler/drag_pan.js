@@ -1,15 +1,12 @@
-// @flow
+'use strict';
 
-import DOM from '../../util/dom';
-import { bezier, bindAll } from '../../util/util';
-import window from '../../util/window';
-import browser from '../../util/browser';
-import { Event } from '../../util/evented';
-import assert from 'assert';
+const DOM = require('../../util/dom');
+const { bezier, bindAll } = require('../../util/util');
+const window = require('../../util/window');
+const browser = require('../../util/browser');
+const { Event } = require('../../util/evented');
+const assert = require('assert');
 
-import type Map from '../map';
-import type Point from '@mapbox/point-geometry';
-import type {TaskID} from '../../util/task_queue';
 
 const inertiaLinearity = 0.3,
     inertiaEasing = bezier(0, 0, inertiaLinearity, 1),
@@ -21,19 +18,11 @@ const inertiaLinearity = 0.3,
  * the cursor.
  */
 class DragPanHandler {
-    _map: Map;
-    _el: HTMLElement;
-    _state: 'disabled' | 'enabled' | 'pending' | 'active';
-    _pos: Point;
-    _previousPos: Point;
-    _inertia: Array<[number, Point]>;
-    _lastMoveEvent: MouseEvent | TouchEvent | void;
-    _frameId: ?TaskID;
 
     /**
      * @private
      */
-    constructor(map: Map) {
+    constructor(map) {
         this._map = map;
         this._el = map.getCanvasContainer();
         this._state = 'disabled';
@@ -104,7 +93,7 @@ class DragPanHandler {
         }
     }
 
-    onMouseDown(e: MouseEvent) {
+    onMouseDown(e) {
         if (this._state !== 'enabled') return;
         if (e.ctrlKey || DOM.mouseButton(e) !== 0) return;
 
@@ -119,7 +108,7 @@ class DragPanHandler {
         this._start(e);
     }
 
-    onTouchStart(e: TouchEvent) {
+    onTouchStart(e) {
         if (this._state !== 'enabled') return;
         if (e.touches.length > 1) return;
 
@@ -134,7 +123,7 @@ class DragPanHandler {
         this._start(e);
     }
 
-    _start(e: MouseEvent | TouchEvent) {
+    _start(e) {
         // Deactivate when the window loses focus. Otherwise if a mouseup occurs when the window
         // isn't in focus, dragging will continue even though the mouse is no longer pressed.
         window.addEventListener('blur', this._onBlur);
@@ -144,7 +133,7 @@ class DragPanHandler {
         this._inertia = [[browser.now(), this._previousPos]];
     }
 
-    _onMove(e: MouseEvent | TouchEvent) {
+    _onMove(e) {
         this._lastMoveEvent = e;
         e.preventDefault();
 
@@ -183,7 +172,7 @@ class DragPanHandler {
         delete this._lastMoveEvent;
     }
 
-    _onMouseUp(e: MouseEvent) {
+    _onMouseUp(e) {
         if (DOM.mouseButton(e) !== 0) return;
         switch (this._state) {
         case 'active':
@@ -203,7 +192,7 @@ class DragPanHandler {
         }
     }
 
-    _onTouchEnd(e: TouchEvent) {
+    _onTouchEnd(e) {
         switch (this._state) {
         case 'active':
             this._state = 'enabled';
@@ -221,7 +210,7 @@ class DragPanHandler {
         }
     }
 
-    _onBlur(e: FocusEvent) {
+    _onBlur(e) {
         switch (this._state) {
         case 'active':
             this._state = 'enabled';
@@ -258,7 +247,7 @@ class DragPanHandler {
         delete this._pos;
     }
 
-    _inertialPan(e: MouseEvent | TouchEvent) {
+    _inertialPan(e) {
         this._fireEvent('dragend', e);
 
         this._drainInertiaBuffer();
@@ -297,7 +286,7 @@ class DragPanHandler {
         }, { originalEvent: e });
     }
 
-    _fireEvent(type: string, e: *) {
+    _fireEvent(type, e) {
         return this._map.fire(new Event(type, e ? { originalEvent: e } : {}));
     }
 
@@ -310,4 +299,4 @@ class DragPanHandler {
     }
 }
 
-export default DragPanHandler;
+module.exports = DragPanHandler;

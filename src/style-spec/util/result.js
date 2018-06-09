@@ -1,4 +1,4 @@
-// @flow
+'use strict';
 
 /**
  * A type used for returning and propagating errors. The first element of the union
@@ -6,14 +6,16 @@
  * contains an error value.
  * @private
  */
-export type Result<T, E> =
-    | {| result: 'success', value: T |}
-    | {| result: 'error', value: E |};
 
-export function success<T, E>(value: T): Result<T, E> {
+function success(value) {
     return { result: 'success', value };
 }
 
-export function error<T, E>(value: E): Result<T, E> {
+function error(value) {
     return { result: 'error', value };
 }
+
+module.exports = {
+    success,
+    error
+};

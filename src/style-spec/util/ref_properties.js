@@ -1,2 +1,3 @@
+'use strict';
 
-export default ['type', 'source', 'source-layer', 'minzoom', 'maxzoom', 'filter', 'layout'];
+module.exports = ['type', 'source', 'source-layer', 'minzoom', 'maxzoom', 'filter', 'layout'];

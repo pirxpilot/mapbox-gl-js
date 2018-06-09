@@ -1,24 +1,15 @@
-// @flow
+'use strict';
 
-import Benchmark from '../lib/benchmark';
+const Benchmark = require('../lib/benchmark');
 
-import accessToken from '../lib/access_token';
-import spec from '../../src/style-spec/reference/latest';
-import convertFunction from '../../src/style-spec/function/convert';
-import { isFunction, createFunction } from '../../src/style-spec/function';
-import { createPropertyExpression } from '../../src/style-spec/expression';
+const accessToken = require('../lib/access_token');
+const spec = require('../../src/style-spec/reference/latest');
+const convertFunction = require('../../src/style-spec/function/convert');
+const { isFunction, createFunction } = require('../../src/style-spec/function');
+const { createPropertyExpression } = require('../../src/style-spec/expression');
 
-import type {StylePropertySpecification} from '../../src/style-spec/style-spec';
-import type {StylePropertyExpression} from '../../src/style-spec/expression';
 
 class ExpressionBenchmark extends Benchmark {
-    data: Array<{
-        propertySpec: StylePropertySpecification,
-        rawValue: mixed,
-        rawExpression: mixed,
-        compiledFunction: StylePropertyExpression,
-        compiledExpression: StylePropertyExpression
-    }>;
 
     setup() {
         return fetch(`https://api.mapbox.com/styles/v1/mapbox/streets-v9?access_token=${accessToken}`)
@@ -31,7 +22,7 @@ class ExpressionBenchmark extends Benchmark {
                         continue;
                     }
 
-                    const expressionData = function(rawValue, propertySpec: StylePropertySpecification) {
+                    const expressionData = function(rawValue, propertySpec) {
                         const rawExpression = convertFunction(rawValue, propertySpec);
                         const compiledFunction = createFunction(rawValue, propertySpec);
                         const compiledExpression = createPropertyExpression(rawExpression, propertySpec);
@@ -103,7 +94,7 @@ class ExpressionEvaluate extends ExpressionBenchmark {
     }
 }
 
-export default [
+module.exports = [
     FunctionCreate,
     FunctionConvert,
     FunctionEvaluate,

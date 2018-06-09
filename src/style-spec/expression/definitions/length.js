@@ -1,25 +1,19 @@
-// @flow
+'use strict';
 
-import { NumberType, toString } from '../types';
+const { NumberType, toString } = require('../types');
 
-import { typeOf } from '../values';
-import RuntimeError from '../runtime_error';
+const { typeOf } = require('../values');
+const RuntimeError = require('../runtime_error');
 
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
-import type EvaluationContext from '../evaluation_context';
-import type { Type } from '../types';
 
-class Length implements Expression {
-    type: Type;
-    input: Expression;
+class Length {
 
-    constructor(input: Expression) {
+    constructor(input) {
         this.type = NumberType;
         this.input = input;
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext) {
+    static parse(args, context) {
         if (args.length !== 2)
             return context.error(`Expected 1 argument, but found ${args.length - 1} instead.`);
 
@@ -32,7 +26,7 @@ class Length implements Expression {
         return new Length(input);
     }
 
-    evaluate(ctx: EvaluationContext) {
+    evaluate(ctx) {
         const input = this.input.evaluate(ctx);
         if (typeof input === 'string') {
             return input.length;
@@ -43,7 +37,7 @@ class Length implements Expression {
         }
     }
 
-    eachChild(fn: (Expression) => void) {
+    eachChild(fn) {
         fn(this.input);
     }
 
@@ -58,4 +52,4 @@ class Length implements Expression {
     }
 }
 
-export default Length;
+module.exports = Length;

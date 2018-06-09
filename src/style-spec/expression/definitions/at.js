@@ -1,27 +1,19 @@
-// @flow
+'use strict';
 
-import { array, ValueType, NumberType } from '../types';
+const { array, ValueType, NumberType } = require('../types');
 
-import RuntimeError from '../runtime_error';
+const RuntimeError = require('../runtime_error');
 
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
-import type EvaluationContext from '../evaluation_context';
-import type { Type, ArrayType } from '../types';
-import type { Value } from '../values';
 
-class At implements Expression {
-    type: Type;
-    index: Expression;
-    input: Expression;
+class At {
 
-    constructor(type: Type, index: Expression, input: Expression) {
+    constructor(type, index, input) {
         this.type = type;
         this.index = index;
         this.input = input;
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext) {
+    static parse(args, context) {
         if (args.length !== 3)
             return context.error(`Expected 2 arguments, but found ${args.length - 1} instead.`);
 
@@ -30,13 +22,13 @@ class At implements Expression {
 
         if (!index || !input) return null;
 
-        const t: ArrayType = (input.type: any);
+        const t = (input.type);
         return new At(t.itemType, index, input);
     }
 
-    evaluate(ctx: EvaluationContext) {
-        const index = ((this.index.evaluate(ctx): any): number);
-        const array = ((this.input.evaluate(ctx): any): Array<Value>);
+    evaluate(ctx) {
+        const index = ((this.index.evaluate(ctx)));
+        const array = ((this.input.evaluate(ctx)));
 
         if (index < 0) {
             throw new RuntimeError(`Array index out of bounds: ${index} < 0.`);
@@ -53,7 +45,7 @@ class At implements Expression {
         return array[index];
     }
 
-    eachChild(fn: (Expression) => void) {
+    eachChild(fn) {
         fn(this.index);
         fn(this.input);
     }
@@ -67,4 +59,4 @@ class At implements Expression {
     }
 }
 
-export default At;
+module.exports = At;

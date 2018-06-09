@@ -1,7 +1,7 @@
 
-import Benchmark from '../lib/benchmark';
-import createMap from '../lib/create_map';
-import style from '../data/empty.json';
+const Benchmark = require('../lib/benchmark');
+const createMap = require('../lib/create_map');
+const style = require('../data/empty.json');
 
 function generateLayers(layer) {
     const generated = [];
@@ -217,7 +217,7 @@ class LayerSymbol extends LayerBenchmark {
 }
 
 
-export default [
+module.exports = [
     LayerBackground,
     LayerCircle,
     LayerFill,

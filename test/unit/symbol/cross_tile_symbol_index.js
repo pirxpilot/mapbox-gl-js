@@ -1,7 +1,7 @@
-import { test } from 'mapbox-gl-js-test';
-import Anchor from '../../../src/symbol/anchor';
-import CrossTileSymbolIndex from '../../../src/symbol/cross_tile_symbol_index';
-import { OverscaledTileID } from '../../../src/source/tile_id';
+const { test } = require('mapbox-gl-js-test');
+const Anchor = require('../../../src/symbol/anchor');
+const CrossTileSymbolIndex = require('../../../src/symbol/cross_tile_symbol_index');
+const { OverscaledTileID } = require('../../../src/source/tile_id');
 
 const styleLayer = {
     id: 'test'

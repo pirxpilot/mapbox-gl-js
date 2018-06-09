@@ -1,37 +1,30 @@
-// @flow
+'use strict';
 
-import type { Type } from '../types';
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
-import type EvaluationContext  from '../evaluation_context';
 
-class Let implements Expression {
-    type: Type;
-    bindings: Array<[string, Expression]>;
-    result: Expression;
+class Let {
 
-    constructor(bindings: Array<[string, Expression]>, result: Expression) {
+    constructor(bindings, result) {
         this.type = result.type;
         this.bindings = [].concat(bindings);
         this.result = result;
     }
 
-    evaluate(ctx: EvaluationContext) {
+    evaluate(ctx) {
         return this.result.evaluate(ctx);
     }
 
-    eachChild(fn: (Expression) => void) {
+    eachChild(fn) {
         for (const binding of this.bindings) {
             fn(binding[1]);
         }
         fn(this.result);
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext) {
+    static parse(args, context) {
         if (args.length < 4)
             return context.error(`Expected at least 3 arguments, but found ${args.length - 1} instead.`);
 
-        const bindings: Array<[string, Expression]> = [];
+        const bindings = [];
         for (let i = 1; i < args.length - 1; i += 2) {
             const name = args[i];
 
@@ -69,4 +62,4 @@ class Let implements Expression {
     }
 }
 
-export default Let;
+module.exports = Let;

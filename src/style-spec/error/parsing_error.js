@@ -1,3 +1,4 @@
+'use strict';
 
 function ParsingError(error) {
     this.error = error;
@@ -6,4 +7,4 @@ function ParsingError(error) {
     this.line = match ? parseInt(match[1], 10) : 0;
 }
 
-export default ParsingError;
+module.exports = ParsingError;

@@ -1,13 +1,19 @@
+'use strict';
 
-import * as colorSpaces from '../util/color_spaces';
-import Color from '../util/color';
-import extend from '../util/extend';
-import getType from '../util/get_type';
-import * as interpolate from '../util/interpolate';
-import Interpolate from '../expression/definitions/interpolate';
-import { supportsInterpolation } from '../util/properties';
+const colorSpaces = require('../util/color_spaces');
+const Color = require('../util/color');
+const extend = require('../util/extend');
+const getType = require('../util/get_type');
+const interpolate = require('../util/interpolate');
+const Interpolate = require('../expression/definitions/interpolate');
+const { supportsInterpolation } = require('../util/properties');
 
-export function isFunction(value) {
+module.exports = {
+    isFunction,
+    createFunction
+};
+
+function isFunction(value) {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
@@ -15,7 +21,7 @@ function identityFunction(x) {
     return x;
 }
 
-export function createFunction(parameters, propertySpec) {
+function createFunction(parameters, propertySpec) {
     const isColor = propertySpec.type === 'color';
     const zoomAndFeatureDependent = parameters.stops && typeof parameters.stops[0][0] === 'object';
     const featureDependent = zoomAndFeatureDependent || parameters.property !== undefined;

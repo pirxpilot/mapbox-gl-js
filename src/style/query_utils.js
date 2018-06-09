@@ -1,14 +1,15 @@
-// @flow
+'use strict';
 
-import Point from '@mapbox/point-geometry';
+const Point = require('@mapbox/point-geometry');
 
-import type {PossiblyEvaluatedPropertyValue} from "./properties";
-import type StyleLayer from '../style/style_layer';
-import type CircleBucket from '../data/bucket/circle_bucket';
-import type LineBucket from '../data/bucket/line_bucket';
+module.exports = {
+    getMaximumPaintValue,
+    translateDistance,
+    translate
+};
 
-export function getMaximumPaintValue(property: string, layer: StyleLayer, bucket: CircleBucket<*> | LineBucket): number {
-    const value = ((layer.paint: any).get(property): PossiblyEvaluatedPropertyValue<any>).value;
+function getMaximumPaintValue(property, layer, bucket) {
+    const value = ((layer.paint).get(property)).value;
     if (value.kind === 'constant') {
         return value.value;
     } else {
@@ -17,15 +18,15 @@ export function getMaximumPaintValue(property: string, layer: StyleLayer, bucket
     }
 }
 
-export function translateDistance(translate: [number, number]) {
+function translateDistance(translate) {
     return Math.sqrt(translate[0] * translate[0] + translate[1] * translate[1]);
 }
 
-export function translate(queryGeometry: Array<Array<Point>>,
-                   translate: [number, number],
-                   translateAnchor: 'viewport' | 'map',
-                   bearing: number,
-                   pixelsToTileUnits: number) {
+function translate(queryGeometry,
+                   translate,
+                   translateAnchor,
+                   bearing,
+                   pixelsToTileUnits) {
     if (!translate[0] && !translate[1]) {
         return queryGeometry;
     }

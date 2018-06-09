@@ -1,14 +1,14 @@
-// @flow
+'use strict';
 
-import circle from './style_layer/circle_style_layer';
-import heatmap from './style_layer/heatmap_style_layer';
-import hillshade from './style_layer/hillshade_style_layer';
-import fill from './style_layer/fill_style_layer';
-import fillExtrusion from './style_layer/fill_extrusion_style_layer';
-import line from './style_layer/line_style_layer';
-import symbol from './style_layer/symbol_style_layer';
-import background from './style_layer/background_style_layer';
-import raster from './style_layer/raster_style_layer';
+const circle = require('./style_layer/circle_style_layer');
+const heatmap = require('./style_layer/heatmap_style_layer');
+const hillshade = require('./style_layer/hillshade_style_layer');
+const fill = require('./style_layer/fill_style_layer');
+const fillExtrusion = require('./style_layer/fill_extrusion_style_layer');
+const line = require('./style_layer/line_style_layer');
+const symbol = require('./style_layer/symbol_style_layer');
+const background = require('./style_layer/background_style_layer');
+const raster = require('./style_layer/raster_style_layer');
 
 const subclasses = {
     circle,
@@ -22,7 +22,7 @@ const subclasses = {
     raster
 };
 
-export default function createStyleLayer(layer: LayerSpecification) {
+module.exports = function createStyleLayer(layer) {
     return new subclasses[layer.type](layer);
-}
+};
 

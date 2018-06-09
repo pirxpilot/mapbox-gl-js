@@ -1,10 +1,12 @@
-import replace from 'rollup-plugin-replace';
-import buble from 'rollup-plugin-buble';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import unassert from 'rollup-plugin-unassert';
-import json from 'rollup-plugin-json';
-import {flow} from '../../build/rollup_plugins';
+'use strict';
+
+const replace = require('rollup-plugin-replace');
+const buble = require('rollup-plugin-buble');
+const resolve = require('rollup-plugin-node-resolve');
+const commonjs = require('rollup-plugin-commonjs');
+const unassert = require('rollup-plugin-unassert');
+const json = require('rollup-plugin-json');
+const {flow} = require('../../build/rollup_plugins');
 
 const config = [{
     input: `${__dirname}/style-spec.js`,
@@ -34,4 +36,4 @@ const config = [{
         commonjs()
     ]
 }];
-export default config;
+module.exports = config;

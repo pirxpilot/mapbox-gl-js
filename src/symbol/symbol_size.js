@@ -1,36 +1,18 @@
-// @flow
+'use strict';
 
-import { normalizePropertyExpression } from '../style-spec/expression';
+const { normalizePropertyExpression } = require('../style-spec/expression');
 
-import { number as interpolate } from '../style-spec/util/interpolate';
-import { clamp } from '../util/util';
-import EvaluationParameters from '../style/evaluation_parameters';
+const { number: interpolate } = require('../style-spec/util/interpolate');
+const { clamp } = require('../util/util');
+const EvaluationParameters = require('../style/evaluation_parameters');
 
-import type {Property, PropertyValue, PossiblyEvaluatedPropertyValue} from '../style/properties';
-import type {CameraExpression, CompositeExpression} from '../style-spec/expression/index';
 
-export { getSizeData, evaluateSizeForFeature, evaluateSizeForZoom };
+module.exports = { getSizeData, evaluateSizeForFeature, evaluateSizeForZoom };
 
-export type SizeData = {
-    functionType: 'constant',
-    layoutSize: number
-} | {
-    functionType: 'source'
-} | {
-    functionType: 'camera',
-    layoutSize: number,
-    zoomRange: {min: number, max: number},
-    sizeRange: {min: number, max: number},
-    propertyValue: PropertyValueSpecification<number>
-} | {
-    functionType: 'composite',
-    zoomRange: {min: number, max: number},
-    propertyValue: PropertyValueSpecification<number>
-};
 
 // For {text,icon}-size, get the bucket-level data that will be needed by
 // the painter to set symbol-size-related uniforms
-function getSizeData(tileZoom: number, value: PropertyValue<number, PossiblyEvaluatedPropertyValue<number>>): SizeData {
+function getSizeData(tileZoom, value) {
     const {expression} = value;
     if (expression.kind === 'constant') {
         return {
@@ -64,7 +46,7 @@ function getSizeData(tileZoom: number, value: PropertyValue<number, PossiblyEval
             return {
                 functionType: 'composite',
                 zoomRange,
-                propertyValue: (value.value: any)
+                propertyValue: (value.value)
             };
         } else {
             // for camera functions, also save off the function values
@@ -77,15 +59,15 @@ function getSizeData(tileZoom: number, value: PropertyValue<number, PossiblyEval
                     min: expression.evaluate(new EvaluationParameters(zoomRange.min)),
                     max: expression.evaluate(new EvaluationParameters(zoomRange.max))
                 },
-                propertyValue: (value.value: any)
+                propertyValue: (value.value)
             };
         }
     }
 }
 
-function evaluateSizeForFeature(sizeData: SizeData,
-                                partiallyEvaluatedSize: { uSize: number, uSizeT: number },
-                                symbol: { lowerSize: number, upperSize: number}) {
+function evaluateSizeForFeature(sizeData,
+                                partiallyEvaluatedSize,
+                                symbol) {
     const part = partiallyEvaluatedSize;
     if (sizeData.functionType === 'source') {
         return symbol.lowerSize / 10;
@@ -96,7 +78,7 @@ function evaluateSizeForFeature(sizeData: SizeData,
     }
 }
 
-function evaluateSizeForZoom(sizeData: SizeData, currentZoom: number, property: Property<number, PossiblyEvaluatedPropertyValue<number>>) {
+function evaluateSizeForZoom(sizeData, currentZoom, property) {
     if (sizeData.functionType === 'constant') {
         return {
             uSizeT: 0,
@@ -109,7 +91,7 @@ function evaluateSizeForZoom(sizeData: SizeData, currentZoom: number, property: 
         };
     } else if (sizeData.functionType === 'camera') {
         const {propertyValue, zoomRange, sizeRange} = sizeData;
-        const expression = ((normalizePropertyExpression(propertyValue, property.specification): any): CameraExpression);
+        const expression = ((normalizePropertyExpression(propertyValue, property.specification)));
 
         // Even though we could get the exact value of the camera function
         // at z = tr.zoom, we intentionally do not: instead, we interpolate
@@ -128,7 +110,7 @@ function evaluateSizeForZoom(sizeData: SizeData, currentZoom: number, property: 
         };
     } else {
         const {propertyValue, zoomRange} = sizeData;
-        const expression = ((normalizePropertyExpression(propertyValue, property.specification): any): CompositeExpression);
+        const expression = ((normalizePropertyExpression(propertyValue, property.specification)));
 
         return {
             uSizeT: clamp(

@@ -1,39 +1,27 @@
-// @flow
+'use strict';
 
-import StyleLayer from '../style_layer';
+const StyleLayer = require('../style_layer');
 
-import HeatmapBucket from '../../data/bucket/heatmap_bucket';
-import { RGBAImage } from '../../util/image';
-import properties from './heatmap_style_layer_properties';
-import renderColorRamp from '../../util/color_ramp';
-import { Transitionable, Transitioning, PossiblyEvaluated } from '../properties';
-
-import type Texture from '../../render/texture';
-import type Framebuffer from '../../gl/framebuffer';
-import type {PaintProps} from './heatmap_style_layer_properties';
+const HeatmapBucket = require('../../data/bucket/heatmap_bucket');
+const properties = require('./heatmap_style_layer_properties');
+const renderColorRamp = require('../../util/color_ramp');
 
 class HeatmapStyleLayer extends StyleLayer {
 
-    heatmapFbo: ?Framebuffer;
-    colorRamp: RGBAImage;
-    colorRampTexture: ?Texture;
 
-    _transitionablePaint: Transitionable<PaintProps>;
-    _transitioningPaint: Transitioning<PaintProps>;
-    paint: PossiblyEvaluated<PaintProps>;
 
-    createBucket(options: any) {
+    createBucket(options) {
         return new HeatmapBucket(options);
     }
 
-    constructor(layer: LayerSpecification) {
+    constructor(layer) {
         super(layer, properties);
 
         // make sure color ramp texture is generated for default heatmap color too
         this._updateColorRamp();
     }
 
-    _handleSpecialPaintPropertyUpdate(name: string) {
+    _handleSpecialPaintPropertyUpdate(name) {
         if (name === 'heatmap-color') {
             this._updateColorRamp();
         }
@@ -52,11 +40,11 @@ class HeatmapStyleLayer extends StyleLayer {
         }
     }
 
-    queryRadius(): number {
+    queryRadius() {
         return 0;
     }
 
-    queryIntersectsFeature(): boolean  {
+    queryIntersectsFeature()  {
         return false;
     }
 
@@ -65,4 +53,4 @@ class HeatmapStyleLayer extends StyleLayer {
     }
 }
 
-export default HeatmapStyleLayer;
+module.exports = HeatmapStyleLayer;

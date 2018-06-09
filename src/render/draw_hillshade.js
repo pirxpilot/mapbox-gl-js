@@ -1,20 +1,16 @@
-// @flow
-import Coordinate from '../geo/coordinate';
+'use strict';
+const Coordinate = require('../geo/coordinate');
 
-import Texture from './texture';
-import EXTENT from '../data/extent';
-import { mat4 } from 'gl-matrix';
-import StencilMode from '../gl/stencil_mode';
-import DepthMode from '../gl/depth_mode';
+const Texture = require('./texture');
+const EXTENT = require('../data/extent');
+const { mat4 } = require('gl-matrix');
+const StencilMode = require('../gl/stencil_mode');
+const DepthMode = require('../gl/depth_mode');
 
-import type Painter from './painter';
-import type SourceCache from '../source/source_cache';
-import type HillshadeStyleLayer from '../style/style_layer/hillshade_style_layer';
-import type {OverscaledTileID} from '../source/tile_id';
 
-export default drawHillshade;
+module.exports = drawHillshade;
 
-function drawHillshade(painter: Painter, sourceCache: SourceCache, layer: HillshadeStyleLayer, tileIDs: Array<OverscaledTileID>) {
+function drawHillshade(painter, sourceCache, layer, tileIDs) {
     if (painter.renderPass !== 'offscreen' && painter.renderPass !== 'translucent') return;
 
     const context = painter.context;
@@ -45,7 +41,7 @@ function setLight(program, painter, layer) {
 
 }
 
-function getTileLatRange(painter, tileID: OverscaledTileID) {
+function getTileLatRange(painter, tileID) {
     const coordinate0 = tileID.toCoordinate();
     const coordinate1 = new Coordinate(coordinate0.column, coordinate0.row + 1, coordinate0.zoom);
     return [painter.transform.coordinateLocation(coordinate0).lat, painter.transform.coordinateLocation(coordinate1).lat];

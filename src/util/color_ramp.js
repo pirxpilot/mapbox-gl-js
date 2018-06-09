@@ -1,8 +1,7 @@
-// @flow
+'use strict';
 
-import { RGBAImage } from './image';
+const { RGBAImage } = require('./image');
 
-import type {StylePropertyExpression} from '../style-spec/expression/index';
 
 /**
  * Given an expression that should evaluate to a color ramp, return
@@ -10,12 +9,12 @@ import type {StylePropertyExpression} from '../style-spec/expression/index';
  *
  * @private
  */
-export default function renderColorRamp(expression: StylePropertyExpression, colorRampEvaluationParameter: string): RGBAImage {
+module.exports = function renderColorRamp(expression, colorRampEvaluationParameter) {
     const colorRampData = new Uint8Array(256 * 4);
     const evaluationGlobals = {};
     for (let i = 0, j = 0; i < 256; i++, j += 4) {
         evaluationGlobals[colorRampEvaluationParameter] = i / 255;
-        const pxColor = expression.evaluate((evaluationGlobals: any));
+        const pxColor = expression.evaluate((evaluationGlobals));
         // the colors are being unpremultiplied because Color uses
         // premultiplied values, and the Texture class expects unpremultiplied ones
         colorRampData[j + 0] = Math.floor(pxColor.r * 255 / pxColor.a);
@@ -25,4 +24,4 @@ export default function renderColorRamp(expression: StylePropertyExpression, col
     }
 
     return new RGBAImage({width: 256, height: 1}, colorRampData);
-}
+};

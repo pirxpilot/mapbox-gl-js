@@ -1,8 +1,8 @@
-// @flow
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import {
+const {
     ObjectType,
     ValueType,
     StringType,
@@ -10,14 +10,10 @@ import {
     BooleanType,
     checkSubtype,
     toString
-} from '../types';
-import RuntimeError from '../runtime_error';
-import { typeOf } from '../values';
+} = require('../types');
+const RuntimeError = require('../runtime_error');
+const { typeOf } = require('../values');
 
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
-import type EvaluationContext from '../evaluation_context';
-import type { Type } from '../types';
 
 const types = {
     string: StringType,
@@ -26,20 +22,18 @@ const types = {
     object: ObjectType
 };
 
-class Assertion implements Expression {
-    type: Type;
-    args: Array<Expression>;
+class Assertion {
 
-    constructor(type: Type, args: Array<Expression>) {
+    constructor(type, args) {
         this.type = type;
         this.args = args;
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext): ?Expression {
+    static parse(args, context) {
         if (args.length < 2)
             return context.error(`Expected at least one argument.`);
 
-        const name: string = (args[0]: any);
+        const name = (args[0]);
         assert(types[name], name);
 
         const type = types[name];
@@ -54,7 +48,7 @@ class Assertion implements Expression {
         return new Assertion(type, parsed);
     }
 
-    evaluate(ctx: EvaluationContext) {
+    evaluate(ctx) {
         for (let i = 0; i < this.args.length; i++) {
             const value = this.args[i].evaluate(ctx);
             const error = checkSubtype(this.type, typeOf(value));
@@ -69,7 +63,7 @@ class Assertion implements Expression {
         return null;
     }
 
-    eachChild(fn: (Expression) => void) {
+    eachChild(fn) {
         this.args.forEach(fn);
     }
 
@@ -82,4 +76,4 @@ class Assertion implements Expression {
     }
 }
 
-export default Assertion;
+module.exports = Assertion;

@@ -1,5 +1,6 @@
+'use strict';
 
-import isEqual from './util/deep_equal';
+const isEqual = require('./util/deep_equal');
 
 const operations = {
 
@@ -389,5 +390,5 @@ function diffStyles(before, after) {
     return commands;
 }
 
-export default diffStyles;
-export { operations };
+module.exports = diffStyles;
+diffStyles.operations = operations;

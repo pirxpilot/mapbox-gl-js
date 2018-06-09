@@ -1,14 +1,9 @@
-// @flow
+'use strict';
 
-import Point from '@mapbox/point-geometry';
+const Point = require('@mapbox/point-geometry');
 
-import { GLYPH_PBF_BORDER } from '../style/parse_glyph_pbf';
+const { GLYPH_PBF_BORDER } = require('../style/parse_glyph_pbf');
 
-import type Anchor from './anchor';
-import type {PositionedIcon, Shaping} from './shaping';
-import type SymbolStyleLayer from '../style/style_layer/symbol_style_layer';
-import type {Feature} from '../style-spec/expression';
-import type {GlyphPosition} from '../render/glyph_atlas';
 
 /**
  * A textured quad for rendering a single icon or glyph.
@@ -23,31 +18,17 @@ import type {GlyphPosition} from '../render/glyph_atlas';
  *
  * @private
  */
-export type SymbolQuad = {
-    tl: Point,
-    tr: Point,
-    bl: Point,
-    br: Point,
-    tex: {
-        x: number,
-        y: number,
-        w: number,
-        h: number
-    },
-    writingMode: any | void,
-    glyphOffset: [number, number]
-};
 
 /**
  * Create the quads used for rendering an icon.
  * @private
  */
-export function getIconQuads(anchor: Anchor,
-                      shapedIcon: PositionedIcon,
-                      layer: SymbolStyleLayer,
-                      alongLine: boolean,
-                      shapedText: Shaping,
-                      feature: Feature): Array<SymbolQuad> {
+function getIconQuads(anchor,
+                      shapedIcon,
+                      layer,
+                      alongLine,
+                      shapedText,
+                      feature) {
     const image = shapedIcon.image;
     const layout = layer.layout;
 
@@ -114,12 +95,12 @@ export function getIconQuads(anchor: Anchor,
  * Create the quads used for rendering a text label.
  * @private
  */
-export function getGlyphQuads(anchor: Anchor,
-                       shaping: Shaping,
-                       layer: SymbolStyleLayer,
-                       alongLine: boolean,
-                       feature: Feature,
-                       positions: {[number]: GlyphPosition}): Array<SymbolQuad> {
+function getGlyphQuads(anchor,
+                       shaping,
+                       layer,
+                       alongLine,
+                       feature,
+                       positions) {
 
     const oneEm = 24;
     const textRotate = layer.layout.get('text-rotate').evaluate(feature, {}) * Math.PI / 180;
@@ -195,3 +176,8 @@ export function getGlyphQuads(anchor: Anchor,
 
     return quads;
 }
+
+module.exports = {
+    getIconQuads,
+    getGlyphQuads
+};

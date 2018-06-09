@@ -1,6 +1,6 @@
-import { test } from 'mapbox-gl-js-test';
-import { mapObject } from '../../../src/util/util';
-import StyleLayerIndex from '../../../src/style/style_layer_index';
+const { test } = require('mapbox-gl-js-test');
+const { mapObject } = require('../../../src/util/util');
+const StyleLayerIndex = require('../../../src/style/style_layer_index');
 
 test('StyleLayerIndex#replace', (t) => {
     const index = new StyleLayerIndex([

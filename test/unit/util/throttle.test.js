@@ -1,8 +1,8 @@
-// @flow
+'use strict';
 
-import { test } from 'mapbox-gl-js-test';
+const { test } = require('mapbox-gl-js-test');
 
-import throttle from '../../../src/util/throttle';
+const throttle = require('../../../src/util/throttle');
 
 test('throttle', (t) => {
 

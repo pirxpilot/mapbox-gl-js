@@ -1,5 +1,6 @@
+'use strict';
 
-import validateStyle from '../validate_style.min';
+const validateStyle = require('../validate_style.min');
 
 /*
  * Validate a style against the latest specification. This method is optimized
@@ -8,4 +9,4 @@ import validateStyle from '../validate_style.min';
  * @see validateStyleMin
  * @deprecated This file exists for backwards compatibility and will be dropped in the next minor release.
  */
-export default validateStyle;
+module.exports = validateStyle;

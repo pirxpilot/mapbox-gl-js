@@ -1,9 +1,9 @@
-import { test } from 'mapbox-gl-js-test';
-import { extend } from '../../../../src/util/util';
-import window from '../../../../src/util/window';
-import Map from '../../../../src/ui/map';
-import DOM from '../../../../src/util/dom';
-import simulate from 'mapbox-gl-js-test/simulate_interaction';
+const { test } = require('mapbox-gl-js-test');
+const { extend } = require('../../../../src/util/util');
+const window = require('../../../../src/util/window');
+const Map = require('../../../../src/ui/map');
+const DOM = require('../../../../src/util/dom');
+const simulate = require('mapbox-gl-js-test/simulate_interaction');
 
 function createMap(options) {
     return new Map(extend({ container: DOM.create('div', '', window.document.body) }, options));
@@ -56,7 +56,7 @@ test('DragRotateHandler stops firing events after mouseup', (t) => {
     simulate.mouseup(map.getCanvas(),   {buttons: 0, button: 2});
     t.equal(spy.callCount, 3);
 
-    spy.reset();
+    spy.resetHistory();
     simulate.mousemove(map.getCanvas(), {buttons: 0});
     map._renderTaskQueue.run();
     t.equal(spy.callCount, 0);
@@ -382,7 +382,7 @@ test('DragRotateHandler requests a new render frame after each mousemove event',
     map._renderTaskQueue.run();
 
     // https://github.com/mapbox/mapbox-gl-js/issues/6063
-    requestRenderFrame.reset();
+    requestRenderFrame.resetHistory();
     simulate.mousemove(map.getCanvas(), {buttons: 2});
     t.equal(requestRenderFrame.callCount, 1);
 

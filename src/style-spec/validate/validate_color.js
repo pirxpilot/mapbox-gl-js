@@ -1,9 +1,10 @@
+'use strict';
 
-import ValidationError from '../error/validation_error';
-import getType from '../util/get_type';
-import { parseCSSColor } from 'csscolorparser';
+const ValidationError = require('../error/validation_error');
+const getType = require('../util/get_type');
+const { parseCSSColor } = require('csscolorparser');
 
-export default function validateColor(options) {
+module.exports = function validateColor(options) {
     const key = options.key;
     const value = options.value;
     const type = getType(value);
@@ -17,4 +18,4 @@ export default function validateColor(options) {
     }
 
     return [];
-}
+};

@@ -1,8 +1,7 @@
-// @flow
+'use strict';
 
-import window from './window';
+const window = require('./window');
 
-import type { Callback } from '../types/callback';
 
 /**
  * The type of a resource.
@@ -20,7 +19,14 @@ const ResourceType = {
     SpriteJSON: 'SpriteJSON',
     Image: 'Image'
 };
-export { ResourceType };
+
+module.exports = {
+    ResourceType,
+    getJSON,
+    getArrayBuffer,
+    getImage,
+    getVideo
+};
 
 if (typeof Object.freeze == 'function') {
     Object.freeze(ResourceType);
@@ -33,17 +39,9 @@ if (typeof Object.freeze == 'function') {
  * @property {Object} headers The headers to be sent with the request.
  * @property {string} credentials `'same-origin'|'include'` Use 'include' to send cookies with cross-origin requests.
  */
-export type RequestParameters = {
-    url: string,
-    headers?: Object,
-    credentials?: 'same-origin' | 'include',
-    collectResourceTiming?: boolean
-};
 
 class AJAXError extends Error {
-    status: number;
-    url: string;
-    constructor(message: string, status: number, url: string) {
+    constructor(message, status, url) {
         super(message);
         this.status = status;
         this.url = url;
@@ -58,8 +56,8 @@ class AJAXError extends Error {
     }
 }
 
-function makeRequest(requestParameters: RequestParameters): XMLHttpRequest {
-    const xhr: XMLHttpRequest = new window.XMLHttpRequest();
+function makeRequest(requestParameters) {
+    const xhr = new window.XMLHttpRequest();
 
     xhr.open('GET', requestParameters.url, true);
     for (const k in requestParameters.headers) {
@@ -69,7 +67,7 @@ function makeRequest(requestParameters: RequestParameters): XMLHttpRequest {
     return xhr;
 }
 
-export const getJSON = function(requestParameters: RequestParameters, callback: Callback<mixed>) {
+function getJSON(requestParameters, callback) {
     const xhr = makeRequest(requestParameters);
     xhr.setRequestHeader('Accept', 'application/json');
     xhr.onerror = function() {
@@ -94,16 +92,16 @@ export const getJSON = function(requestParameters: RequestParameters, callback: 
     };
     xhr.send();
     return xhr;
-};
+}
 
-export const getArrayBuffer = function(requestParameters: RequestParameters, callback: Callback<{data: ArrayBuffer, cacheControl: ?string, expires: ?string}>) {
+function getArrayBuffer(requestParameters, callback) {
     const xhr = makeRequest(requestParameters);
     xhr.responseType = 'arraybuffer';
     xhr.onerror = function() {
         callback(new Error(xhr.statusText));
     };
     xhr.onload = function() {
-        const response: ArrayBuffer = xhr.response;
+        const response = xhr.response;
         if (response.byteLength === 0 && xhr.status === 200) {
             return callback(new Error('http status 200 returned without content.'));
         }
@@ -119,44 +117,44 @@ export const getArrayBuffer = function(requestParameters: RequestParameters, cal
     };
     xhr.send();
     return xhr;
-};
+}
 
 function sameOrigin(url) {
-    const a: HTMLAnchorElement = window.document.createElement('a');
+    const a = window.document.createElement('a');
     a.href = url;
     return a.protocol === window.document.location.protocol && a.host === window.document.location.host;
 }
 
 const transparentPngUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=';
 
-export const getImage = function(requestParameters: RequestParameters, callback: Callback<HTMLImageElement>) {
+function getImage(requestParameters, callback) {
     // request the image with XHR to work around caching issues
     // see https://github.com/mapbox/mapbox-gl-js/issues/1470
     return getArrayBuffer(requestParameters, (err, imgData) => {
         if (err) {
             callback(err);
         } else if (imgData) {
-            const img: HTMLImageElement = new window.Image();
+            const img = new window.Image();
             const URL = window.URL || window.webkitURL;
             img.onload = () => {
                 callback(null, img);
                 URL.revokeObjectURL(img.src);
             };
-            const blob: Blob = new window.Blob([new Uint8Array(imgData.data)], { type: 'image/png' });
-            (img: any).cacheControl = imgData.cacheControl;
-            (img: any).expires = imgData.expires;
+            const blob = new window.Blob([new Uint8Array(imgData.data)], { type: 'image/png' });
+            (img).cacheControl = imgData.cacheControl;
+            (img).expires = imgData.expires;
             img.src = imgData.data.byteLength ? URL.createObjectURL(blob) : transparentPngUrl;
         }
     });
-};
+}
 
-export const getVideo = function(urls: Array<string>, callback: Callback<HTMLVideoElement>) {
-    const video: HTMLVideoElement = window.document.createElement('video');
+function getVideo(urls, callback) {
+    const video = window.document.createElement('video');
     video.onloadstart = function() {
         callback(null, video);
     };
     for (let i = 0; i < urls.length; i++) {
-        const s: HTMLSourceElement = window.document.createElement('source');
+        const s = window.document.createElement('source');
         if (!sameOrigin(urls[i])) {
             video.crossOrigin = 'Anonymous';
         }
@@ -164,4 +162,4 @@ export const getVideo = function(urls: Array<string>, callback: Callback<HTMLVid
         video.appendChild(s);
     }
     return video;
-};
+}

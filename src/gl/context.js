@@ -1,68 +1,15 @@
-// @flow
-import IndexBuffer from './index_buffer';
+'use strict';
+const IndexBuffer = require('./index_buffer');
 
-import VertexBuffer from './vertex_buffer';
-import Framebuffer from './framebuffer';
-import DepthMode from './depth_mode';
-import StencilMode from './stencil_mode';
-import ColorMode from './color_mode';
-import { deepEqual } from '../util/util';
-import { ClearColor, ClearDepth, ClearStencil, ColorMask, DepthMask, StencilMask, StencilFunc, StencilOp, StencilTest, DepthRange, DepthTest, DepthFunc, Blend, BlendFunc, BlendColor, Program, LineWidth, ActiveTextureUnit, Viewport, BindFramebuffer, BindRenderbuffer, BindTexture, BindVertexBuffer, BindElementBuffer, BindVertexArrayOES, PixelStoreUnpack, PixelStoreUnpackPremultiplyAlpha } from './value';
-
-
-import type {TriangleIndexArray, LineIndexArray} from '../data/index_array_type';
-import type {
-    StructArray,
-    StructArrayMember
-} from '../util/struct_array';
-import type Color from '../style-spec/util/color';
-
-type ClearArgs = {
-    color?: Color,
-    depth?: number,
-    stencil?: number
-};
-
+const VertexBuffer = require('./vertex_buffer');
+const Framebuffer = require('./framebuffer');
+const ColorMode = require('./color_mode');
+const { deepEqual } = require('../util/util');
+const { ClearColor, ClearDepth, ClearStencil, ColorMask, DepthMask, StencilMask, StencilFunc, StencilOp, StencilTest, DepthRange, DepthTest, DepthFunc, Blend, BlendFunc, BlendColor, Program, LineWidth, ActiveTextureUnit, Viewport, BindFramebuffer, BindRenderbuffer, BindTexture, BindVertexBuffer, BindElementBuffer, BindVertexArrayOES, PixelStoreUnpack, PixelStoreUnpackPremultiplyAlpha } = require('./value');
 
 class Context {
-    gl: WebGLRenderingContext;
-    extVertexArrayObject: any;
-    currentNumAttributes: ?number;
-    lineWidthRange: [number, number];
 
-    clearColor: ClearColor;
-    clearDepth: ClearDepth;
-    clearStencil: ClearStencil;
-    colorMask: ColorMask;
-    depthMask: DepthMask;
-    stencilMask: StencilMask;
-    stencilFunc: StencilFunc;
-    stencilOp: StencilOp;
-    stencilTest: StencilTest;
-    depthRange: DepthRange;
-    depthTest: DepthTest;
-    depthFunc: DepthFunc;
-    blend: Blend;
-    blendFunc: BlendFunc;
-    blendColor: BlendColor;
-    program: Program;
-    lineWidth: LineWidth;
-    activeTexture: ActiveTextureUnit;
-    viewport: Viewport;
-    bindFramebuffer: BindFramebuffer;
-    bindRenderbuffer: BindRenderbuffer;
-    bindTexture: BindTexture;
-    bindVertexBuffer: BindVertexBuffer;
-    bindElementBuffer: BindElementBuffer;
-    bindVertexArrayOES: BindVertexArrayOES;
-    pixelStoreUnpack: PixelStoreUnpack;
-    pixelStoreUnpackPremultiplyAlpha: PixelStoreUnpackPremultiplyAlpha;
-
-    extTextureFilterAnisotropic: any;
-    extTextureFilterAnisotropicMax: any;
-    extTextureHalfFloat: any;
-
-    constructor(gl: WebGLRenderingContext) {
+    constructor(gl) {
         this.gl = gl;
         this.extVertexArrayObject = this.gl.getExtension('OES_vertex_array_object');
         this.lineWidthRange = gl.getParameter(gl.ALIASED_LINE_WIDTH_RANGE);
@@ -111,15 +58,15 @@ class Context {
 
     }
 
-    createIndexBuffer(array: TriangleIndexArray | LineIndexArray, dynamicDraw?: boolean) {
+    createIndexBuffer(array, dynamicDraw) {
         return new IndexBuffer(this, array, dynamicDraw);
     }
 
-    createVertexBuffer(array: StructArray, attributes: $ReadOnlyArray<StructArrayMember>, dynamicDraw?: boolean) {
+    createVertexBuffer(array, attributes, dynamicDraw) {
         return new VertexBuffer(this, array, attributes, dynamicDraw);
     }
 
-    createRenderbuffer(storageFormat: number, width: number, height: number) {
+    createRenderbuffer(storageFormat, width, height) {
         const gl = this.gl;
 
         const rbo = gl.createRenderbuffer();
@@ -130,11 +77,11 @@ class Context {
         return rbo;
     }
 
-    createFramebuffer(width: number, height: number) {
+    createFramebuffer(width, height) {
         return new Framebuffer(this, width, height);
     }
 
-    clear({color, depth}: ClearArgs) {
+    clear({color, depth}) {
         const gl = this.gl;
         let mask = 0;
 
@@ -160,7 +107,7 @@ class Context {
         gl.clear(mask);
     }
 
-    setDepthMode(depthMode: $ReadOnly<DepthMode>) {
+    setDepthMode(depthMode) {
         if (depthMode.func === this.gl.ALWAYS && !depthMode.mask) {
             this.depthTest.set(false);
         } else {
@@ -171,7 +118,7 @@ class Context {
         }
     }
 
-    setStencilMode(stencilMode: $ReadOnly<StencilMode>) {
+    setStencilMode(stencilMode) {
         if (stencilMode.test.func === this.gl.ALWAYS && !stencilMode.mask) {
             this.stencilTest.set(false);
         } else {
@@ -186,7 +133,7 @@ class Context {
         }
     }
 
-    setColorMode(colorMode: $ReadOnly<ColorMode>) {
+    setColorMode(colorMode) {
         if (deepEqual(colorMode.blendFunction, ColorMode.Replace)) {
             this.blend.set(false);
         } else {
@@ -199,4 +146,4 @@ class Context {
     }
 }
 
-export default Context;
+module.exports = Context;

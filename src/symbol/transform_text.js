@@ -1,11 +1,9 @@
-// @flow
+'use strict';
 
-import { plugin as rtlTextPlugin } from '../source/rtl_text_plugin';
+const { plugin: rtlTextPlugin } = require('../source/rtl_text_plugin');
 
-import type SymbolStyleLayer from '../style/style_layer/symbol_style_layer';
-import type {Feature} from '../style-spec/expression';
 
-export default function(text: string, layer: SymbolStyleLayer, feature: Feature) {
+module.exports = function(text, layer, feature) {
     const transform = layer.layout.get('text-transform').evaluate(feature, {});
     if (transform === 'uppercase') {
         text = text.toLocaleUpperCase();
@@ -18,4 +16,4 @@ export default function(text: string, layer: SymbolStyleLayer, feature: Feature)
     }
 
     return text;
-}
+};

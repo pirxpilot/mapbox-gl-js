@@ -1,16 +1,13 @@
-// @flow
+'use strict';
 
-import DOM from '../../util/dom';
+const DOM = require('../../util/dom');
 
-import { bezier, bindAll } from '../../util/util';
-import window from '../../util/window';
-import browser from '../../util/browser';
-import { Event } from '../../util/evented';
-import assert from 'assert';
+const { bezier, bindAll } = require('../../util/util');
+const window = require('../../util/window');
+const browser = require('../../util/browser');
+const { Event } = require('../../util/evented');
+const assert = require('assert');
 
-import type Map from '../map';
-import type Point from '@mapbox/point-geometry';
-import type {TaskID} from '../../util/task_queue';
 
 const inertiaLinearity = 0.25,
     inertiaEasing = bezier(0, 0, inertiaLinearity, 1),
@@ -22,20 +19,7 @@ const inertiaLinearity = 0.25,
  * dragging the cursor while holding the right mouse button or `ctrl` key.
  */
 class DragRotateHandler {
-    _map: Map;
-    _el: HTMLElement;
-    _state: 'disabled' | 'enabled' | 'pending' | 'active';
-    _button: 'right' | 'left';
-    _eventButton: number;
-    _bearingSnap: number;
-    _pitchWithRotate: boolean;
 
-    _lastMoveEvent: MouseEvent;
-    _pos: Point;
-    _previousPos: Point;
-    _inertia: Array<[number, number]>;
-    _center: Point;
-    _frameId: ?TaskID;
 
     /**
      * @param {Map} map The Mapbox GL JS map to add the handler to.
@@ -45,12 +29,7 @@ class DragRotateHandler {
      * @param {bool} [options.pitchWithRotate=true] Control the map pitch in addition to the bearing
      * @private
      */
-    constructor(map: Map, options: {
-        button?: 'right' | 'left',
-        element?: HTMLElement,
-        bearingSnap?: number,
-        pitchWithRotate?: boolean
-    }) {
+    constructor(map, options) {
         this._map = map;
         this._el = options.element || map.getCanvasContainer();
         this._state = 'disabled';
@@ -125,7 +104,7 @@ class DragRotateHandler {
         }
     }
 
-    onMouseDown(e: MouseEvent) {
+    onMouseDown(e) {
         if (this._state !== 'enabled') return;
 
         if (this._button === 'right') {
@@ -158,7 +137,7 @@ class DragRotateHandler {
         e.preventDefault();
     }
 
-    _onMouseMove(e: MouseEvent) {
+    _onMouseMove(e) {
         this._lastMoveEvent = e;
         this._pos = DOM.mousePos(this._el, e);
 
@@ -208,7 +187,7 @@ class DragRotateHandler {
         this._previousPos = this._pos;
     }
 
-    _onMouseUp(e: MouseEvent) {
+    _onMouseUp(e) {
         if (DOM.mouseButton(e) !== this._eventButton) return;
         switch (this._state) {
         case 'active':
@@ -228,7 +207,7 @@ class DragRotateHandler {
         }
     }
 
-    _onBlur(e: FocusEvent) {
+    _onBlur(e) {
         switch (this._state) {
         case 'active':
             this._state = 'enabled';
@@ -266,7 +245,7 @@ class DragRotateHandler {
         delete this._previousPos;
     }
 
-    _inertialRotate(e: MouseEvent) {
+    _inertialRotate(e) {
         this._fireEvent('rotateend', e);
         this._drainInertiaBuffer();
 
@@ -322,7 +301,7 @@ class DragRotateHandler {
         }, { originalEvent: e });
     }
 
-    _fireEvent(type: string, e: *) {
+    _fireEvent(type, e) {
         return this._map.fire(new Event(type, e ? { originalEvent: e } : {}));
     }
 
@@ -336,4 +315,4 @@ class DragRotateHandler {
     }
 }
 
-export default DragRotateHandler;
+module.exports = DragRotateHandler;

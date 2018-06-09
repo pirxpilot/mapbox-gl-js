@@ -1,26 +1,17 @@
-// @flow
+'use strict';
 
-import DEMData from '../data/dem_data';
+const DEMData = require('../data/dem_data');
 
-import type Actor from '../util/actor';
-import type {
-    WorkerDEMTileParameters,
-    WorkerDEMTileCallback,
-    TileParameters
-} from './worker_source';
 
 
 class RasterDEMTileWorkerSource {
-    actor: Actor;
-    loading: {[string]: DEMData};
-    loaded: {[string]: DEMData};
 
     constructor() {
         this.loading = {};
         this.loaded = {};
     }
 
-    loadTile(params: WorkerDEMTileParameters, callback: WorkerDEMTileCallback) {
+    loadTile(params, callback) {
         const uid = params.uid,
             encoding = params.encoding;
 
@@ -34,7 +25,7 @@ class RasterDEMTileWorkerSource {
         callback(null, dem);
     }
 
-    removeTile(params: TileParameters) {
+    removeTile(params) {
         const loaded = this.loaded,
             uid = params.uid;
         if (loaded && loaded[uid]) {
@@ -43,4 +34,4 @@ class RasterDEMTileWorkerSource {
     }
 }
 
-export default RasterDEMTileWorkerSource;
+module.exports = RasterDEMTileWorkerSource;

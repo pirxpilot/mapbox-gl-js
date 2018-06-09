@@ -1,8 +1,8 @@
-import { test } from 'mapbox-gl-js-test';
-import GeoJSONWorkerSource from '../../../src/source/geojson_worker_source';
-import StyleLayerIndex from '../../../src/style/style_layer_index';
-import { OverscaledTileID } from '../../../src/source/tile_id';
-import perf from '../../../src/util/performance';
+const { test } = require('mapbox-gl-js-test');
+const GeoJSONWorkerSource = require('../../../src/source/geojson_worker_source');
+const StyleLayerIndex = require('../../../src/style/style_layer_index');
+const { OverscaledTileID } = require('../../../src/source/tile_id');
+const perf = require('../../../src/util/performance');
 
 test('reloadTile', (t) => {
     t.test('does not rebuild vector data unless data has changed', (t) => {

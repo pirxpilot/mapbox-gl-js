@@ -1,31 +1,15 @@
 // This file is generated. Edit build/generate-style-code.js, then run `yarn run codegen`.
-// @flow
+'use strict';
 /* eslint-disable */
 
-import styleSpec from '../../style-spec/reference/latest';
+const styleSpec = require('../../style-spec/reference/latest');
 
-import {
+const {
     Properties,
     DataConstantProperty,
-    DataDrivenProperty,
-    CrossFadedProperty,
-    ColorRampProperty
-} from '../properties';
+} = require ('../properties');
 
-import type Color from '../../style-spec/util/color';
-
-
-export type PaintProps = {|
-    "raster-opacity": DataConstantProperty<number>,
-    "raster-hue-rotate": DataConstantProperty<number>,
-    "raster-brightness-min": DataConstantProperty<number>,
-    "raster-brightness-max": DataConstantProperty<number>,
-    "raster-saturation": DataConstantProperty<number>,
-    "raster-contrast": DataConstantProperty<number>,
-    "raster-fade-duration": DataConstantProperty<number>,
-|};
-
-const paint: Properties<PaintProps> = new Properties({
+const paint = new Properties({
     "raster-opacity": new DataConstantProperty(styleSpec["paint_raster"]["raster-opacity"]),
     "raster-hue-rotate": new DataConstantProperty(styleSpec["paint_raster"]["raster-hue-rotate"]),
     "raster-brightness-min": new DataConstantProperty(styleSpec["paint_raster"]["raster-brightness-min"]),
@@ -35,4 +19,4 @@ const paint: Properties<PaintProps> = new Properties({
     "raster-fade-duration": new DataConstantProperty(styleSpec["paint_raster"]["raster-fade-duration"]),
 });
 
-export default { paint };
+module.exports = { paint };

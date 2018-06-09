@@ -1,24 +1,22 @@
-// @flow
+'use strict';
 
-import { number as interpolate } from '../style-spec/util/interpolate';
+const { number: interpolate } = require('../style-spec/util/interpolate');
 
-import Anchor from '../symbol/anchor';
-import checkMaxAngle from './check_max_angle';
+const Anchor = require('../symbol/anchor');
+const checkMaxAngle = require('./check_max_angle');
 
-import type Point from '@mapbox/point-geometry';
-import type {Shaping, PositionedIcon} from './shaping';
 
-export default getAnchors;
+module.exports = getAnchors;
 
-function getAnchors(line: Array<Point>,
-                    spacing: number,
-                    maxAngle: number,
-                    shapedText: ?Shaping,
-                    shapedIcon: ?PositionedIcon,
-                    glyphSize: number,
-                    boxScale: number,
-                    overscaling: number,
-                    tileExtent: number) {
+function getAnchors(line,
+                    spacing,
+                    maxAngle,
+                    shapedText,
+                    shapedIcon,
+                    glyphSize,
+                    boxScale,
+                    overscaling,
+                    tileExtent) {
 
     // Resample a line to get anchor points for labels and check that each
     // potential label passes text-max-angle check and has enough froom to fit

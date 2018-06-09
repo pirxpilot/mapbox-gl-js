@@ -1,9 +1,10 @@
+'use strict';
 
-import getType from '../util/get_type';
-import validate from './validate';
-import ValidationError from '../error/validation_error';
+const getType = require('../util/get_type');
+const validate = require('./validate');
+const ValidationError = require('../error/validation_error');
 
-export default function validateArray(options) {
+module.exports = function validateArray(options) {
     const array = options.value;
     const arraySpec = options.valueSpec;
     const style = options.style;
@@ -48,4 +49,4 @@ export default function validateArray(options) {
         }));
     }
     return errors;
-}
+};

@@ -1,7 +1,7 @@
-import { test } from 'mapbox-gl-js-test';
-import RasterTileSource from '../../../src/source/raster_tile_source';
-import window from '../../../src/util/window';
-import { OverscaledTileID } from '../../../src/source/tile_id';
+const { test } = require('mapbox-gl-js-test');
+const RasterTileSource = require('../../../src/source/raster_tile_source');
+const window = require('../../../src/util/window');
+const { OverscaledTileID } = require('../../../src/source/tile_id');
 
 function createSource(options, transformCallback) {
     const source = new RasterTileSource('id', options, { send: function() {} }, options.eventedParent);

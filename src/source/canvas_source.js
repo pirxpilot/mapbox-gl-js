@@ -1,24 +1,15 @@
-// @flow
+'use strict';
 
-import ImageSource from './image_source';
+const ImageSource = require('./image_source');
 
-import window from '../util/window';
-import rasterBoundsAttributes from '../data/raster_bounds_attributes';
-import VertexArrayObject from '../render/vertex_array_object';
-import Texture from '../render/texture';
-import { ErrorEvent } from '../util/evented';
-import ValidationError from '../style-spec/error/validation_error';
+const window = require('../util/window');
+const rasterBoundsAttributes = require('../data/raster_bounds_attributes');
+const VertexArrayObject = require('../render/vertex_array_object');
+const Texture = require('../render/texture');
+const { ErrorEvent } = require('../util/evented');
+const ValidationError = require('../style-spec/error/validation_error');
 
-import type Map from '../ui/map';
-import type Dispatcher from '../util/dispatcher';
-import type {Evented} from '../util/evented';
 
-export type CanvasSourceSpecification = {|
-    "type": "canvas",
-    "coordinates": [[number, number], [number, number], [number, number], [number, number]],
-    "animate"?: boolean,
-    "canvas": string | HTMLCanvasElement
-|};
 
 /**
  * Options to add a canvas source type to the map.
@@ -59,19 +50,11 @@ export type CanvasSourceSpecification = {|
  * map.removeSource('some id');  // remove
  */
 class CanvasSource extends ImageSource {
-    options: CanvasSourceSpecification;
-    animate: boolean;
-    canvas: HTMLCanvasElement;
-    width: number;
-    height: number;
-    play: () => void;
-    pause: () => void;
-    _playing: boolean;
 
     /**
      * @private
      */
-    constructor(id: string, options: CanvasSourceSpecification, dispatcher: Dispatcher, eventedParent: Evented) {
+    constructor(id, options, dispatcher, eventedParent) {
         super(id, options, dispatcher, eventedParent);
 
         // We build in some validation here, since canvas sources aren't included in the style spec:
@@ -145,7 +128,7 @@ class CanvasSource extends ImageSource {
         return this.canvas;
     }
 
-    onAdd(map: Map) {
+    onAdd(map) {
         this.map = map;
         this.load();
         if (this.canvas) {
@@ -216,7 +199,7 @@ class CanvasSource extends ImageSource {
         }
     }
 
-    serialize(): Object {
+    serialize() {
         return {
             type: 'canvas',
             coordinates: this.coordinates
@@ -235,4 +218,4 @@ class CanvasSource extends ImageSource {
     }
 }
 
-export default CanvasSource;
+module.exports = CanvasSource;

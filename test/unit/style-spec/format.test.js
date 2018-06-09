@@ -1,5 +1,5 @@
-import { test as t } from 'mapbox-gl-js-test';
-import format from '../../../src/style-spec/format';
+const { test: t } = require('mapbox-gl-js-test');
+const format = require('../../../src/style-spec/format');
 
 function roundtrip(style) {
     return JSON.parse(format(style));

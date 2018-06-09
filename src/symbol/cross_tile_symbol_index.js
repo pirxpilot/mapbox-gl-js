@@ -1,11 +1,7 @@
-// @flow
+'use strict';
 
-import EXTENT from '../data/extent';
+const EXTENT = require('../data/extent');
 
-import type {OverscaledTileID} from '../source/tile_id';
-import type SymbolBucket, {SymbolInstance} from '../data/bucket/symbol_bucket';
-import type StyleLayer from '../style/style_layer';
-import type Tile from '../source/tile';
 
 /*
     The CrossTileSymbolIndex generally works on the assumption that
@@ -25,17 +21,8 @@ import type Tile from '../source/tile';
 const roundingFactor = 512 / EXTENT / 2;
 
 class TileLayerIndex {
-    tileID: OverscaledTileID;
-    indexedSymbolInstances: {[string]: Array<{
-        crossTileID: number,
-        coord: {
-            x: number,
-            y: number
-        }
-    }>};
-    bucketInstanceId: number;
 
-    constructor(tileID: OverscaledTileID, symbolInstances: Array<SymbolInstance>, bucketInstanceId: number) {
+    constructor(tileID, symbolInstances, bucketInstanceId) {
         this.tileID = tileID;
         this.indexedSymbolInstances = {};
         this.bucketInstanceId = bucketInstanceId;
@@ -60,7 +47,7 @@ class TileLayerIndex {
     // (2) converted to the z-scale of this TileLayerIndex
     // (3) down-sampled by "roundingFactor" from tile coordinate precision in order to be
     //     more tolerant of small differences between tiles.
-    getScaledCoordinates(symbolInstance: SymbolInstance, childTileID: OverscaledTileID) {
+    getScaledCoordinates(symbolInstance, childTileID) {
         const zDifference = childTileID.canonical.z - this.tileID.canonical.z;
         const scale = roundingFactor / Math.pow(2, zDifference);
         const anchor = symbolInstance.anchor;
@@ -70,7 +57,7 @@ class TileLayerIndex {
         };
     }
 
-    findMatches(symbolInstances: Array<SymbolInstance>, newTileID: OverscaledTileID, zoomCrossTileIDs: {[crossTileID: number]: boolean}) {
+    findMatches(symbolInstances, newTileID, zoomCrossTileIDs) {
         const tolerance = this.tileID.canonical.z < newTileID.canonical.z ? 1 : Math.pow(2, this.tileID.canonical.z - newTileID.canonical.z);
 
         for (const symbolInstance of symbolInstances) {
@@ -106,7 +93,6 @@ class TileLayerIndex {
 }
 
 class CrossTileIDs {
-    maxCrossTileID: number;
     constructor() {
         this.maxCrossTileID = 0;
     }
@@ -116,9 +102,6 @@ class CrossTileIDs {
 }
 
 class CrossTileSymbolLayerIndex {
-    indexes: {[zoom: string | number]: {[tileId: string | number]: TileLayerIndex}};
-    usedCrossTileIDs: {[zoom: string | number]: {[crossTileID: number]: boolean}};
-    lng: number;
 
     constructor() {
         this.indexes = {};
@@ -131,7 +114,7 @@ class CrossTileSymbolLayerIndex {
      * To prevent labels from flashing out and in we adjust the tileID values in the indexes
      * so that they match the new wrapped version of the map.
      */
-    handleWrapJump(lng: number) {
+    handleWrapJump(lng) {
         const wrapDelta = Math.round((lng - this.lng) / 360);
         if (wrapDelta !== 0) {
             for (const zoom in this.indexes) {
@@ -149,7 +132,7 @@ class CrossTileSymbolLayerIndex {
         this.lng = lng;
     }
 
-    addBucket(tileID: OverscaledTileID, bucket: SymbolBucket, crossTileIDs: CrossTileIDs) {
+    addBucket(tileID, bucket, crossTileIDs) {
         if (this.indexes[tileID.overscaledZ] &&
             this.indexes[tileID.overscaledZ][tileID.key]) {
             if (this.indexes[tileID.overscaledZ][tileID.key].bucketInstanceId ===
@@ -209,7 +192,7 @@ class CrossTileSymbolLayerIndex {
         return true;
     }
 
-    removeBucketCrossTileIDs(zoom: string | number, removedBucket: TileLayerIndex) {
+    removeBucketCrossTileIDs(zoom, removedBucket) {
         for (const key in removedBucket.indexedSymbolInstances) {
             for (const symbolInstance of removedBucket.indexedSymbolInstances[key]) {
                 delete this.usedCrossTileIDs[zoom][symbolInstance.crossTileID];
@@ -217,7 +200,7 @@ class CrossTileSymbolLayerIndex {
         }
     }
 
-    removeStaleBuckets(currentIDs: { [string | number]: boolean }) {
+    removeStaleBuckets(currentIDs) {
         let tilesChanged = false;
         for (const z in this.indexes) {
             const zoomIndexes = this.indexes[z];
@@ -234,10 +217,6 @@ class CrossTileSymbolLayerIndex {
 }
 
 class CrossTileSymbolIndex {
-    layerIndexes: {[layerId: string]: CrossTileSymbolLayerIndex};
-    crossTileIDs: CrossTileIDs;
-    maxBucketInstanceId: number;
-    bucketsInCurrentPlacement: {[number]: boolean};
 
     constructor() {
         this.layerIndexes = {};
@@ -246,7 +225,7 @@ class CrossTileSymbolIndex {
         this.bucketsInCurrentPlacement = {};
     }
 
-    addLayer(styleLayer: StyleLayer, tiles: Array<Tile>, lng: number) {
+    addLayer(styleLayer, tiles, lng) {
         let layerIndex = this.layerIndexes[styleLayer.id];
         if (layerIndex === undefined) {
             layerIndex = this.layerIndexes[styleLayer.id] = new CrossTileSymbolLayerIndex();
@@ -258,7 +237,7 @@ class CrossTileSymbolIndex {
         layerIndex.handleWrapJump(lng);
 
         for (const tile of tiles) {
-            const symbolBucket = ((tile.getBucket(styleLayer): any): SymbolBucket);
+            const symbolBucket = ((tile.getBucket(styleLayer)));
             if (!symbolBucket || styleLayer.id !== symbolBucket.layerIds[0])
                 continue;
 
@@ -279,7 +258,7 @@ class CrossTileSymbolIndex {
         return symbolBucketsChanged;
     }
 
-    pruneUnusedLayers(usedLayers: Array<string>) {
+    pruneUnusedLayers(usedLayers) {
         const usedLayerMap = {};
         usedLayers.forEach((usedLayer) => {
             usedLayerMap[usedLayer] = true;
@@ -292,4 +271,4 @@ class CrossTileSymbolIndex {
     }
 }
 
-export default CrossTileSymbolIndex;
+module.exports = CrossTileSymbolIndex;

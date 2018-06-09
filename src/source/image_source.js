@@ -1,27 +1,19 @@
-// @flow
+'use strict';
 
-import { getCoordinatesCenter } from '../util/util';
+const { getCoordinatesCenter } = require('../util/util');
 
-import { CanonicalTileID } from './tile_id';
-import LngLat from '../geo/lng_lat';
-import Point from '@mapbox/point-geometry';
-import { Event, ErrorEvent, Evented } from '../util/evented';
-import { getImage, ResourceType } from '../util/ajax';
-import browser from '../util/browser';
-import EXTENT from '../data/extent';
-import { RasterBoundsArray } from '../data/array_types';
-import rasterBoundsAttributes from '../data/raster_bounds_attributes';
-import VertexArrayObject from '../render/vertex_array_object';
-import Texture from '../render/texture';
+const { CanonicalTileID } = require('./tile_id');
+const LngLat = require('../geo/lng_lat');
+const Point = require('@mapbox/point-geometry');
+const { Event, ErrorEvent, Evented } = require('../util/evented');
+const { getImage, ResourceType } = require('../util/ajax');
+const browser = require('../util/browser');
+const EXTENT = require('../data/extent');
+const { RasterBoundsArray } = require('../data/array_types');
+const rasterBoundsAttributes = require('../data/raster_bounds_attributes');
+const VertexArrayObject = require('../render/vertex_array_object');
+const Texture = require('../render/texture');
 
-import type {Source} from './source';
-import type {CanvasSourceSpecification} from './canvas_source';
-import type Map from '../ui/map';
-import type Dispatcher from '../util/dispatcher';
-import type Tile from './tile';
-import type Coordinate from '../geo/coordinate';
-import type {Callback} from '../types/callback';
-import type VertexBuffer from '../gl/vertex_buffer';
 
 /**
  * A data source containing an image.
@@ -52,31 +44,13 @@ import type VertexBuffer from '../gl/vertex_buffer';
  * map.removeSource('some id');  // remove
  * @see [Add an image](https://www.mapbox.com/mapbox-gl-js/example/image-on-a-map/)
  */
-class ImageSource extends Evented implements Source {
-    type: string;
-    id: string;
-    minzoom: number;
-    maxzoom: number;
-    tileSize: number;
-    url: string;
+class ImageSource extends Evented {
 
-    coordinates: [[number, number], [number, number], [number, number], [number, number]];
-    tiles: {[string]: Tile};
-    options: any;
-    dispatcher: Dispatcher;
-    map: Map;
-    texture: Texture;
-    image: ImageData;
-    centerCoord: Coordinate;
-    tileID: CanonicalTileID;
-    _boundsArray: RasterBoundsArray;
-    boundsBuffer: VertexBuffer;
-    boundsVAO: VertexArrayObject;
 
     /**
      * @private
      */
-    constructor(id: string, options: ImageSourceSpecification | VideoSourceSpecification | CanvasSourceSpecification, dispatcher: Dispatcher, eventedParent: Evented) {
+    constructor(id, options, dispatcher, eventedParent) {
         super();
         this.id = id;
         this.dispatcher = dispatcher;
@@ -115,7 +89,7 @@ class ImageSource extends Evented implements Source {
         }
     }
 
-    onAdd(map: Map) {
+    onAdd(map) {
         this.map = map;
         this.load();
     }
@@ -129,7 +103,7 @@ class ImageSource extends Evented implements Source {
      *   They do not have to represent a rectangle.
      * @returns {ImageSource} this
      */
-    setCoordinates(coordinates: [[number, number], [number, number], [number, number], [number, number]]) {
+    setCoordinates(coordinates) {
         this.coordinates = coordinates;
 
         // Calculate which mercator tile is suitable for rendering the video in
@@ -211,7 +185,7 @@ class ImageSource extends Evented implements Source {
         }
     }
 
-    loadTile(tile: Tile, callback: Callback<void>) {
+    loadTile(tile, callback) {
         // We have a single tile -- whoose coordinates are this.tileID -- that
         // covers the image we want to render.  If that's the one being
         // requested, set it up with the image; otherwise, mark the tile as
@@ -228,7 +202,7 @@ class ImageSource extends Evented implements Source {
         }
     }
 
-    serialize(): Object {
+    serialize() {
         return {
             type: 'image',
             url: this.options.url,
@@ -241,4 +215,4 @@ class ImageSource extends Evented implements Source {
     }
 }
 
-export default ImageSource;
+module.exports = ImageSource;

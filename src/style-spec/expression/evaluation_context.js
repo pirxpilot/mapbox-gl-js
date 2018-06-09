@@ -1,17 +1,10 @@
-// @flow
+'use strict';
 
-import { Color } from './values';
-
-import type { GlobalProperties, Feature, FeatureState } from './index';
+const { Color } = require('./values');
 
 const geometryTypes = ['Unknown', 'Point', 'LineString', 'Polygon'];
 
 class EvaluationContext {
-    globals: GlobalProperties;
-    feature: ?Feature;
-    featureState: ?FeatureState;
-
-    _parseColorCache: {[string]: ?Color};
 
     constructor() {
         this._parseColorCache = {};
@@ -29,7 +22,7 @@ class EvaluationContext {
         return this.feature && this.feature.properties || {};
     }
 
-    parseColor(input: string): ?Color {
+    parseColor(input) {
         let cached = this._parseColorCache[input];
         if (!cached) {
             cached = this._parseColorCache[input] = Color.parse(input);
@@ -38,4 +31,4 @@ class EvaluationContext {
     }
 }
 
-export default EvaluationContext;
+module.exports = EvaluationContext;

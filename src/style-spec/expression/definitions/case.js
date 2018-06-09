@@ -1,35 +1,25 @@
-// @flow
+'use strict';
 
-import assert from 'assert';
+const assert = require('assert');
 
-import { BooleanType } from '../types';
+const { BooleanType } = require('../types');
 
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
-import type EvaluationContext from '../evaluation_context';
-import type { Type } from '../types';
 
-type Branches = Array<[Expression, Expression]>;
+class Case {
 
-class Case implements Expression {
-    type: Type;
-
-    branches: Branches;
-    otherwise: Expression;
-
-    constructor(type: Type, branches: Branches, otherwise: Expression) {
+    constructor(type, branches, otherwise) {
         this.type = type;
         this.branches = branches;
         this.otherwise = otherwise;
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext) {
+    static parse(args, context) {
         if (args.length < 4)
             return context.error(`Expected at least 3 arguments, but found only ${args.length - 1}.`);
         if (args.length % 2 !== 0)
             return context.error(`Expected an odd number of arguments.`);
 
-        let outputType: ?Type;
+        let outputType;
         if (context.expectedType && context.expectedType.kind !== 'value') {
             outputType = context.expectedType;
         }
@@ -51,10 +41,10 @@ class Case implements Expression {
         if (!otherwise) return null;
 
         assert(outputType);
-        return new Case((outputType: any), branches, otherwise);
+        return new Case((outputType), branches, otherwise);
     }
 
-    evaluate(ctx: EvaluationContext) {
+    evaluate(ctx) {
         for (const [test, expression] of this.branches) {
             if (test.evaluate(ctx)) {
                 return expression.evaluate(ctx);
@@ -63,7 +53,7 @@ class Case implements Expression {
         return this.otherwise.evaluate(ctx);
     }
 
-    eachChild(fn: (Expression) => void) {
+    eachChild(fn) {
         for (const [test, expression] of this.branches) {
             fn(test);
             fn(expression);
@@ -73,7 +63,7 @@ class Case implements Expression {
 
     possibleOutputs() {
         return []
-            .concat(...this.branches.map(([_, out]) => out.possibleOutputs()))
+            .concat(...this.branches.map(branch => branch[1].possibleOutputs()))
             .concat(this.otherwise.possibleOutputs());
     }
 
@@ -84,4 +74,4 @@ class Case implements Expression {
     }
 }
 
-export default Case;
+module.exports = Case;

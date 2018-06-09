@@ -1,33 +1,4 @@
-// @flow
-
-import type {CollisionBoxArray} from './array_types';
-import type Style from '../style/style';
-import type {TypedStyleLayer} from '../style/style_layer/typed_style_layer';
-import type FeatureIndex from './feature_index';
-import type Context from '../gl/context';
-import type {FeatureStates} from '../source/source_state';
-
-export type BucketParameters<Layer: TypedStyleLayer> = {
-    index: number,
-    layers: Array<Layer>,
-    zoom: number,
-    pixelRatio: number,
-    overscaling: number,
-    collisionBoxArray: CollisionBoxArray,
-    sourceLayerIndex: number
-}
-
-export type PopulateParameters = {
-    featureIndex: FeatureIndex,
-    iconDependencies: {},
-    glyphDependencies: {}
-}
-
-export type IndexedFeature = {
-    feature: VectorTileFeature,
-    index: number,
-    sourceLayerIndex: number,
-}
+'use strict';
 
 /**
  * The `Bucket` interface is the single point of knowledge about turning vector
@@ -52,29 +23,8 @@ export type IndexedFeature = {
  *
  * @private
  */
-export interface Bucket {
-    layerIds: Array<string>;
-    +layers: Array<any>;
-    +stateDependentLayers: Array<any>;
 
-    populate(features: Array<IndexedFeature>, options: PopulateParameters): void;
-    update(states: FeatureStates, vtLayer: VectorTileLayer): void;
-    isEmpty(): boolean;
-
-    upload(context: Context): void;
-    uploadPending(): boolean;
-
-    /**
-     * Release the WebGL resources associated with the buffers. Note that because
-     * buckets are shared between layers having the same layout properties, they
-     * must be destroyed in groups (all buckets for a tile, or all symbol buckets).
-     *
-     * @private
-     */
-    destroy(): void;
-}
-
-export function deserialize(input: Array<Bucket>, style: Style): {[string]: Bucket} {
+function deserialize(input, style) {
     const output = {};
 
     // Guard against the case where the map's style has been set to null while
@@ -92,8 +42,8 @@ export function deserialize(input: Array<Bucket>, style: Style): {[string]: Buck
 
         // look up StyleLayer objects from layer ids (since we don't
         // want to waste time serializing/copying them from the worker)
-        (bucket: any).layers = layers;
-        (bucket: any).stateDependentLayers = layers.filter((l) => l.isStateDependent());
+        bucket.layers = layers;
+        bucket.stateDependentLayers = layers.filter((l) => l.isStateDependent());
         for (const layer of layers) {
             output[layer.id] = bucket;
         }
@@ -101,3 +51,7 @@ export function deserialize(input: Array<Bucket>, style: Style): {[string]: Buck
 
     return output;
 }
+
+module.exports = {
+    deserialize
+};

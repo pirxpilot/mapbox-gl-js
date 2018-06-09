@@ -1,6 +1,7 @@
+'use strict';
 
-import validateProperty from './validate_property';
+const validateProperty = require('./validate_property');
 
-export default function validatePaintProperty(options) {
+module.exports = function validatePaintProperty(options) {
     return validateProperty(options, 'paint');
-}
+};

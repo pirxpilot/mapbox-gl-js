@@ -1,23 +1,14 @@
-// @flow
+'use strict';
 
-import { NumberType } from '../types';
+const { NumberType } = require('../types');
 
-import { findStopLessThanOrEqualTo } from '../stops';
+const { findStopLessThanOrEqualTo } = require('../stops');
 
-import type { Stops } from '../stops';
-import type { Expression } from '../expression';
-import type ParsingContext from '../parsing_context';
-import type EvaluationContext from '../evaluation_context';
-import type { Type } from '../types';
 
-class Step implements Expression {
-    type: Type;
+class Step {
 
-    input: Expression;
-    labels: Array<number>;
-    outputs: Array<Expression>;
 
-    constructor(type: Type, input: Expression, stops: Stops) {
+    constructor(type, input, stops) {
         this.type = type;
         this.input = input;
 
@@ -29,7 +20,7 @@ class Step implements Expression {
         }
     }
 
-    static parse(args: Array<mixed>, context: ParsingContext) {
+    static parse(args, context) {
         let [ , input, ...rest] = args;
 
         if (args.length - 1 < 4) {
@@ -43,9 +34,9 @@ class Step implements Expression {
         input = context.parse(input, 1, NumberType);
         if (!input) return null;
 
-        const stops: Stops = [];
+        const stops = [];
 
-        let outputType: Type = (null: any);
+        let outputType = (null);
         if (context.expectedType && context.expectedType.kind !== 'value') {
             outputType = context.expectedType;
         }
@@ -76,7 +67,7 @@ class Step implements Expression {
         return new Step(outputType, input, stops);
     }
 
-    evaluate(ctx: EvaluationContext) {
+    evaluate(ctx) {
         const labels = this.labels;
         const outputs = this.outputs;
 
@@ -84,7 +75,7 @@ class Step implements Expression {
             return outputs[0].evaluate(ctx);
         }
 
-        const value = ((this.input.evaluate(ctx): any): number);
+        const value = ((this.input.evaluate(ctx)));
         if (value <= labels[0]) {
             return outputs[0].evaluate(ctx);
         }
@@ -98,7 +89,7 @@ class Step implements Expression {
         return outputs[index].evaluate(ctx);
     }
 
-    eachChild(fn: (Expression) => void) {
+    eachChild(fn) {
         fn(this.input);
         for (const expression of this.outputs) {
             fn(expression);
@@ -121,4 +112,4 @@ class Step implements Expression {
     }
 }
 
-export default Step;
+module.exports = Step;

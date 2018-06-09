@@ -1,8 +1,8 @@
-import { test } from 'mapbox-gl-js-test';
-import window from '../../../../src/util/window';
-import Map from '../../../../src/ui/map';
-import DOM from '../../../../src/util/dom';
-import simulate from 'mapbox-gl-js-test/simulate_interaction';
+const { test } = require('mapbox-gl-js-test');
+const window = require('../../../../src/util/window');
+const Map = require('../../../../src/ui/map');
+const DOM = require('../../../../src/util/dom');
+const simulate = require('mapbox-gl-js-test/simulate_interaction');
 
 function createMap() {
     return new Map({ container: DOM.create('div', '', window.document.body) });
@@ -210,7 +210,7 @@ test('DragPanHandler requests a new render frame after each mousemove event', (t
     map._renderTaskQueue.run();
 
     // https://github.com/mapbox/mapbox-gl-js/issues/6063
-    requestFrame.reset();
+    requestFrame.resetHistory();
     simulate.mousemove(map.getCanvas());
     t.equal(requestFrame.callCount, 1);
 

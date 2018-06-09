@@ -1,15 +1,16 @@
-// @flow
+'use strict';
 
-type Config = {|
-  API_URL: string,
-  REQUIRE_ACCESS_TOKEN: boolean,
-  ACCESS_TOKEN: ?string
-|};
+function getDefaultWorkerCount() {
+    const browser = require('./browser');
+    return Math.max(Math.floor(browser.hardwareConcurrency / 2), 1);
+}
 
-const config: Config = {
+const config = {
     API_URL: 'https://api.mapbox.com',
     REQUIRE_ACCESS_TOKEN: true,
-    ACCESS_TOKEN: null
+    ACCESS_TOKEN: null,
+    WORKER_COUNT: getDefaultWorkerCount(),
+    WORKER_URL: ''
 };
 
-export default config;
+module.exports = config;

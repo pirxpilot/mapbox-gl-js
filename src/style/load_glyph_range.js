@@ -1,19 +1,16 @@
-// @flow
+'use strict';
 
-import { normalizeGlyphsURL } from '../util/mapbox';
+const { normalizeGlyphsURL } = require('../util/mapbox');
 
-import { getArrayBuffer, ResourceType } from '../util/ajax';
-import parseGlyphPBF from './parse_glyph_pbf';
+const { getArrayBuffer, ResourceType } = require('../util/ajax');
+const parseGlyphPBF = require('./parse_glyph_pbf');
 
-import type {StyleGlyph} from './style_glyph';
-import type {RequestTransformFunction} from '../ui/map';
-import type {Callback} from '../types/callback';
 
-export default function (fontstack: string,
-                           range: number,
-                           urlTemplate: string,
-                           requestTransform: RequestTransformFunction,
-                           callback: Callback<{[number]: StyleGlyph | null}>) {
+module.exports = function (fontstack,
+                           range,
+                           urlTemplate,
+                           requestTransform,
+                           callback) {
     const begin = range * 256;
     const end = begin + 255;
 
@@ -36,4 +33,4 @@ export default function (fontstack: string,
             callback(null, glyphs);
         }
     });
-}
+};
