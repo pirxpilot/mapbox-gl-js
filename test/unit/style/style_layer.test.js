@@ -1,7 +1,6 @@
 const { test } = require('mapbox-gl-js-test');
 const createStyleLayer = require('../../../src/style/create_style_layer');
 const FillStyleLayer = require('../../../src/style/style_layer/fill_style_layer');
-const { extend } = require('../../../src/util/util');
 const Color = require('../../../src/style-spec/util/color');
 
 test('StyleLayer', (t) => {
@@ -98,35 +97,6 @@ test('StyleLayer#setPaintProperty', (t) => {
         t.end();
     });
 
-    t.test('emits on an invalid property value', (t) => {
-        const layer = createStyleLayer({
-            "id": "background",
-            "type": "background"
-        });
-
-        layer.on('error', () => {
-            t.equal(layer.getPaintProperty('background-opacity'), undefined);
-            t.end();
-        });
-
-        layer.setPaintProperty('background-opacity', 5);
-    });
-
-    t.test('emits on an invalid transition property value', (t) => {
-        const layer = createStyleLayer({
-            "id": "background",
-            "type": "background"
-        });
-
-        layer.on('error', () => {
-            t.end();
-        });
-
-        layer.setPaintProperty('background-opacity-transition', {
-            duration: -10
-        });
-    });
-
     t.test('can unset fill-outline-color #2886', (t) => {
         const layer = createStyleLayer({
             id: 'building',
@@ -209,19 +179,6 @@ test('StyleLayer#setLayoutProperty', (t) => {
         t.end();
     });
 
-    t.test('emits on an invalid property value', (t) => {
-        const layer = createStyleLayer({
-            "id": "symbol",
-            "type": "symbol"
-        });
-
-        layer.on('error', () => {
-            t.end();
-        });
-
-        layer.setLayoutProperty('text-transform', 'mapboxcase');
-    });
-
     t.test('updates property value', (t) => {
         const layer = createStyleLayer({
             "id": "symbol",
@@ -260,7 +217,7 @@ test('StyleLayer#setLayoutProperty', (t) => {
 test('StyleLayer#serialize', (t) => {
 
     function createSymbolLayer(layer) {
-        return extend({
+        return Object.assign({
             id: 'symbol',
             type: 'symbol',
             paint: {
@@ -321,7 +278,7 @@ test('StyleLayer#serialize', (t) => {
 test('StyleLayer#serialize', (t) => {
 
     function createSymbolLayer(layer) {
-        return extend({
+        return Object.assign({
             id: 'symbol',
             type: 'symbol',
             paint: {

@@ -1,10 +1,7 @@
 'use strict';
 
 const DOM = require('../../util/dom');
-const { extend, bindAll } = require('../../util/util');
-
-
-
+const { bindAll } = require('../../util/object');
 
 const defaultOptions = {
     maxWidth: 100,
@@ -30,7 +27,7 @@ const defaultOptions = {
 class ScaleControl {
 
     constructor(options) {
-        this.options = extend({}, defaultOptions, options);
+        this.options = Object.assign({}, defaultOptions, options);
 
         bindAll([
             '_onMove',

@@ -1,8 +1,5 @@
 'use strict';
 
-const { extend } = require('./util');
-
-
 function _addEventListener(type, listener, listenerList) {
     const listenerExists = listenerList[type] && listenerList[type].indexOf(listener) !== -1;
     if (!listenerExists) {
@@ -23,7 +20,7 @@ function _removeEventListener(type, listener, listenerList) {
 class Event {
 
     constructor(type, data = {}) {
-        extend(this, data);
+        Object.assign(this, data);
         this.type = type;
     }
 }
@@ -31,7 +28,7 @@ class Event {
 class ErrorEvent extends Event {
 
     constructor(error, data = {}) {
-        super('error', extend({error}, data));
+        super('error', Object.assign({error}, data));
     }
 }
 
@@ -115,7 +112,7 @@ class Evented {
 
             const parent = this._eventedParent;
             if (parent) {
-                extend(
+                Object.assign(
                     event,
                     typeof this._eventedParentData === 'function' ? this._eventedParentData() : this._eventedParentData
                 );

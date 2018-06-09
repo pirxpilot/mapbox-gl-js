@@ -2,7 +2,6 @@
 
 const { getJSON } = require('../util/ajax');
 
-const perf = require('../util/performance');
 const rewind = require('geojson-rewind');
 const GeoJSONWrapper = require('./geojson_wrapper');
 const vtpbf = require('vt-pbf');
@@ -10,13 +9,6 @@ const supercluster = require('supercluster');
 const geojsonvt = require('geojson-vt');
 const assert = require('assert');
 const VectorTileWorkerSource = require('./vector_tile_worker_source');
-
-
-
-
-
-
-
 
 function loadGeoJSONTile(params, callback) {
     const canonical = params.tileID.canonical;
@@ -138,15 +130,6 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
                 this.loaded = {};
 
                 const result = {};
-                if (params.request && params.request.collectResourceTiming) {
-                    const resourceTimingData = perf.getEntriesByName(params.request.url);
-                    // it's necessary to eval the result of getEntriesByName() here via parse/stringify
-                    // late evaluation in the main thread causes TypeError: illegal invocation
-                    if (resourceTimingData) {
-                        result.resourceTiming = {};
-                        result.resourceTiming[params.source] = JSON.parse(JSON.stringify(resourceTimingData));
-                    }
-                }
                 callback(null, result);
             }
         });

@@ -3,7 +3,7 @@
 const DOM = require('../../util/dom');
 
 const LngLatBounds = require('../../geo/lng_lat_bounds');
-const { bindAll } = require('../../util/util');
+const { bindAll } = require('../../util/object');
 const window = require('../../util/window');
 const { Event } = require('../../util/evented');
 
@@ -97,8 +97,7 @@ class BoxZoomHandler {
             minY = Math.min(p0.y, p1.y),
             maxY = Math.max(p0.y, p1.y);
 
-        DOM.setTransform(this._box, `translate(${minX}px,${minY}px)`);
-
+        this._box.style.transform = `translate(${minX}px,${minY}px)`;
         this._box.style.width = `${maxX - minX}px`;
         this._box.style.height = `${maxY - minY}px`;
     }

@@ -1,5 +1,5 @@
 const { test } = require('mapbox-gl-js-test');
-const { mapObject } = require('../../../src/util/util');
+const { mapObject } = require('../../../src/util/object');
 const StyleLayerIndex = require('../../../src/style/style_layer_index');
 
 test('StyleLayerIndex#replace', (t) => {

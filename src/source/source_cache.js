@@ -6,7 +6,7 @@ const Tile = require('./tile');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 const TileCache = require('./tile_cache');
 const Coordinate = require('../geo/coordinate');
-const { keysDifference } = require('../util/util');
+const { keysDifference } = require('../util/object');
 const EXTENT = require('../data/extent');
 const Point = require('@mapbox/point-geometry');
 const browser = require('../util/browser');
@@ -220,7 +220,6 @@ class SourceCache extends Evented {
         tile.timeAdded = browser.now();
         if (previousState === 'expired') tile.refreshedUponExpiration = true;
         this._setTileReloadTimer(id, tile);
-        if (this.getSource().type === 'raster-dem' && tile.dem) this._backfillDEM(tile);
         this._state.initializeTileState(tile, this.map ? this.map.painter : null);
 
         this._source.fire(new Event('data', {dataType: 'source', tile: tile, coord: tile.tileID}));
@@ -229,46 +228,6 @@ class SourceCache extends Evented {
         if (this.map) this.map.painter.tileExtentVAO.vao = null;
     }
 
-    /**
-    * For raster terrain source, backfill DEM to eliminate visible tile boundaries
-    * @private
-    */
-    _backfillDEM(tile) {
-        const renderables = this.getRenderableIds();
-        for (let i = 0; i < renderables.length; i++) {
-            const borderId = renderables[i];
-            if (tile.neighboringTiles && tile.neighboringTiles[borderId]) {
-                const borderTile = this.getTileByID(borderId);
-                fillBorder(tile, borderTile);
-                fillBorder(borderTile, tile);
-            }
-        }
-
-        function fillBorder(tile, borderTile) {
-            tile.needsHillshadePrepare = true;
-            let dx = borderTile.tileID.canonical.x - tile.tileID.canonical.x;
-            const dy = borderTile.tileID.canonical.y - tile.tileID.canonical.y;
-            const dim = Math.pow(2, tile.tileID.canonical.z);
-            const borderId = borderTile.tileID.key;
-            if (dx === 0 && dy === 0) return;
-
-            if (Math.abs(dy) > 1) {
-                return;
-            }
-            if (Math.abs(dx) > 1) {
-                // Adjust the delta coordinate for world wraparound.
-                if (Math.abs(dx + dim) === 1) {
-                    dx += dim;
-                } else if (Math.abs(dx - dim) === 1) {
-                    dx -= dim;
-                }
-            }
-            if (!borderTile.dem || !tile.dem) return;
-            tile.dem.backfillBorder(borderTile.dem, dx, dy);
-            if (tile.neighboringTiles && tile.neighboringTiles[borderId])
-                tile.neighboringTiles[borderId].backfilled = true;
-        }
-    }
     /**
      * Get a specific tile by TileID
      */
@@ -793,7 +752,7 @@ function coordinateToTilePoint(tileID, coord) {
 }
 
 function isRasterType(type) {
-    return type === 'raster' || type === 'image' || type === 'video';
+    return type === 'image';
 }
 
 module.exports = SourceCache;

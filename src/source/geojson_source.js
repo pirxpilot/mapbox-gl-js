@@ -2,10 +2,8 @@
 
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 
-const { extend } = require('../util/util');
 const window = require('../util/window');
 const EXTENT = require('../data/extent');
-const { ResourceType } = require('../util/ajax');
 const browser = require('../util/browser');
 
 
@@ -80,10 +78,7 @@ class GeoJSONSource extends Evented {
         this.setEventedParent(eventedParent);
 
         this._data = (options.data);
-        this._options = extend({}, options);
-
-        this._collectResourceTiming = options.collectResourceTiming;
-        this._resourceTiming = [];
+        this._options = Object.assign({}, options);
 
         if (options.maxzoom !== undefined) this.maxzoom = options.maxzoom;
         if (options.type) this.type = options.type;
@@ -94,7 +89,7 @@ class GeoJSONSource extends Evented {
         // so that it can load/parse/index the geojson data
         // extending with `options.workerOptions` helps to make it easy for
         // third-party sources to hack/reuse GeoJSONSource.
-        this.workerOptions = extend({
+        this.workerOptions = Object.assign({
             source: this.id,
             cluster: options.cluster || false,
             geojsonVtOptions: {
@@ -124,10 +119,6 @@ class GeoJSONSource extends Evented {
             }
 
             const data = { dataType: 'source', sourceDataType: 'metadata' };
-            if (this._collectResourceTiming && this._resourceTiming && (this._resourceTiming.length > 0)) {
-                data.resourceTiming = this._resourceTiming;
-                this._resourceTiming = [];
-            }
 
             // although GeoJSON sources contain no metadata, we fire this event to let the SourceCache
             // know its ok to start requesting tiles.
@@ -155,10 +146,6 @@ class GeoJSONSource extends Evented {
             }
 
             const data = { dataType: 'source', sourceDataType: 'content' };
-            if (this._collectResourceTiming && this._resourceTiming && (this._resourceTiming.length > 0)) {
-                data.resourceTiming = this._resourceTiming;
-                this._resourceTiming = [];
-            }
             this.fire(new Event('data', data));
         });
 
@@ -171,11 +158,10 @@ class GeoJSONSource extends Evented {
      * using geojson-vt or supercluster as appropriate.
      */
     _updateWorkerData(callback) {
-        const options = extend({}, this.workerOptions);
+        const options = Object.assign({}, this.workerOptions);
         const data = this._data;
         if (typeof data === 'string') {
-            options.request = this.map._transformRequest(resolveURL(data), ResourceType.Source);
-            options.request.collectResourceTiming = this._collectResourceTiming;
+            options.request = { url: resolveURL(data) };
         } else {
             options.data = JSON.stringify(data);
         }
@@ -251,7 +237,7 @@ class GeoJSONSource extends Evented {
     }
 
     serialize() {
-        return extend({}, this._options, {
+        return Object.assign({}, this._options, {
             type: this.type,
             data: this._data
         });

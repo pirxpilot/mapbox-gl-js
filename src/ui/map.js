@@ -1,37 +1,28 @@
 'use strict';
 
-const { extend, bindAll, warnOnce } = require('../util/util');
+const { bindAll } = require('../util/object');
+const warn = require('../util/warn');
 
 const browser = require('../util/browser');
 const window = require('../util/window');
 const { HTMLImageElement, HTMLElement } = window;
 const DOM = require('../util/dom');
-const { getImage, ResourceType } = require('../util/ajax');
+const { getImage } = require('../util/ajax');
 const Style = require('../style/style');
 const EvaluationParameters = require('../style/evaluation_parameters');
 const Painter = require('../render/painter');
 const Transform = require('../geo/transform');
-const Hash = require('./hash');
 const bindHandlers = require('./bind_handlers');
 const Camera = require('./camera');
 const LngLat = require('../geo/lng_lat');
 const LngLatBounds = require('../geo/lng_lat_bounds');
 const Point = require('@mapbox/point-geometry');
 const AttributionControl = require('./control/attribution_control');
-const LogoControl = require('./control/logo_control');
 const isSupported = require('@mapbox/mapbox-gl-supported');
 const { RGBAImage } = require('../util/image');
 const { Event, ErrorEvent } = require('../util/evented');
 const { MapMouseEvent } = require('./events');
 const TaskQueue = require('../util/task_queue');
-
-
-
-
-/* eslint-disable no-use-before-define */
-/* eslint-enable no-use-before-define */
-
-
 
 const defaultMinZoom = 0;
 const defaultMaxZoom = 22;
@@ -56,8 +47,6 @@ const defaultOptions = {
 
     bearingSnap: 7,
 
-    hash: false,
-
     attributionControl: true,
 
     failIfMajorPerformanceCaveat: false,
@@ -71,7 +60,6 @@ const defaultOptions = {
 
     maxTileCacheSize: null,
 
-    transformRequest: null,
     fadeDuration: 300
 };
 
@@ -107,8 +95,6 @@ const defaultOptions = {
  * Tilesets hosted with Mapbox can be style-optimized if you append `?optimize=true` to the end of your style URL, like `mapbox://styles/mapbox/streets-v9?optimize=true`.
  * Learn more about style-optimized vector tiles in our [API documentation](https://www.mapbox.com/api-documentation/#retrieve-tiles).
  *
- * @param {boolean} [options.hash=false] If `true`, the map's position (zoom, center latitude, center longitude, bearing, and pitch) will be synced with the hash fragment of the page's URL.
- *   For example, `http://path/to/my/page.html#2.59/39.26/53.07/-24.1/60`.
  * @param {boolean} [options.interactive=true] If `false`, no mouse, touch, or keyboard listeners will be attached to the map, so it will not respond to interaction.
  * @param {number} [options.bearingSnap=7] The threshold, measured in degrees, that determines when the map's
  *   bearing will snap to north. For example, with a `bearingSnap` of 7, if the user rotates
@@ -139,26 +125,13 @@ const defaultOptions = {
  *   for locally overriding generation of glyphs in the 'CJK Unified Ideographs' and 'Hangul Syllables' ranges.
  *   In these ranges, font settings from the map's style will be ignored, except for font-weight keywords (light/regular/medium/bold).
  *   The purpose of this option is to avoid bandwidth-intensive glyph server requests. (see [Use locally generated ideographs](https://www.mapbox.com/mapbox-gl-js/example/local-ideographs))
- * @param {RequestTransformFunction} [options.transformRequest=null] A callback run before the Map makes a request for an external URL. The callback can be used to modify the url, set headers, or set the credentials property for cross-origin requests.
- *   Expected to return an object with a `url` property and optionally `headers` and `credentials` properties.
- * @param {boolean} [options.collectResourceTiming=false] If `true`, Resource Timing API information will be collected for requests made by GeoJSON and Vector Tile web workers (this information is normally inaccessible from the main Javascript thread). Information will be returned in a `resourceTiming` property of relevant `data` events.
  * @param {number} [options.fadeDuration=300] Controls the duration of the fade-in/fade-out animation for label collisions, in milliseconds. This setting affects all symbol layers. This setting does not affect the duration of runtime styling transitions or raster tile cross-fading.
  * @example
  * var map = new mapboxgl.Map({
  *   container: 'map',
  *   center: [-122.420679, 37.772537],
  *   zoom: 13,
- *   style: style_object,
- *   hash: true,
- *   transformRequest: (url, resourceType)=> {
- *     if(resourceType === 'Source' && url.startsWith('http://myHost')) {
- *       return {
- *        url: url.replace('http', 'https'),
- *        headers: { 'my-custom-header': true},
- *        credentials: 'include'  // Include cookies for cross-origin requests
- *      }
- *     }
- *   }
+ *   style: style_object
  * });
  * @see [Display a map](https://www.mapbox.com/mapbox-gl-js/examples/)
  */
@@ -196,7 +169,7 @@ class Map extends Camera {
      */
 
     constructor(options) {
-        options = extend({}, defaultOptions, options);
+        options = Object.assign({}, defaultOptions, options);
 
         if (options.minZoom != null && options.maxZoom != null && options.minZoom > options.maxZoom) {
             throw new Error(`maxZoom must be greater than minZoom`);
@@ -214,11 +187,7 @@ class Map extends Camera {
         this._refreshExpiredTiles = options.refreshExpiredTiles;
         this._fadeDuration = options.fadeDuration;
         this._crossFadingFactor = 1;
-        this._collectResourceTiming = options.collectResourceTiming;
         this._renderTaskQueue = new TaskQueue();
-
-        const transformRequestFn = options.transformRequest;
-        this._transformRequest = transformRequestFn ?  (url, type) => transformRequestFn(url, type) || ({ url }) : (url) => ({ url });
 
         if (typeof options.container === 'string') {
             const container = window.document.getElementById(options.container);
@@ -261,23 +230,18 @@ class Map extends Camera {
 
         bindHandlers(this, options);
 
-        this._hash = options.hash && (new Hash()).addTo(this);
-        // don't set position from options if set through hash
-        if (!this._hash || !this._hash._onHashChange()) {
-            this.jumpTo({
-                center: options.center,
-                zoom: options.zoom,
-                bearing: options.bearing,
-                pitch: options.pitch
-            });
-        }
+        this.jumpTo({
+            center: options.center,
+            zoom: options.zoom,
+            bearing: options.bearing,
+            pitch: options.pitch
+        });
 
         this.resize();
 
         if (options.style) this.setStyle(options.style, { localIdeographFontFamily: options.localIdeographFontFamily });
 
         if (options.attributionControl) this.addControl(new AttributionControl());
-        this.addControl(new LogoControl(), options.logoPosition);
 
         this.on('style.load', function() {
             if (this.transform.unmodified) {
@@ -788,7 +752,7 @@ class Map extends Camera {
             this._makeQueryGeometry(geometry),
             options,
             this.transform
-        );
+        ) || [];
 
         function isPointLike(input) {
             return input instanceof Point || Array.isArray(input);
@@ -881,20 +845,6 @@ class Map extends Camera {
      * @see [Change a map's style](https://www.mapbox.com/mapbox-gl-js/example/setstyle/)
      */
     setStyle(style, options) {
-        const shouldTryDiff = (!options || (options.diff !== false && !options.localIdeographFontFamily)) && this.style;
-        if (shouldTryDiff && style && typeof style === 'object') {
-            try {
-                if (this.style.setState(style)) {
-                    this._update(true);
-                }
-                return this;
-            } catch (e) {
-                warnOnce(
-                    `Unable to perform style diff: ${e.message || e.error || e}.  Rebuilding the style from scratch.`
-                );
-            }
-        }
-
         if (this.style) {
             this.style.setEventedParent(null);
             this.style._remove();
@@ -935,7 +885,7 @@ class Map extends Camera {
      * @returns {boolean} A Boolean indicating whether the style is fully loaded.
      */
     isStyleLoaded() {
-        if (!this.style) return warnOnce('There is no style added to the map.');
+        if (!this.style) return warn.once('There is no style added to the map.');
         return this.style.loaded();
     }
 
@@ -1094,7 +1044,7 @@ class Map extends Camera {
      * @see [Add an icon to the map](https://www.mapbox.com/mapbox-gl-js/example/add-image/)
      */
     loadImage(url, callback) {
-        getImage(this._transformRequest(url, ResourceType.Image), callback);
+        getImage({ url }, callback);
     }
 
     /**
@@ -1379,9 +1329,6 @@ class Map extends Camera {
         const container = this._container;
         container.classList.add('mapboxgl-map');
 
-        const missingCSSContainer = this._missingCSSContainer = DOM.create('div', 'mapboxgl-missing-css', container);
-        missingCSSContainer.innerHTML = 'Missing Mapbox GL JS CSS';
-
         const canvasContainer = this._canvasContainer = DOM.create('div', 'mapboxgl-canvas-container', container);
         if (this._interactive) {
             canvasContainer.classList.add('mapboxgl-interactive');
@@ -1417,7 +1364,7 @@ class Map extends Camera {
     }
 
     _setupPainter() {
-        const attributes = extend({
+        const attributes = Object.assign({
             failIfMajorPerformanceCaveat: this._failIfMajorPerformanceCaveat,
             preserveDrawingBuffer: this._preserveDrawingBuffer
         }, isSupported.webGLContextAttributes);
@@ -1591,7 +1538,6 @@ class Map extends Camera {
      * methods on the map.
      */
     remove() {
-        if (this._hash) this._hash.remove();
         browser.cancelFrame(this._frameId);
         this._renderTaskQueue.clear();
         this._frameId = null;
@@ -1604,7 +1550,6 @@ class Map extends Camera {
         if (extension) extension.loseContext();
         removeNode(this._canvasContainer);
         removeNode(this._controlContainer);
-        removeNode(this._missingCSSContainer);
         this._container.classList.remove('mapboxgl-map');
         this.fire(new Event('remove'));
     }

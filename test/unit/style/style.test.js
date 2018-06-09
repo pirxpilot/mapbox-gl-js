@@ -5,7 +5,6 @@ const SourceCache = require('../../../src/source/source_cache');
 const StyleLayer = require('../../../src/style/style_layer');
 const Transform = require('../../../src/geo/transform');
 const EvaluationParameters = require('../../../src/style/evaluation_parameters');
-const { extend } = require('../../../src/util/util');
 const { Event, Evented } = require('../../../src/util/evented');
 const window = require('../../../src/util/window');
 const {
@@ -17,7 +16,7 @@ const browser = require('../../../src/util/browser');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
 
 function createStyleJSON(properties) {
-    return extend({
+    return Object.assign({
         "version": 8,
         "sources": {},
         "layers": []
@@ -48,10 +47,6 @@ class StubMap extends Evented {
     constructor() {
         super();
         this.transform = new Transform();
-    }
-
-    _transformRequest(url) {
-        return { url };
     }
 }
 
@@ -118,48 +113,6 @@ test('Style#loadURL', (t) => {
         t.equal(spy.getCall(0).args[0].target, style);
         t.equal(spy.getCall(0).args[0].dataType, 'style');
         t.end();
-    });
-
-    t.test('transforms style URL before request', (t) => {
-        const map = new StubMap();
-        const spy = t.spy(map, '_transformRequest');
-
-        const style = new Style(map);
-        style.loadURL('style.json');
-
-        t.ok(spy.calledOnce);
-        t.equal(spy.getCall(0).args[0], 'style.json');
-        t.equal(spy.getCall(0).args[1], 'Style');
-        t.end();
-    });
-
-    t.test('validates the style', (t) => {
-        const style = new Style(new StubMap());
-
-        style.on('error', ({error}) => {
-            t.ok(error);
-            t.match(error.message, /version/);
-            t.end();
-        });
-
-        style.loadURL('style.json');
-        window.server.respondWith(JSON.stringify(createStyleJSON({version: 'invalid'})));
-        window.server.respond();
-    });
-
-    t.test('skips validation for mapbox:// styles', (t) => {
-        const style = new Style(new StubMap())
-            .on('error', () => {
-                t.fail();
-            })
-            .on('style.load', () => {
-                t.end();
-            });
-
-        style.loadURL('mapbox://styles/test/test', {accessToken: 'none'});
-
-        window.server.respondWith(JSON.stringify(createStyleJSON({version: 'invalid'})));
-        window.server.respond();
     });
 
     t.end();
@@ -255,18 +208,6 @@ test('Style#loadJSON', (t) => {
         });
     });
 
-    t.test('validates the style', (t) => {
-        const style = new Style(new StubMap());
-
-        style.on('error', ({error}) => {
-            t.ok(error);
-            t.match(error.message, /version/);
-            t.end();
-        });
-
-        style.loadJSON(createStyleJSON({version: 'invalid'}));
-    });
-
     t.test('creates sources', (t) => {
         const style = new Style(new StubMap());
 
@@ -275,7 +216,7 @@ test('Style#loadJSON', (t) => {
             t.end();
         });
 
-        style.loadJSON(extend(createStyleJSON(), {
+        style.loadJSON(Object.assign(createStyleJSON(), {
             "sources": {
                 "mapbox": {
                     "type": "vector",
@@ -307,27 +248,6 @@ test('Style#loadJSON', (t) => {
                 "type": "fill"
             }]
         });
-    });
-
-    t.test('transforms sprite json and image URLs before request', (t) => {
-        window.useFakeXMLHttpRequest();
-
-        const map = new StubMap();
-        const transformSpy = t.spy(map, '_transformRequest');
-        const style = new Style(map);
-
-        style.on('style.load', () => {
-            t.equal(transformSpy.callCount, 2);
-            t.equal(transformSpy.getCall(0).args[0], 'http://example.com/sprites/bright-v8.json');
-            t.equal(transformSpy.getCall(0).args[1], 'SpriteJSON');
-            t.equal(transformSpy.getCall(1).args[0], 'http://example.com/sprites/bright-v8.png');
-            t.equal(transformSpy.getCall(1).args[1], 'SpriteImage');
-            t.end();
-        });
-
-        style.loadJSON(extend(createStyleJSON(), {
-            "sprite": "http://example.com/sprites/bright-v8"
-        }));
     });
 
     t.test('emits an error on non-existant vector source layer', (t) => {
@@ -456,125 +376,6 @@ test('Style#update', (t) => {
     });
 });
 
-test('Style#setState', (t) => {
-    t.test('throw before loaded', (t) => {
-        const style = new Style(new StubMap());
-        t.throws(() => style.setState(createStyleJSON()), /load/i);
-        t.end();
-    });
-
-    t.test('do nothing if there are no changes', (t) => {
-        const style = new Style(new StubMap());
-        style.loadJSON(createStyleJSON());
-        [
-            'addLayer',
-            'removeLayer',
-            'setPaintProperty',
-            'setLayoutProperty',
-            'setFilter',
-            'addSource',
-            'removeSource',
-            'setGeoJSONSourceData',
-            'setLayerZoomRange',
-            'setLight'
-        ].forEach((method) => t.stub(style, method).callsFake(() => t.fail(`${method} called`)));
-        style.on('style.load', () => {
-            const didChange = style.setState(createStyleJSON());
-            t.notOk(didChange, 'return false');
-            t.end();
-        });
-    });
-
-    t.test('Issue #3893: compare new source options against originally provided options rather than normalized properties', (t) => {
-        window.useFakeXMLHttpRequest();
-        window.server.respondWith('/tilejson.json', JSON.stringify({
-            tiles: ['http://tiles.server']
-        }));
-        const initial = createStyleJSON();
-        initial.sources.mySource = {
-            type: 'raster',
-            url: '/tilejson.json'
-        };
-        const style = new Style(new StubMap());
-        style.loadJSON(initial);
-        style.on('style.load', () => {
-            t.stub(style, 'removeSource').callsFake(() => t.fail('removeSource called'));
-            t.stub(style, 'addSource').callsFake(() => t.fail('addSource called'));
-            style.setState(initial);
-            window.restore();
-            t.end();
-        });
-        window.server.respond();
-    });
-
-    t.test('return true if there is a change', (t) => {
-        const initialState = createStyleJSON();
-        const nextState = createStyleJSON({
-            sources: {
-                foo: {
-                    type: 'geojson',
-                    data: { type: 'FeatureCollection', features: [] }
-                }
-            }
-        });
-
-        const style = new Style(new StubMap());
-        style.loadJSON(initialState);
-        style.on('style.load', () => {
-            const didChange = style.setState(nextState);
-            t.ok(didChange);
-            t.same(style.stylesheet, nextState);
-            t.end();
-        });
-    });
-
-    t.test('sets GeoJSON source data if different', (t) => {
-        const initialState = createStyleJSON({
-            "sources": { "source-id": createGeoJSONSource() }
-        });
-
-        const geoJSONSourceData = {
-            "type": "FeatureCollection",
-            "features": [
-                {
-                    "type": "Feature",
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [125.6, 10.1]
-                    }
-                }
-            ]
-        };
-
-        const nextState = createStyleJSON({
-            "sources": {
-                "source-id": {
-                    "type": "geojson",
-                    "data": geoJSONSourceData
-                }
-            }
-        });
-
-        const style = new Style(new StubMap());
-        style.loadJSON(initialState);
-
-        style.on('style.load', () => {
-            const geoJSONSource = style.sourceCaches['source-id'].getSource();
-            t.spy(style, 'setGeoJSONSourceData');
-            t.spy(geoJSONSource, 'setData');
-            const didChange = style.setState(nextState);
-
-            t.ok(style.setGeoJSONSourceData.calledWith('source-id', geoJSONSourceData));
-            t.ok(geoJSONSource.setData.calledWith(geoJSONSourceData));
-            t.ok(didChange);
-            t.same(style.stylesheet, nextState);
-            t.end();
-        });
-    });
-
-    t.end();
-});
-
 test('Style#addSource', (t) => {
     t.test('throw before loaded', (t) => {
         const style = new Style(new StubMap());
@@ -616,24 +417,6 @@ test('Style#addSource', (t) => {
                 style.addSource('source-id', source);
             }, /There is already a source with this ID/);
             t.end();
-        });
-    });
-
-    t.test('emits on invalid source', (t) => {
-        const style = new Style(new StubMap());
-        style.loadJSON(createStyleJSON());
-        style.on('style.load', () => {
-            style.on('error', () => {
-                t.notOk(style.sourceCaches['source-id']);
-                t.end();
-            });
-            style.addSource('source-id', {
-                type: 'vector',
-                minzoom: '1', // Shouldn't be a string
-                maxzoom: 10,
-                attribution: 'Mapbox',
-                tiles: ['http://example.com/{z}/{x}/{y}.png']
-            });
         });
     });
 
@@ -863,45 +646,9 @@ test('Style#addLayer', (t) => {
         });
     });
 
-    t.test('emits error on invalid layer', (t) => {
-        const style = new Style(new StubMap());
-        style.loadJSON(createStyleJSON());
-        style.on('style.load', () => {
-            style.on('error', () => {
-                t.notOk(style.getLayer('background'));
-                t.end();
-            });
-            style.addLayer({
-                id: 'background',
-                type: 'background',
-                paint: {
-                    'background-opacity': 5
-                }
-            });
-        });
-    });
-
-    t.test('#4040 does not mutate source property when provided inline', (t) => {
-        const style = new Style(new StubMap());
-        style.loadJSON(createStyleJSON());
-        style.on('style.load', () => {
-            const source = {
-                "type": "geojson",
-                "data": {
-                    "type": "Point",
-                    "coordinates": [ 0, 0]
-                }
-            };
-            const layer = {id: 'inline-source-layer', type: 'circle', source: source };
-            style.addLayer(layer);
-            t.deepEqual(layer.source, source);
-            t.end();
-        });
-    });
-
     t.test('reloads source', (t) => {
         const style = new Style(new StubMap());
-        style.loadJSON(extend(createStyleJSON(), {
+        style.loadJSON(Object.assign(createStyleJSON(), {
             "sources": {
                 "mapbox": {
                     "type": "vector",
@@ -928,7 +675,7 @@ test('Style#addLayer', (t) => {
 
     t.test('#3895 reloads source (instead of clearing) if adding this layer with the same type, immediately after removing it', (t) => {
         const style = new Style(new StubMap());
-        style.loadJSON(extend(createStyleJSON(), {
+        style.loadJSON(Object.assign(createStyleJSON(), {
             "sources": {
                 "mapbox": {
                     "type": "vector",
@@ -965,7 +712,7 @@ test('Style#addLayer', (t) => {
 
     t.test('clears source (instead of reloading) if adding this layer with a different type, immediately after removing it', (t) => {
         const style = new Style(new StubMap());
-        style.loadJSON(extend(createStyleJSON(), {
+        style.loadJSON(Object.assign(createStyleJSON(), {
             "sources": {
                 "mapbox": {
                     "type": "vector",
@@ -1092,7 +839,7 @@ test('Style#addLayer', (t) => {
 
     t.test('fires an error on non-existant source layer', (t) => {
         const style = new Style(new StubMap());
-        style.loadJSON(extend(createStyleJSON(), {
+        style.loadJSON(Object.assign(createStyleJSON(), {
             sources: {
                 dummy: {
                     type: 'geojson',
@@ -1296,7 +1043,7 @@ test('Style#moveLayer', (t) => {
 test('Style#setPaintProperty', (t) => {
     t.test('#4738 postpones source reload until layers have been broadcast to workers', (t) => {
         const style = new Style(new StubMap());
-        style.loadJSON(extend(createStyleJSON(), {
+        style.loadJSON(Object.assign(createStyleJSON(), {
             "sources": {
                 "geojson": {
                     "type": "geojson",
@@ -1577,17 +1324,6 @@ test('Style#setFilter', (t) => {
             style.setFilter('symbol', null);
             t.equal(style.getLayer('symbol').serialize().filter, undefined);
             t.end();
-        });
-    });
-
-    t.test('emits if invalid', (t) => {
-        const style = createStyle();
-        style.on('style.load', () => {
-            style.on('error', () => {
-                t.deepEqual(style.getLayer('symbol').serialize().filter, ['==', 'id', 0]);
-                t.end();
-            });
-            style.setFilter('symbol', ['==', '$type', 1]);
         });
     });
 
@@ -1886,53 +1622,6 @@ test('Style defers expensive methods', (t) => {
 
         t.end();
     });
-});
-
-test('Style#query*Features', (t) => {
-
-    // These tests only cover filter validation. Most tests for these methods
-    // live in the integration tests.
-
-    let style;
-    let onError;
-    let transform;
-
-    t.beforeEach((callback) => {
-        transform = new Transform();
-        style = new Style(new StubMap());
-        style.loadJSON({
-            "version": 8,
-            "sources": {
-                "geojson": createGeoJSONSource()
-            },
-            "layers": [{
-                "id": "symbol",
-                "type": "symbol",
-                "source": "geojson"
-            }]
-        });
-
-        onError = t.spy();
-
-        style.on('error', onError)
-            .on('style.load', () => {
-                callback();
-            });
-    });
-
-    t.test('querySourceFeatures emits an error on incorrect filter', (t) => {
-        t.deepEqual(style.querySourceFeatures([10, 100], {filter: 7}, transform), []);
-        t.match(onError.args[0][0].error.message, /querySourceFeatures\.filter/);
-        t.end();
-    });
-
-    t.test('queryRenderedFeatures emits an error on incorrect filter', (t) => {
-        t.deepEqual(style.queryRenderedFeatures({ worldCoordinate: [10, 100] }, {filter: 7}, transform), []);
-        t.match(onError.args[0][0].error.message, /queryRenderedFeatures\.filter/);
-        t.end();
-    });
-
-    t.end();
 });
 
 test('Style#addSourceType', (t) => {

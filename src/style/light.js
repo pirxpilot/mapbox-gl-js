@@ -2,18 +2,12 @@
 
 const styleSpec = require('../style-spec/reference/latest');
 
-const { endsWith, extend, sphericalToCartesian } = require('../util/util');
+const { sphericalToCartesian } = require('../util/util');
 const { Evented } = require('../util/evented');
-const {
-    validateStyle,
-    validateLight,
-    emitValidationErrors
-} = require('./validate_style');
 const { number: interpolate } = require('../style-spec/util/interpolate');
 
 
 const { Properties, Transitionable, DataConstantProperty } = require('./properties');
-
 
 
 class LightPositionProperty {
@@ -62,13 +56,9 @@ class Light extends Evented {
     }
 
     setLight(options) {
-        if (this._validate(validateLight, options)) {
-            return;
-        }
-
         for (const name in options) {
             const value = options[name];
-            if (endsWith(name, TRANSITION_SUFFIX)) {
+            if (name.endsWith(TRANSITION_SUFFIX)) {
                 this._transitionable.setTransition(name.slice(0, -TRANSITION_SUFFIX.length), value);
             } else {
                 this._transitionable.setValue(name, value);
@@ -86,15 +76,6 @@ class Light extends Evented {
 
     recalculate(parameters) {
         this.properties = this._transitioning.possiblyEvaluate(parameters);
-    }
-
-    _validate(validate, value) {
-        return emitValidationErrors(this, validate.call(validateStyle, extend({
-            value: value,
-            // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/2407
-            style: {glyphs: true, sprite: true},
-            styleSpec: styleSpec
-        })));
     }
 }
 

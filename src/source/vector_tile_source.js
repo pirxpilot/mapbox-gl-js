@@ -2,11 +2,10 @@
 
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 
-const { extend, pick } = require('../util/util');
+const { pick } = require('../util/object');
 const loadTileJSON = require('./load_tilejson');
 const { normalizeTileURL: normalizeURL } = require('../util/mapbox');
 const TileBounds = require('./tile_bounds');
-const { ResourceType } = require('../util/ajax');
 const browser = require('../util/browser');
 
 
@@ -26,10 +25,8 @@ class VectorTileSource extends Evented {
         this.reparseOverscaled = true;
         this.isTileClipped = true;
 
-        extend(this, pick(options, ['url', 'scheme', 'tileSize']));
-        this._options = extend({ type: 'vector' }, options);
-
-        this._collectResourceTiming = options.collectResourceTiming;
+        Object.assign(this, pick(options, ['url', 'scheme', 'tileSize']));
+        this._options = Object.assign({ type: 'vector' }, options);
 
         if (this.tileSize !== 512) {
             throw new Error('vector tile sources must have a tileSize of 512');
@@ -41,11 +38,11 @@ class VectorTileSource extends Evented {
     load() {
         this.fire(new Event('dataloading', {dataType: 'source'}));
 
-        loadTileJSON(this._options, this.map._transformRequest, (err, tileJSON) => {
+        loadTileJSON(this._options, (err, tileJSON) => {
             if (err) {
                 this.fire(new ErrorEvent(err));
             } else if (tileJSON) {
-                extend(this, tileJSON);
+                Object.assign(this, tileJSON);
                 if (tileJSON.bounds) this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
 
                 // `content` is included here to prevent a race condition where `Style#_updateSources` is called
@@ -67,13 +64,13 @@ class VectorTileSource extends Evented {
     }
 
     serialize() {
-        return extend({}, this._options);
+        return Object.assign({}, this._options);
     }
 
     loadTile(tile, callback) {
         const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url);
         const params = {
-            request: this.map._transformRequest(url, ResourceType.Tile),
+            request: { url },
             uid: tile.uid,
             tileID: tile.tileID,
             zoom: tile.tileID.overscaledZ,
@@ -83,7 +80,6 @@ class VectorTileSource extends Evented {
             pixelRatio: browser.devicePixelRatio,
             showCollisionBoxes: this.map.showCollisionBoxes,
         };
-        params.request.collectResourceTiming = this._collectResourceTiming;
 
         if (tile.workerID === undefined || tile.state === 'expired') {
             tile.workerID = this.dispatcher.send('loadTile', params, done.bind(this));

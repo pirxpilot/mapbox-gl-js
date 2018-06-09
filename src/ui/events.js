@@ -4,7 +4,6 @@ const { Event } = require('../util/evented');
 
 const DOM = require('../util/dom');
 const Point = require('@mapbox/point-geometry');
-const { extend } = require('../util/util');
 
 
 /**
@@ -61,7 +60,7 @@ class MapMouseEvent extends Event {
     constructor(type, map, originalEvent, data = {}) {
         const point = DOM.mousePos(map.getCanvasContainer(), originalEvent);
         const lngLat = map.unproject(point);
-        super(type, extend({ point, lngLat, originalEvent }, data));
+        super(type, Object.assign({ point, lngLat, originalEvent }, data));
         this._defaultPrevented = false;
         this.target = map;
     }

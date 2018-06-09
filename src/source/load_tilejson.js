@@ -1,13 +1,13 @@
 'use strict';
 
-const { pick } = require('../util/util');
+const { pick } = require('../util/object');
 
-const { getJSON, ResourceType } = require('../util/ajax');
+const { getJSON } = require('../util/ajax');
 const browser = require('../util/browser');
 const { normalizeSourceURL: normalizeURL } = require('../util/mapbox');
 
 
-module.exports = function(options, requestTransformFn, callback) {
+module.exports = function(options, callback) {
     const loaded = function(err, tileJSON) {
         if (err) {
             return callback(err);
@@ -27,7 +27,7 @@ module.exports = function(options, requestTransformFn, callback) {
     };
 
     if (options.url) {
-        getJSON(requestTransformFn(normalizeURL(options.url), ResourceType.Source), loaded);
+        getJSON({ url: normalizeURL(options.url) }, loaded);
     } else {
         browser.frame(() => loaded(null, options));
     }

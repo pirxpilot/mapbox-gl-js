@@ -4,17 +4,15 @@ const loadGlyphRange = require('../style/load_glyph_range');
 
 const TinySDF = require('@mapbox/tiny-sdf');
 const isChar = require('../util/is_char_in_unicode_block');
-const { asyncAll } = require('../util/util');
+const async = require('../util/async');
 const { AlphaImage } = require('../util/image');
-
 
 
 class GlyphManager {
 
     // exposed as statics to enable stubbing in unit tests
 
-    constructor(requestTransform, localIdeographFontFamily) {
-        this.requestTransform = requestTransform;
+    constructor(localIdeographFontFamily) {
         this.localIdeographFontFamily = localIdeographFontFamily;
         this.entries = {};
     }
@@ -32,7 +30,7 @@ class GlyphManager {
             }
         }
 
-        asyncAll(all, ({stack, id}, callback) => {
+        async.all(all, ({stack, id}, callback) => {
             let entry = this.entries[stack];
             if (!entry) {
                 entry = this.entries[stack] = {
@@ -62,7 +60,7 @@ class GlyphManager {
             let requests = entry.requests[range];
             if (!requests) {
                 requests = entry.requests[range] = [];
-                GlyphManager.loadGlyphRange(stack, range, (this.url), this.requestTransform,
+                GlyphManager.loadGlyphRange(stack, range, this.url,
                     (err, response) => {
                         if (response) {
                             for (const id in response) {

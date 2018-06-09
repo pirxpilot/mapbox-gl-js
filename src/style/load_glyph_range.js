@@ -2,25 +2,22 @@
 
 const { normalizeGlyphsURL } = require('../util/mapbox');
 
-const { getArrayBuffer, ResourceType } = require('../util/ajax');
+const { getArrayBuffer } = require('../util/ajax');
 const parseGlyphPBF = require('./parse_glyph_pbf');
 
 
 module.exports = function (fontstack,
                            range,
                            urlTemplate,
-                           requestTransform,
                            callback) {
     const begin = range * 256;
     const end = begin + 255;
 
-    const request = requestTransform(
-        normalizeGlyphsURL(urlTemplate)
+    const url = normalizeGlyphsURL(urlTemplate)
             .replace('{fontstack}', fontstack)
-            .replace('{range}', `${begin}-${end}`),
-        ResourceType.Glyphs);
+            .replace('{range}', `${begin}-${end}`);
 
-    getArrayBuffer(request, (err, response) => {
+    getArrayBuffer({ url }, (err, response) => {
         if (err) {
             callback(err);
         } else if (response) {

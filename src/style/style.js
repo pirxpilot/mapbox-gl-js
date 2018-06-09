@@ -9,23 +9,19 @@ const ImageManager = require('../render/image_manager');
 const GlyphManager = require('../render/glyph_manager');
 const Light = require('./light');
 const LineAtlas = require('../render/line_atlas');
-const { pick, clone, extend, deepEqual, filterObject, mapObject } = require('../util/util');
-const { getJSON, ResourceType } = require('../util/ajax');
-const { isMapboxURL, normalizeStyleURL } = require('../util/mapbox');
+const { clone, deepEqual, filterObject, mapObject } = require('../util/object');
+const { getJSON } = require('../util/ajax');
+const { normalizeStyleURL } = require('../util/mapbox');
 const browser = require('../util/browser');
-const Dispatcher = require('../util/dispatcher');
-const { validateStyle, emitValidationErrors: _emitValidationErrors } = require('./validate_style');
+const dispatcher = require('../util/dispatcher');
 const {
     getType: getSourceType,
     setType: setSourceType,
 } = require('../source/source');
 const { queryRenderedFeatures, queryRenderedSymbols, querySourceFeatures } = require('../source/query_features');
 const SourceCache = require('../source/source_cache');
-const styleSpec = require('../style-spec/reference/latest');
 const getWorkerPool = require('../util/global_worker_pool');
 const deref = require('../style-spec/deref');
-const diffStyles = require('../style-spec/diff');
-const { operations: diffOperations } = diffStyles;
 const {
     registerForPluginAvailability,
     evented: rtlTextPluginEvented
@@ -33,37 +29,6 @@ const {
 const PauseablePlacement = require('./pauseable_placement');
 const ZoomHistory = require('./zoom_history');
 const CrossTileSymbolIndex = require('../symbol/cross_tile_symbol_index');
-
-// We're skipping validation errors with the `source.canvas` identifier in order
-// to continue to allow canvas sources to be added at runtime/updated in
-// smart setStyle (see https://github.com/mapbox/mapbox-gl-js/pull/6424):
-const emitValidationErrors = (evented, errors) =>
-    _emitValidationErrors(evented, errors && errors.filter(error => error.identifier !== 'source.canvas'));
-
-
-const supportedDiffOperations = pick(diffOperations, [
-    'addLayer',
-    'removeLayer',
-    'setPaintProperty',
-    'setLayoutProperty',
-    'setFilter',
-    'addSource',
-    'removeSource',
-    'setLayerZoomRange',
-    'setLight',
-    'setTransition',
-    'setGeoJSONSourceData'
-    // 'setGlyphs',
-    // 'setSprite',
-]);
-
-const ignoredDiffOperations = pick(diffOperations, [
-    'setCenter',
-    'setZoom',
-    'setBearing',
-    'setPitch'
-]);
-
 
 /**
  * @private
@@ -78,9 +43,9 @@ class Style extends Evented {
         super();
 
         this.map = map;
-        this.dispatcher = new Dispatcher(getWorkerPool(), this);
+        this.dispatcher = dispatcher(getWorkerPool(), this);
         this.imageManager = new ImageManager();
-        this.glyphManager = new GlyphManager(map._transformRequest, options.localIdeographFontFamily);
+        this.glyphManager = new GlyphManager(options.localIdeographFontFamily);
         this.lineAtlas = new LineAtlas(256, 512);
         this.crossTileSymbolIndex = new CrossTileSymbolIndex();
 
@@ -127,43 +92,34 @@ class Style extends Evented {
     loadURL(url, options = {}) {
         this.fire(new Event('dataloading', {dataType: 'style'}));
 
-        const validate = typeof options.validate === 'boolean' ?
-            options.validate : !isMapboxURL(url);
-
         url = normalizeStyleURL(url, options.accessToken);
-        const request = this.map._transformRequest(url, ResourceType.Style);
-
-        getJSON(request, (error, json) => {
+        getJSON({ url }, (error, json) => {
             if (error) {
                 this.fire(new ErrorEvent(error));
             } else if (json) {
-                this._load((json), validate);
+                this._load(json);
             }
         });
     }
 
-    loadJSON(json, options = {}) {
+    loadJSON(json) {
         this.fire(new Event('dataloading', {dataType: 'style'}));
 
         browser.frame(() => {
-            this._load(json, options.validate !== false);
+            this._load(json);
         });
     }
 
-    _load(json, validate) {
-        if (validate && emitValidationErrors(this, validateStyle(json))) {
-            return;
-        }
-
+    _load(json) {
         this._loaded = true;
         this.stylesheet = json;
 
         for (const id in json.sources) {
-            this.addSource(id, json.sources[id], {validate: false});
+            this.addSource(id, json.sources[id]);
         }
 
         if (json.sprite) {
-            loadSprite(json.sprite, this.map._transformRequest, (err, images) => {
+            loadSprite(json.sprite, (err, images) => {
                 if (err) {
                     this.fire(new ErrorEvent(err));
                 } else if (images) {
@@ -338,50 +294,6 @@ class Style extends Evented {
         this._updatedPaintProps = {};
     }
 
-    /**
-     * Update this style's state to match the given style JSON, performing only
-     * the necessary mutations.
-     *
-     * May throw an Error ('Unimplemented: METHOD') if the mapbox-gl-style-spec
-     * diff algorithm produces an operation that is not supported.
-     *
-     * @returns {boolean} true if any changes were made; false otherwise
-     * @private
-     */
-    setState(nextState) {
-        this._checkLoaded();
-
-        if (emitValidationErrors(this, validateStyle(nextState))) return false;
-
-        nextState = clone(nextState);
-        nextState.layers = deref(nextState.layers);
-
-        const changes = diffStyles(this.serialize(), nextState)
-            .filter(op => !(op.command in ignoredDiffOperations));
-
-        if (changes.length === 0) {
-            return false;
-        }
-
-        const unimplementedOps = changes.filter(op => !(op.command in supportedDiffOperations));
-        if (unimplementedOps.length > 0) {
-            throw new Error(`Unimplemented: ${unimplementedOps.map(op => op.command).join(', ')}.`);
-        }
-
-        changes.forEach((op) => {
-            if (op.command === 'setTransition') {
-                // `transition` is always read directly off of
-                // `this.stylesheet`, which we update below
-                return;
-            }
-            (this)[op.command].apply(this, op.args);
-        });
-
-        this.stylesheet = nextState;
-
-        return true;
-    }
-
     addImage(id, image) {
         if (this.getImage(id)) {
             return this.fire(new ErrorEvent(new Error('An image with this name already exists.')));
@@ -408,7 +320,7 @@ class Style extends Evented {
         return this.imageManager.listImages();
     }
 
-    addSource(id, source, options) {
+    addSource(id, source) {
         this._checkLoaded();
 
         if (this.sourceCaches[id] !== undefined) {
@@ -419,11 +331,6 @@ class Style extends Evented {
             throw new Error(`The type property must be defined, but the only the following properties were given: ${Object.keys(source).join(', ')}.`);
         }
 
-        const builtIns = ['vector', 'raster', 'geojson', 'video', 'image'];
-        const shouldValidate = builtIns.indexOf(source.type) >= 0;
-        if (shouldValidate && this._validate(validateStyle.source, `sources.${id}`, source, null, options)) return;
-
-        if (this.map && this.map._collectResourceTiming) (source).collectResourceTiming = true;
         const sourceCache = this.sourceCaches[id] = new SourceCache(id, source, this.dispatcher);
         sourceCache.style = this;
         sourceCache.setEventedParent(this, () => ({
@@ -494,7 +401,7 @@ class Style extends Evented {
      * ID `before`, or appended if `before` is omitted.
      * @param {string} [before] ID of an existing layer to insert before
      */
-    addLayer(layerObject, before, options) {
+    addLayer(layerObject, before) {
         this._checkLoaded();
 
         const id = layerObject.id;
@@ -507,12 +414,8 @@ class Style extends Evented {
         if (typeof layerObject.source === 'object') {
             this.addSource(id, layerObject.source);
             layerObject = clone(layerObject);
-            layerObject = (extend(layerObject, {source: id}));
+            layerObject = Object.assign(layerObject, {source: id});
         }
-
-        // this layer is not in the style.layers array, so we pass an impossible array index
-        if (this._validate(validateStyle.layer,
-            `layers.${id}`, layerObject, {arrayIndex: -1}, options)) return;
 
         const layer = createStyleLayer(layerObject);
         this._validateLayer(layer);
@@ -663,10 +566,6 @@ class Style extends Evented {
             return;
         }
 
-        if (this._validate(validateStyle.filter, `layers.${layer.id}.filter`, filter)) {
-            return;
-        }
-
         layer.filter = clone(filter);
         this._updateLayer(layer);
     }
@@ -768,7 +667,7 @@ class Style extends Evented {
     }
 
     getTransition() {
-        return extend({ duration: 300, delay: 0 }, this.stylesheet && this.stylesheet.transition);
+        return Object.assign({ duration: 300, delay: 0 }, this.stylesheet && this.stylesheet.transition);
     }
 
     serialize() {
@@ -786,7 +685,7 @@ class Style extends Evented {
             transition: this.stylesheet.transition,
             sources: mapObject(this.sourceCaches, (source) => source.serialize()),
             layers: this._order.map((id) => this._layers[id].serialize())
-        }, (value) => { return value !== undefined; });
+        }, (value) => value !== undefined);
     }
 
     _updateLayer(layer) {
@@ -815,10 +714,6 @@ class Style extends Evented {
     }
 
     queryRenderedFeatures(queryGeometry, params, transform) {
-        if (params && params.filter) {
-            this._validate(validateStyle.filter, 'queryRenderedFeatures.filter', params.filter);
-        }
-
         const includedSources = {};
         if (params && params.layers) {
             if (!Array.isArray(params.layers)) {
@@ -866,9 +761,6 @@ class Style extends Evented {
     }
 
     querySourceFeatures(sourceID, params) {
-        if (params && params.filter) {
-            this._validate(validateStyle.filter, 'querySourceFeatures.filter', params.filter);
-        }
         const sourceCache = this.sourceCaches[sourceID];
         return sourceCache ? querySourceFeatures(sourceCache, params) : [];
     }
@@ -909,7 +801,7 @@ class Style extends Evented {
 
         const parameters = {
             now: browser.now(),
-            transition: extend({
+            transition: Object.assign({
                 duration: 300,
                 delay: 0
             }, this.stylesheet.transition)
@@ -917,18 +809,6 @@ class Style extends Evented {
 
         this.light.setLight(lightOptions);
         this.light.updateTransitions(parameters);
-    }
-
-    _validate(validate, key, value, props, options) {
-        if (options && options.validate === false) {
-            return false;
-        }
-        return emitValidationErrors(this, validate.call(validateStyle, extend({
-            key: key,
-            style: this.serialize(),
-            value: value,
-            styleSpec: styleSpec
-        }, props)));
     }
 
     _remove() {

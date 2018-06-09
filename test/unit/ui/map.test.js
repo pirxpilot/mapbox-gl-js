@@ -1,5 +1,4 @@
 const { test } = require('mapbox-gl-js-test');
-const { extend } = require('../../../src/util/util');
 const window = require('../../../src/util/window');
 const Map = require('../../../src/ui/map');
 const LngLat = require('../../../src/geo/lng_lat');
@@ -18,7 +17,7 @@ function createMap(options, callback) {
     Object.defineProperty(container, 'offsetWidth', {value: 200, configurable: true});
     Object.defineProperty(container, 'offsetHeight', {value: 200, configurable: true});
 
-    const map = new Map(extend({
+    const map = new Map(Object.assign({
         container: container,
         interactive: false,
         attributionControl: false,
@@ -332,7 +331,7 @@ test('Map', (t) => {
 
             map.on('load', () => {
                 map.addSource('geojson', createStyleSource());
-                t.deepEqual(map.getStyle(), extend(createStyle(), {
+                t.deepEqual(map.getStyle(), Object.assign(createStyle(), {
                     sources: {geojson: createStyleSource()}
                 }));
                 t.end();
@@ -362,7 +361,7 @@ test('Map', (t) => {
 
             map.on('load', () => {
                 map.addLayer(layer);
-                t.deepEqual(map.getStyle(), extend(createStyle(), {
+                t.deepEqual(map.getStyle(), Object.assign(createStyle(), {
                     layers: [layer]
                 }));
                 t.end();
@@ -382,7 +381,7 @@ test('Map', (t) => {
             map.on('load', () => {
                 map.addSource('fill', source);
                 map.addLayer(layer);
-                t.deepEqual(map.getStyle(), extend(createStyle(), {
+                t.deepEqual(map.getStyle(), Object.assign(createStyle(), {
                     sources: { fill: source },
                     layers: [layer]
                 }));
@@ -390,39 +389,12 @@ test('Map', (t) => {
             });
         });
 
-        t.test('creates a new Style if diff fails', (t) => {
-            const style = createStyle();
-            const map = createMap({ style: style });
-            t.stub(map.style, 'setState').callsFake(() => {
-                throw new Error('Dummy error');
-            });
-            t.stub(console, 'warn');
-
-            const previousStyle = map.style;
-            map.setStyle(style);
-            t.ok(map.style && map.style !== previousStyle);
-            t.end();
-        });
-
-        t.test('creates a new Style if diff option is false', (t) => {
-            const style = createStyle();
-            const map = createMap({ style: style });
-            t.stub(map.style, 'setState').callsFake(() => {
-                t.fail();
-            });
-
-            const previousStyle = map.style;
-            map.setStyle(style, {diff: false});
-            t.ok(map.style && map.style !== previousStyle);
-            t.end();
-        });
-
         t.end();
     });
 
     t.test('#moveLayer', (t) => {
         const map = createMap({
-            style: extend(createStyle(), {
+            style: Object.assign(createStyle(), {
                 sources: {
                     mapbox: {
                         type: 'vector',
@@ -461,7 +433,7 @@ test('Map', (t) => {
             'source-layer': 'sourceLayer'
         };
         const map = createMap({
-            style: extend(createStyle(), {
+            style: Object.assign(createStyle(), {
                 sources: {
                     mapbox: {
                         type: 'vector',
@@ -797,7 +769,7 @@ test('Map', (t) => {
 
     t.test('#remove', (t) => {
         const map = createMap();
-        t.equal(map.getContainer().childNodes.length, 3);
+        t.equal(map.getContainer().childNodes.length, 2);
         map.remove();
         t.equal(map.getContainer().childNodes.length, 0);
         t.end();
@@ -1079,105 +1051,6 @@ test('Map', (t) => {
             });
         });
 
-        t.test('sets visibility on raster layer', (t) => {
-            const map = createMap({
-                style: {
-                    "version": 8,
-                    "sources": {
-                        "mapbox://mapbox.satellite": {
-                            "type": "raster",
-                            "tiles": ["http://example.com/{z}/{x}/{y}.png"]
-                        }
-                    },
-                    "layers": [{
-                        "id": "satellite",
-                        "type": "raster",
-                        "source": "mapbox://mapbox.satellite",
-                        "layout": {
-                            "visibility": "none"
-                        }
-                    }]
-                }
-            });
-
-            // Suppress errors because we're not loading tiles from a real URL.
-            map.on('error', () => {});
-
-            map.on('style.load', () => {
-                map.setLayoutProperty('satellite', 'visibility', 'visible');
-                t.deepEqual(map.getLayoutProperty('satellite', 'visibility'), 'visible');
-                t.end();
-            });
-        });
-
-        t.test('sets visibility on video layer', (t) => {
-            const map = createMap({
-                style: {
-                    "version": 8,
-                    "sources": {
-                        "drone": {
-                            "type": "video",
-                            "urls": [],
-                            "coordinates": [
-                                [-122.51596391201019, 37.56238816766053],
-                                [-122.51467645168304, 37.56410183312965],
-                                [-122.51309394836426, 37.563391708549425],
-                                [-122.51423120498657, 37.56161849366671]
-                            ]
-                        }
-                    },
-                    "layers": [{
-                        "id": "shore",
-                        "type": "raster",
-                        "source": "drone",
-                        "layout": {
-                            "visibility": "none"
-                        }
-                    }]
-                }
-            });
-
-            map.on('style.load', () => {
-                map.setLayoutProperty('shore', 'visibility', 'visible');
-                t.deepEqual(map.getLayoutProperty('shore', 'visibility'), 'visible');
-                t.end();
-            });
-        });
-
-        t.test('sets visibility on image layer', (t) => {
-            const map = createMap({
-                style: {
-                    "version": 8,
-                    "sources": {
-                        "image": {
-                            "type": "image",
-                            "url": "",
-                            "coordinates": [
-                                [-122.51596391201019, 37.56238816766053],
-                                [-122.51467645168304, 37.56410183312965],
-                                [-122.51309394836426, 37.563391708549425],
-                                [-122.51423120498657, 37.56161849366671]
-                            ]
-                        }
-                    },
-                    "layers": [{
-                        "id": "image",
-                        "type": "raster",
-                        "source": "image",
-                        "layout": {
-                            "visibility": "none"
-                        }
-                    }]
-                }
-            });
-
-            map.on('style.load', () => {
-                map.setLayoutProperty('image', 'visibility', 'visible');
-                t.deepEqual(map.getLayoutProperty('image', 'visibility'), 'visible');
-                t.end();
-            });
-        });
-
         t.end();
     });
 
@@ -1369,7 +1242,7 @@ test('Map', (t) => {
 
     t.test('#removeLayer restores Map#loaded() to true', (t) => {
         const map = createMap({
-            style: extend(createStyle(), {
+            style: Object.assign(createStyle(), {
                 sources: {
                     mapbox: {
                         type: 'vector',

@@ -6,7 +6,8 @@ const { performSymbolLayout } = require('../symbol/symbol_layout');
 const { CollisionBoxArray } = require('../data/array_types');
 const DictionaryCoder = require('../util/dictionary_coder');
 const SymbolBucket = require('../data/bucket/symbol_bucket');
-const { warnOnce, mapObject, values } = require('../util/util');
+const { mapObject, values } = require('../util/object');
+const warn = require('../util/warn');
 const assert = require('assert');
 const ImageAtlas = require('../render/image_atlas');
 const GlyphAtlas = require('../render/glyph_atlas');
@@ -27,7 +28,6 @@ class WorkerTile {
         this.source = params.source;
         this.overscaling = this.tileID.overscaleFactor();
         this.showCollisionBoxes = params.showCollisionBoxes;
-        this.collectResourceTiming = !!params.collectResourceTiming;
     }
 
     parse(data, layerIndex, actor, callback) {
@@ -56,7 +56,7 @@ class WorkerTile {
             }
 
             if (sourceLayer.version === 1) {
-                warnOnce(`Vector tile source "${this.source}" layer "${sourceLayerId}" ` +
+                warn.once(`Vector tile source "${this.source}" layer "${sourceLayerId}" ` +
                     `does not use vector tile spec v2 and therefore may have some rendering errors.`);
             }
 

@@ -1,8 +1,13 @@
 'use strict';
 
-const { uniqueId, asyncAll } = require('./util');
-const Actor = require('./actor');
+const async = require('./async');
+const uniqueId = require('./unique_id');
+const actor = require('./actor');
 
+
+module.exports = dispatcher;
+
+const noop = () => {};
 
 /**
  * Responsible for sending messages from a {@link Source} to an associated
@@ -10,32 +15,29 @@ const Actor = require('./actor');
  *
  * @private
  */
-class Dispatcher {
+function dispatcher(workerPool, parent, makeActor = actor) {
 
     // exposed to allow stubbing in unit tests
 
-    constructor(workerPool, parent) {
-        this.workerPool = workerPool;
-        this.actors = [];
-        this.currentActor = 0;
-        this.id = uniqueId();
-        const workers = this.workerPool.acquire(this.id);
-        for (let i = 0; i < workers.length; i++) {
-            const worker = workers[i];
-            const actor = new Dispatcher.Actor(worker, parent, this.id);
-            actor.name = `Worker ${i}`;
-            this.actors.push(actor);
-        }
-    }
+    let currentActor = 0;
+    const id = uniqueId();
+    const workers = workerPool.acquire(id);
+    const actors = workers.map((worker, i) => makeActor(worker, parent, id, `Worker ${i}`));
 
     /**
      * Broadcast a message to all Workers.
      */
-    broadcast(type, data, cb) {
-        cb = cb || function () {};
-        asyncAll(this.actors, (actor, done) => {
-            actor.send(type, data, done);
-        }, cb);
+    function broadcast(type, data, cb = noop) {
+        async.all(actors, (actor, done) => actor.send(type, data, done), cb);
+    }
+
+    // Use round robin to send requests to web workers.
+    function nextActorId() {
+        currentActor += 1;
+        if (currentActor === actors.length) {
+            currentActor = 0;
+        }
+        return currentActor;
     }
 
     /**
@@ -43,23 +45,25 @@ class Dispatcher {
      * @param targetID The ID of the Worker to which to send this message. Omit to allow the dispatcher to choose.
      * @returns The ID of the worker to which the message was sent.
      */
-    send(type, data, callback, targetID) {
+    function send(type, data, callback, targetID) {
         if (typeof targetID !== 'number' || isNaN(targetID)) {
-            // Use round robin to send requests to web workers.
-            targetID = this.currentActor = (this.currentActor + 1) % this.actors.length;
+            targetID = nextActorId();
         }
 
-        this.actors[targetID].send(type, data, callback);
+        actors[targetID].send(type, data, callback);
         return targetID;
     }
 
-    remove() {
-        this.actors.forEach((actor) => { actor.remove(); });
-        this.actors = [];
-        this.workerPool.release(this.id);
+    function remove() {
+        actors.forEach(actor => actor.remove());
+        actors.length = 0;
+        workerPool.release(id);
     }
+
+    return {
+        id,
+        broadcast,
+        send,
+        remove
+    };
 }
-
-Dispatcher.Actor = Actor;
-
-module.exports = Dispatcher;

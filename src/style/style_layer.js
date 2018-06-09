@@ -1,14 +1,7 @@
 'use strict';
 
-const { endsWith, filterObject } = require('../util/util');
+const { filterObject } = require('../util/object');
 
-const styleSpec = require('../style-spec/reference/latest');
-const {
-    validateStyle,
-    validateLayoutProperty,
-    validatePaintProperty,
-    emitValidationErrors
-} = require('./validate_style');
 const { Evented } = require('../util/evented');
 const { Layout, Transitionable, PossiblyEvaluatedPropertyValue } = require('./properties');
 const { supportsPropertyExpression } = require('../style-spec/util/properties');
@@ -43,10 +36,10 @@ class StyleLayer extends Evented {
         this._transitionablePaint = new Transitionable(properties.paint);
 
         for (const property in layer.paint) {
-            this.setPaintProperty(property, layer.paint[property], {validate: false});
+            this.setPaintProperty(property, layer.paint[property]);
         }
         for (const property in layer.layout) {
-            this.setLayoutProperty(property, layer.layout[property], {validate: false});
+            this.setLayoutProperty(property, layer.layout[property]);
         }
 
         this._transitioningPaint = this._transitionablePaint.untransitioned();
@@ -60,14 +53,7 @@ class StyleLayer extends Evented {
         return this._unevaluatedLayout.getValue(name);
     }
 
-    setLayoutProperty(name, value, options) {
-        if (value !== null && value !== undefined) {
-            const key = `layers.${this.id}.layout.${name}`;
-            if (this._validate(validateLayoutProperty, key, name, value, options)) {
-                return;
-            }
-        }
-
+    setLayoutProperty(name, value) {
         if (name === 'visibility') {
             this.visibility = value === 'none' ? value : 'visible';
             return;
@@ -77,22 +63,15 @@ class StyleLayer extends Evented {
     }
 
     getPaintProperty(name) {
-        if (endsWith(name, TRANSITION_SUFFIX)) {
+        if (name.endsWith(TRANSITION_SUFFIX)) {
             return this._transitionablePaint.getTransition(name.slice(0, -TRANSITION_SUFFIX.length));
         } else {
             return this._transitionablePaint.getValue(name);
         }
     }
 
-    setPaintProperty(name, value, options) {
-        if (value !== null && value !== undefined) {
-            const key = `layers.${this.id}.paint.${name}`;
-            if (this._validate(validatePaintProperty, key, name, value, options)) {
-                return false;
-            }
-        }
-
-        if (endsWith(name, TRANSITION_SUFFIX)) {
+    setPaintProperty(name, value) {
+        if (name.endsWith(TRANSITION_SUFFIX)) {
             this._transitionablePaint.setTransition(name.slice(0, -TRANSITION_SUFFIX.length), (value) || undefined);
             return false;
         } else {
@@ -154,21 +133,6 @@ class StyleLayer extends Evented {
                 !(key === 'layout' && !Object.keys(value).length) &&
                 !(key === 'paint' && !Object.keys(value).length);
         });
-    }
-
-    _validate(validate, key, name, value, options) {
-        if (options && options.validate === false) {
-            return false;
-        }
-        return emitValidationErrors(this, validate.call(validateStyle, {
-            key: key,
-            layerType: this.type,
-            objectKey: name,
-            value: value,
-            styleSpec: styleSpec,
-            // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/2407
-            style: {glyphs: true, sprite: true}
-        }));
     }
 
     hasOffscreenPass() {
