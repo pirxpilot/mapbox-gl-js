@@ -1,4 +1,13 @@
 
+0.45.1 / 2018-06-09
+===================
+
+ * add support for loading strategies
+ * remove unused parts
+ * use standard ES6 (without flow and imports)
+ * fix exception thrown when there are no rendered features
+ * support option animate set to false to bypass animation in fitBounds
+
 ## 0.45.0
 
 ### ⚠️ Breaking changes
