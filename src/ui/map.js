@@ -18,7 +18,6 @@ const Camera = require('./camera');
 const LngLat = require('../geo/lng_lat');
 const LngLatBounds = require('../geo/lng_lat_bounds');
 const Point = require('@mapbox/point-geometry');
-const AttributionControl = require('./control/attribution_control');
 const isSupported = require('@mapbox/mapbox-gl-supported');
 const { RGBAImage } = require('../util/image');
 const { Event, ErrorEvent } = require('../util/evented');
@@ -101,7 +100,6 @@ const defaultOptions = {
  *   bearing will snap to north. For example, with a `bearingSnap` of 7, if the user rotates
  *   the map within 7 degrees of north, the map will automatically snap to exact north.
  * @param {boolean} [options.pitchWithRotate=true] If `false`, the map's pitch (tilt) control with "drag to rotate" interaction will be disabled.
- * @param {boolean} [options.attributionControl=true] If `true`, an {@link AttributionControl} will be added to the map.
  * @param {string} [options.logoPosition='bottom-left'] A string representing the position of the Mapbox wordmark on the map. Valid options are `top-left`,`top-right`, `bottom-left`, `bottom-right`.
  * @param {boolean} [options.failIfMajorPerformanceCaveat=false] If `true`, map creation will fail if the performance of Mapbox
  *   GL JS would be dramatically worse than expected (i.e. a software renderer would be used).
@@ -244,8 +242,6 @@ class Map extends Camera {
         this.resize();
 
         if (options.style) this.setStyle(options.style, { localIdeographFontFamily: options.localIdeographFontFamily });
-
-        if (options.attributionControl) this.addControl(new AttributionControl());
 
         this.on('style.load', function() {
             if (this.transform.unmodified) {
