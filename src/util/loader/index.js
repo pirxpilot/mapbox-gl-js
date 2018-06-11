@@ -18,7 +18,7 @@ function selectStrategy(strategy = 'network-only') {
     return strategies[strategy] || strategies['network-only'];
 }
 
-function networkOnly({ url, _ilk }, fn) {
+function networkOnly({ request: { url }, _ilk }, fn) {
     const getFn = _ilk === 'json' ? ajax.getJSON : ajax.getArrayBuffer;
     const xhr = getFn({ url }, fn);
     return function abort () { xhr.abort(); };

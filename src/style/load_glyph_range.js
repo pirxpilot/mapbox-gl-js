@@ -16,7 +16,7 @@ function loadGlyphRange(fontstack, range, urlTemplate, callback) {
         .replace('{range}', `${begin}-${end}`);
 
     const loader = makeLoader(config.LOADER_STRATEGY);
-    loader({ url, fontstack, range }, done);
+    loader({ request: { url }, fontstack, range }, done);
 
     function done(err, { data } = {}) {
         if (err) return callback(err);

@@ -9,7 +9,7 @@ module.exports = image;
 function image(url, fn) {
     const load = loader(config.LOADER_STRATEGY);
 
-    load({ url, _ilk: 'image' }, done);
+    load({ request: { url }, _ilk: 'image' }, done);
 
     function done(err, data) {
         if (err) return fn(err);

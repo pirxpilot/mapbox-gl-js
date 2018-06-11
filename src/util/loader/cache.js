@@ -30,19 +30,24 @@ function update(params, { data, _cacheHit }, fn = noop) {
     tileCache.put(store, key, data, fn);
 }
 
-function keyFromParams({ coord, zoom, fontstack, range, url, _ilk }) {
+function keyFromParams({ tileID, fontstack, range, request, _ilk }) {
     if (_ilk) {
         return {
             store: _ilk,
-            key: url
+            key: request.url
         };
     }
+    if (fontstack) {
+        return {
+            store: 'font',
+            key: [ fontstack, parseInt(range, 10) ]
+        };
+    }
+    let { x, y, z } = tileID.canonical;
     return fontstack ? {
-        store: 'font',
-        key: [ fontstack, parseInt(range, 10) ]
     } : {
         store: 'tile',
-        key: [ coord.x, coord.y, zoom ]
+        key: [ x, y, z ]
     };
 }
 

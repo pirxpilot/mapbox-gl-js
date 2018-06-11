@@ -5,9 +5,9 @@ const loader = require('../util/loader');
 const Protobuf = require('pbf');
 const WorkerTile = require('./worker_tile');
 
-function loadVectorTile({ request }, callback) {
+function loadVectorTile(params, callback) {
     const { loader } = this;
-    return loader(request, done);
+    return loader(params, done);
     function done(err, { data, cacheControl, expires } = {}) {
         if (err) return callback(err);
         callback(err, {
