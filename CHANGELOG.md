@@ -1,4 +1,10 @@
 
+0.45.3 / 2018-06-11
+===================
+
+ * fix calculating cache keys for tile-cache
+ * fix setLoaderStrategy implementation
+
 0.45.2 / 2018-06-09
 ===================
 
