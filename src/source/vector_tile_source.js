@@ -130,7 +130,7 @@ class VectorTileSource extends Evented {
     }
 
     setLoaderStrategy(strategy) {
-        this.dispatcher.broadcast('vector.setLoaderStrategy', strategy);
+        this.dispatcher.broadcast('vector.setLoaderStrategy', { strategy, source: this.id });
     }
 }
 

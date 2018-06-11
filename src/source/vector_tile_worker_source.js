@@ -141,7 +141,7 @@ class VectorTileWorkerSource {
         callback();
     }
 
-    setLoaderStrategy(strategy) {
+    setLoaderStrategy({ strategy }) {
         this.loader = loader(strategy);
     }
 }
