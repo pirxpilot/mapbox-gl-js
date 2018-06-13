@@ -1,6 +1,6 @@
 const { test } = require('../../util/mapbox-gl-js-test');
 const Point = require('@mapbox/point-geometry');
-const getAnchors = require('../../../src/symbol/get_anchors');
+const { getAnchors } = require('../../../src/symbol/get_anchors');
 
 const TILE_EXTENT = 4096;
 
