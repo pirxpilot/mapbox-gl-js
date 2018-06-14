@@ -769,37 +769,10 @@ test('Map', (t) => {
 
     t.test('#remove', (t) => {
         const map = createMap();
-        t.equal(map.getContainer().childNodes.length, 2);
+        t.equal(map.getContainer().childNodes.length, 1);
         map.remove();
         t.equal(map.getContainer().childNodes.length, 0);
         t.end();
-    });
-
-    t.test('#addControl', (t) => {
-        const map = createMap();
-        const control = {
-            onAdd: function(_) {
-                t.equal(map, _, 'addTo() called with map');
-                t.end();
-                return window.document.createElement('div');
-            }
-        };
-        map.addControl(control);
-    });
-
-    t.test('#removeControl', (t) => {
-        const map = createMap();
-        const control = {
-            onAdd: function() {
-                return window.document.createElement('div');
-            },
-            onRemove: function(_) {
-                t.equal(map, _, 'onRemove() called with map');
-                t.end();
-            }
-        };
-        map.addControl(control);
-        map.removeControl(control);
     });
 
     t.test('#project', (t) => {
