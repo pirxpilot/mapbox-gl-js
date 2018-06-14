@@ -6,7 +6,6 @@ module.exports = {
     setRTLTextPlugin: require('./source/rtl_text_plugin').setRTLTextPlugin,
     Map: require('./ui/map'),
     NavigationControl: require('./ui/control/navigation_control'),
-    ScaleControl: require('./ui/control/scale_control'),
     FullscreenControl: require('./ui/control/fullscreen_control'),
     Style: require('./style/style'),
     LngLat: require('./geo/lng_lat'),
