@@ -43,7 +43,7 @@ function keyFromParams({ tileID, fontstack, range, request, _ilk }) {
             key: [ fontstack, parseInt(range, 10) ]
         };
     }
-    let { x, y, z } = tileID.canonical;
+    const { x, y, z } = tileID.canonical;
     return fontstack ? {
     } : {
         store: 'tile',

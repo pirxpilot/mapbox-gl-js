@@ -26,7 +26,6 @@ var map = window.map = new mapboxgl.Map({
     hash: false
 });
 
-map.addControl(new mapboxgl.NavigationControl());
 map.on('load', function() {
 
     map.addSource('heatmap', {
