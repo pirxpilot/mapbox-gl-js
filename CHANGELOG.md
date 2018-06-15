@@ -1,4 +1,12 @@
 
+0.45.4 / 2018-06-15
+===================
+
+ * remove NavigationControl
+ * remove FullscreenControl
+ * remove ScaleControl
+ * remove attribution control
+
 0.45.3 / 2018-06-11
 ===================
 
