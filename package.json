@@ -29,6 +29,7 @@
     "supercluster": "^2.0.1",
     "tile-cache": "^1.0.2",
     "tinyqueue": "^1.1.0",
+    "uglify-es": "^3.3.9",
     "vt-pbf": "^3.1.1"
   },
   "devDependencies": {
@@ -61,20 +62,10 @@
     "stylelint": "^7.10.1",
     "tap": "^12.0.1",
     "through2": "^2.0.3",
-    "uglify-js": "2.7.5",
     "unassertify": "^2.0.0"
   },
   "browserify": {
     "transform": [
-      [
-        "bubleify",
-        {
-          "bubleError": true,
-          "transforms": {
-            "dangerousForOf": true
-          }
-        }
-      ],
       "package-json-versionify",
       "unassertify",
       "brfs",

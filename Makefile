@@ -15,13 +15,13 @@ BROWSERIFY_OPTIONS = --debug --plugin browser-pack-flat --plugin common-shakeify
 
 dist/%.js: dist/%-dev.js
 	$(NODE_BIN)/uglifyjs \
-		--screw-ie8 \
 		--mangle \
-		--no-copyright \
-		--compress 'warnings=false,drop_console' \
-		--in-source-map $<.map \
-		--source-map $@.map \
-		--output $@ $<
+		--compress warnings=false \
+		--compress drop_console \
+		--source-map filename=$@.map \
+		--source-map content=$<.map \
+		--output $@ \
+		-- $<
 
 all: check build
 
