@@ -9,6 +9,10 @@ DIST_WORKER = dist/$(PROJECT)-worker.js
 BUILD = $(DIST:%.js=%-dev.js)
 BUILD_WORKER = $(DIST_WORKER:%.js=%-dev.js)
 
+BROWSERIFY_OPTIONS = --debug --plugin browser-pack-flat --plugin common-shakeify
+# BROWSERIFY_OPTIONS = --debug --full-paths
+# BROWSERIFY_OPTIONS = --debug --plugin discify
+
 dist/%.js: dist/%-dev.js
 	$(NODE_BIN)/uglifyjs \
 		--screw-ie8 \
@@ -27,11 +31,11 @@ build: $(BUILD) $(BUILD_WORKER)
 
 $(BUILD): $(SRC) | node_modules
 	mkdir -p $(@D)
-	$(NODE_BIN)/browserify src/index.js --debug --standalone mapboxgl \
+	$(NODE_BIN)/browserify src/index.js $(BROWSERIFY_OPTIONS) --standalone mapboxgl \
 	| $(NODE_BIN)/exorcist --base $(CURDIR)  $@.map > $@
 
 $(BUILD_WORKER): $(SRC) | node_modules
-	$(NODE_BIN)/browserify --entry src/source/worker.js --debug --standalone mapboxgl \
+	$(NODE_BIN)/browserify src/source/worker.js  $(BROWSERIFY_OPTIONS) \
 	| $(NODE_BIN)/exorcist --base $(CURDIR)  $@.map > $@
 
 node_modules: package.json
