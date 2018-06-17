@@ -8,6 +8,8 @@ const { normalizeTileURL: normalizeURL } = require('../util/mapbox');
 const TileBounds = require('./tile_bounds');
 const browser = require('../util/browser');
 
+// register feature index for worker transfer
+require('../data/feature_index');
 
 class VectorTileSource extends Evented {
 
