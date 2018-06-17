@@ -1,4 +1,10 @@
 
+0.45.5 / 2018-06-17
+===================
+
+ * register FeatureIndex class for worker transfer
+ * build web worker as a separate file
+
 0.45.4 / 2018-06-15
 ===================
 
