@@ -45,6 +45,8 @@ const defaultOptions = {
 
     bearingSnap: 7,
 
+    clickTolerance: 3,
+
     attributionControl: true,
 
     failIfMajorPerformanceCaveat: false,
@@ -100,6 +102,7 @@ const defaultOptions = {
  *   bearing will snap to north. For example, with a `bearingSnap` of 7, if the user rotates
  *   the map within 7 degrees of north, the map will automatically snap to exact north.
  * @param {boolean} [options.pitchWithRotate=true] If `false`, the map's pitch (tilt) control with "drag to rotate" interaction will be disabled.
+ * @param {number} [options.clickTolerance=3] The max number of pixels a user can shift the mouse pointer during a click for it to be considered a valid click (as opposed to a mouse drag).
  * @param {string} [options.logoPosition='bottom-left'] A string representing the position of the Mapbox wordmark on the map. Valid options are `top-left`,`top-right`, `bottom-left`, `bottom-right`.
  * @param {boolean} [options.failIfMajorPerformanceCaveat=false] If `true`, map creation will fail if the performance of Mapbox
  *   GL JS would be dramatically worse than expected (i.e. a software renderer would be used).
