@@ -16,6 +16,7 @@ const paint = new Properties({
     "raster-brightness-max": new DataConstantProperty(styleSpec["paint_raster"]["raster-brightness-max"]),
     "raster-saturation": new DataConstantProperty(styleSpec["paint_raster"]["raster-saturation"]),
     "raster-contrast": new DataConstantProperty(styleSpec["paint_raster"]["raster-contrast"]),
+    "raster-resampling": new DataConstantProperty(styleSpec["paint_raster"]["raster-resampling"]),
     "raster-fade-duration": new DataConstantProperty(styleSpec["paint_raster"]["raster-fade-duration"]),
 });
 
