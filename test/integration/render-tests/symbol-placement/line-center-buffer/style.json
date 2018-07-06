@@ -39,7 +39,7 @@
         "text-field": "{name_en}",
         "symbol-placement": "line-center",
         "text-allow-overlap": true,
-        "text-size": 50,
+        "text-size": 38,
         "text-letter-spacing": 0.5,
         "text-font": [
           "Open Sans Semibold",
