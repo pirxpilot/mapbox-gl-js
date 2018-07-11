@@ -143,11 +143,11 @@ class Placement {
         );
 
         this.placeLayerBucket(symbolBucket, posMatrix, textLabelPlaneMatrix, iconLabelPlaneMatrix, scale, textPixelRatio,
-                showCollisionBoxes, seenCrossTileIDs, collisionBoxArray);
+                showCollisionBoxes, tile.holdingForFade(), seenCrossTileIDs, collisionBoxArray);
     }
 
     placeLayerBucket(bucket, posMatrix, textLabelPlaneMatrix, iconLabelPlaneMatrix,
-            scale, textPixelRatio, showCollisionBoxes, seenCrossTileIDs,
+            scale, textPixelRatio, showCollisionBoxes, holdingForFade, seenCrossTileIDs,
             collisionBoxArray) {
         const layout = bucket.layers[0].layout;
 
@@ -160,6 +160,12 @@ class Placement {
 
         for (const symbolInstance of bucket.symbolInstances) {
             if (!seenCrossTileIDs[symbolInstance.crossTileID]) {
+                if (holdingForFade) {
+                    // Mark all symbols from this tile as "not placed", but don't add to seenCrossTileIDs, because we don't
+                    // know yet if we have a duplicate in a parent tile that _should_ be placed.
+                    this.placements[symbolInstance.crossTileID] = new JointPlacement(false, false, false);
+                    continue;
+                }
 
                 let placeText = false;
                 let placeIcon = false;
