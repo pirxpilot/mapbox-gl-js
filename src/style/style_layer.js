@@ -20,6 +20,8 @@ class StyleLayer extends Evented {
         this.minzoom = layer.minzoom;
         this.maxzoom = layer.maxzoom;
         this.visibility = 'visible';
+        this.paint = {};
+        this.layout = {};
 
         if (layer.type !== 'background') {
             this.source = layer.source;
