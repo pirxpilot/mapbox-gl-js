@@ -1,4 +1,9 @@
 
+0.45.6 / 2018-07-17
+===================
+
+ * add empty paint and layout fields to style object to prevent exception being thrown when it is accessed to early
+
 0.45.5 / 2018-06-17
 ===================
 
