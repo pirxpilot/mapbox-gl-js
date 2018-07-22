@@ -2,7 +2,7 @@
 
 const { normalizePropertyExpression } = require('../style-spec/expression');
 
-const { number: interpolate } = require('../style-spec/util/interpolate');
+const interpolate = require('../util/interpolate');
 const { clamp } = require('../util/util');
 const EvaluationParameters = require('../style/evaluation_parameters');
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const { number: interpolate } = require('../style-spec/util/interpolate');
+const interpolate = require('../util/interpolate');
 
 const Anchor = require('../symbol/anchor');
 const checkMaxAngle = require('./check_max_angle');

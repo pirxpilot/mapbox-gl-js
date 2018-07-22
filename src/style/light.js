@@ -4,7 +4,7 @@ const styleSpec = require('../style-spec/reference/latest');
 
 const { sphericalToCartesian } = require('../util/util');
 const { Evented } = require('../util/evented');
-const { number: interpolate } = require('../style-spec/util/interpolate');
+const interpolate = require('../util/interpolate');
 
 
 const { Properties, Transitionable, DataConstantProperty } = require('./properties');

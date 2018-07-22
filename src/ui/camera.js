@@ -10,7 +10,7 @@ const {
     ease: defaultEasing
 } = require('../util/util');
 const warn = require('../util/warn');
-const { number: interpolate } = require('../style-spec/util/interpolate');
+const interpolate = require('../util/interpolate');
 const browser = require('../util/browser');
 const LngLat = require('../geo/lng_lat');
 const LngLatBounds = require('../geo/lng_lat_bounds');
