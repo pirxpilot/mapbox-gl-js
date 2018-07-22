@@ -722,12 +722,9 @@ class Style extends Evented {
             }
             for (const layerId of params.layers) {
                 const layer = this._layers[layerId];
-                if (!layer) {
-                    // this layer is not in the style.layers array
-                    this.fire(new ErrorEvent(new Error(`The layer '${layerId}' does not exist in the map's style and cannot be queried for features.`)));
-                    return [];
+                if (layer) {
+                    includedSources[layer.source] = true;
                 }
-                includedSources[layer.source] = true;
             }
         }
 

@@ -1565,13 +1565,13 @@ test('Style#queryRenderedFeatures', (t) => {
             t.end();
         });
 
-        t.test('fires an error if layer included in params does not exist on the style', (t) => {
+        t.test('ignores layer included in params if it does not exist on the style', (t) => {
             let errors = 0;
             t.stub(style, 'fire').callsFake((event) => {
                 if (event.error && event.error.message.includes('does not exist in the map\'s style and cannot be queried for features.')) errors++;
             });
             const results = style.queryRenderedFeatures([{column: 1, row: 1, zoom: 1}], {layers:['merp']}, transform);
-            t.equals(errors, 1);
+            t.equals(errors, 0);
             t.equals(results.length, 0);
             t.end();
         });
