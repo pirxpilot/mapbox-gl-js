@@ -47,7 +47,7 @@ function drawRaster(painter, sourceCache, layer, coords) {
 
         gl.uniformMatrix4fv(program.uniforms.u_matrix, false, posMatrix);
 
-        const parentTile = sourceCache.findLoadedParent(coord, 0, {}),
+        const parentTile = sourceCache.findLoadedParent(coord, 0),
             fade = getFadeValues(tile, parentTile, sourceCache, layer, painter.transform);
 
         let parentScaleBy, parentTL;
