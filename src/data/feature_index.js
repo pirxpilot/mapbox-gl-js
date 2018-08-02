@@ -8,7 +8,6 @@ const DictionaryCoder = require('../util/dictionary_coder');
 const vt = require('@mapbox/vector-tile');
 const Protobuf = require('pbf');
 const GeoJSONFeature = require('../util/vectortile_to_geojson');
-const { arraysIntersect } = require('../util/object');
 const { register } = require('../util/web_worker_transfer');
 const EvaluationParameters = require('../style/evaluation_parameters');
 
@@ -98,13 +97,13 @@ class FeatureIndex {
 
             const match = this.featureIndexArray.get(index);
             let featureGeometry = null;
-            this.loadMatchingFeature(
+            this._loadMatchingFeature(
                 result,
                 match.bucketIndex,
                 match.sourceLayerIndex,
                 match.featureIndex,
                 filter,
-                params.layers,
+                params.layersMap,
                 styleLayers,
                 (feature, styleLayer) => {
                     if (!featureGeometry) {
@@ -123,19 +122,18 @@ class FeatureIndex {
         return result;
     }
 
-    loadMatchingFeature(
+    _loadMatchingFeature(
         result,
         bucketIndex,
         sourceLayerIndex,
         featureIndex,
         filter,
-        filterLayerIDs,
+        filterLayerIDsMap,
         styleLayers,
         intersectionTest) {
 
         const layerIDs = this.bucketLayerIDs[bucketIndex];
-        if (filterLayerIDs && !arraysIntersect(filterLayerIDs, layerIDs))
-            return;
+        if (filterLayerIDsMap && !layerIDs.some(id => filterLayerIDsMap[id])) return;
 
         const sourceLayerName = this.sourceLayerCoder.decode(sourceLayerIndex);
         const sourceLayer = this.vtLayers[sourceLayerName];
@@ -144,28 +142,22 @@ class FeatureIndex {
         if (!filter(new EvaluationParameters(this.tileID.overscaledZ), feature))
             return;
 
-        for (let l = 0; l < layerIDs.length; l++) {
-            const layerID = layerIDs[l];
-
-            if (filterLayerIDs && filterLayerIDs.indexOf(layerID) < 0) {
-                continue;
-            }
+        for (const layerID of layerIDs) {
+            if (filterLayerIDsMap && !filterLayerIDsMap[layerID]) continue;
 
             const styleLayer = styleLayers[layerID];
             if (!styleLayer) continue;
 
-            if (intersectionTest && !intersectionTest(feature, styleLayer)) {
-                // Only applied for non-symbol features
-                continue;
-            }
+            // Only applied for non-symbol features
+            if (intersectionTest && !intersectionTest(feature, styleLayer)) continue;
 
             const geojsonFeature = new GeoJSONFeature(feature, this.z, this.x, this.y);
-            (geojsonFeature).layer = styleLayer.serialize();
+            geojsonFeature.layer = styleLayer.serialize();
             let layerResult = result[layerID];
             if (layerResult === undefined) {
                 layerResult = result[layerID] = [];
             }
-            layerResult.push({ featureIndex: featureIndex, feature: geojsonFeature });
+            layerResult.push({ featureIndex, feature: geojsonFeature });
         }
     }
 
@@ -175,7 +167,7 @@ class FeatureIndex {
                          bucketIndex,
                          sourceLayerIndex,
                          filterSpec,
-                         filterLayerIDs,
+                         layersMap,
                          styleLayers) {
         const result = {};
         this.loadVTLayers();
@@ -183,13 +175,13 @@ class FeatureIndex {
         const filter = featureFilter(filterSpec);
 
         for (const symbolFeatureIndex of symbolFeatureIndexes) {
-            this.loadMatchingFeature(
+            this._loadMatchingFeature(
                 result,
                 bucketIndex,
                 sourceLayerIndex,
                 symbolFeatureIndex,
                 filter,
-                filterLayerIDs,
+                layersMap,
                 styleLayers
             );
 
