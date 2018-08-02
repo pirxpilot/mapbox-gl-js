@@ -699,14 +699,13 @@ class Style extends Evented {
 
     _flattenRenderedFeatures(sourceResults) {
         const features = [];
-        for (let l = this._order.length - 1; l >= 0; l--) {
+        let l = this._order.length;
+        while (l--) {
             const layerId = this._order[l];
             for (const sourceResult of sourceResults) {
                 const layerFeatures = sourceResult[layerId];
                 if (layerFeatures) {
-                    for (const feature of layerFeatures) {
-                        features.push(feature);
-                    }
+                    features.push(...layerFeatures);
                 }
             }
         }
@@ -715,12 +714,9 @@ class Style extends Evented {
 
     queryRenderedFeatures(queryGeometry, params, transform) {
         const includedSources = {};
-        if (params && params.layers) {
-            if (!Array.isArray(params.layers)) {
-                this.fire(new ErrorEvent(new Error('parameters.layers must be an Array.')));
-                return [];
-            }
-            for (const layerId of params.layers) {
+        const { layers } = params;
+        if (layers) {
+            for (const layerId of layers) {
                 const layer = this._layers[layerId];
                 if (layer) {
                     includedSources[layer.source] = true;
@@ -730,7 +726,7 @@ class Style extends Evented {
 
         const sourceResults = [];
         for (const id in this.sourceCaches) {
-            if (params.layers && !includedSources[id]) continue;
+            if (layers && !includedSources[id]) continue;
             sourceResults.push(
                 queryRenderedFeatures(
                     this.sourceCaches[id],

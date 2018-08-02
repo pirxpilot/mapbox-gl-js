@@ -21,37 +21,32 @@ class FeatureIndex {
 
 
     constructor(tileID,
-                grid,
-                featureIndexArray) {
+                grid = new Grid(EXTENT, 16, 0),
+                featureIndexArray = new FeatureIndexArray()) {
         this.tileID = tileID;
         this.x = tileID.canonical.x;
         this.y = tileID.canonical.y;
         this.z = tileID.canonical.z;
-        this.grid = grid || new Grid(EXTENT, 16, 0);
-        this.featureIndexArray = featureIndexArray || new FeatureIndexArray();
+        this.grid = grid;
+        this.featureIndexArray = featureIndexArray;
     }
 
     insert(feature, geometry, featureIndex, sourceLayerIndex, bucketIndex) {
         const key = this.featureIndexArray.length;
         this.featureIndexArray.emplaceBack(featureIndex, sourceLayerIndex, bucketIndex);
 
-        for (let r = 0; r < geometry.length; r++) {
-            const ring = geometry[r];
-
-            const bbox = [Infinity, Infinity, -Infinity, -Infinity];
-            for (let i = 0; i < ring.length; i++) {
-                const p = ring[i];
-                bbox[0] = Math.min(bbox[0], p.x);
-                bbox[1] = Math.min(bbox[1], p.y);
-                bbox[2] = Math.max(bbox[2], p.x);
-                bbox[3] = Math.max(bbox[3], p.y);
+        for (const ring of geometry) {
+            let xMin = Infinity, yMin = Infinity, xMax = -Infinity, yMax = -Infinity;
+            for (const { x, y } of ring) {
+                if (x < xMin) { xMin = x; } else if (x > xMax) { xMax = x; }
+                if (y < yMin) { yMin = y; } else if (y > yMax) { yMax = y; }
             }
 
-            if (bbox[0] < EXTENT &&
-                bbox[1] < EXTENT &&
-                bbox[2] >= 0 &&
-                bbox[3] >= 0) {
-                this.grid.insert(key, bbox[0], bbox[1], bbox[2], bbox[3]);
+            if (xMin < EXTENT &&
+                yMin < EXTENT &&
+                xMax >= 0 &&
+                yMax >= 0) {
+                this.grid.insert(key, xMin, yMin, xMax, yMax);
             }
         }
     }
@@ -68,7 +63,7 @@ class FeatureIndex {
     query(args, styleLayers, sourceFeatureState) {
         this.loadVTLayers();
 
-        const params = args.params || {},
+        const { params = {} } = args,
             pixelsToTileUnits = EXTENT / args.tileSize / args.scale,
             filter = featureFilter(params.filter);
 

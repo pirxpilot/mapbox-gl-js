@@ -37,16 +37,14 @@ function queryRenderedFeatures(sourceCache,
     const result = mergeRenderedFeatureLayers(renderedFeatureLayers);
 
     // Merge state from SourceCache into the results
-    for (const layerID in result) {
-        result[layerID].forEach((feature) => {
-            const state = sourceCache.getFeatureState(feature.layer['source-layer'], feature.id);
-            feature.source = feature.layer.source;
-            if (feature.layer['source-layer']) {
-                feature.sourceLayer = feature.layer['source-layer'];
-            }
-            feature.state = state;
-        });
-    }
+    Object.values(result).forEach((feature) => {
+        const state = sourceCache.getFeatureState(feature.layer['source-layer'], feature.id);
+        feature.source = feature.layer.source;
+        if (feature.layer['source-layer']) {
+            feature.sourceLayer = feature.layer['source-layer'];
+        }
+        feature.state = state;
+    });
     return result;
 }
 
@@ -73,7 +71,7 @@ function queryRenderedSymbols(styleLayers,
                 params.layers,
                 styleLayers);
 
-        for (const layerID in bucketSymbols) {
+        Object.keys(bucketSymbols).forEach((layerID) => {
             const resultFeatures = result[layerID] = result[layerID] || [];
             const layerSymbols = bucketSymbols[layerID];
             layerSymbols.sort((a, b) => {
@@ -99,7 +97,7 @@ function queryRenderedSymbols(styleLayers,
             for (const symbolFeature of layerSymbols) {
                 resultFeatures.push(symbolFeature.feature);
             }
-        }
+        });
     }
 
     // Merge state from SourceCache into the results
@@ -119,15 +117,12 @@ function queryRenderedSymbols(styleLayers,
 }
 
 function querySourceFeatures(sourceCache, params) {
-    const tiles = sourceCache.getRenderableIds().map((id) => {
-        return sourceCache.getTileByID(id);
-    });
+    const tiles = sourceCache.getRenderableIds().map(id => sourceCache.getTileByID(id));
 
     const result = [];
 
     const dataTiles = {};
-    for (let i = 0; i < tiles.length; i++) {
-        const tile = tiles[i];
+    for (const tile of tiles) {
         const dataID = tile.tileID.canonical.key;
         if (!dataTiles[dataID]) {
             dataTiles[dataID] = true;
