@@ -1361,8 +1361,7 @@ class Map extends Camera {
             this._canvas.getContext('experimental-webgl', attributes);
 
         if (!gl) {
-            this.fire(new ErrorEvent(new Error('Failed to initialize WebGL')));
-            return;
+            throw new Error('Failed to initialize WebGL');
         }
 
         this.painter = new Painter(gl, this.transform);
