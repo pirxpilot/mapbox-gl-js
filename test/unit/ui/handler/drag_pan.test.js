@@ -481,43 +481,6 @@ test('DragPanHandler does not begin a drag if preventDefault is called on the to
     t.end();
 });
 
-test('DragPanHandler does not begin a drag if preventDefault is called on the touchstart event (delegated)', (t) => {
-    const map = createMap();
-
-    t.stub(map, 'getLayer')
-        .callsFake(() => true);
-    t.stub(map, 'queryRenderedFeatures')
-        .callsFake(() => [{}]);
-
-    map.on('touchstart', 'point', (e) => {
-        e.preventDefault();
-    });
-
-    const dragstart = t.spy();
-    const drag      = t.spy();
-    const dragend   = t.spy();
-
-    map.on('dragstart', dragstart);
-    map.on('drag',      drag);
-    map.on('dragend',   dragend);
-
-    simulate.touchstart(map.getCanvas());
-    map._renderTaskQueue.run();
-
-    simulate.touchmove(map.getCanvas());
-    map._renderTaskQueue.run();
-
-    simulate.touchend(map.getCanvas());
-    map._renderTaskQueue.run();
-
-    t.equal(dragstart.callCount, 0);
-    t.equal(drag.callCount, 0);
-    t.equal(dragend.callCount, 0);
-
-    map.remove();
-    t.end();
-});
-
 ['dragstart', 'drag'].forEach(event => {
     test(`DragPanHandler can be disabled on ${event} (#2419)`, (t) => {
         const map = createMap();
