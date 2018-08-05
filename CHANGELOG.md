@@ -1,4 +1,11 @@
 
+0.45.7 / 2018-08-05
+===================
+
+ * remove per-feature listener support
+ * remove @mapbox/mapbox-gl-supported module
+ * throw Error whenever we fail to obtain webgl context
+
 0.45.6 / 2018-07-17
 ===================
 
