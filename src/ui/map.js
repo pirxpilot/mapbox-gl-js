@@ -18,7 +18,6 @@ const Camera = require('./camera');
 const LngLat = require('../geo/lng_lat');
 const LngLatBounds = require('../geo/lng_lat_bounds');
 const Point = require('@mapbox/point-geometry');
-const isSupported = require('@mapbox/mapbox-gl-supported');
 const { RGBAImage } = require('../util/image');
 const { Event, ErrorEvent } = require('../util/evented');
 const { MapMouseEvent } = require('./events');
@@ -1352,10 +1351,14 @@ class Map extends Camera {
     }
 
     _setupPainter() {
-        const attributes = Object.assign({
+        const attributes = {
+            antialias: false,
+            alpha: true,
+            stencil: true,
+            depth: true,
             failIfMajorPerformanceCaveat: this._failIfMajorPerformanceCaveat,
             preserveDrawingBuffer: this._preserveDrawingBuffer
-        }, isSupported.webGLContextAttributes);
+        };
 
         const gl = this._canvas.getContext('webgl', attributes) ||
             this._canvas.getContext('experimental-webgl', attributes);

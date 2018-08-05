@@ -2,7 +2,6 @@
 
 module.exports = {
     version: require('../package.json').version,
-    supported: require('@mapbox/mapbox-gl-supported'),
     setRTLTextPlugin: require('./source/rtl_text_plugin').setRTLTextPlugin,
     Map: require('./ui/map'),
     Style: require('./style/style'),
@@ -50,20 +49,6 @@ module.exports = {
  * `CHANGELOG.md`, and the GitHub release.
  *
  * @var {string} version
- */
-
-/**
- * Test whether the browser [supports Mapbox GL JS](https://www.mapbox.com/help/mapbox-browser-support/#mapbox-gl-js).
- *
- * @function supported
- * @param {Object} [options]
- * @param {boolean} [options.failIfMajorPerformanceCaveat=false] If `true`,
- *   the function will return `false` if the performance of Mapbox GL JS would
- *   be dramatically worse than expected (e.g. a software WebGL renderer would be used).
- * @return {boolean}
- * @example
- * mapboxgl.supported() // = true
- * @see [Check for browser support](https://www.mapbox.com/mapbox-gl-js/example/check-for-support/)
  */
 
 /**
