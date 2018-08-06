@@ -37,7 +37,7 @@ class Uniform1f extends Uniform {
     }
 }
 
-class Uniform2fv extends Uniform {
+class Uniform2f extends Uniform {
     constructor(context, location) {
         super(context, location);
         this.current = [0, 0];
@@ -51,7 +51,7 @@ class Uniform2fv extends Uniform {
     }
 }
 
-class Uniform3fv extends Uniform {
+class Uniform3f extends Uniform {
     constructor(context, location) {
         super(context, location);
         this.current = [0, 0, 0];
@@ -65,7 +65,7 @@ class Uniform3fv extends Uniform {
     }
 }
 
-class Uniform4fv extends Uniform {
+class Uniform4f extends Uniform {
     constructor(context, location) {
         super(context, location);
         this.current = [0, 0, 0, 0];
@@ -96,7 +96,7 @@ class UniformColor extends Uniform {
 }
 
 const emptyMat4 = new Float32Array(16);
-class UniformMatrix4fv extends Uniform {
+class UniformMatrix4f extends Uniform {
     constructor(context, location) {
         super(context, location);
         this.current = emptyMat4;
@@ -125,10 +125,10 @@ module.exports = {
     Uniform,
     Uniform1i,
     Uniform1f,
-    Uniform2fv,
-    Uniform3fv,
-    Uniform4fv,
+    Uniform2f,
+    Uniform3f,
+    Uniform4f,
     UniformColor,
-    UniformMatrix4fv
+    UniformMatrix4f
 };
 

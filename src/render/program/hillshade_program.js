@@ -6,27 +6,27 @@ const { mat4 } = require('@mapbox/gl-matrix');
 const {
     Uniform1i,
     Uniform1f,
-    Uniform2fv,
+    Uniform2f,
     UniformColor,
-    UniformMatrix4fv
+    UniformMatrix4f
 } = require('../uniform_binding');
 const EXTENT = require('../../data/extent');
 const Coordinate = require('../../geo/coordinate');
 
 const hillshadeUniforms = (context, locations) => ({
-    'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
+    'u_matrix': new UniformMatrix4f(context, locations.u_matrix),
     'u_image': new Uniform1i(context, locations.u_image),
-    'u_latrange': new Uniform2fv(context, locations.u_latrange),
-    'u_light': new Uniform2fv(context, locations.u_light),
+    'u_latrange': new Uniform2f(context, locations.u_latrange),
+    'u_light': new Uniform2f(context, locations.u_light),
     'u_shadow': new UniformColor(context, locations.u_shadow),
     'u_highlight': new UniformColor(context, locations.u_highlight),
     'u_accent': new UniformColor(context, locations.u_accent)
 });
 
 const hillshadePrepareUniforms = (context, locations) => ({
-    'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
+    'u_matrix': new UniformMatrix4f(context, locations.u_matrix),
     'u_image': new Uniform1i(context, locations.u_image),
-    'u_dimension': new Uniform2fv(context, locations.u_dimension),
+    'u_dimension': new Uniform2f(context, locations.u_dimension),
     'u_zoom': new Uniform1f(context, locations.u_zoom),
     'u_maxzoom': new Uniform1f(context, locations.u_maxzoom)
 });

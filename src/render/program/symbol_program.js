@@ -3,8 +3,8 @@
 const {
     Uniform1i,
     Uniform1f,
-    Uniform2fv,
-    UniformMatrix4fv
+    Uniform2f,
+    UniformMatrix4f
 } = require('../uniform_binding');
 
 const symbolIconUniforms = (context, locations) => ({
@@ -17,12 +17,12 @@ const symbolIconUniforms = (context, locations) => ({
     'u_rotate_symbol': new Uniform1i(context, locations.u_rotate_symbol),
     'u_aspect_ratio': new Uniform1f(context, locations.u_aspect_ratio),
     'u_fade_change': new Uniform1f(context, locations.u_fade_change),
-    'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
-    'u_label_plane_matrix': new UniformMatrix4fv(context, locations.u_label_plane_matrix),
-    'u_gl_coord_matrix': new UniformMatrix4fv(context, locations.u_gl_coord_matrix),
+    'u_matrix': new UniformMatrix4f(context, locations.u_matrix),
+    'u_label_plane_matrix': new UniformMatrix4f(context, locations.u_label_plane_matrix),
+    'u_gl_coord_matrix': new UniformMatrix4f(context, locations.u_gl_coord_matrix),
     'u_is_text': new Uniform1f(context, locations.u_is_text),
     'u_pitch_with_map': new Uniform1i(context, locations.u_pitch_with_map),
-    'u_texsize': new Uniform2fv(context, locations.u_texsize),
+    'u_texsize': new Uniform2f(context, locations.u_texsize),
     'u_texture': new Uniform1i(context, locations.u_texture)
 });
 
@@ -36,12 +36,12 @@ const symbolSDFUniforms = (context, locations) => ({
     'u_rotate_symbol': new Uniform1i(context, locations.u_rotate_symbol),
     'u_aspect_ratio': new Uniform1f(context, locations.u_aspect_ratio),
     'u_fade_change': new Uniform1f(context, locations.u_fade_change),
-    'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
-    'u_label_plane_matrix': new UniformMatrix4fv(context, locations.u_label_plane_matrix),
-    'u_gl_coord_matrix': new UniformMatrix4fv(context, locations.u_gl_coord_matrix),
+    'u_matrix': new UniformMatrix4f(context, locations.u_matrix),
+    'u_label_plane_matrix': new UniformMatrix4f(context, locations.u_label_plane_matrix),
+    'u_gl_coord_matrix': new UniformMatrix4f(context, locations.u_gl_coord_matrix),
     'u_is_text': new Uniform1f(context, locations.u_is_text),
     'u_pitch_with_map': new Uniform1i(context, locations.u_pitch_with_map),
-    'u_texsize': new Uniform2fv(context, locations.u_texsize),
+    'u_texsize': new Uniform2f(context, locations.u_texsize),
     'u_texture': new Uniform1i(context, locations.u_texture),
     'u_gamma_scale': new Uniform1f(context, locations.u_gamma_scale),
     'u_is_halo': new Uniform1f(context, locations.u_is_halo)

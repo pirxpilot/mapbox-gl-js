@@ -3,14 +3,14 @@
 const {
     Uniform1i,
     Uniform1f,
-    Uniform2fv,
-    Uniform3fv,
-    UniformMatrix4fv
+    Uniform2f,
+    Uniform3f,
+    UniformMatrix4f
 } = require('../uniform_binding');
 
 const rasterUniforms = (context, locations) => ({
-    'u_matrix': new UniformMatrix4fv(context, locations.u_matrix),
-    'u_tl_parent': new Uniform2fv(context, locations.u_tl_parent),
+    'u_matrix': new UniformMatrix4f(context, locations.u_matrix),
+    'u_tl_parent': new Uniform2f(context, locations.u_tl_parent),
     'u_scale_parent': new Uniform1f(context, locations.u_scale_parent),
     'u_buffer_scale': new Uniform1f(context, locations.u_buffer_scale),
     'u_fade_t': new Uniform1f(context, locations.u_fade_t),
@@ -21,7 +21,7 @@ const rasterUniforms = (context, locations) => ({
     'u_brightness_high': new Uniform1f(context, locations.u_brightness_high),
     'u_saturation_factor': new Uniform1f(context, locations.u_saturation_factor),
     'u_contrast_factor': new Uniform1f(context, locations.u_contrast_factor),
-    'u_spin_weights': new Uniform3fv(context, locations.u_spin_weights)
+    'u_spin_weights': new Uniform3f(context, locations.u_spin_weights)
 });
 
 const rasterUniformValues = (
