@@ -209,11 +209,14 @@ class ScrollZoomHandler {
             this._delta = 0;
         }
 
+        const targetZoom = typeof this._targetZoom === 'number' ? this._targetZoom : tr.zoom;
+        const startZoom = this._startZoom;
+        const easing = this._easing;
         let finished = false;
-        if (this._type === 'wheel') {
+        if (this._type === 'wheel' && startZoom && easing) {
             const t = Math.min((browser.now() - this._lastWheelEventTime) / 200, 1);
-            const k = this._easing(t);
-            tr.zoom = interpolate(this._startZoom, this._targetZoom, k);
+            const k = easing(t);
+            tr.zoom = interpolate(startZoom, targetZoom, k);
             if (t < 1) {
                 if (!this._frameId) {
                     this._frameId = this._map._requestRenderFrame(this._onScrollFrame);
@@ -222,7 +225,7 @@ class ScrollZoomHandler {
                 finished = true;
             }
         } else {
-            tr.zoom = this._targetZoom;
+            tr.zoom = targetZoom;
             finished = true;
         }
 
