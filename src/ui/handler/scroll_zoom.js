@@ -2,13 +2,11 @@
 
 const DOM = require('../../util/dom');
 
-const { bindAll } = require('../../util/object');
-const { ease: _ease, bezier } = require('../../util/util');
 const browser = require('../../util/browser');
 const window = require('../../util/window');
 const interpolate = require('../../util/interpolate');
-const LngLat = require('../../geo/lng_lat');
 const { Event } = require('../../util/evented');
+const makeFrame = require('./frame');
 
 
 // deltaY value for mouse scroll wheel identification
@@ -22,44 +20,84 @@ const wheelZoomRate = 1 / 450;
 // is used to limit zoom rate in the case of very fast scrolling
 const maxScalePerFrame = 2;
 
+
+function computeSmoothOutEasing() {
+    const { ease, bezier } = require('../../util/util');
+    let _prevEase;
+
+    function compute(duration) {
+
+        let easing = ease;
+
+        if (_prevEase) {
+            const t = (browser.now() - _prevEase.start) / _prevEase.duration;
+            const speed = _prevEase.easing(t + 0.01) - _prevEase.easing(t);
+
+                // Quick hack to make new bezier that is continuous with last
+            const x = 0.27 / Math.sqrt(speed * speed + 0.0001) * 0.01;
+            const y = Math.sqrt(0.27 * 0.27 - x * x);
+
+            easing = bezier(x, y, 0.25, 1);
+        }
+
+        _prevEase = {
+            start: browser.now(),
+            duration,
+            easing
+        };
+
+        return easing;
+
+    }
+
+    return compute;
+}
+
+
 /**
  * The `ScrollZoomHandler` allows the user to zoom the map by scrolling.
  */
-class ScrollZoomHandler {
+function scrollZoomHandler(_map) {
  // used for delayed-handling of a single wheel movement
  // used to delay final '{move,zoom}end' events
 
 
+    let _delta = 0;
+
+    let enabled = false;
+    let active = false;
+    let aroundCenter;
+
+    let _lastWheelEvent;
+    let _lastWheelEventTime = 0;
+    let _lastValue = 0;
+
+    let _timeout;
+    let _finishTimeout;
+
+    let _type;
+    let _around;
+    let _aroundPoint;
+
+    let _startZoom;
+    let _targetZoom;
+    let _easing;
 
 
-    /**
-     * @private
-     */
-    constructor(map) {
-        this._map = map;
-        this._el = map.getCanvasContainer();
-
-        this._delta = 0;
-
-        bindAll([
-            '_onWheel',
-            '_onTimeout',
-            '_onScrollFrame',
-            '_onScrollFinished'
-        ], this);
-    }
+    const frame = makeFrame(_map, onScrollFrame);
+    const smoothOutEasing = computeSmoothOutEasing();
 
     /**
      * Returns a Boolean indicating whether the "scroll to zoom" interaction is enabled.
      *
      * @returns {boolean} `true` if the "scroll to zoom" interaction is enabled.
      */
-    isEnabled() {
-        return !!this._enabled;
+    function isEnabled() {
+        return enabled;
     }
 
-    isActive() {
-        return !!this._active;
+    function isActive() {
+        return active;
     }
 
     /**
@@ -73,10 +111,10 @@ class ScrollZoomHandler {
      * @example
      *  map.scrollZoom.enable({ around: 'center' })
      */
-    enable(options) {
-        if (this.isEnabled()) return;
-        this._enabled = true;
-        this._aroundCenter = options && options.around === 'center';
+    function enable(options) {
+        if (enabled) return;
+        enabled = true;
+        aroundCenter = options && options.around === 'center';
     }
 
     /**
@@ -85,48 +123,47 @@ class ScrollZoomHandler {
      * @example
      *   map.scrollZoom.disable();
      */
-    disable() {
-        if (!this.isEnabled()) return;
-        this._enabled = false;
+    function disable() {
+        enabled = false;
     }
 
-    onWheel(e) {
-        if (!this.isEnabled()) return;
+    function onWheel(e) {
+        if (!enabled) return;
 
-        // Remove `any` cast when https://github.com/facebook/flow/issues/4879 is fixed.
-        let value = e.deltaMode === (window.WheelEvent).DOM_DELTA_LINE ? e.deltaY * 40 : e.deltaY;
-        const now = browser.now(),
-            timeDelta = now - (this._lastWheelEventTime || 0);
+        let value = e.deltaMode === window.WheelEvent.DOM_DELTA_LINE ? e.deltaY * 40 : e.deltaY;
+        const now = browser.now();
+        const timeDelta = now - _lastWheelEventTime;
 
-        this._lastWheelEventTime = now;
+        _lastWheelEventTime = now;
+        _lastWheelEvent = e;
 
         if (value !== 0 && (value % wheelZoomDelta) === 0) {
             // This one is definitely a mouse wheel event.
-            this._type = 'wheel';
+            _type = 'wheel';
 
         } else if (value !== 0 && Math.abs(value) < 4) {
             // This one is definitely a trackpad event because it is so small.
-            this._type = 'trackpad';
+            _type = 'trackpad';
 
         } else if (timeDelta > 400) {
             // This is likely a new scroll action.
-            this._type = null;
-            this._lastValue = value;
+            _type = undefined;
+            _lastValue = value;
 
             // Start a timeout in case this was a singular event, and dely it by up to 40ms.
-            this._timeout = setTimeout(this._onTimeout, 40, e);
+            _timeout = setTimeout(onTimeout, 40);
 
-        } else if (!this._type) {
+        } else if (!_type) {
             // This is a repeating event, but we don't know the type of event just yet.
             // If the delta per time is small, we assume it's a fast trackpad; otherwise we switch into wheel mode.
-            this._type = (Math.abs(timeDelta * value) < 200) ? 'trackpad' : 'wheel';
+            _type = Math.abs(timeDelta * value) < 200 ? 'trackpad' : 'wheel';
 
             // Make sure our delayed event isn't fired again, because we accumulate
             // the previous event (which was less than 40ms ago) into this event.
-            if (this._timeout) {
-                clearTimeout(this._timeout);
-                this._timeout = null;
-                value += this._lastValue;
+            if (_timeout) {
+                clearTimeout(_timeout);
+                _timeout = undefined;
+                value += _lastValue;
             }
         }
 
@@ -134,93 +171,85 @@ class ScrollZoomHandler {
         if (e.shiftKey && value) value = value / 4;
 
         // Only fire the callback if we actually know what type of scrolling device the user uses.
-        if (this._type) {
-            this._lastWheelEvent = e;
-            this._delta -= value;
-            if (!this.isActive()) {
-                this._start(e);
+        if (_type) {
+            _delta -= value;
+            if (!active) {
+                start(e);
             }
         }
 
         e.preventDefault();
     }
 
-    _onTimeout(initialEvent) {
-        this._type = 'wheel';
-        this._delta -= this._lastValue;
-        if (!this.isActive()) {
-            this._start(initialEvent);
+    function onTimeout() {
+        _timeout = undefined;
+        _type = 'wheel';
+        _delta -= _lastValue;
+        if (!active) {
+            start();
         }
     }
 
-    _start(e) {
-        if (!this._delta) return;
+    function start() {
+        if (!_delta) return;
 
-        if (this._frameId) {
-            this._map._cancelRenderFrame(this._frameId);
-            this._frameId = null;
+        frame.cancel();
+        active = true;
+
+        _map.fire(new Event('movestart', { originalEvent: _lastWheelEvent }));
+        _map.fire(new Event('zoomstart', { originalEvent: _lastWheelEvent }));
+        if (_finishTimeout) {
+            clearTimeout(_finishTimeout);
         }
 
-        this._active = true;
-        this._map.fire(new Event('movestart', {originalEvent: e}));
-        this._map.fire(new Event('zoomstart', {originalEvent: e}));
-        if (this._finishTimeout) {
-            clearTimeout(this._finishTimeout);
+        if (aroundCenter) {
+            _around = _map.getCenter();
+            _aroundPoint = _map.transform.locationPoint(_around);
+        } else {
+            _aroundPoint = DOM.mousePos(_map.getCanvasContainer(), _lastWheelEvent);
+            _around = _map.unproject(_aroundPoint);
         }
-
-        const pos = DOM.mousePos(this._el, e);
-
-        this._around = LngLat.convert(this._aroundCenter ? this._map.getCenter() : this._map.unproject(pos));
-        this._aroundPoint = this._map.transform.locationPoint(this._around);
-        if (!this._frameId) {
-            this._frameId = this._map._requestRenderFrame(this._onScrollFrame);
-        }
+        frame.request();
     }
 
-    _onScrollFrame() {
-        this._frameId = null;
-
-        if (!this.isActive()) return;
-        const tr = this._map.transform;
+    function onScrollFrame() {
+        if (!active) return;
+        const tr = _map.transform;
 
         // if we've had scroll events since the last render frame, consume the
         // accumulated delta, and update the target zoom level accordingly
-        if (this._delta !== 0) {
+        if (_delta !== 0) {
             // For trackpad events and single mouse wheel ticks, use the default zoom rate
-            const zoomRate = (this._type === 'wheel' && Math.abs(this._delta) > wheelZoomDelta) ? wheelZoomRate : defaultZoomRate;
+            const zoomRate = (_type === 'wheel' && Math.abs(_delta) > wheelZoomDelta) ? wheelZoomRate : defaultZoomRate;
             // Scale by sigmoid of scroll wheel delta.
-            let scale = maxScalePerFrame / (1 + Math.exp(-Math.abs(this._delta * zoomRate)));
+            let scale = maxScalePerFrame / (1 + Math.exp(-Math.abs(_delta * zoomRate)));
 
-            if (this._delta < 0 && scale !== 0) {
+            if (_delta < 0 && scale !== 0) {
                 scale = 1 / scale;
             }
 
-            const fromScale = typeof this._targetZoom === 'number' ? tr.zoomScale(this._targetZoom) : tr.scale;
-            this._targetZoom = Math.min(tr.maxZoom, Math.max(tr.minZoom, tr.scaleZoom(fromScale * scale)));
+            const fromScale = typeof _targetZoom === 'number' ? tr.zoomScale(_targetZoom) : tr.scale;
+            _targetZoom = Math.min(tr.maxZoom, Math.max(tr.minZoom, tr.scaleZoom(fromScale * scale)));
 
             // if this is a mouse wheel, refresh the starting zoom and easing
             // function we're using to smooth out the zooming between wheel
             // events
-            if (this._type === 'wheel') {
-                this._startZoom = tr.zoom;
-                this._easing = this._smoothOutEasing(200);
+            if (_type === 'wheel') {
+                _startZoom = tr.zoom;
+                _easing = smoothOutEasing(200);
             }
 
-            this._delta = 0;
+            _delta = 0;
         }
 
-        const targetZoom = typeof this._targetZoom === 'number' ? this._targetZoom : tr.zoom;
-        const startZoom = this._startZoom;
-        const easing = this._easing;
+        const targetZoom = typeof _targetZoom === 'number' ? _targetZoom : tr.zoom;
         let finished = false;
-        if (this._type === 'wheel' && startZoom && easing) {
-            const t = Math.min((browser.now() - this._lastWheelEventTime) / 200, 1);
-            const k = easing(t);
-            tr.zoom = interpolate(startZoom, targetZoom, k);
+        if (_type === 'wheel' && _startZoom && _easing) {
+            const t = Math.min((browser.now() - _lastWheelEventTime) / 200, 1);
+            const k = _easing(t);
+            tr.zoom = interpolate(_startZoom, targetZoom, k);
             if (t < 1) {
-                if (!this._frameId) {
-                    this._frameId = this._map._requestRenderFrame(this._onScrollFrame);
-                }
+                frame.request();
             } else {
                 finished = true;
             }
@@ -229,46 +258,29 @@ class ScrollZoomHandler {
             finished = true;
         }
 
-        tr.setLocationAtPoint(this._around, this._aroundPoint);
+        tr.setLocationAtPoint(_around, _aroundPoint);
 
-        this._map.fire(new Event('move', {originalEvent: this._lastWheelEvent}));
-        this._map.fire(new Event('zoom', {originalEvent: this._lastWheelEvent}));
+        _map.fire(new Event('move', {originalEvent: _lastWheelEvent}));
+        _map.fire(new Event('zoom', {originalEvent: _lastWheelEvent}));
 
         if (finished) {
-            this._active = false;
-            this._finishTimeout = setTimeout(() => {
-                this._map.fire(new Event('zoomend', {originalEvent: this._lastWheelEvent}));
-                this._map.fire(new Event('moveend', {originalEvent: this._lastWheelEvent}));
-                delete this._targetZoom;
+            active = false;
+            _finishTimeout = setTimeout(() => {
+                _finishTimeout = undefined;
+                _map.fire(new Event('zoomend', {originalEvent: _lastWheelEvent}));
+                _map.fire(new Event('moveend', {originalEvent: _lastWheelEvent}));
+                _targetZoom = undefined;
             }, 200);
         }
     }
 
-    _smoothOutEasing(duration) {
-        let easing = _ease;
-
-        if (this._prevEase) {
-            const ease = this._prevEase,
-                t = (browser.now() - ease.start) / ease.duration,
-                speed = ease.easing(t + 0.01) - ease.easing(t),
-
-                // Quick hack to make new bezier that is continuous with last
-                x = 0.27 / Math.sqrt(speed * speed + 0.0001) * 0.01,
-                y = Math.sqrt(0.27 * 0.27 - x * x);
-
-            easing = bezier(x, y, 0.25, 1);
-        }
-
-        this._prevEase = {
-            start: browser.now(),
-            duration: duration,
-            easing: easing
-        };
-
-        return easing;
-    }
+    return {
+        isActive,
+        isEnabled,
+        enable,
+        disable,
+        onWheel
+    };
 }
 
-module.exports = function (map) {
-    return new ScrollZoomHandler(map);
-};
+module.exports = scrollZoomHandler;
