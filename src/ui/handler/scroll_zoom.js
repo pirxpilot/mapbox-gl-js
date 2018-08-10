@@ -269,4 +269,6 @@ class ScrollZoomHandler {
     }
 }
 
-module.exports = ScrollZoomHandler;
+module.exports = function (map) {
+    return new ScrollZoomHandler(map);
+};

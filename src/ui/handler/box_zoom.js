@@ -153,4 +153,6 @@ class BoxZoomHandler {
     }
 }
 
-module.exports = BoxZoomHandler;
+module.exports = function (map) {
+    return new BoxZoomHandler(map);
+};

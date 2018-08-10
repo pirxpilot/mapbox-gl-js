@@ -316,4 +316,6 @@ class DragRotateHandler {
     }
 }
 
-module.exports = DragRotateHandler;
+module.exports = function (map, options) {
+    return new DragRotateHandler(map, options);
+};

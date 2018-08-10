@@ -26,12 +26,12 @@ module.exports = function bindHandlers(map, options) {
     let mouseDown = false;
     let startPos = null;
 
-    for (const name in handlers) {
-        (map)[name] = new handlers[name](map, options);
+    Object.entries(handlers).forEach(([name, handler]) => {
+        map[name] = handler(map, options);
         if (options.interactive && options[name]) {
-            (map)[name].enable(options[name]);
+            map[name].enable(options[name]);
         }
-    }
+    });
 
     DOM.addEventListener(el, 'mouseout', onMouseOut);
     DOM.addEventListener(el, 'mousedown', onMouseDown);
@@ -106,7 +106,7 @@ module.exports = function bindHandlers(map, options) {
     }
 
     function onMouseOver(e) {
-        let target = (e.target);
+        let { target } = e;
         while (target && target !== el) target = target.parentNode;
         if (target !== el) return;
 

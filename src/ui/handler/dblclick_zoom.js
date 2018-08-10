@@ -96,4 +96,6 @@ class DoubleClickZoomHandler {
     }
 }
 
-module.exports = DoubleClickZoomHandler;
+module.exports = function (map) {
+    return new DoubleClickZoomHandler(map);
+};

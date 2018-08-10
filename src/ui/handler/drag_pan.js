@@ -300,4 +300,6 @@ class DragPanHandler {
     }
 }
 
-module.exports = DragPanHandler;
+module.exports = function (map) {
+    return new DragPanHandler(map);
+};

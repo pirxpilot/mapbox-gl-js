@@ -267,4 +267,6 @@ class TouchZoomRotateHandler {
     }
 }
 
-module.exports = TouchZoomRotateHandler;
+module.exports = function (map) {
+    return new TouchZoomRotateHandler(map);
+};
