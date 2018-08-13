@@ -491,6 +491,7 @@ class Map extends Camera {
         return this._moving ||
             this.dragPan.isActive() ||
             this.dragRotate.isActive() ||
+            this.touchZoomRotate.isActive() ||
             this.scrollZoom.isActive();
     }
 
@@ -499,6 +500,7 @@ class Map extends Camera {
      */
     isZooming() {
         return this._zooming ||
+            this.touchZoomRotate.isActive() ||
             this.scrollZoom.isActive();
     }
 
@@ -507,6 +509,7 @@ class Map extends Camera {
      */
     isRotating() {
         return this._rotating ||
+            this.touchZoomRotate.isActive() ||
             this.dragRotate.isActive();
     }
 
