@@ -47,7 +47,7 @@ class ConstantBinder {
         this.value = value;
         this.name = name;
         this.type = type;
-        this.statistics = { max: -Infinity };
+        this.maxValue = -Infinity;
     }
 
     defines() {
@@ -80,7 +80,7 @@ class SourceExpressionBinder {
         this.expression = expression;
         this.name = name;
         this.type = type;
-        this.statistics = { max: -Infinity };
+        this.maxValue = -Infinity;
         const PaintVertexArray = type === 'color' ? StructArrayLayout2f8 : StructArrayLayout1f4;
         this.paintVertexAttributes = [{
             name: `a_${name}`,
@@ -113,7 +113,7 @@ class SourceExpressionBinder {
                 paintArray.emplaceBack(value);
             }
 
-            this.statistics.max = Math.max(this.statistics.max, value);
+            this.maxValue = Math.max(this.maxValue, value);
         }
     }
 
@@ -131,7 +131,7 @@ class SourceExpressionBinder {
                 paintArray.emplace(i, value);
             }
 
-            this.statistics.max = Math.max(this.statistics.max, value);
+            this.maxValue = Math.max(this.maxValue, value);
         }
     }
 
@@ -161,7 +161,7 @@ class CompositeExpressionBinder {
         this.type = type;
         this.useIntegerZoom = useIntegerZoom;
         this.zoom = zoom;
-        this.statistics = { max: -Infinity };
+        this.maxValue = -Infinity;
         const PaintVertexArray = type === 'color' ? StructArrayLayout4f16 : StructArrayLayout2f8;
         this.paintVertexAttributes = [{
             name: `a_${name}`,
@@ -195,8 +195,7 @@ class CompositeExpressionBinder {
             for (let i = start; i < newLength; i++) {
                 paintArray.emplaceBack(min, max);
             }
-
-            this.statistics.max = Math.max(this.statistics.max, min, max);
+            this.maxValue = Math.max(this.maxValue, min, max);
         }
     }
 
@@ -216,8 +215,7 @@ class CompositeExpressionBinder {
             for (let i = start; i < end; i++) {
                 paintArray.emplace(i, min, max);
             }
-
-            this.statistics.max = Math.max(this.statistics.max, min, max);
+            this.maxValue = Math.max(this.maxValue, min, max);
         }
     }
 
