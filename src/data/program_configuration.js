@@ -2,7 +2,7 @@
 
 const { packUint8ToFloat } = require('../shaders/encode_attribute');
 const { supportsPropertyExpression } = require('../style-spec/util/properties');
-const { register } = require('../util/web_worker_transfer');
+const { register, serialize, deserialize } = require('../util/web_worker_transfer');
 const { PossiblyEvaluatedPropertyValue } = require('../style/properties');
 const { StructArrayLayout1f4, StructArrayLayout2f8, StructArrayLayout4f16 } = require('./array_types');
 const EvaluationParameters = require('../style/evaluation_parameters');
@@ -70,6 +70,16 @@ class ConstantBinder {
         } else {
             gl.uniform1f(program.uniforms[`u_${this.name}`], value);
         }
+    }
+
+    static serialize(binder) {
+        const {value, name, type} = binder;
+        return {value: serialize(value), name, type};
+    }
+
+    static deserialize(serialized) {
+        const {value, name, type} = serialized;
+        return new ConstantBinder(deserialize(value), name, type);
     }
 }
 
@@ -290,7 +300,7 @@ class ProgramConfiguration {
             const useIntegerZoom = value.property.useIntegerZoom;
 
             if (value.value.kind === 'constant') {
-                self.binders[property] = new ConstantBinder(value.value, name, type);
+                self.binders[property] = new ConstantBinder(value.value.value, name, type);
                 keys.push(`/u_${name}`);
             } else if (value.value.kind === 'source') {
                 self.binders[property] = new SourceExpressionBinder(value.value, name, type);
