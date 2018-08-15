@@ -139,6 +139,10 @@ module.exports = function bindHandlers(map, options) {
     }
 
     function onTouchMove(e) {
+        if (map.dragPan.isActive()) return;
+        if (map.dragRotate.isActive()) return;
+        if (map.touchZoomRotate.isActive()) return;
+
         map.fire(new MapTouchEvent('touchmove', map, e));
     }
 
