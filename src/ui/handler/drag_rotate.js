@@ -2,13 +2,12 @@
 
 const DOM = require('../../util/dom');
 
-const { bindAll } = require('../../util/object');
 const { bezier } = require('../../util/util');
 const window = require('../../util/window');
-const browser = require('../../util/browser');
 const { Event } = require('../../util/evented');
 const assert = require('assert');
-
+const makeFrame = require('./frame');
+const makeInertia = require('./inertia');
 
 const inertiaLinearity = 0.25,
     inertiaEasing = bezier(0, 0, inertiaLinearity, 1),
@@ -18,42 +17,35 @@ const inertiaLinearity = 0.25,
 /**
  * The `DragRotateHandler` allows the user to rotate the map by clicking and
  * dragging the cursor while holding the right mouse button or `ctrl` key.
+ * @param {Map} map The Mapbox GL JS map to add the handler to.
+ * @param {Object} [options]
+ * @param {number} [options.bearingSnap] The threshold, measured in degrees, that determines when the map's
+ *   bearing will snap to north.
+ * @param {bool} [options.pitchWithRotate=true] Control the map pitch in addition to the bearing
  */
-class DragRotateHandler {
+function dragRotateHandler(map, {
+    element,
+    button = 'right',
+    bearingSnap = 0,
+    pitchWithRotate = true
+} = {}) {
+    const el = element || map.getCanvasContainer();
 
+    const frame = makeFrame(map, onDragFrame);
 
-    /**
-     * @param {Map} map The Mapbox GL JS map to add the handler to.
-     * @param {Object} [options]
-     * @param {number} [options.bearingSnap] The threshold, measured in degrees, that determines when the map's
-     *   bearing will snap to north.
-     * @param {bool} [options.pitchWithRotate=true] Control the map pitch in addition to the bearing
-     * @private
-     */
-    constructor(map, options) {
-        this._map = map;
-        this._el = options.element || map.getCanvasContainer();
-        this._state = 'disabled';
-        this._button = options.button || 'right';
-        this._bearingSnap = options.bearingSnap || 0;
-        this._pitchWithRotate = options.pitchWithRotate !== false;
-
-        bindAll([
-            'onMouseDown',
-            '_onMouseMove',
-            '_onMouseUp',
-            '_onBlur',
-            '_onDragFrame'
-        ], this);
-    }
+    let eventButton;
+    let inertia;
+    let state = 'disabled';
+    let previousPos;
+    let previousBearing;
 
     /**
      * Returns a Boolean indicating whether the "drag to rotate" interaction is enabled.
      *
      * @returns {boolean} `true` if the "drag to rotate" interaction is enabled.
      */
-    isEnabled() {
-        return this._state !== 'disabled';
+    function isEnabled() {
+        return state !== 'disabled';
     }
 
     /**
@@ -61,8 +53,8 @@ class DragRotateHandler {
      *
      * @returns {boolean} `true` if the "drag to rotate" interaction is active.
      */
-    isActive() {
-        return this._state === 'active';
+    function isActive() {
+        return state === 'active';
     }
 
     /**
@@ -71,9 +63,9 @@ class DragRotateHandler {
      * @example
      * map.dragRotate.enable();
      */
-    enable() {
-        if (this.isEnabled()) return;
-        this._state = 'enabled';
+    function enable() {
+        if (isEnabled()) return;
+        state = 'enabled';
     }
 
     /**
@@ -82,38 +74,36 @@ class DragRotateHandler {
      * @example
      * map.dragRotate.disable();
      */
-    disable() {
-        if (!this.isEnabled()) return;
-        switch (this._state) {
+    function disable() {
+        if (!isEnabled()) return;
+        switch (state) {
         case 'active':
-            this._state = 'disabled';
-            this._unbind();
-            this._deactivate();
-            this._fireEvent('rotateend');
-            if (this._pitchWithRotate) {
-                this._fireEvent('pitchend');
-            }
-            this._fireEvent('moveend');
+            state = 'disabled';
+            unbind();
+            deactivate();
+            fireEvent('rotateend');
+            if (pitchWithRotate) fireEvent('pitchend');
+            fireEvent('moveend');
             break;
         case 'pending':
-            this._state = 'disabled';
-            this._unbind();
+            state = 'disabled';
+            unbind();
             break;
         default:
-            this._state = 'disabled';
+            state = 'disabled';
             break;
         }
     }
 
-    onMouseDown(e) {
-        if (this._state !== 'enabled') return;
+    function onMouseDown(e) {
+        if (state !== 'enabled') return;
 
-        if (this._button === 'right') {
-            this._eventButton = DOM.mouseButton(e);
-            if (this._eventButton !== (e.ctrlKey ? 0 : 2)) return;
+        if (button === 'right') {
+            eventButton = DOM.mouseButton(e);
+            if (eventButton !== (e.ctrlKey ? 0 : 2)) return;
         } else {
             if (e.ctrlKey || DOM.mouseButton(e) !== 0) return;
-            this._eventButton = 0;
+            eventButton = 0;
         }
 
         DOM.disableDrag();
@@ -123,84 +113,74 @@ class DragRotateHandler {
         // window-level event listeners give us the best shot at capturing events that
         // fall outside the map canvas element. Use `{capture: true}` for the move event
         // to prevent map move events from being fired during a drag.
-        window.document.addEventListener('mousemove', this._onMouseMove, {capture: true});
-        window.document.addEventListener('mouseup', this._onMouseUp);
+        window.document.addEventListener('mousemove', onMouseMove, {capture: true});
+        window.document.addEventListener('mouseup', onMouseUp);
 
         // Deactivate when the window loses focus. Otherwise if a mouseup occurs when the window
         // isn't in focus, dragging will continue even though the mouse is no longer pressed.
-        window.addEventListener('blur', this._onBlur);
+        window.addEventListener('blur', onBlur);
 
-        this._state = 'pending';
-        this._inertia = [[browser.now(), this._map.getBearing()]];
-        this._previousPos = DOM.mousePos(this._el, e);
-        this._center = this._map.transform.centerPoint;  // Center of rotation
+        state = 'pending';
+
+        previousPos = DOM.mousePos(el, e);
+        previousBearing = map.getBearing();
+
+        inertia = makeInertia(map, calculateInertia);
+        inertia.update(previousBearing);
 
         e.preventDefault();
     }
 
-    _onMouseMove(e) {
-        this._lastMoveEvent = e;
-        this._pos = DOM.mousePos(this._el, e);
+    function onMouseMove(e) {
+        const pos = DOM.mousePos(el, e);
+        frame.request(e, pos);
 
-        if (this._state === 'pending') {
-            this._state = 'active';
-            this._fireEvent('rotatestart', e);
-            this._fireEvent('movestart', e);
-            if (this._pitchWithRotate) {
-                this._fireEvent('pitchstart', e);
-            }
-        }
-
-        if (!this._frameId) {
-            this._frameId = this._map._requestRenderFrame(this._onDragFrame);
+        if (state === 'pending') {
+            state = 'active';
+            fireEvent('rotatestart', e);
+            fireEvent('movestart', e);
+            if (pitchWithRotate) fireEvent('pitchstart', e);
         }
     }
 
-    _onDragFrame() {
-        this._frameId = null;
+    function onDragFrame(e, pos) {
+        const tr = map.transform;
 
-        const e = this._lastMoveEvent;
-        if (!e) return;
-        const tr = this._map.transform;
+        const bearingDiff = (pos.x - previousPos.x) * -0.8;
+        const pitchDiff = (pos.y - previousPos.y) * 0.5;
 
-        const p1 = this._previousPos,
-            p2 = this._pos,
-            bearingDiff = (p1.x - p2.x) * 0.8,
-            pitchDiff = (p1.y - p2.y) * -0.5,
-            bearing = tr.bearing - bearingDiff,
-            pitch = tr.pitch - pitchDiff,
-            inertia = this._inertia,
-            last = inertia[inertia.length - 1];
+        const bearing = tr.bearing - bearingDiff;
+        const pitch = tr.pitch - pitchDiff;
 
-        this._drainInertiaBuffer();
-        inertia.push([browser.now(), this._map._normalizeBearing(bearing, last[1])]);
+        const normalizedBearing = map._normalizeBearing(bearing, previousBearing);
+        inertia.update(normalizedBearing);
 
         tr.bearing = bearing;
-        if (this._pitchWithRotate) {
-            this._fireEvent('pitch', e);
+        if (pitchWithRotate) {
+            fireEvent('pitch', e);
             tr.pitch = pitch;
         }
 
-        this._fireEvent('rotate', e);
-        this._fireEvent('move', e);
+        fireEvent('rotate', e);
+        fireEvent('move', e);
 
-        delete this._lastMoveEvent;
-        this._previousPos = this._pos;
+        previousBearing = normalizedBearing;
+        previousPos = pos;
     }
 
-    _onMouseUp(e) {
-        if (DOM.mouseButton(e) !== this._eventButton) return;
-        switch (this._state) {
+    function onMouseUp(e) {
+        if (DOM.mouseButton(e) !== eventButton) return;
+        switch (state) {
         case 'active':
-            this._state = 'enabled';
+            state = 'enabled';
             DOM.suppressClick();
-            this._unbind();
-            this._deactivate();
-            this._inertialRotate(e);
+            unbind();
+            deactivate();
+            inertialRotate(e);
             break;
         case 'pending':
-            this._state = 'enabled';
-            this._unbind();
+            state = 'enabled';
+            unbind();
             break;
         default:
             assert(false);
@@ -208,21 +188,19 @@ class DragRotateHandler {
         }
     }
 
-    _onBlur(e) {
-        switch (this._state) {
+    function onBlur(e) {
+        switch (state) {
         case 'active':
-            this._state = 'enabled';
-            this._unbind();
-            this._deactivate();
-            this._fireEvent('rotateend', e);
-            if (this._pitchWithRotate) {
-                this._fireEvent('pitchend', e);
-            }
-            this._fireEvent('moveend', e);
+            state = 'enabled';
+            unbind();
+            deactivate();
+            fireEvent('rotateend', e);
+            if (pitchWithRotate) fireEvent('pitchend', e);
+            fireEvent('moveend', e);
             break;
         case 'pending':
-            this._state = 'enabled';
-            this._unbind();
+            state = 'enabled';
+            unbind();
             break;
         default:
             assert(false);
@@ -230,55 +208,31 @@ class DragRotateHandler {
         }
     }
 
-    _unbind() {
-        window.document.removeEventListener('mousemove', this._onMouseMove, {capture: true});
-        window.document.removeEventListener('mouseup', this._onMouseUp);
-        window.removeEventListener('blur', this._onBlur);
+    function unbind() {
+        window.document.removeEventListener('mousemove', onMouseMove, {capture: true});
+        window.document.removeEventListener('mouseup', onMouseUp);
+        window.removeEventListener('blur', onBlur);
         DOM.enableDrag();
     }
 
-    _deactivate() {
-        if (this._frameId) {
-            this._map._cancelRenderFrame(this._frameId);
-            this._frameId = null;
-        }
-        delete this._lastMoveEvent;
-        delete this._previousPos;
+    function deactivate() {
+        frame.cancel();
+
+        previousPos = undefined;
+        previousBearing = undefined;
+        eventButton = undefined;
     }
 
-    _inertialRotate(e) {
-        this._fireEvent('rotateend', e);
-        this._drainInertiaBuffer();
+    function calculateInertia(first, last) {
+        const mapBearing = map.getBearing();
+        let bearing = map._normalizeBearing(mapBearing, previousBearing);
 
-        const map = this._map,
-            mapBearing = map.getBearing(),
-            inertia = this._inertia;
-
-        const finish = () => {
-            if (Math.abs(mapBearing) < this._bearingSnap) {
-                map.resetNorth({noMoveStart: true}, { originalEvent: e });
-            } else {
-                this._fireEvent('moveend', e);
-            }
-            if (this._pitchWithRotate) this._fireEvent('pitchend', e);
-        };
-
-        if (inertia.length < 2) {
-            finish();
-            return;
-        }
-
-        const first = inertia[0],
-            last = inertia[inertia.length - 1],
-            previous = inertia[inertia.length - 2];
-        let bearing = map._normalizeBearing(mapBearing, previous[1]);
-        const flingDiff = last[1] - first[1],
+        const flingDiff = last.value - first.value,
             sign = flingDiff < 0 ? -1 : 1,
-            flingDuration = (last[0] - first[0]) / 1000;
+            flingDuration = (last.time - first.time) / 1000;
 
         if (flingDiff === 0 || flingDuration === 0) {
-            finish();
-            return;
+            return { empty: true };
         }
 
         let speed = Math.abs(flingDiff * (inertiaLinearity / flingDuration));  // deg/s
@@ -286,34 +240,53 @@ class DragRotateHandler {
             speed = inertiaMaxSpeed;
         }
 
-        const duration = speed / (inertiaDeceleration * inertiaLinearity),
-            offset = sign * speed * (duration / 2);
+        const duration = speed / (inertiaDeceleration * inertiaLinearity);
+        const offset = sign * speed * (duration / 2);
 
         bearing += offset;
 
-        if (Math.abs(map._normalizeBearing(bearing, 0)) < this._bearingSnap) {
+        if (Math.abs(map._normalizeBearing(bearing, 0)) < bearingSnap) {
             bearing = map._normalizeBearing(0, bearing);
         }
 
-        map.rotateTo(bearing, {
+        return {
             duration: duration * 1000,
+            bearing
+        };
+    }
+
+    function inertialRotate(e) {
+        fireEvent('rotateend', e);
+
+        const { empty, bearing, duration } = inertia.calculate();
+        if (empty) {
+            if (Math.abs(map.getBearing()) < bearingSnap) {
+                map.resetNorth({ noMoveStart: true }, { originalEvent: e });
+            } else {
+                fireEvent('moveend', e);
+            }
+            if (pitchWithRotate) fireEvent('pitchend', e);
+            return;
+        }
+
+        map.rotateTo(bearing, {
+            duration,
             easing: inertiaEasing,
             noMoveStart: true
         }, { originalEvent: e });
     }
 
-    _fireEvent(type, e) {
-        return this._map.fire(new Event(type, e ? { originalEvent: e } : {}));
+    function fireEvent(type, e) {
+        return map.fire(new Event(type, e ? { originalEvent: e } : {}));
     }
 
-    _drainInertiaBuffer() {
-        const inertia = this._inertia,
-            now = browser.now(),
-            cutoff = 160;   //msec
-
-        while (inertia.length > 0 && now - inertia[0][0] > cutoff)
-            inertia.shift();
-    }
+    return {
+        isActive,
+        isEnabled,
+        enable,
+        disable,
+        onMouseDown
+    };
 }
 
-module.exports = DragRotateHandler;
+module.exports = dragRotateHandler;

@@ -1,8 +1,5 @@
 'use strict';
 
-const { bindAll } = require('../../util/object');
-
-
 const panStep = 100,
     bearingStep = 15,
     pitchStep = 10;
@@ -21,27 +18,19 @@ const panStep = 100,
  * - `Shift+⇡`: Increase the pitch by 10 degrees.
  * - `Shift+⇣`: Decrease the pitch by 10 degrees.
  */
-class KeyboardHandler {
+function keyboardHandler(map) {
 
-    /**
-     * @private
-     */
-    constructor(map) {
-        this._map = map;
-        this._el = map.getCanvasContainer();
+    const el = map.getCanvasContainer();
 
-        bindAll([
-            '_onKeyDown'
-        ], this);
-    }
+    let enabled = false;
 
     /**
      * Returns a Boolean indicating whether keyboard interaction is enabled.
      *
      * @returns {boolean} `true` if keyboard interaction is enabled.
      */
-    isEnabled() {
-        return !!this._enabled;
+    function isEnabled() {
+        return enabled;
     }
 
     /**
@@ -50,10 +39,10 @@ class KeyboardHandler {
      * @example
      * map.keyboard.enable();
      */
-    enable() {
-        if (this.isEnabled()) return;
-        this._el.addEventListener('keydown', this._onKeyDown, false);
-        this._enabled = true;
+    function enable() {
+        if (enabled) return;
+        el.addEventListener('keydown', onKeyDown, false);
+        enabled = true;
     }
 
     /**
@@ -62,13 +51,13 @@ class KeyboardHandler {
      * @example
      * map.keyboard.disable();
      */
-    disable() {
-        if (!this.isEnabled()) return;
-        this._el.removeEventListener('keydown', this._onKeyDown);
-        this._enabled = false;
+    function disable() {
+        if (!enabled) return;
+        el.removeEventListener('keydown', onKeyDown);
+        enabled = false;
     }
 
-    _onKeyDown(e) {
+    function onKeyDown(e) {
         if (e.altKey || e.ctrlKey || e.metaKey) return;
 
         let zoomDir = 0;
@@ -131,7 +120,6 @@ class KeyboardHandler {
             return;
         }
 
-        const map = this._map;
         const zoom = map.getZoom();
 
         const easeOptions = {
@@ -148,10 +136,16 @@ class KeyboardHandler {
 
         map.easeTo(easeOptions, {originalEvent: e});
     }
+
+    return {
+        isEnabled,
+        enable,
+        disable
+    };
 }
 
 function easeOut(t) {
     return t * (2 - t);
 }
 
-module.exports = KeyboardHandler;
+module.exports = keyboardHandler;

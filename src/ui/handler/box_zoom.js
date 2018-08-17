@@ -3,7 +3,6 @@
 const DOM = require('../../util/dom');
 
 const LngLatBounds = require('../../geo/lng_lat_bounds');
-const { bindAll } = require('../../util/object');
 const window = require('../../util/window');
 const { Event } = require('../../util/evented');
 
@@ -12,30 +11,23 @@ const { Event } = require('../../util/evented');
  * The `BoxZoomHandler` allows the user to zoom the map to fit within a bounding box.
  * The bounding box is defined by clicking and holding `shift` while dragging the cursor.
  */
-class BoxZoomHandler {
+function boxZoomHandler(map) {
 
-    /**
-     * @private
-     */
-    constructor(map) {
-        this._map = map;
-        this._el = map.getCanvasContainer();
-        this._container = map.getContainer();
+    const el = map.getCanvasContainer();
+    const container = map.getContainer();
 
-        bindAll([
-            '_onMouseMove',
-            '_onMouseUp',
-            '_onKeyDown'
-        ], this);
-    }
+    let enabled = false;
+    let active = false;
+    let startPos;
+    let box;
 
     /**
      * Returns a Boolean indicating whether the "box zoom" interaction is enabled.
      *
      * @returns {boolean} `true` if the "box zoom" interaction is enabled.
      */
-    isEnabled() {
-        return !!this._enabled;
+    function isEnabled() {
+        return enabled;
     }
 
     /**
@@ -43,8 +35,8 @@ class BoxZoomHandler {
      *
      * @returns {boolean} `true` if the "box zoom" interaction is active.
      */
-    isActive() {
-        return !!this._active;
+    function isActive() {
+        return active;
     }
 
     /**
@@ -53,9 +45,8 @@ class BoxZoomHandler {
      * @example
      *   map.boxZoom.enable();
      */
-    enable() {
-        if (this.isEnabled()) return;
-        this._enabled = true;
+    function enable() {
+        enabled = true;
     }
 
     /**
@@ -64,32 +55,31 @@ class BoxZoomHandler {
      * @example
      *   map.boxZoom.disable();
      */
-    disable() {
-        if (!this.isEnabled()) return;
-        this._enabled = false;
+    function disable() {
+        enabled = false;
     }
 
-    onMouseDown(e) {
-        if (!this.isEnabled()) return;
+    function onMouseDown(e) {
+        if (!enabled) return;
         if (!(e.shiftKey && e.button === 0)) return;
 
-        window.document.addEventListener('mousemove', this._onMouseMove, false);
-        window.document.addEventListener('keydown', this._onKeyDown, false);
-        window.document.addEventListener('mouseup', this._onMouseUp, false);
+        window.document.addEventListener('mousemove', onMouseMove, false);
+        window.document.addEventListener('keydown', onKeyDown, false);
+        window.document.addEventListener('mouseup', onMouseUp, false);
 
         DOM.disableDrag();
-        this._startPos = DOM.mousePos(this._el, e);
-        this._active = true;
+        startPos = DOM.mousePos(el, e);
+        active = true;
     }
 
-    _onMouseMove(e) {
-        const p0 = this._startPos,
-            p1 = DOM.mousePos(this._el, e);
+    function onMouseMove(e) {
+        const p0 = startPos;
+        const p1 = DOM.mousePos(el, e);
 
-        if (!this._box) {
-            this._box = DOM.create('div', 'mapboxgl-boxzoom', this._container);
-            this._container.classList.add('mapboxgl-crosshair');
-            this._fireEvent('boxzoomstart', e);
+        if (!box) {
+            box = DOM.create('div', 'mapboxgl-boxzoom', container);
+            container.classList.add('mapboxgl-crosshair');
+            fireEvent('boxzoomstart', e);
         }
 
         const minX = Math.min(p0.x, p1.x),
@@ -97,60 +87,70 @@ class BoxZoomHandler {
             minY = Math.min(p0.y, p1.y),
             maxY = Math.max(p0.y, p1.y);
 
-        this._box.style.transform = `translate(${minX}px,${minY}px)`;
-        this._box.style.width = `${maxX - minX}px`;
-        this._box.style.height = `${maxY - minY}px`;
+        box.style.transform = `translate(${minX}px,${minY}px)`;
+        box.style.width = `${maxX - minX}px`;
+        box.style.height = `${maxY - minY}px`;
     }
 
-    _onMouseUp(e) {
+    function onMouseUp(e) {
         if (e.button !== 0) return;
 
-        const p0 = this._startPos,
-            p1 = DOM.mousePos(this._el, e),
-            bounds = new LngLatBounds()
-                .extend(this._map.unproject(p0))
-                .extend(this._map.unproject(p1));
+        const p0 = startPos;
+        const p1 = DOM.mousePos(el, e);
 
-        this._finish();
+        const bounds = new LngLatBounds()
+            .extend(map.unproject(p0))
+            .extend(map.unproject(p1));
+
+        finish();
 
         DOM.suppressClick();
 
         if (p0.x === p1.x && p0.y === p1.y) {
-            this._fireEvent('boxzoomcancel', e);
+            fireEvent('boxzoomcancel', e);
         } else {
-            this._map
+            map
                 .fitBounds(bounds, {linear: true})
                 .fire(new Event('boxzoomend', { originalEvent: e, boxZoomBounds: bounds }));
         }
     }
 
-    _onKeyDown(e) {
+    function onKeyDown(e) {
         if (e.keyCode === 27) {
-            this._finish();
-            this._fireEvent('boxzoomcancel', e);
+            finish();
+            fireEvent('boxzoomcancel', e);
         }
     }
 
-    _finish() {
-        this._active = false;
+    function finish() {
+        active = false;
 
-        window.document.removeEventListener('mousemove', this._onMouseMove, false);
-        window.document.removeEventListener('keydown', this._onKeyDown, false);
-        window.document.removeEventListener('mouseup', this._onMouseUp, false);
+        window.document.removeEventListener('mousemove', onMouseMove, false);
+        window.document.removeEventListener('keydown', onKeyDown, false);
+        window.document.removeEventListener('mouseup', onMouseUp, false);
 
-        this._container.classList.remove('mapboxgl-crosshair');
+        container.classList.remove('mapboxgl-crosshair');
 
-        if (this._box) {
-            DOM.remove(this._box);
-            this._box = (null);
+        if (box) {
+            DOM.remove(box);
+            box = undefined;
         }
+        startPos = undefined;
 
         DOM.enableDrag();
     }
 
-    _fireEvent(type, e) {
-        return this._map.fire(new Event(type, { originalEvent: e }));
+    function fireEvent(type, e) {
+        return map.fire(new Event(type, { originalEvent: e }));
     }
+
+    return {
+        isEnabled,
+        isActive,
+        enable,
+        disable,
+        onMouseDown
+    };
 }
 
-module.exports = BoxZoomHandler;
+module.exports = boxZoomHandler;

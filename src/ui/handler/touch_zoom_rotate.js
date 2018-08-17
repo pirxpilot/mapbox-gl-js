@@ -1,47 +1,177 @@
 'use strict';
 
 const DOM = require('../../util/dom');
-const { bindAll } = require('../../util/object');
 const { bezier } = require('../../util/util');
 const window = require('../../util/window');
-const browser = require('../../util/browser');
 const { Event } = require('../../util/evented');
+const makeFrame = require('./frame');
+const makeInertia = require('./inertia');
 
 
-const inertiaLinearity = 0.15,
-    inertiaEasing = bezier(0, 0, inertiaLinearity, 1),
-    inertiaDeceleration = 12, // scale / s^2
-    inertiaMaxSpeed = 2.5, // scale / s
-    significantScaleThreshold = 0.15,
-    significantRotateThreshold = 10;
+const INERTIA_LINEARITY = 0.15;
+const INERTIA_EASING = bezier(0, 0, INERTIA_LINEARITY, 1);
+const INERTIA_DECELERATION = 12; // scale / s^2
+const INERTIA_MAX_SPEED = 2.5; // scale / s;
+
+const SIGNIFICANT_SCALE_THRESHOLD = 0.15;
+const SIGNIFICANT_ROTATE_THRESHOLD = 10;
+
+function makeMovement(map, { rotationDisabled, aroundCenter }, e) {
+    const el = map.getCanvasContainer();
+
+    const frame = makeFrame(map, onFrame);
+
+    const { vector: startVector, center } = getVector(e);
+    const startScale = map.transform.scale;
+    const startBearing = map.transform.bearing;
+    const inertia = makeInertia(map, calculateInertia);
+
+    let gestureIntent;
+    let lastCenter = center;
+
+    function onMove(e) {
+        const { vector, center } = getVector(e);
+        lastCenter = center;
+
+        const scale =  vector.mag() / startVector.mag();
+        inertia.update(scale);
+        frame.request(e, { vector, scale, center });
+
+        if (gestureIntent) return;
+
+        // Determine 'intent' by whichever threshold is surpassed first,
+        // then keep that state for the duration of this gesture.
+        if (!rotationDisabled) {
+            const bearing = vector.angleWith(startVector) * 180 / Math.PI;
+            if (Math.abs(bearing) > SIGNIFICANT_ROTATE_THRESHOLD) {
+                gestureIntent = 'rotate';
+            }
+        }
+
+        if (!gestureIntent) {
+            const scale =  vector.mag() / startVector.mag();
+            if (Math.abs(1 - scale) > SIGNIFICANT_SCALE_THRESHOLD) {
+                gestureIntent = 'zoom';
+            }
+        }
+
+        if (gestureIntent) {
+            map.fire(new Event(`${gestureIntent}start`, { originalEvent: e }));
+            map.fire(new Event('movestart', { originalEvent: e }));
+        }
+    }
+
+    function onFrame(e, { vector, scale, center }) {
+        if (!gestureIntent) return;
+
+        if (gestureIntent === 'rotate') {
+            const bearing = vector.angleWith(startVector) * 180 / Math.PI;
+            map.transform.bearing = startBearing + bearing;
+        }
+
+        map.transform.zoom = map.transform.scaleZoom(startScale * scale);
+
+        const around = map.transform.pointLocation(center);
+        // const aroundPoint = map.transform.locationPoint(around);
+        map.transform.setLocationAtPoint(around, center);
+
+        map.fire(new Event(gestureIntent, {originalEvent: e}));
+        map.fire(new Event('move', {originalEvent: e}));
+
+    }
+
+    function onEnd(e) {
+        frame.cancel();
+
+        if (!gestureIntent) return;
+
+        map.fire(new Event(`${gestureIntent}end`, { originalEvent: e }));
+
+        const { zoom, duration, empty } = inertia.calculate();
+        if (empty) {
+            map.snapToNorth({}, { originalEvent: e });
+        } else {
+            map.easeTo({
+                zoom,
+                duration,
+                easing: INERTIA_EASING,
+                around: aroundCenter ? map.getCenter() : map.unproject(lastCenter),
+                noMoveStart: true
+            }, { originalEvent: e });
+        }
+    }
+
+    function getVector({ touches: [ t0, t1 ] }) {
+        const p0 = DOM.mousePos(el, t0);
+        const p1 = DOM.mousePos(el, t1);
+
+        return {
+            vector: p0.sub(p1),
+            center: p0.add(p1).div(2)
+        };
+    }
+
+    function calculateInertia(first, last) {
+        const firstZoom = map.transform.scaleZoom(startScale * first.value);
+        const lastZoom = map.transform.scaleZoom(startScale * last.value);
+
+        const scaleDuration = (last.time - first.time) / 1000;
+        if (scaleDuration === 0 || lastZoom === firstZoom) {
+            return { empty: true };
+        }
+
+        // calculate scale/s speed and adjust for increased initial animation speed when easing
+        let speed = (lastZoom - firstZoom) * INERTIA_LINEARITY / scaleDuration; // scale/s
+        if (speed > INERTIA_MAX_SPEED) {
+            speed = INERTIA_MAX_SPEED;
+        } else if (speed < -INERTIA_MAX_SPEED) {
+            speed = -INERTIA_MAX_SPEED;
+        }
+
+        const duration = Math.abs(speed / (INERTIA_DECELERATION * INERTIA_LINEARITY)) * 1000;
+        let zoom = lastZoom + speed * duration / 2000;
+        if (zoom < 0) {
+            zoom = 0;
+        }
+
+        return { zoom, duration };
+    }
+
+    return {
+        onMove,
+        onFrame,
+        onEnd
+    };
+}
 
 /**
  * The `TouchZoomRotateHandler` allows the user to zoom and rotate the map by
  * pinching on a touchscreen.
  */
-class TouchZoomRotateHandler {
+function touchZoomRotateHandler(map) {
 
-    /**
-     * @private
-     */
-    constructor(map) {
-        this._map = map;
-        this._el = map.getCanvasContainer();
+    let enabled = false;
+    let aroundCenter = false;
+    let rotationDisabled = false;
 
-        bindAll([
-            '_onMove',
-            '_onEnd',
-            '_onTouchFrame'
-        ], this);
-    }
+    let movement;
 
     /**
      * Returns a Boolean indicating whether the "pinch to rotate and zoom" interaction is enabled.
      *
      * @returns {boolean} `true` if the "pinch to rotate and zoom" interaction is enabled.
      */
-    isEnabled() {
-        return !!this._enabled;
+    function isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * Returns a Boolean indicating whether the "pinch to rotate and zoom" interaction is active.
+     *
+     * @returns {boolean} `true` if the "pinch to rotate and zoom" interaction is active.
+     */
+    function isActive() {
+        return !!movement;
     }
 
     /**
@@ -55,11 +185,11 @@ class TouchZoomRotateHandler {
      * @example
      *   map.touchZoomRotate.enable({ around: 'center' });
      */
-    enable(options) {
-        if (this.isEnabled()) return;
-        this._el.classList.add('mapboxgl-touch-zoom-rotate');
-        this._enabled = true;
-        this._aroundCenter = !!options && options.around === 'center';
+    function enable(options) {
+        if (enabled) return;
+        map.getCanvasContainer().classList.add('mapboxgl-touch-zoom-rotate');
+        enabled = true;
+        aroundCenter = options && options.around === 'center';
     }
 
     /**
@@ -68,10 +198,10 @@ class TouchZoomRotateHandler {
      * @example
      *   map.touchZoomRotate.disable();
      */
-    disable() {
-        if (!this.isEnabled()) return;
-        this._el.classList.remove('mapboxgl-touch-zoom-rotate');
-        this._enabled = false;
+    function disable() {
+        if (!enabled) return;
+        map.getCanvasContainer().classList.remove('mapboxgl-touch-zoom-rotate');
+        enabled = false;
     }
 
     /**
@@ -81,8 +211,8 @@ class TouchZoomRotateHandler {
      * @example
      *   map.touchZoomRotate.disableRotation();
      */
-    disableRotation() {
-        this._rotationDisabled = true;
+    function disableRotation() {
+        rotationDisabled = true;
     }
 
     /**
@@ -92,179 +222,47 @@ class TouchZoomRotateHandler {
      *   map.touchZoomRotate.enable();
      *   map.touchZoomRotate.enableRotation();
      */
-    enableRotation() {
-        this._rotationDisabled = false;
+    function enableRotation() {
+        rotationDisabled = false;
     }
 
-    onStart(e) {
-        if (!this.isEnabled()) return;
+    function onStart(e) {
+        if (!enabled) return;
         if (e.touches.length !== 2) return;
 
-        const p0 = DOM.mousePos(this._el, e.touches[0]),
-            p1 = DOM.mousePos(this._el, e.touches[1]);
+        movement = makeMovement(map, { rotationDisabled, aroundCenter }, e);
 
-        this._startVec = p0.sub(p1);
-        this._gestureIntent = undefined;
-        this._inertia = [];
-
-        DOM.addEventListener(window.document, 'touchmove', this._onMove, {passive: false});
-        DOM.addEventListener(window.document, 'touchend', this._onEnd);
+        DOM.addEventListener(window.document, 'touchmove', onMove, {passive: false});
+        DOM.addEventListener(window.document, 'touchend', onEnd);
     }
 
-    _getTouchEventData(e) {
-        const p0 = DOM.mousePos(this._el, e.touches[0]),
-            p1 = DOM.mousePos(this._el, e.touches[1]);
 
-        const vec = p0.sub(p1);
-        return {
-            vec,
-            center: p0.add(p1).div(2),
-            scale: vec.mag() / this._startVec.mag(),
-            bearing: this._rotationDisabled ? 0 : vec.angleWith(this._startVec) * 180 / Math.PI
-        };
-    }
-
-    _onMove(e) {
+    function onMove(e) {
         if (e.touches.length !== 2) return;
-
-        const {vec, scale, bearing} = this._getTouchEventData(e);
-
-        // Determine 'intent' by whichever threshold is surpassed first,
-        // then keep that state for the duration of this gesture.
-        if (!this._gestureIntent) {
-            const scalingSignificantly = (Math.abs(1 - scale) > significantScaleThreshold),
-                rotatingSignificantly = (Math.abs(bearing) > significantRotateThreshold);
-
-            if (rotatingSignificantly) {
-                this._gestureIntent = 'rotate';
-            } else if (scalingSignificantly) {
-                this._gestureIntent = 'zoom';
-            }
-
-            if (this._gestureIntent) {
-                this._map.fire(new Event(`${this._gestureIntent}start`, { originalEvent: e }));
-                this._map.fire(new Event('movestart', { originalEvent: e }));
-                this._startVec = vec;
-            }
+        if (movement) {
+            movement.onMove(e);
+            e.preventDefault();
         }
-
-        this._lastTouchEvent = e;
-        if (!this._frameId) {
-            this._frameId = this._map._requestRenderFrame(this._onTouchFrame);
-        }
-
-        e.preventDefault();
     }
 
-    _onTouchFrame() {
-        this._frameId = null;
+    function onEnd(e) {
+        DOM.removeEventListener(window.document, 'touchmove', onMove, {passive: false});
+        DOM.removeEventListener(window.document, 'touchend', onEnd);
 
-        const gestureIntent = this._gestureIntent;
-        if (!gestureIntent) return;
-
-        const tr = this._map.transform;
-
-        if (!this._startScale) {
-            this._startScale = tr.scale;
-            this._startBearing = tr.bearing;
-        }
-
-        const {center, bearing, scale} = this._getTouchEventData(this._lastTouchEvent);
-        const around = tr.pointLocation(center);
-        const aroundPoint = tr.locationPoint(around);
-
-        if (gestureIntent === 'rotate') {
-            tr.bearing = this._startBearing + bearing;
-        }
-
-        tr.zoom = tr.scaleZoom(this._startScale * scale);
-
-        tr.setLocationAtPoint(around, aroundPoint);
-
-        this._map.fire(new Event(gestureIntent, {originalEvent: this._lastTouchEvent}));
-        this._map.fire(new Event('move', {originalEvent: this._lastTouchEvent}));
-
-        this._drainInertiaBuffer();
-        this._inertia.push([browser.now(), scale, center]);
+        movement.onEnd(e);
+        movement = undefined;
     }
 
-    _onEnd(e) {
-        DOM.removeEventListener(window.document, 'touchmove', this._onMove, {passive: false});
-        DOM.removeEventListener(window.document, 'touchend', this._onEnd);
 
-        const gestureIntent = this._gestureIntent;
-        const startScale = this._startScale;
-
-        if (this._frameId) {
-            this._map._cancelRenderFrame(this._frameId);
-            this._frameId = null;
-        }
-        delete this._gestureIntent;
-        delete this._startScale;
-        delete this._startBearing;
-        delete this._lastTouchEvent;
-
-        if (!gestureIntent) return;
-
-        this._map.fire(new Event(`${gestureIntent}end`, { originalEvent: e }));
-
-        this._drainInertiaBuffer();
-
-        const inertia = this._inertia,
-            map = this._map;
-
-        if (inertia.length < 2) {
-            map.snapToNorth({}, { originalEvent: e });
-            return;
-        }
-
-        const last = inertia[inertia.length - 1],
-            first = inertia[0],
-            lastScale = map.transform.scaleZoom(startScale * last[1]),
-            firstScale = map.transform.scaleZoom(startScale * first[1]),
-            scaleOffset = lastScale - firstScale,
-            scaleDuration = (last[0] - first[0]) / 1000,
-            p = last[2];
-
-        if (scaleDuration === 0 || lastScale === firstScale) {
-            map.snapToNorth({}, { originalEvent: e });
-            return;
-        }
-
-        // calculate scale/s speed and adjust for increased initial animation speed when easing
-        let speed = scaleOffset * inertiaLinearity / scaleDuration; // scale/s
-
-        if (Math.abs(speed) > inertiaMaxSpeed) {
-            if (speed > 0) {
-                speed = inertiaMaxSpeed;
-            } else {
-                speed = -inertiaMaxSpeed;
-            }
-        }
-
-        const duration = Math.abs(speed / (inertiaDeceleration * inertiaLinearity)) * 1000;
-        let targetScale = lastScale + speed * duration / 2000;
-
-        if (targetScale < 0) {
-            targetScale = 0;
-        }
-
-        map.easeTo({
-            zoom: targetScale,
-            duration: duration,
-            easing: inertiaEasing,
-            around: this._aroundCenter ? map.getCenter() : map.unproject(p),
-            noMoveStart: true
-        }, { originalEvent: e });
-    }
-
-    _drainInertiaBuffer() {
-        const inertia = this._inertia,
-            now = browser.now(),
-            cutoff = 160; // msec
-
-        while (inertia.length > 2 && now - inertia[0][0] > cutoff) inertia.shift();
-    }
+    return {
+        isEnabled,
+        isActive,
+        enable,
+        disable,
+        enableRotation,
+        disableRotation,
+        onStart
+    };
 }
 
-module.exports = TouchZoomRotateHandler;
+module.exports = touchZoomRotateHandler;
