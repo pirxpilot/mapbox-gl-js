@@ -1,4 +1,14 @@
 
+0.45.8 / 2018-08-17
+===================
+
+ * do not propagate `touchmove` when map moving is active
+ * fix isZooming and isRotating
+ * rewrite event handlers
+ * fix exceptions resulting from uninitialized variable in scrollZoom
+ * extract interpolate to a separate util
+ * stop throwing exceptions in queryRenderedFeatures
+
 0.45.7 / 2018-08-05
 ===================
 
