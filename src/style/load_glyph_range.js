@@ -1,6 +1,6 @@
 'use strict';
 
-const { normalizeGlyphsURL } = require('../util/mapbox');
+const { normalizeURL } = require('../util/urls');
 const makeLoader = require('../util/loader');
 const config = require('../util/config');
 const parseGlyphPBF = require('./parse_glyph_pbf');
@@ -11,9 +11,11 @@ function loadGlyphRange(fontstack, range, urlTemplate, callback) {
     const begin = range * 256;
     const end = begin + 255;
 
-    const url = normalizeGlyphsURL(urlTemplate)
-        .replace('{fontstack}', fontstack)
-        .replace('{range}', `${begin}-${end}`);
+    const url = normalizeURL(
+        urlTemplate
+            .replace('{fontstack}', fontstack)
+            .replace('{range}', `${begin}-${end}`)
+    );
 
     const loader = makeLoader(config.LOADER_STRATEGY);
     loader({ request: { url }, fontstack, range }, done);

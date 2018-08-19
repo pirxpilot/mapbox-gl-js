@@ -11,7 +11,7 @@ const Light = require('./light');
 const LineAtlas = require('../render/line_atlas');
 const { clone, deepEqual, filterObject, mapObject } = require('../util/object');
 const loadJSON = require('../util/loader/json');
-const { normalizeStyleURL } = require('../util/mapbox');
+const { normalizeURL } = require('../util/urls');
 const browser = require('../util/browser');
 const dispatcher = require('../util/dispatcher');
 const {
@@ -89,10 +89,10 @@ class Style extends Evented {
         });
     }
 
-    loadURL(url, options = {}) {
+    loadURL(url) {
         this.fire(new Event('dataloading', {dataType: 'style'}));
 
-        url = normalizeStyleURL(url, options.accessToken);
+        url = normalizeURL(url);
         loadJSON(url, (error, json) => {
             if (error) {
                 this.fire(new ErrorEvent(error));

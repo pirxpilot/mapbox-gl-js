@@ -38,7 +38,7 @@ test('loadGlyphRange', (t) => {
 
     if (!request) return t.fail(); // appease flow
 
-    t.equal(request.url, 'https://localhost/fonts/v1/Arial Unicode MS/0-255.pbf');
+    t.equal(request.url, 'https://localhost/fonts/v1/Arial%20Unicode%20MS/0-255.pbf');
     request.setStatus(200);
     request.response = fs.readFileSync(path.join(__dirname, '../../fixtures/0-255.pbf'));
     request.onload();

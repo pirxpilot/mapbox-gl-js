@@ -3,14 +3,13 @@
 const { pick } = require('../util/object');
 const loadJSON = require('../util/loader/json');
 const browser = require('../util/browser');
-const { normalizeSourceURL: normalizeURL } = require('../util/mapbox');
+const { normalizeURL } = require('../util/urls');
 
 
 module.exports = function(options, callback) {
-    const loaded = function(err, tileJSON) {
-        if (err) {
-            return callback(err);
-        } else if (tileJSON) {
+    function loaded(err, tileJSON) {
+        if (err) return callback(err);
+        if (tileJSON) {
             const result = pick(
                 tileJSON,
                 ['tiles', 'minzoom', 'maxzoom', 'attribution', 'mapbox_logo', 'bounds']
@@ -18,12 +17,12 @@ module.exports = function(options, callback) {
 
             if (tileJSON.vector_layers) {
                 result.vectorLayers = tileJSON.vector_layers;
-                result.vectorLayerIds = result.vectorLayers.map((layer) => { return layer.id; });
+                result.vectorLayerIds = result.vectorLayers.map(layer => layer.id);
             }
 
             callback(null, result);
         }
-    };
+    }
 
     if (options.url) {
         loadJSON(normalizeURL(options.url), loaded);

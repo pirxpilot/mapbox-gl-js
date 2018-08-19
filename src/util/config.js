@@ -7,6 +7,11 @@ function getDefaultWorkerCount() {
     return Math.max(Math.floor(browser.hardwareConcurrency / 2), 1);
 }
 
+function getBaseUri() {
+    const w = require('./window');
+    return w.document.baseURI;
+}
+
 const config = new Evented();
 
 config.set = function set(c) {
@@ -15,9 +20,7 @@ config.set = function set(c) {
 };
 
 config.set({
-    API_URL: 'https://api.mapbox.com',
-    REQUIRE_ACCESS_TOKEN: true,
-    ACCESS_TOKEN: null,
+    BASE_URL: getBaseUri(),
     WORKER_COUNT: getDefaultWorkerCount(),
     WORKER_URL: '',
     LOADER_STRATEGY: 'network-only',
