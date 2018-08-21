@@ -1,7 +1,7 @@
 'use strict';
 
 const browser = require('../util/browser');
-const { normalizeSpriteURL } = require('../util/mapbox');
+const { normalizeSpriteURL } = require('../util/urls');
 const { RGBAImage } = require('../util/image');
 const loadImage = require('../util/loader/image');
 const loadJSON = require('../util/loader/json');

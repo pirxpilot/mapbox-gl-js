@@ -11,22 +11,6 @@ module.exports = {
     Evented: require('./util/evented').Evented,
     config: require('./util/config'),
 
-    /**
-     * Gets and sets the map's [access token](https://www.mapbox.com/help/define-access-token/).
-     *
-     * @var {string} accessToken
-     * @example
-     * mapboxgl.accessToken = myAccessToken;
-     * @see [Display a map](https://www.mapbox.com/mapbox-gl-js/examples/)
-     */
-    get accessToken() {
-        return this.config.ACCESS_TOKEN;
-    },
-
-    set accessToken(token) {
-        this.config.ACCESS_TOKEN = token;
-    },
-
     get workerCount() {
         return this.config.WORKER_COUNT;
     },

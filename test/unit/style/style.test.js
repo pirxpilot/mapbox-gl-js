@@ -1,6 +1,7 @@
 const { test } = require('mapbox-gl-js-test');
 const assert = require('assert');
 const Style = require('../../../src/style/style');
+const config = require('../../../src/util/config');
 const SourceCache = require('../../../src/source/source_cache');
 const StyleLayer = require('../../../src/style/style_layer');
 const Transform = require('../../../src/geo/transform');
@@ -92,12 +93,17 @@ test('Style', (t) => {
 });
 
 test('Style#loadURL', (t) => {
+    let baseUrl;
+
     t.beforeEach((callback) => {
+        baseUrl = config.BASE_URL;
+        config.BASE_URL = 'https://example.com';
         window.useFakeXMLHttpRequest();
         callback();
     });
 
     t.afterEach((callback) => {
+        config.BASE_URL = baseUrl;
         window.restore();
         callback();
     });

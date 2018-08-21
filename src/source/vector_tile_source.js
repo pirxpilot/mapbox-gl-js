@@ -4,7 +4,7 @@ const config = require('../util/config');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 const { pick } = require('../util/object');
 const loadTileJSON = require('./load_tilejson');
-const { normalizeTileURL: normalizeURL } = require('../util/mapbox');
+const { normalizeURL } = require('../util/urls');
 const TileBounds = require('./tile_bounds');
 const browser = require('../util/browser');
 
@@ -73,7 +73,7 @@ class VectorTileSource extends Evented {
     }
 
     loadTile(tile, callback) {
-        const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url);
+        const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme));
         const params = {
             request: { url },
             uid: tile.uid,

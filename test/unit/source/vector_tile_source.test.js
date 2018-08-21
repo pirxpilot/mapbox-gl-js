@@ -1,5 +1,6 @@
 const { test } = require('mapbox-gl-js-test');
 const VectorTileSource = require('../../../src/source/vector_tile_source');
+const config = require('../../../src/util/config');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
 const window = require('../../../src/util/window');
 const { Evented } = require('../../../src/util/evented');
@@ -22,12 +23,17 @@ function createSource(options) {
 }
 
 test('VectorTileSource', (t) => {
+    let baseUrl;
+
     t.beforeEach((callback) => {
+        baseUrl = config.BASE_URL;
+        config.BASE_URL = 'http://example.com';
         window.useFakeXMLHttpRequest();
         callback();
     });
 
     t.afterEach((callback) => {
+        config.BASE_URL = baseUrl;
         window.restore();
         callback();
     });
@@ -52,7 +58,7 @@ test('VectorTileSource', (t) => {
     });
 
     t.test('can be constructed from a TileJSON URL', (t) => {
-        window.server.respondWith('/source.json', JSON.stringify(require('../../fixtures/source')));
+        window.server.respondWith('http://example.com/source.json', JSON.stringify(require('../../fixtures/source')));
 
         const source = createSource({ url: "/source.json" });
 
@@ -70,7 +76,7 @@ test('VectorTileSource', (t) => {
     });
 
     t.test('fires event with metadata property', (t) => {
-        window.server.respondWith('/source.json', JSON.stringify(require('../../fixtures/source')));
+        window.server.respondWith('http://example.com/source.json', JSON.stringify(require('../../fixtures/source')));
         const source = createSource({ url: "/source.json" });
         source.on('data', (e)=>{
             if (e.sourceDataType === 'content') t.end();
@@ -79,7 +85,7 @@ test('VectorTileSource', (t) => {
     });
 
     t.test('fires "dataloading" event', (t) => {
-        window.server.respondWith('/source.json', JSON.stringify(require('../../fixtures/source')));
+        window.server.respondWith('http://example.com/source.json', JSON.stringify(require('../../fixtures/source')));
         const evented = new Evented();
         let dataloadingFired = false;
         evented.on('dataloading', () => {
@@ -217,7 +223,7 @@ test('VectorTileSource', (t) => {
     });
 
     t.test('respects TileJSON.bounds when loaded from TileJSON', (t)=>{
-        window.server.respondWith('/source.json', JSON.stringify({
+        window.server.respondWith('http://example.com/source.json', JSON.stringify({
             minzoom: 0,
             maxzoom: 22,
             attribution: "Mapbox",
