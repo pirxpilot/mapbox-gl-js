@@ -6,7 +6,7 @@ test('VectorTileWorkerSource#abortTile aborts pending request', (t) => {
     const source = new VectorTileWorkerSource(null, new StyleLayerIndex());
 
     source.loadTile({
-        source: 'source',
+        source: 'tiles',
         uid: 0,
         tileID: { overscaledZ: 0, wrap: 0, canonical: {x: 0, y: 0, z: 0, w: 0} },
         request: { url: 'http://localhost:2900/abort' }
@@ -16,7 +16,7 @@ test('VectorTileWorkerSource#abortTile aborts pending request', (t) => {
     });
 
     source.abortTile({
-        source: 'source',
+        source: 'tiles',
         uid: 0
     }, (err, res) => {
         t.false(err);
