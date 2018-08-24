@@ -15,7 +15,16 @@ const strategies = {
 };
 
 function selectStrategy(strategy = 'network-only') {
-    return strategies[strategy] || strategies['network-only'];
+    return remapStrategy.bind(undefined,
+        strategies[strategy] || strategies['network-only']);
+}
+
+// don't cache custom tiles
+function remapStrategy(strategy, params, fn) {
+    if (params.source && params.source !== 'tiles') {
+        strategy = strategy === cacheOnly ? doNothing : networkOnly;
+    }
+    return strategy(params, fn);
 }
 
 function networkOnly({ request: { url }, _ilk }, fn) {
@@ -58,6 +67,12 @@ function cacheOnSuccessFn(params, fn) {
             cache.update(params, response);
         }
     };
+}
+
+function doNothing(params, fn) {
+    let aborted = false;
+    setTimeout(() => aborted || fn('no cache'), 0);
+    return () => { aborted = true; };
 }
 
 function first(tasks, params, fn) {
