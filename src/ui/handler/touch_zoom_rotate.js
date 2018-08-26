@@ -28,6 +28,7 @@ function makeMovement(map, { rotationDisabled, aroundCenter }, e) {
 
     let gestureIntent;
     let lastCenter = center;
+    const around = map.transform.pointLocation(center);
 
     function onMove(e) {
         const { vector, center } = getVector(e);
@@ -70,14 +71,10 @@ function makeMovement(map, { rotationDisabled, aroundCenter }, e) {
         }
 
         map.transform.zoom = map.transform.scaleZoom(startScale * scale);
-
-        const around = map.transform.pointLocation(center);
-        // const aroundPoint = map.transform.locationPoint(around);
         map.transform.setLocationAtPoint(around, center);
 
         map.fire(new Event(gestureIntent, {originalEvent: e}));
         map.fire(new Event('move', {originalEvent: e}));
-
     }
 
     function onEnd(e) {
