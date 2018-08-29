@@ -6,6 +6,7 @@ const gl = require('gl');
 const sinon = require('sinon');
 
 const { window: _window } = new jsdom.JSDOM('', {
+    url: "https://example.org/",
     virtualConsole: new jsdom.VirtualConsole().sendTo(console)
 });
 
@@ -25,6 +26,7 @@ function restore() {
 
     // Create new window and inject into exported object
     const { window } = new jsdom.JSDOM('', {
+        url: "https://example.org/",
         // Send jsdom console output to the node console object.
         virtualConsole: new jsdom.VirtualConsole().sendTo(console)
     });
