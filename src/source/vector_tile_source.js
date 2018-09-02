@@ -7,9 +7,14 @@ const loadTileJSON = require('./load_tilejson');
 const { normalizeURL } = require('../util/urls');
 const TileBounds = require('./tile_bounds');
 const browser = require('../util/browser');
+const window = require('../util/window');
 
 // register feature index for worker transfer
 require('../data/feature_index');
+
+function getLanguage() {
+    return window.document.documentElement.lang.split(/[_\-]/)[0] || 'en';
+}
 
 class VectorTileSource extends Evented {
 
@@ -34,8 +39,8 @@ class VectorTileSource extends Evented {
             throw new Error('vector tile sources must have a tileSize of 512');
         }
 
-        this.setLoaderStrategy(config.SOURCE_LOADER_STRATEGY);
-        config.on('change', c => this.setLoaderStrategy(c.SOURCE_LOADER_STRATEGY));
+        this.updateWorkerConfig(config);
+        config.on('change', c => this.updateWorkerConfig(c));
 
         this.setEventedParent(eventedParent);
     }
@@ -131,8 +136,13 @@ class VectorTileSource extends Evented {
         return false;
     }
 
-    setLoaderStrategy(strategy) {
-        this.dispatcher.broadcast('vector.setLoaderStrategy', { strategy, source: this.id });
+    updateWorkerConfig(config) {
+        const lang = config.LOCALIZED_NAMES && getLanguage();
+        this.dispatcher.broadcast('vector.updateConfig', {
+            lang,
+            strategy: config.SOURCE_LOADER_STRATEGY,
+            source: this.id
+        });
     }
 }
 

@@ -44,6 +44,7 @@ class VectorTileWorkerSource {
         this.loading = {};
         this.loaded = {};
         this.strategies = {};
+        this.lang = false;
     }
 
     /**
@@ -71,7 +72,7 @@ class VectorTileWorkerSource {
             if (response.cacheControl) cacheControl.cacheControl = response.cacheControl;
 
             workerTile.vectorTile = response.vectorTile;
-            workerTile.parse(response.vectorTile, this.layerIndex, this.actor, (err, result) => {
+            workerTile.parse(response.vectorTile, this.layerIndex, this.actor, this.lang, (err, result) => {
                 if (err || !result) return callback(err);
 
                 // Transferring a copy of rawTileData because the worker needs to retain its copy.
@@ -98,7 +99,7 @@ class VectorTileWorkerSource {
                 const reloadCallback = workerTile.reloadCallback;
                 if (reloadCallback) {
                     delete workerTile.reloadCallback;
-                    workerTile.parse(workerTile.vectorTile, vtSource.layerIndex, vtSource.actor, reloadCallback);
+                    workerTile.parse(workerTile.vectorTile, vtSource.layerIndex, vtSource.actor, this.lang, reloadCallback);
                 }
                 callback(err, data);
             };
@@ -106,7 +107,7 @@ class VectorTileWorkerSource {
             if (workerTile.status === 'parsing') {
                 workerTile.reloadCallback = done;
             } else if (workerTile.status === 'done') {
-                workerTile.parse(workerTile.vectorTile, this.layerIndex, this.actor, done);
+                workerTile.parse(workerTile.vectorTile, this.layerIndex, this.actor, this.lang, done);
             }
         }
     }
@@ -142,8 +143,9 @@ class VectorTileWorkerSource {
         callback();
     }
 
-    setLoaderStrategy({ strategy }) {
+    updateConfig({ strategy, lang }) {
         this.strategies = strategy;
+        this.lang = lang;
     }
 }
 

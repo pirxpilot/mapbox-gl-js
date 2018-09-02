@@ -28,9 +28,10 @@ class WorkerTile {
         this.source = params.source;
         this.overscaling = this.tileID.overscaleFactor();
         this.showCollisionBoxes = params.showCollisionBoxes;
+        this.lang = params.lang;
     }
 
-    parse(data, layerIndex, actor, callback) {
+    parse(data, layerIndex, actor, lang, callback) {
         this.status = 'parsing';
         this.data = data;
 
@@ -43,7 +44,8 @@ class WorkerTile {
         const buckets = {};
 
         const options = {
-            featureIndex: featureIndex,
+            lang,
+            featureIndex,
             iconDependencies: {},
             glyphDependencies: {}
         };
