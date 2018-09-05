@@ -16,6 +16,11 @@ const config = new Evented();
 
 config.set = function set(c) {
     Object.assign(config, c);
+    config.notify();
+};
+
+
+config.notify = function() {
     config.fire('change', config);
 };
 
@@ -24,7 +29,9 @@ config.set({
     WORKER_COUNT: getDefaultWorkerCount(),
     WORKER_URL: '',
     LOADER_STRATEGY: 'network-only',
-    TILE_LOADER_STRATEGY: 'network-only'
+    SOURCE_LOADER_STRATEGY: {
+        '*': 'network-only'
+    }
 });
 
 module.exports = config;

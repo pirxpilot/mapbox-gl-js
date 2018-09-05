@@ -11,20 +11,12 @@ const strategies = {
     'cache-only': cacheOnly,
     'cache-first': cacheFirst,
     'network-then-cache': networkThenCache,
-    'cache-first-then-cache': cacheFirstThenCache
+    'cache-first-then-cache': cacheFirstThenCache,
+    'do-nothing': doNothing
 };
 
 function selectStrategy(strategy = 'network-only') {
-    return remapStrategy.bind(undefined,
-        strategies[strategy] || strategies['network-only']);
-}
-
-// don't cache custom tiles
-function remapStrategy(strategy, params, fn) {
-    if (params.source && params.source !== 'tiles') {
-        strategy = strategy === cacheOnly ? doNothing : networkOnly;
-    }
-    return strategy(params, fn);
+    return strategies[strategy] || networkOnly;
 }
 
 function networkOnly({ request: { url }, _ilk }, fn) {

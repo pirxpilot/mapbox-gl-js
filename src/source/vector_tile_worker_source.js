@@ -6,8 +6,9 @@ const Protobuf = require('pbf');
 const WorkerTile = require('./worker_tile');
 
 function loadVectorTile(params, callback) {
-    const { loader } = this;
-    return loader(params, done);
+    const { strategies } = this;
+    const load = loader(strategies[params.source] || strategies['*']);
+    return load(params, done);
     function done(err, { data, cacheControl, expires } = {}) {
         if (err) return callback(err);
         callback(err, {
@@ -42,7 +43,7 @@ class VectorTileWorkerSource {
         this.loadVectorData = loadVectorData || loadVectorTile.bind(this);
         this.loading = {};
         this.loaded = {};
-        this.loader = loader();
+        this.strategies = {};
     }
 
     /**
@@ -142,7 +143,7 @@ class VectorTileWorkerSource {
     }
 
     setLoaderStrategy({ strategy }) {
-        this.loader = loader(strategy);
+        this.strategies = strategy;
     }
 }
 
