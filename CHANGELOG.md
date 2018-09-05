@@ -1,4 +1,10 @@
 
+0.45.12 / 2018-09-05
+====================
+
+ * allow configuring loader strategies per source
+ * fix 'localStorage is not available for opaque origins' error in tests
+
 0.45.11 / 2018-08-26
 ====================
 
