@@ -26,6 +26,7 @@ config.notify = function() {
 
 config.set({
     BASE_URL: getBaseUri(),
+    LOCALIZED_NAMES: true,
     WORKER_COUNT: getDefaultWorkerCount(),
     WORKER_URL: '',
     LOADER_STRATEGY: 'network-only',

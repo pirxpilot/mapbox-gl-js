@@ -39,3 +39,24 @@ test('resolveToken', (t) => {
 
     t.end();
 });
+
+test('resolveToken with language', (t) => {
+    const properties = {
+        'a': 100,
+        'a:pl': 200,
+        'name': 'Warsaw',
+        'name:pl': 'Warszawa',
+        'name_fr': 'Varsovie'
+    };
+    // takes language into account for name
+    t.equal('Warsaw', resolveTokens(properties, '{name}'));
+    t.equal('Warsaw', resolveTokens(properties, '{name}', 'en'));
+    t.equal('Warszawa', resolveTokens(properties, '{name}', 'pl'));
+    t.equal('Varsovie', resolveTokens(properties, '{name}', 'fr'));
+
+    // ignores language for other properties
+    t.equal('100', resolveTokens(properties, '{a}'));
+    t.equal('100', resolveTokens(properties, '{a}', 'pl'));
+
+    t.end();
+});

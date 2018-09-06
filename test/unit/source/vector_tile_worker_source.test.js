@@ -61,7 +61,7 @@ test('VectorTileWorkerSource#reloadTile reloads a previously-loaded tile', (t) =
     source.reloadTile({ uid: 0 }, callback);
     t.equal(parse.callCount, 1);
 
-    parse.firstCall.args[3]();
+    parse.firstCall.args[4]();
     t.equal(callback.callCount, 1);
 
     t.end();
@@ -87,12 +87,12 @@ test('VectorTileWorkerSource#reloadTile queues a reload when parsing is in progr
     source.reloadTile({ uid: 0 }, callback2);
     t.equal(parse.callCount, 1);
 
-    parse.firstCall.args[3]();
+    parse.firstCall.args[4]();
     t.equal(parse.callCount, 2);
     t.equal(callback1.callCount, 1);
     t.equal(callback2.callCount, 0);
 
-    parse.secondCall.args[3]();
+    parse.secondCall.args[4]();
     t.equal(callback1.callCount, 1);
     t.equal(callback2.callCount, 1);
 
@@ -121,7 +121,7 @@ test('VectorTileWorkerSource#reloadTile handles multiple pending reloads', (t) =
     source.reloadTile({ uid: 0 }, callback2);
     t.equal(parse.callCount, 1);
 
-    parse.firstCall.args[3]();
+    parse.firstCall.args[4]();
     t.equal(parse.callCount, 2);
     t.equal(callback1.callCount, 1);
     t.equal(callback2.callCount, 0);
@@ -133,13 +133,13 @@ test('VectorTileWorkerSource#reloadTile handles multiple pending reloads', (t) =
     t.equal(callback2.callCount, 0);
     t.equal(callback3.callCount, 0);
 
-    parse.secondCall.args[3]();
+    parse.secondCall.args[4]();
     t.equal(parse.callCount, 3);
     t.equal(callback1.callCount, 1);
     t.equal(callback2.callCount, 1);
     t.equal(callback3.callCount, 0);
 
-    parse.thirdCall.args[3]();
+    parse.thirdCall.args[4]();
     t.equal(callback1.callCount, 1);
     t.equal(callback2.callCount, 1);
     t.equal(callback3.callCount, 1);
