@@ -1,4 +1,10 @@
 
+0.45.13 / 2018-09-06
+====================
+
+ * add support for displaying localized names
+ * add support for language in resolveToken
+
 0.45.12 / 2018-09-05
 ====================
 
