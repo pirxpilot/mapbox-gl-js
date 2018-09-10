@@ -2,6 +2,7 @@ const Texture = require('./texture');
 const Color = require('../style-spec/util/color');
 const DepthMode = require('../gl/depth_mode');
 const StencilMode = require('../gl/stencil_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const {
   fillExtrusionUniformValues,
   fillExtrusionPatternUniformValues,
@@ -75,6 +76,7 @@ function drawExtrusionTexture(painter, layer) {
       DepthMode.disabled,
       StencilMode.disabled,
       painter.colorModeForRenderPass(),
+      CullFaceMode.disabled,
       extrusionTextureUniformValues(painter, layer, 0),
       layer.id,
       painter.viewportBuffer,
@@ -131,6 +133,7 @@ function drawExtrusionTiles(painter, source, layer, coords, depthMode, stencilMo
       depthMode,
       stencilMode,
       colorMode,
+      CullFaceMode.backCCW,
       uniformValues,
       layer.id,
       bucket.layoutVertexBuffer,

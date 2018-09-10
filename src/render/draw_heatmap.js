@@ -3,6 +3,7 @@ const Color = require('../style-spec/util/color');
 const DepthMode = require('../gl/depth_mode');
 const StencilMode = require('../gl/stencil_mode');
 const ColorMode = require('../gl/color_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const { heatmapUniformValues, heatmapTextureUniformValues } = require('./program/heatmap_program');
 
 module.exports = drawHeatmap;
@@ -49,6 +50,7 @@ function drawHeatmap(painter, sourceCache, layer, coords) {
         depthMode,
         stencilMode,
         colorMode,
+        CullFaceMode.disabled,
         heatmapUniformValues(coord.posMatrix, tile, zoom, layer.paint.get('heatmap-intensity')),
         layer.id,
         bucket.layoutVertexBuffer,
@@ -145,6 +147,7 @@ function renderTextureToMap(painter, layer) {
       DepthMode.disabled,
       StencilMode.disabled,
       painter.colorModeForRenderPass(),
+      CullFaceMode.disabled,
       heatmapTextureUniformValues(painter, layer, 0, 1),
       layer.id,
       painter.viewportBuffer,

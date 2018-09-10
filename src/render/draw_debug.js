@@ -6,6 +6,7 @@ const posAttributes = require('../data/pos_attributes');
 const SegmentVector = require('../data/segment');
 const DepthMode = require('../gl/depth_mode');
 const StencilMode = require('../gl/stencil_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const { debugUniformValues } = require('./program/debug_program');
 const Color = require('../style-spec/util/color');
 
@@ -35,6 +36,7 @@ function drawDebugTile(painter, sourceCache, coord) {
     depthMode,
     stencilMode,
     colorMode,
+    CullFaceMode.disabled,
     debugUniformValues(posMatrix, Color.red),
     id,
     painter.debugBuffer,
@@ -75,6 +77,7 @@ function drawDebugTile(painter, sourceCache, coord) {
       depthMode,
       stencilMode,
       colorMode,
+      CullFaceMode.disabled,
       debugUniformValues(
         mat4.translate([], posMatrix, [onePixel * translation[0], onePixel * translation[1], 0]),
         Color.white
@@ -92,6 +95,7 @@ function drawDebugTile(painter, sourceCache, coord) {
     depthMode,
     stencilMode,
     colorMode,
+    CullFaceMode.disabled,
     debugUniformValues(posMatrix, Color.black),
     id,
     debugTextBuffer,

@@ -9,6 +9,7 @@ const properties = require('../style/style_layer/symbol_style_layer_properties')
 const symbolLayoutProperties = properties.layout;
 const StencilMode = require('../gl/stencil_mode');
 const DepthMode = require('../gl/depth_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const { symbolIconUniformValues, symbolSDFUniformValues } = require('./program/symbol_program');
 
 module.exports = drawSymbols;
@@ -215,6 +216,7 @@ function drawSymbolElements(buffers, layer, painter, program, depthMode, stencil
     depthMode,
     stencilMode,
     colorMode,
+    CullFaceMode.disabled,
     uniformValues,
     layer.id,
     buffers.layoutVertexBuffer,

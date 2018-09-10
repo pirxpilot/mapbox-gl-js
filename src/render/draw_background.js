@@ -1,5 +1,6 @@
 const StencilMode = require('../gl/stencil_mode');
 const DepthMode = require('../gl/depth_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const { backgroundUniformValues, backgroundPatternUniformValues } = require('./program/background_program');
 
 module.exports = drawBackground;
@@ -47,6 +48,7 @@ function drawBackground(painter, sourceCache, layer) {
       depthMode,
       stencilMode,
       colorMode,
+      CullFaceMode.disabled,
       uniformValues,
       layer.id,
       painter.tileExtentBuffer,

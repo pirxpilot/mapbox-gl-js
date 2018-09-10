@@ -1,5 +1,6 @@
 const Color = require('../style-spec/util/color');
 const DepthMode = require('../gl/depth_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const {
   fillUniformValues,
   fillPatternUniformValues,
@@ -125,6 +126,7 @@ function drawFillTiles(painter, sourceCache, layer, coords, depthMode, colorMode
       depthMode,
       painter.stencilModeForClipping(coord),
       colorMode,
+      CullFaceMode.disabled,
       uniformValues,
       layer.id,
       bucket.layoutVertexBuffer,

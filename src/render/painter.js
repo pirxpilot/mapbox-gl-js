@@ -17,6 +17,7 @@ const Context = require('../gl/context');
 const DepthMode = require('../gl/depth_mode');
 const StencilMode = require('../gl/stencil_mode');
 const ColorMode = require('../gl/color_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const updateTileMasks = require('./tile_mask');
 const { clippingMaskUniformValues } = require('./program/clipping_mask_program');
 const Color = require('../style-spec/util/color');
@@ -168,6 +169,7 @@ class Painter {
       DepthMode.disabled,
       this.stencilClearMode,
       ColorMode.disabled,
+      CullFaceMode.disabled,
       clippingMaskUniformValues(matrix),
       '$clipping',
       this.viewportBuffer,
@@ -198,6 +200,7 @@ class Painter {
         // Tests will always pass, and ref value will be written to stencil buffer.
         new StencilMode({ func: gl.ALWAYS, mask: 0 }, id, 0xff, gl.KEEP, gl.KEEP, gl.REPLACE),
         ColorMode.disabled,
+        CullFaceMode.disabled,
         clippingMaskUniformValues(tileID.posMatrix),
         '$clipping',
         this.tileExtentBuffer,

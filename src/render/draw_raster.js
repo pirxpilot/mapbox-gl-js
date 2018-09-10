@@ -4,6 +4,7 @@ const ImageSource = require('../source/image_source');
 const browser = require('../util/browser');
 const StencilMode = require('../gl/stencil_mode');
 const DepthMode = require('../gl/depth_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const { rasterUniformValues } = require('./program/raster_program');
 
 module.exports = drawRaster;
@@ -65,6 +66,7 @@ function drawRaster(painter, sourceCache, layer, coords) {
         depthMode,
         stencilMode,
         colorMode,
+        CullFaceMode.disabled,
         uniformValues,
         layer.id,
         source.boundsBuffer,
@@ -78,6 +80,7 @@ function drawRaster(painter, sourceCache, layer, coords) {
         depthMode,
         stencilMode,
         colorMode,
+        CullFaceMode.disabled,
         uniformValues,
         layer.id,
         tile.maskedBoundsBuffer,
@@ -93,6 +96,7 @@ function drawRaster(painter, sourceCache, layer, coords) {
         depthMode,
         stencilMode,
         colorMode,
+        CullFaceMode.disabled,
         uniformValues,
         layer.id,
         painter.rasterBoundsBuffer,

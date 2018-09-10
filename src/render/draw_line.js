@@ -1,5 +1,6 @@
 const DepthMode = require('../gl/depth_mode');
 const Texture = require('./texture');
+const CullFaceMode = require('../gl/cull_face_mode');
 const {
   lineUniformValues,
   linePatternUniformValues,
@@ -81,6 +82,7 @@ module.exports = function drawLine(painter, sourceCache, layer, coords) {
       depthMode,
       painter.stencilModeForClipping(coord),
       colorMode,
+      CullFaceMode.disabled,
       uniformValues,
       layer.id,
       bucket.layoutVertexBuffer,
