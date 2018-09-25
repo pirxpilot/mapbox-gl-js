@@ -45,6 +45,11 @@ const paint = new Properties({
     default: 0,
     transition: true,
     expression: { interpolated: true, parameters: ['zoom', 'feature'] }
+  }),
+  'fill-extrusion-vertical-gradient': new DataConstantProperty({
+    type: 'boolean',
+    default: true,
+    expression: { parameters: ['zoom'] }
   })
 });
 

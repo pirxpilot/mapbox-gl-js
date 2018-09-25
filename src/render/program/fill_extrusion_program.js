@@ -7,7 +7,8 @@ const fillExtrusionUniforms = (context, locations) => ({
   u_matrix: new UniformMatrix4f(context, locations.u_matrix),
   u_lightpos: new Uniform3f(context, locations.u_lightpos),
   u_lightintensity: new Uniform1f(context, locations.u_lightintensity),
-  u_lightcolor: new Uniform3f(context, locations.u_lightcolor)
+  u_lightcolor: new Uniform3f(context, locations.u_lightcolor),
+  u_vertical_gradient: new Uniform1f(context, locations.u_vertical_gradient)
 });
 
 const fillExtrusionPatternUniforms = (context, locations) => ({
@@ -15,6 +16,7 @@ const fillExtrusionPatternUniforms = (context, locations) => ({
   u_lightpos: new Uniform3f(context, locations.u_lightpos),
   u_lightintensity: new Uniform1f(context, locations.u_lightintensity),
   u_lightcolor: new Uniform3f(context, locations.u_lightcolor),
+  u_vertical_gradient: new Uniform1f(context, locations.u_vertical_gradient),
   u_height_factor: new Uniform1f(context, locations.u_height_factor),
   u_image: new Uniform1i(context, locations.u_image),
   u_texsize: new Uniform2f(context, locations.u_texsize),
@@ -31,7 +33,7 @@ const extrusionTextureUniforms = (context, locations) => ({
   u_opacity: new Uniform1f(context, locations.u_opacity)
 });
 
-const fillExtrusionUniformValues = (matrix, painter) => {
+const fillExtrusionUniformValues = (matrix, painter, shouldUseVerticalGradient) => {
   const light = painter.style.light;
   const _lp = light.properties.get('position');
   const lightPos = [_lp.x, _lp.y, _lp.z];
@@ -47,14 +49,19 @@ const fillExtrusionUniformValues = (matrix, painter) => {
     u_matrix: matrix,
     u_lightpos: lightPos,
     u_lightintensity: light.properties.get('intensity'),
-    u_lightcolor: [lightColor.r, lightColor.g, lightColor.b]
+    u_lightcolor: [lightColor.r, lightColor.g, lightColor.b],
+    u_vertical_gradient: +shouldUseVerticalGradient
   };
 };
 
-const fillExtrusionPatternUniformValues = (matrix, painter, coord, crossfade, tile) => {
-  return Object.assign(fillExtrusionUniformValues(matrix, painter), patternUniformValues(crossfade, painter, tile), {
-    u_height_factor: -(2 ** coord.overscaledZ) / tile.tileSize / 8
-  });
+const fillExtrusionPatternUniformValues = (matrix, painter, shouldUseVerticalGradient, coord, crossfade, tile) => {
+  return Object.assign(
+    fillExtrusionUniformValues(matrix, painter, shouldUseVerticalGradient),
+    patternUniformValues(crossfade, painter, tile),
+    {
+      u_height_factor: -(2 ** coord.overscaledZ) / tile.tileSize / 8
+    }
+  );
 };
 
 const extrusionTextureUniformValues = (painter, layer, textureUnit) => {
