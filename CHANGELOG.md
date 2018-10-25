@@ -1,4 +1,21 @@
 
+0.45.14 / 2018-10-25
+====================
+
+ * Workaround for failure to clear depth buffer on some Android devices. Fixes issue #3437.
+ * better serialization for constant binders
+ * rename statistics.max to maxValue
+ * remove leftovers from symbolInstance
+ * improve serialization format for smaller payload
+ * avoid expensive resizing in image/glyph atlases (#7091)
+ * Stop unnecessary serialization of symbol source features. (#7013)
+ * Introduce symbol cross fading when crossing integer zoom levels.
+ * Fix issue #6919: bring gl-js collision handling closer to gl-native
+ * "collision group" -> "cross source collisions" conversion:
+ * Make GridIndex query calls take an optional predicate that can filter against the content of keys.
+ * Remove icon/text-collision-group from style spec. Re-implement basic collision group support based on a global "crossSourceCollisions" map option that replicates pre-#5150 behavior. Render tests maintain the same structure/results, but are now based on grouping-by-source.
+ * Introduce "collision groups": collision detection happens within groups but not between them.
+
 0.45.13 / 2018-09-06
 ====================
 
