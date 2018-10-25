@@ -38,15 +38,15 @@ function register(name, klass, options = {}) {
 register('Object', Object);
 
 Grid.serialize = function serializeGrid(grid, transferables) {
-    const ab = grid.toArrayBuffer();
+    const buffer = grid.toArrayBuffer();
     if (transferables) {
-        transferables.push(ab);
+        transferables.push(buffer);
     }
-    return ab;
+    return {buffer};
 };
 
 Grid.deserialize = function deserializeGrid(serialized) {
-    return new Grid(serialized);
+    return new Grid(serialized.buffer);
 };
 register('Grid', Grid);
 
@@ -130,9 +130,7 @@ function serialize(input, transferables) {
         }
         assert(registry[name]);
 
-        const properties = {};
-
-        if (klass.serialize) {
+        const properties = klass.serialize ?
             // (Temporary workaround) allow a class to provide static
             // `serialize()` and `deserialize()` methods to bypass the generic
             // approach.
@@ -140,8 +138,9 @@ function serialize(input, transferables) {
             // approach for objects whose members include instances of dynamic
             // StructArray types. Once we refactor StructArray to be static,
             // we can remove this complexity.
-            properties._serialized = (klass.serialize)(input, transferables);
-        } else {
+            (klass.serialize(input, transferables)) : {};
+
+        if (!klass.serialize) {
             for (const key in input) {
                 // any cast due to https://github.com/facebook/flow/issues/5393
                 if (!(input).hasOwnProperty(key)) continue;
@@ -151,13 +150,22 @@ function serialize(input, transferables) {
                     property :
                     serialize(property, transferables);
             }
-
             if (input instanceof Error) {
                 properties.message = input.message;
             }
+        } else {
+            // make sure statically serialized object survives transfer of $name property
+            assert(!transferables || properties !== transferables[transferables.length - 1]);
         }
 
-        return {name, properties};
+        if (properties.$name) {
+            throw new Error('$name property is reserved for worker serialization logic.');
+        }
+        if (name !== 'Object') {
+            properties.$name = name;
+        }
+
+        return properties;
     }
 
     throw new Error(`can't serialize object of type ${typeof input}`);
@@ -181,14 +189,11 @@ function deserialize(input) {
     }
 
     if (Array.isArray(input)) {
-        return input.map((i) => deserialize(i));
+        return input.map(deserialize);
     }
 
     if (typeof input === 'object') {
-        const {name, properties} = (input);
-        if (!name) {
-            throw new Error(`can't deserialize object of anonymous class`);
-        }
+        const name = input.$name || 'Object';
 
         const {klass} = registry[name];
         if (!klass) {
@@ -196,14 +201,15 @@ function deserialize(input) {
         }
 
         if (klass.deserialize) {
-            return (klass.deserialize)(properties._serialized);
+            return klass.deserialize(input);
         }
 
         const result = Object.create(klass.prototype);
 
-        for (const key of Object.keys(properties)) {
-            result[key] = registry[name].shallow.indexOf(key) >= 0 ?
-                properties[key] : deserialize(properties[key]);
+        for (const key of Object.keys(input)) {
+            if (key === '$name') continue;
+            const value = input[key];
+            result[key] = registry[name].shallow.indexOf(key) >= 0 ? value : deserialize(value);
         }
 
         return result;

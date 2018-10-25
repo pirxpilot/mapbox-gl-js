@@ -837,7 +837,7 @@ class Style extends Evented {
         }
     }
 
-    _updatePlacement(transform, showCollisionBoxes, fadeDuration) {
+    _updatePlacement(transform, showCollisionBoxes, fadeDuration, crossSourceCollisions) {
         let symbolBucketsChanged = false;
         let placementCommitted = false;
 
@@ -849,7 +849,7 @@ class Style extends Evented {
 
             if (!layerTiles[styleLayer.source]) {
                 const sourceCache = this.sourceCaches[styleLayer.source];
-                layerTiles[styleLayer.source] = sourceCache.getRenderableIds()
+                layerTiles[styleLayer.source] = sourceCache.getRenderableIds(true)
                     .map((id) => sourceCache.getTileByID(id))
                     .sort((a, b) => (b.tileID.overscaledZ - a.tileID.overscaledZ) || (a.tileID.isLessThan(b.tileID) ? -1 : 1));
             }
@@ -866,7 +866,7 @@ class Style extends Evented {
         const forceFullPlacement = this._layerOrderChanged;
 
         if (forceFullPlacement || !this.pauseablePlacement || (this.pauseablePlacement.isDone() && !this.placement.stillRecent(browser.now()))) {
-            this.pauseablePlacement = new PauseablePlacement(transform, this._order, forceFullPlacement, showCollisionBoxes, fadeDuration);
+            this.pauseablePlacement = new PauseablePlacement(transform, this._order, forceFullPlacement, showCollisionBoxes, fadeDuration, crossSourceCollisions);
             this._layerOrderChanged = false;
         }
 
@@ -903,6 +903,12 @@ class Style extends Evented {
         // needsRender is false when we have just finished a placement that didn't change the visibility of any symbols
         const needsRerender = !this.pauseablePlacement.isDone() || this.placement.hasTransitions(browser.now());
         return needsRerender;
+    }
+
+    _releaseSymbolFadeTiles() {
+        for (const id in this.sourceCaches) {
+            this.sourceCaches[id].releaseSymbolFadeTiles();
+        }
     }
 
     // Callbacks from web workers

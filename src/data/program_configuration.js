@@ -2,7 +2,7 @@
 
 const { packUint8ToFloat } = require('../shaders/encode_attribute');
 const { supportsPropertyExpression } = require('../style-spec/util/properties');
-const { register } = require('../util/web_worker_transfer');
+const { register, serialize, deserialize } = require('../util/web_worker_transfer');
 const { PossiblyEvaluatedPropertyValue } = require('../style/properties');
 const { StructArrayLayout1f4, StructArrayLayout2f8, StructArrayLayout4f16 } = require('./array_types');
 const EvaluationParameters = require('../style/evaluation_parameters');
@@ -47,7 +47,7 @@ class ConstantBinder {
         this.value = value;
         this.name = name;
         this.type = type;
-        this.statistics = { max: -Infinity };
+        this.maxValue = -Infinity;
     }
 
     defines() {
@@ -71,6 +71,16 @@ class ConstantBinder {
             gl.uniform1f(program.uniforms[`u_${this.name}`], value);
         }
     }
+
+    static serialize(binder) {
+        const {value, name, type} = binder;
+        return {value: serialize(value), name, type};
+    }
+
+    static deserialize(serialized) {
+        const {value, name, type} = serialized;
+        return new ConstantBinder(deserialize(value), name, type);
+    }
 }
 
 class SourceExpressionBinder {
@@ -80,7 +90,7 @@ class SourceExpressionBinder {
         this.expression = expression;
         this.name = name;
         this.type = type;
-        this.statistics = { max: -Infinity };
+        this.maxValue = -Infinity;
         const PaintVertexArray = type === 'color' ? StructArrayLayout2f8 : StructArrayLayout1f4;
         this.paintVertexAttributes = [{
             name: `a_${name}`,
@@ -113,7 +123,7 @@ class SourceExpressionBinder {
                 paintArray.emplaceBack(value);
             }
 
-            this.statistics.max = Math.max(this.statistics.max, value);
+            this.maxValue = Math.max(this.maxValue, value);
         }
     }
 
@@ -131,7 +141,7 @@ class SourceExpressionBinder {
                 paintArray.emplace(i, value);
             }
 
-            this.statistics.max = Math.max(this.statistics.max, value);
+            this.maxValue = Math.max(this.maxValue, value);
         }
     }
 
@@ -161,7 +171,7 @@ class CompositeExpressionBinder {
         this.type = type;
         this.useIntegerZoom = useIntegerZoom;
         this.zoom = zoom;
-        this.statistics = { max: -Infinity };
+        this.maxValue = -Infinity;
         const PaintVertexArray = type === 'color' ? StructArrayLayout4f16 : StructArrayLayout2f8;
         this.paintVertexAttributes = [{
             name: `a_${name}`,
@@ -195,8 +205,7 @@ class CompositeExpressionBinder {
             for (let i = start; i < newLength; i++) {
                 paintArray.emplaceBack(min, max);
             }
-
-            this.statistics.max = Math.max(this.statistics.max, min, max);
+            this.maxValue = Math.max(this.maxValue, min, max);
         }
     }
 
@@ -216,8 +225,7 @@ class CompositeExpressionBinder {
             for (let i = start; i < end; i++) {
                 paintArray.emplace(i, min, max);
             }
-
-            this.statistics.max = Math.max(this.statistics.max, min, max);
+            this.maxValue = Math.max(this.maxValue, min, max);
         }
     }
 
@@ -292,7 +300,7 @@ class ProgramConfiguration {
             const useIntegerZoom = value.property.useIntegerZoom;
 
             if (value.value.kind === 'constant') {
-                self.binders[property] = new ConstantBinder(value.value, name, type);
+                self.binders[property] = new ConstantBinder(value.value.value, name, type);
                 keys.push(`/u_${name}`);
             } else if (value.value.kind === 'source') {
                 self.binders[property] = new SourceExpressionBinder(value.value, name, type);

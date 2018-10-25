@@ -58,11 +58,11 @@ test('custom serialization', (t) => {
         }
 
         static serialize(b) {
-            return `custom serialization,${b.id}`;
+            return {foo: `custom serialization,${b.id}`};
         }
 
         static deserialize(input) {
-            const b = new Bar((input).split(',')[1]);
+            const b = new Bar(input.foo.split(',')[1]);
             b._deserialized = true;
             return b;
         }

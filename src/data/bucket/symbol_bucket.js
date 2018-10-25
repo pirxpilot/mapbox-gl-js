@@ -176,6 +176,8 @@ class SymbolBucket {
         const layout = this.layers[0].layout;
         this.sortFeaturesByY = layout.get('text-allow-overlap') || layout.get('icon-allow-overlap') ||
             layout.get('text-ignore-placement') || layout.get('icon-ignore-placement');
+
+        this.sourceID = options.sourceID;
     }
 
     createArrays() {

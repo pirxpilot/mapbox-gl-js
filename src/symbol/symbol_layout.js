@@ -4,7 +4,6 @@ const Anchor = require('./anchor');
 
 const getAnchors = require('./get_anchors');
 const clipLine = require('./clip_line');
-const OpacityState = require('./opacity_state');
 const { shapeText, shapeIcon, WritingMode } = require('./shaping');
 const { getGlyphQuads, getIconQuads } = require('./quads');
 const CollisionFeature = require('./collision_feature');
@@ -375,27 +374,17 @@ function addSymbol(bucket,
         "Too many glyphs being rendered in a tile. See https://github.com/mapbox/mapbox-gl-js/issues/2907"
     );
 
-    const textOpacityState = new OpacityState();
-    const iconOpacityState = new OpacityState();
-
     return {
         key,
         textBoxStartIndex,
         textBoxEndIndex,
         iconBoxStartIndex,
         iconBoxEndIndex,
-        textOffset,
-        iconOffset,
         anchor,
-        line,
         featureIndex,
-        feature,
         numGlyphVertices,
         numVerticalGlyphVertices,
         numIconVertices,
-        textOpacityState,
-        iconOpacityState,
-        isDuplicate: false,
         placedTextSymbolIndices,
         crossTileID: 0
     };
