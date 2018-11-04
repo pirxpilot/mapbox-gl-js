@@ -31,12 +31,14 @@ const vector = require('../source/vector_tile_source');
 const raster = require('../source/raster_tile_source');
 const rasterDem = require('../source/raster_dem_tile_source');
 const geojson = require('../source/geojson_source');
+const image = require('../source/image_source');
 
 const sourceTypes = {
     vector,
     raster,
     'raster-dem': rasterDem,
-    geojson
+    geojson,
+    image
 };
 
 /*
