@@ -1,8 +1,9 @@
 'use strict';
 
+const config = require('../util/config');
 const { pick } = require('../util/object');
-
-const loadImage = require('../util/loader/image');
+const loader = require('../util/loader');
+const { load: loadImage } = require('../util/loader/image');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 const loadTileJSON = require('./load_tilejson');
 const { normalizeURL } = require('../util/urls');
@@ -64,8 +65,7 @@ class RasterTileSource extends Evented {
     }
 
     loadTile(tile, callback) {
-        const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url, this.tileSize);
-        tile.request = loadImage(url, (err, img) => {
+        const done = (err, img) => {
             delete tile.request;
 
             if (tile.aborted) {
@@ -97,7 +97,11 @@ class RasterTileSource extends Evented {
 
                 callback(null);
             }
-        });
+        };
+        const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url, this.tileSize);
+        const strategies = config.SOURCE_LOADER_STRATEGY;
+        const load = loader(strategies[this.id] || strategies['*']);
+        tile.request = loadImage(load, url, done);
     }
 
     abortTile(tile, callback) {

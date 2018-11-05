@@ -5,10 +5,9 @@ const loader = require('./index');
 const window = require('../window');
 
 module.exports = image;
+module.exports.load = loadImage;
 
-function image(url, fn) {
-    const load = loader(config.LOADER_STRATEGY);
-
+function loadImage(load, url, fn) {
     load({ request: { url }, _ilk: 'image' }, done);
 
     function done(err, data) {
@@ -19,6 +18,11 @@ function image(url, fn) {
             imageFromData(data, fn);
         }
     }
+}
+
+function image(url, fn) {
+    const load = loader(config.LOADER_STRATEGY);
+    loadImage(load, url, fn);
 }
 
 function imageFromData(imgData, fn) {
