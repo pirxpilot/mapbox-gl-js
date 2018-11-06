@@ -154,6 +154,12 @@ class Tile {
         this.state = 'unloaded';
     }
 
+    unloadDEMData() {
+        this.dem = null;
+        this.neighboringTiles = null;
+        this.state = 'unloaded';
+    }
+
     getBucket(layer) {
         return this.buckets[layer.id];
     }

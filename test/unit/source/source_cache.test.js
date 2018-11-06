@@ -573,7 +573,7 @@ test('SourceCache#update', (t) => {
             }
         });
 
-        sourceCache._source.type = 'image';
+        sourceCache._source.type = 'raster';
 
         sourceCache.on('data', (e) => {
             if (e.sourceDataType === 'metadata') {
@@ -609,7 +609,7 @@ test('SourceCache#update', (t) => {
             }
         });
 
-        sourceCache._source.type = 'image';
+        sourceCache._source.type = 'raster';
 
         sourceCache.on('data', (e) => {
             if (e.sourceDataType === 'metadata') {
@@ -643,7 +643,7 @@ test('SourceCache#update', (t) => {
             }
         });
 
-        sourceCache._source.type = 'image';
+        sourceCache._source.type = 'raster';
 
         sourceCache.on('data', (e) => {
             if (e.sourceDataType === 'metadata') {
@@ -680,7 +680,7 @@ test('SourceCache#update', (t) => {
             }
         });
 
-        sourceCache._source.type = 'image';
+        sourceCache._source.type = 'raster';
 
         sourceCache.on('data', (e) => {
             if (e.sourceDataType === 'metadata') {
