@@ -1,4 +1,14 @@
 
+0.45.15 / 2018-11-05
+====================
+
+ * add loader strategy to raster tile source
+ * Revert "remove image source"
+ * remove Level subclass of DEMData to match native (#7021)
+ * Revert "disable raster, hillshade and debug layer in painter"
+ * Revert "remove support for DEM data"
+ * Revert "remove raster tile and raster DEM tile sources"
+
 0.45.14 / 2018-10-25
 ====================
 
