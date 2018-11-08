@@ -7,7 +7,6 @@ const LngLat = require('../geo/lng_lat');
 const Point = require('@mapbox/point-geometry');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 const loadImage = require('../util/loader/image');
-const browser = require('../util/browser');
 const EXTENT = require('../data/extent');
 const { RasterBoundsArray } = require('../data/array_types');
 const rasterBoundsAttributes = require('../data/raster_bounds_attributes');
@@ -76,7 +75,7 @@ class ImageSource extends Evented {
             if (err) {
                 this.fire(new ErrorEvent(err));
             } else if (image) {
-                this.image = browser.getImageData(image);
+                this.image = image;
                 this._finishLoading();
             }
         });
