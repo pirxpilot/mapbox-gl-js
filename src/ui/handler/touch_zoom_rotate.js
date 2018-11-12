@@ -51,7 +51,10 @@ function makeMovement(map, { rotationDisabled, aroundCenter }, e) {
 
         if (!gestureIntent) {
             const scale =  vector.mag() / startVector.mag();
-            if (Math.abs(1 - scale) > SIGNIFICANT_SCALE_THRESHOLD) {
+            if (rotationDisabled && scale !== 1) {
+                // when rotation is disabled, any scale change triggers the zoom gesture to start
+                gestureIntent = 'zoom';
+            } else if (Math.abs(1 - scale) > SIGNIFICANT_SCALE_THRESHOLD) {
                 gestureIntent = 'zoom';
             }
         }
