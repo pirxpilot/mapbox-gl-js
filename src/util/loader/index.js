@@ -15,6 +15,9 @@ const strategies = {
     'do-nothing': doNothing
 };
 
+const DO_NOTHING_ERROR = new Error('do-nothing');
+DO_NOTHING_ERROR.doNothing = true;
+
 function selectStrategy(strategy = 'network-only') {
     return strategies[strategy] || networkOnly;
 }
@@ -63,7 +66,7 @@ function cacheOnSuccessFn(params, fn) {
 
 function doNothing(params, fn) {
     let aborted = false;
-    setTimeout(() => aborted || fn('no cache'), 0);
+    setTimeout(() => aborted || fn(DO_NOTHING_ERROR), 0);
     return () => { aborted = true; };
 }
 

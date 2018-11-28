@@ -1,7 +1,6 @@
 'use strict';
 
 const { create: createSource } = require('./source');
-
 const Tile = require('./tile');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 const TileCache = require('./tile_cache');
@@ -13,7 +12,6 @@ const browser = require('../util/browser');
 const { OverscaledTileID } = require('./tile_id');
 const assert = require('assert');
 const SourceFeatureState = require('./source_state');
-
 
 /**
  * `SourceCache` is responsible for
@@ -218,7 +216,9 @@ class SourceCache extends Evented {
     _tileLoaded(tile, id, previousState, err) {
         if (err) {
             tile.state = 'errored';
-            if ((err).status !== 404) this._source.fire(new ErrorEvent(err, {tile}));
+            // ignore do nothing strategy
+            if (err.doNothing) return;
+            if (err.status !== 404) this._source.fire(new ErrorEvent(err, {tile}));
             // continue to try loading parent/children tiles if a tile doesn't exist (404)
             else this.update(this.transform);
             return;
