@@ -1,7 +1,7 @@
 {
   "name": "@pirxpilot/mapbox-gl",
   "description": "A WebGL interactive maps library",
-  "version": "0.45.15",
+  "version": "0.45.16",
   "main": "src/index.js",
   "license": "BSD-3-Clause",
   "repository": {

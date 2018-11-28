@@ -1,4 +1,10 @@
 
+0.45.16 / 2018-11-28
+====================
+
+ * add network-first-then-cache strategy
+ * ignore errors caused by using do-nothing strategy
+
 0.45.15 / 2018-11-05
 ====================
 
