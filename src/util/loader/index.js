@@ -11,6 +11,7 @@ const strategies = {
     'cache-only': cacheOnly,
     'cache-first': cacheFirst,
     'network-then-cache': networkThenCache,
+    'network-first-then-cache': networkFirstThenCache,
     'cache-first-then-cache': cacheFirstThenCache,
     'do-nothing': doNothing
 };
@@ -46,6 +47,10 @@ function cacheFirst(params, fn) {
 
 function networkThenCache(params, fn) {
     return networkOnly(params, cacheOnSuccessFn(params, fn));
+}
+
+function networkFirstThenCache(params, fn) {
+    return networkFirst(params, cacheOnSuccessFn(params, fn));
 }
 
 function cacheFirstThenCache(params, fn) {
