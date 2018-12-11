@@ -47,8 +47,6 @@ const draw = {
 };
 
 
-
-
 /**
  * Initialize a new painter object.
  *
