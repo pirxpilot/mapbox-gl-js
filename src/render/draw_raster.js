@@ -23,7 +23,7 @@ function drawRaster(painter, sourceCache, layer, coords) {
     const stencilMode = StencilMode.disabled;
     const colorMode = painter.colorModeForRenderPass();
     const minTileZ = coords.length && coords[0].overscaledZ;
-
+    const align = !painter.options.moving;
     for (const coord of coords) {
         // Set the lower zoom level to sublayer 0, and higher zoom levels to higher sublayers
         // Use gl.LESS to prevent double drawing in areas where tiles overlap.
@@ -31,7 +31,7 @@ function drawRaster(painter, sourceCache, layer, coords) {
             layer.paint.get('raster-opacity') === 1 ? DepthMode.ReadWrite : DepthMode.ReadOnly, gl.LESS);
 
         const tile = sourceCache.getTile(coord);
-        const posMatrix = painter.transform.calculatePosMatrix(coord.toUnwrapped(), true);
+        const posMatrix = painter.transform.calculatePosMatrix(coord.toUnwrapped(), align);
 
         tile.registerFadeDuration(layer.paint.get('raster-fade-duration'));
 
