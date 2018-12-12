@@ -61,7 +61,7 @@ const hillshadeUniformPrepareValues = (
     tile, maxzoom
 ) => {
     assert(tile.dem);
-    const tileSize = ((tile.dem)).dim;
+    const stride = tile.dem.stride;
     const matrix = mat4.create();
     // Flip rendering at y axis.
     mat4.ortho(matrix, 0, EXTENT, -EXTENT, 0, 0, 1);
@@ -70,7 +70,7 @@ const hillshadeUniformPrepareValues = (
     return {
         'u_matrix': matrix,
         'u_image': 1,
-        'u_dimension': [tileSize * 2, tileSize * 2],
+        'u_dimension': [stride, stride],
         'u_zoom': tile.tileID.overscaledZ,
         'u_maxzoom': maxzoom
     };
