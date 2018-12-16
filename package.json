@@ -4,13 +4,7 @@
   "version": "0.45.16",
   "main": "src/index.js",
   "license": "BSD-3-Clause",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/mapbox/mapbox-gl-js.git"
-  },
-  "engines": {
-    "node": ">=6.4.0"
-  },
+  "repository": "pirxpilot/mapbox-gl-js",
   "dependencies": {
     "@mapbox/gl-matrix": "^0.0.1",
     "@mapbox/point-geometry": "^0.1.0",
@@ -31,49 +25,14 @@
     "vt-pbf": "^3.1.1"
   },
   "devDependencies": {
-    "@mapbox/mapbox-gl-rtl-text": "^0.1.0",
-    "@mapbox/mapbox-gl-test-suite": "file:test/integration",
-    "benchmark": "~2.1.0",
-    "brfs": "^1.4.0",
-    "browserify": "^14.0.0",
-    "bubleify": "^0.7.0",
-    "coveralls": "^2.11.8",
-    "eslint": "3.12.1",
-    "eslint-config-mourner": "^2.0.0",
-    "eslint-plugin-html": "^2.0.0",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-react": "^7.8.2",
-    "exorcist": "thlorenz/exorcist#master",
-    "gl": "^4.0.4",
-    "glob": "^7.0.3",
-    "jsdom": "^11.11.0",
-    "mock-geolocation": "^1.0.11",
-    "nyc": "^10.1.2",
-    "package-json-versionify": "^1.0.2",
-    "pirates": "^3.0.2",
-    "pngjs": "^3.0.0",
-    "request": "^2.79.0",
-    "sinon": "^5.0.10",
-    "st": "^1.2.0",
-    "stylelint": "^7.10.1",
-    "tap": "^12.0.1",
-    "through2": "^2.0.3",
-    "uglify-js": "2.7.5",
-    "unassertify": "^2.0.0"
+    "brfs": "^2.0.1",
+    "package-json-versionify": "^1.0.4",
+    "unassertify": "^2.1.1"
   },
   "browserify": {
     "transform": [
-      [
-        "bubleify",
-        {
-          "bubleError": true,
-          "transforms": {
-            "dangerousForOf": true
-          }
-        }
-      ],
-      "package-json-versionify",
       "unassertify",
+      "package-json-versionify",
       "brfs",
       "./build/minifyify_style_spec"
     ]
@@ -84,7 +43,7 @@
   },
   "scripts": {
     "test": "make check",
-    "postinstall": "cd src/style-spec && yarn || npm install"
+    "postinstall": "cd src/style-spec && yarn"
   },
   "files": [
     "src",
