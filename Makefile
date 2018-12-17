@@ -8,7 +8,7 @@ SRC = $(call find, src, *.js)
 BUILD = dist/$(PROJECT).js dist/$(PROJECT)-worker.js
 DIST = $(BUILD:%.js=%.min.js)
 
-BROWSERIFY_OPTIONS = --debug
+BROWSERIFY_OPTIONS = --debug --transform-path ./build/node_modules
 
 %/node_modules: %/package.json
 	(cd $(@D) && yarn --no-progress) && touch $@
