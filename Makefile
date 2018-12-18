@@ -39,7 +39,9 @@ dist: $(DIST)
 distdir:
 	mkdir -p dist
 
-dependencies: build/node_modules $(CURDIR)/node_modules
+DEPENDENCIES = build/node_modules $(CURDIR)/node_modules src/style-spec/node_modules
+
+dependencies: | $(DEPENDENCIES)
 
 dist/$(PROJECT).debug.js: $(SRC) | dependencies distdir
 	$(NODE_BIN)/browserify src/index.js \
@@ -56,25 +58,25 @@ dist/$(PROJECT)-worker.debug.js: $(SRC) | dependencies distdir
 
 .DELETE_ON_ERROR: $(BUILD) $(DIST)
 
-lint: | dependencies
+lint: dependencies
 	$(NODE_BIN)/eslint --cache --ignore-path .gitignore src test bench debug/*.html
 
-test: test-unit | dependencies
+test: test-unit
 
-test-integration: test-render test-query | dependencies
+test-integration: test-render test-query
 
-test-unit:
+test-unit: dependencies
 	NODE_PATH=build/node_modules \
 	$(NODE_BIN)/tap --reporter dot --no-coverage test/unit
 
-test-render:
+test-render: dependencies
 	node test/render.test.js
 
-test-query:
+test-query: dependencies
 	node test/query.test.js
 
 distclean: clean
-	rm -fr build/node_modules node_modules .eslintcache
+	rm -fr $(DEPENDENCIES) .eslintcache
 
 clean:
 	rm -fr dist
@@ -83,5 +85,5 @@ clean-test:
 	find test/integration/*-tests -mindepth 2 -type d -not -exec test -e "{}/style.json" \; -print
 	# | xargs -t rm -r
 
-.PHONY: all clean clean-test check lint build dist distclean
+.PHONY: all clean clean-test check lint build dist distclean dependencies
 .PHONY: test test-unit test-render test-query
