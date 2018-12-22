@@ -125,10 +125,11 @@ function isCounterClockwise(a, b, c) {
  */
 function calculateSignedArea(ring) {
     let sum = 0;
-    for (let i = 0, len = ring.length, j = len - 1, p1, p2; i < len; j = i++) {
-        p1 = ring[i];
-        p2 = ring[j];
+    const len = ring.length;
+    let p2 = ring[len - 1]; // last point
+    for (const p1 of ring) {
         sum += (p2.x - p1.x) * (p1.y + p2.y);
+        p2 = p1;
     }
     return sum;
 }

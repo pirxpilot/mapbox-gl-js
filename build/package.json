@@ -1,0 +1,34 @@
+{
+  "devDependencies": {
+    "@mapbox/mapbox-gl-rtl-text": "^0.1.0",
+    "@pirxpilot/browserify": "^16.3.0",
+    "benchmark": "~2.1.0",
+    "brfs": "^2.0.1",
+    "eslint": "3.12.1",
+    "eslint-config-mourner": "^2.0.0",
+    "eslint-plugin-html": "^2.0.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-react": "^7.8.2",
+    "exorcist": "thlorenz/exorcist#master",
+    "gl": "^4.0.4",
+    "glob": "^7.0.3",
+    "jsdom": "^11.11.0",
+    "mock-geolocation": "^1.0.11",
+    "nyc": "^10.1.2",
+    "package-json-versionify": "^1.0.4",
+    "pirates": "^3.0.2",
+    "pngjs": "^3.0.0",
+    "request": "^2.79.0",
+    "sinon": "^5.0.10",
+    "st": "^1.2.0",
+    "stylelint": "^7.10.1",
+    "tap": "^12.0.1",
+    "terser": "^3.11.0",
+    "unassertify": "^2.1.1"
+  },
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "terser": "^3.11.0"
+  },
+  "license": "BSD-3-Clause"
+}

@@ -1,4 +1,4 @@
-const through = require('through2');
+const { Transform, PassThrough } = require('stream');
 
 function replacer(k, v) {
     return (k === 'doc' || k === 'example' || k === 'sdk-support') ? undefined : v;
@@ -6,20 +6,19 @@ function replacer(k, v) {
 
 module.exports = (path) => {
     if (path.match(/style\-spec[\\/]reference[\\/]v[0-9]+\.json$/)) {
-        let source = '';
-        return through(
-            // eslint-disable-next-line prefer-arrow-callback
-            function (sourceChunk, encoding, callback) {
-                source += sourceChunk.toString('utf8');
+        const chunks = [];
+        return new Transform({
+            write(chunk, encoding, callback) {
+                chunks.push(chunk);
                 callback();
             },
-            // eslint-disable-next-line prefer-arrow-callback
-            function (callback) {
+            flush(callback) {
+                const source = chunks.map(c =>  c.toString('utf8')).join('');
                 this.push(JSON.stringify(JSON.parse(source), replacer, 0));
                 callback();
             }
-        );
+        });
     } else {
-        return through();
+        return new PassThrough();
     }
 };

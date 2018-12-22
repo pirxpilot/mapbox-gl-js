@@ -2,7 +2,7 @@
 
 const { getJSON } = require('../util/ajax');
 
-const rewind = require('geojson-rewind');
+const rewind = require('@mapwhit/geojson-rewind');
 const GeoJSONWrapper = require('./geojson_wrapper');
 const vtpbf = require('vt-pbf');
 const supercluster = require('supercluster');

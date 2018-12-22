@@ -1,64 +1,82 @@
 PROJECT=mapbox-gl
-NODE_BIN=./node_modules/.bin
+NODE_BIN=./build/node_modules/.bin
 
 find = $(foreach dir,$(1),$(foreach d,$(wildcard $(dir)/*),$(call find,$(d),$(2))) $(wildcard $(dir)/$(strip $(2))))
 
 SRC = $(call find, src, *.js)
-DIST = dist/$(PROJECT).js
-DIST_WORKER = dist/$(PROJECT)-worker.js
-BUILD = $(DIST:%.js=%-dev.js)
-BUILD_WORKER = $(DIST_WORKER:%.js=%-dev.js)
 
-BROWSERIFY_OPTIONS = --debug
+BUILD = dist/$(PROJECT).js dist/$(PROJECT)-worker.js
+DIST = $(BUILD:%.js=%.min.js)
 
-dist/%.js: dist/%-dev.js
-	$(NODE_BIN)/uglifyjs \
-		--screw-ie8 \
+BROWSERIFY_OPTIONS = --debug --transform-path ./build/node_modules
+
+%/node_modules: %/package.json
+	(cd $(@D) && yarn --no-progress) && touch $@
+
+%.min.js: %.js
+	$(NODE_BIN)/terser \
 		--mangle \
-		--no-copyright \
-		--compress 'warnings=false,drop_console' \
-		--in-source-map $<.map \
-		--source-map $@.map \
-		--output $@ $<
+		--compress warnings=false \
+		--compress drop_console \
+		--compress pure_funcs=['assert'] \
+		--source-map filename='$@.map' \
+		--source-map content='$<.map' \
+		--source-map "root='/ui/script'" \
+		--output $@ \
+		-- $<
+
+%.js: %.debug.js
+	$(NODE_BIN)/exorcist --error-on-missing --base $(CURDIR) $@.map < $< > $@
 
 all: check build
 
 check: lint test
 
-build: $(BUILD) $(BUILD_WORKER)
+build: $(BUILD)
 
-$(BUILD): $(SRC) | node_modules
-	mkdir -p $(@D)
-	$(NODE_BIN)/browserify src/index.js $(BROWSERIFY_OPTIONS) --standalone mapboxgl \
-	| $(NODE_BIN)/exorcist --base $(CURDIR) $@.map > $@
+dist: $(DIST)
 
-$(BUILD_WORKER): $(SRC) | node_modules
-	$(NODE_BIN)/browserify src/source/worker.js  $(BROWSERIFY_OPTIONS) \
-	| $(NODE_BIN)/exorcist --base $(CURDIR) $@.map > $@
+distdir:
+	mkdir -p dist
 
-node_modules: package.json
-	yarn && touch $@
+DEPENDENCIES = build/node_modules $(CURDIR)/node_modules src/style-spec/node_modules
 
-dist: $(DIST) $(DIST_WORKER)
+dependencies: | $(DEPENDENCIES)
 
-lint: | node_modules
-	$(NODE_BIN)/eslint --cache --ignore-path .gitignore src test bench docs/_posts/examples/*.html debug/*.html
+dist/$(PROJECT).debug.js: $(SRC) | dependencies distdir
+	$(NODE_BIN)/browserify src/index.js \
+		$(BROWSERIFY_OPTIONS) \
+		--outfile $@ \
+		--standalone mapboxgl
 
-test: test-unit | node_modules
+dist/$(PROJECT)-worker.debug.js: $(SRC) | dependencies distdir
+	$(NODE_BIN)/browserify src/source/worker.js  \
+		$(BROWSERIFY_OPTIONS) \
+		--outfile $@
 
-test-integration: test-render test-query | node_modules
+.INTERMEDIATE: dist/$(PROJECT).debug.js dist/$(PROJECT)-worker.debug.js
 
-test-unit:
+.DELETE_ON_ERROR: $(BUILD) $(DIST)
+
+lint: dependencies
+	$(NODE_BIN)/eslint --cache --ignore-path .gitignore src test bench debug/*.html
+
+test: test-unit
+
+test-integration: test-render test-query
+
+test-unit: dependencies
+	NODE_PATH=build/node_modules \
 	$(NODE_BIN)/tap --reporter dot --no-coverage test/unit
 
-test-render:
+test-render: dependencies
 	node test/render.test.js
 
-test-query:
+test-query: dependencies
 	node test/query.test.js
 
 distclean: clean
-	rm -fr node_modules dist
+	rm -fr $(DEPENDENCIES) .eslintcache
 
 clean:
 	rm -fr dist
@@ -67,5 +85,5 @@ clean-test:
 	find test/integration/*-tests -mindepth 2 -type d -not -exec test -e "{}/style.json" \; -print
 	# | xargs -t rm -r
 
-.PHONY: all clean clean-test check lint build dist distclean
+.PHONY: all clean clean-test check lint build dist distclean dependencies
 .PHONY: test test-unit test-render test-query
