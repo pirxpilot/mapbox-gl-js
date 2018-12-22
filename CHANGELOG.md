@@ -1,4 +1,16 @@
 
+0.45.17 / 2018-12-22
+====================
+
+ * replace geojson-rewind with @mapwhit/geojson-rewind
+ * rewrite browserify plugin without through2
+ * replace browserify with @pirxpilot/browserify
+ * improve classify-rings method
+ * upgrade quickselect to 2.0.0
+ * upgrade pbf to ~3
+ * change style-spec installation method
+ * move build dependencies to a separate directory
+
 0.45.16 / 2018-11-28
 ====================
 
