@@ -170,22 +170,24 @@ class Tile {
     layers,
     sourceFeatureState,
     queryGeometry,
+    cameraQueryGeometry,
     scale,
     params,
     transform,
     maxPitchScaleFactor,
-    posMatrix
+    pixelPosMatrix
   ) {
     if (!this.latestFeatureIndex?.rawTileData) return {};
 
     return this.latestFeatureIndex.query(
       {
-        queryGeometry: queryGeometry,
-        scale: scale,
+        queryGeometry,
+        cameraQueryGeometry,
+        scale,
         tileSize: this.tileSize,
-        posMatrix: posMatrix,
-        transform: transform,
-        params: params,
+        pixelPosMatrix,
+        transform,
+        params,
         queryPadding: this.queryPadding * maxPitchScaleFactor
       },
       layers,

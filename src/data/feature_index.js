@@ -9,6 +9,7 @@ const GeoJSONFeature = require('../util/vectortile_to_geojson');
 const { arraysIntersect } = require('../util/object');
 const { register } = require('../util/web_worker_transfer');
 const EvaluationParameters = require('../style/evaluation_parameters');
+const { polygonIntersectsBox } = require('../util/intersection_tests');
 
 const { FeatureIndexArray } = require('./array_types');
 
@@ -19,12 +20,15 @@ class FeatureIndex {
     this.y = tileID.canonical.y;
     this.z = tileID.canonical.z;
     this.grid = grid || new Grid(EXTENT, 16, 0);
+    this.grid3D = new Grid(EXTENT, 16, 0);
     this.featureIndexArray = featureIndexArray || new FeatureIndexArray();
   }
 
-  insert(feature, geometry, featureIndex, sourceLayerIndex, bucketIndex) {
+  insert(feature, geometry, featureIndex, sourceLayerIndex, bucketIndex, is3D) {
     const key = this.featureIndexArray.length;
     this.featureIndexArray.emplaceBack(featureIndex, sourceLayerIndex, bucketIndex);
+
+    const grid = is3D ? this.grid3D : this.grid;
 
     for (let r = 0; r < geometry.length; r++) {
       const ring = geometry[r];
@@ -44,7 +48,7 @@ class FeatureIndex {
       }
 
       if (bbox[0] < EXTENT && bbox[1] < EXTENT && bbox[2] >= 0 && bbox[3] >= 0) {
-        this.grid.insert(key, bbox[0], bbox[1], bbox[2], bbox[3]);
+        grid.insert(key, bbox[0], bbox[1], bbox[2], bbox[3]);
       }
     }
   }
@@ -70,28 +74,37 @@ class FeatureIndex {
     const queryGeometry = args.queryGeometry;
     const queryPadding = args.queryPadding * pixelsToTileUnits;
 
-    let minX = Number.POSITIVE_INFINITY;
-    let minY = Number.POSITIVE_INFINITY;
-    let maxX = Number.NEGATIVE_INFINITY;
-    let maxY = Number.NEGATIVE_INFINITY;
-    for (let i = 0; i < queryGeometry.length; i++) {
-      const ring = queryGeometry[i];
-      for (let k = 0; k < ring.length; k++) {
-        const p = ring[k];
-        minX = Math.min(minX, p.x);
-        minY = Math.min(minY, p.y);
-        maxX = Math.max(maxX, p.x);
-        maxY = Math.max(maxY, p.y);
+    const bounds = getBounds(queryGeometry);
+    const matching = this.grid.query(
+      bounds.minX - queryPadding,
+      bounds.minY - queryPadding,
+      bounds.maxX + queryPadding,
+      bounds.maxY + queryPadding
+    );
+
+    const cameraBounds = getBounds(args.cameraQueryGeometry);
+    const matching3D = this.grid3D.query(
+      cameraBounds.minX - queryPadding,
+      cameraBounds.minY - queryPadding,
+      cameraBounds.maxX + queryPadding,
+      cameraBounds.maxY + queryPadding,
+      (bx1, by1, bx2, by2) => {
+        return polygonIntersectsBox(
+          args.cameraQueryGeometry,
+          bx1 - queryPadding,
+          by1 - queryPadding,
+          bx2 + queryPadding,
+          by2 + queryPadding
+        );
       }
+    );
+
+    for (const key of matching3D) {
+      matching.push(key);
     }
 
-    const matching = this.grid.query(
-      minX - queryPadding,
-      minY - queryPadding,
-      maxX + queryPadding,
-      maxY + queryPadding
-    );
     matching.sort(topDownFeatureComparator);
+
     const result = {};
     let previousIndex;
     for (let k = 0; k < matching.length; k++) {
@@ -131,7 +144,7 @@ class FeatureIndex {
             this.z,
             args.transform,
             pixelsToTileUnits,
-            args.posMatrix
+            args.pixelPosMatrix
           );
         }
       );
@@ -169,7 +182,8 @@ class FeatureIndex {
       const styleLayer = styleLayers[layerID];
       if (!styleLayer) continue;
 
-      if (intersectionTest && !intersectionTest(feature, styleLayer)) {
+      const intersectionZ = !intersectionTest || intersectionTest(feature, styleLayer);
+      if (!intersectionZ) {
         // Only applied for non-symbol features
         continue;
       }
@@ -180,7 +194,7 @@ class FeatureIndex {
       if (layerResult === undefined) {
         layerResult = result[layerID] = [];
       }
-      layerResult.push({ featureIndex: featureIndex, feature: geojsonFeature });
+      layerResult.push({ featureIndex: featureIndex, feature: geojsonFeature, intersectionZ });
     }
   }
 
@@ -220,6 +234,20 @@ class FeatureIndex {
 register('FeatureIndex', FeatureIndex, { omit: ['rawTileData', 'sourceLayerCoder'] });
 
 module.exports = FeatureIndex;
+
+function getBounds(geometry) {
+  let minX = Number.POSITIVE_INFINITY;
+  let minY = Number.POSITIVE_INFINITY;
+  let maxX = Number.NEGATIVE_INFINITY;
+  let maxY = Number.NEGATIVE_INFINITY;
+  for (const p of geometry) {
+    minX = Math.min(minX, p.x);
+    minY = Math.min(minY, p.y);
+    maxX = Math.max(maxX, p.x);
+    maxY = Math.max(maxY, p.y);
+  }
+  return { minX, minY, maxX, maxY };
+}
 
 function topDownFeatureComparator(a, b) {
   return b - a;

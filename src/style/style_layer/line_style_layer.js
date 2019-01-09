@@ -2,7 +2,7 @@ const Point = require('@mapbox/point-geometry');
 
 const StyleLayer = require('../style_layer');
 const LineBucket = require('../../data/bucket/line_bucket');
-const { multiPolygonIntersectsBufferedMultiLine } = require('../../util/intersection_tests');
+const { polygonIntersectsBufferedMultiLine } = require('../../util/intersection_tests');
 const { getMaximumPaintValue, translateDistance, translate } = require('../query_utils');
 const properties = require('./line_style_layer_properties');
 const EvaluationParameters = require('../evaluation_parameters');
@@ -87,7 +87,7 @@ class LineStyleLayer extends StyleLayer {
     if (lineOffset) {
       geometry = offsetLine(geometry, lineOffset * pixelsToTileUnits);
     }
-    return multiPolygonIntersectsBufferedMultiLine(translatedPolygon, geometry, halfWidth);
+    return polygonIntersectsBufferedMultiLine(translatedPolygon, geometry, halfWidth);
   }
 }
 

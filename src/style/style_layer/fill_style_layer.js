@@ -1,7 +1,7 @@
 const StyleLayer = require('../style_layer');
 
 const FillBucket = require('../../data/bucket/fill_bucket');
-const { multiPolygonIntersectsMultiPolygon } = require('../../util/intersection_tests');
+const { polygonIntersectsMultiPolygon } = require('../../util/intersection_tests');
 const { translateDistance, translate } = require('../query_utils');
 const properties = require('./fill_style_layer_properties');
 
@@ -35,7 +35,7 @@ class FillStyleLayer extends StyleLayer {
       transform.angle,
       pixelsToTileUnits
     );
-    return multiPolygonIntersectsMultiPolygon(translatedPolygon, geometry);
+    return polygonIntersectsMultiPolygon(translatedPolygon, geometry);
   }
 }
 

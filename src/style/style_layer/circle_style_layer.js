@@ -1,7 +1,7 @@
 const StyleLayer = require('../style_layer');
 
 const CircleBucket = require('../../data/bucket/circle_bucket');
-const { multiPolygonIntersectsBufferedPoint } = require('../../util/intersection_tests');
+const { polygonIntersectsBufferedPoint } = require('../../util/intersection_tests');
 const { getMaximumPaintValue, translateDistance, translate } = require('../query_utils');
 const properties = require('./circle_style_layer_properties');
 const { vec4 } = require('@mapbox/gl-matrix');
@@ -33,7 +33,7 @@ class CircleStyleLayer extends StyleLayer {
     zoom,
     transform,
     pixelsToTileUnits,
-    posMatrix
+    pixelPosMatrix
   ) {
     const translatedPolygon = translate(
       queryGeometry,
@@ -53,15 +53,15 @@ class CircleStyleLayer extends StyleLayer {
     const alignWithMap = this.paint.get('circle-pitch-alignment') === 'map';
     const transformedPolygon = alignWithMap
       ? translatedPolygon
-      : projectQueryGeometry(translatedPolygon, posMatrix, transform);
+      : projectQueryGeometry(translatedPolygon, pixelPosMatrix);
     const transformedSize = alignWithMap ? size * pixelsToTileUnits : size;
 
     for (const ring of geometry) {
       for (const point of ring) {
-        const transformedPoint = alignWithMap ? point : projectPoint(point, posMatrix, transform);
+        const transformedPoint = alignWithMap ? point : projectPoint(point, pixelPosMatrix);
 
         let adjustedSize = transformedSize;
-        const projectedCenter = vec4.transformMat4([], [point.x, point.y, 0, 1], posMatrix);
+        const projectedCenter = vec4.transformMat4([], [point.x, point.y, 0, 1], pixelPosMatrix);
         if (this.paint.get('circle-pitch-scale') === 'viewport' && this.paint.get('circle-pitch-alignment') === 'map') {
           adjustedSize *= projectedCenter[3] / transform.cameraToCenterDistance;
         } else if (
@@ -71,7 +71,7 @@ class CircleStyleLayer extends StyleLayer {
           adjustedSize *= transform.cameraToCenterDistance / projectedCenter[3];
         }
 
-        if (multiPolygonIntersectsBufferedPoint(transformedPolygon, transformedPoint, adjustedSize)) return true;
+        if (polygonIntersectsBufferedPoint(transformedPolygon, transformedPoint, adjustedSize)) return true;
       }
     }
 
@@ -79,19 +79,14 @@ class CircleStyleLayer extends StyleLayer {
   }
 }
 
-function projectPoint(p, posMatrix, transform) {
-  const point = vec4.transformMat4([], [p.x, p.y, 0, 1], posMatrix);
-  return new Point(
-    (point[0] / point[3] + 1) * transform.width * 0.5,
-    (point[1] / point[3] + 1) * transform.height * 0.5
-  );
+function projectPoint(p, pixelPosMatrix) {
+  const point = vec4.transformMat4([], [p.x, p.y, 0, 1], pixelPosMatrix);
+  return new Point(point[0] / point[3], point[1] / point[3]);
 }
 
-function projectQueryGeometry(queryGeometry, posMatrix, transform) {
-  return queryGeometry.map(r => {
-    return r.map(p => {
-      return projectPoint(p, posMatrix, transform);
-    });
+function projectQueryGeometry(queryGeometry, pixelPosMatrix) {
+  return queryGeometry.map(p => {
+    return projectPoint(p, pixelPosMatrix);
   });
 }
 

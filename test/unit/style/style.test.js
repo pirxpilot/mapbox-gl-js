@@ -1509,7 +1509,7 @@ test('Style', async t => {
     const transform = new Transform();
     transform.resize(512, 512);
 
-    function queryMapboxFeatures(layers, getFeatureState, queryGeom, scale, params) {
+    function queryMapboxFeatures(layers, getFeatureState, queryGeom, cameraQueryGeom, scale, params) {
       const features = {
         land: [
           {
