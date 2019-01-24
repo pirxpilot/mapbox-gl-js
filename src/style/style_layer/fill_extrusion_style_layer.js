@@ -18,6 +18,10 @@ class FillExtrusionStyleLayer extends StyleLayer {
     return translateDistance(this.paint.get('fill-extrusion-translate'));
   }
 
+  is3D() {
+    return true;
+  }
+
   queryIntersectsFeature(queryGeometry, feature, featureState, geometry, zoom, transform, pixelsToTileUnits) {
     const translatedPolygon = translate(
       queryGeometry,
@@ -27,17 +31,6 @@ class FillExtrusionStyleLayer extends StyleLayer {
       pixelsToTileUnits
     );
     return multiPolygonIntersectsMultiPolygon(translatedPolygon, geometry);
-  }
-
-  hasOffscreenPass() {
-    return this.paint.get('fill-extrusion-opacity') !== 0 && this.visibility !== 'none';
-  }
-
-  resize() {
-    if (this.viewportFrame) {
-      this.viewportFrame.destroy();
-      this.viewportFrame = null;
-    }
   }
 }
 
