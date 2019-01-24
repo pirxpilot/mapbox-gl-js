@@ -146,6 +146,14 @@ class StyleLayer extends Evented {
     });
   }
 
+  is3D() {
+    return false;
+  }
+
+  isTileClipped() {
+    return false;
+  }
+
   hasOffscreenPass() {
     return false;
   }

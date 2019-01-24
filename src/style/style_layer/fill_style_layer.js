@@ -37,6 +37,10 @@ class FillStyleLayer extends StyleLayer {
     );
     return polygonIntersectsMultiPolygon(translatedPolygon, geometry);
   }
+
+  isTileClipped() {
+    return true;
+  }
 }
 
 module.exports = FillStyleLayer;

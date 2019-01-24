@@ -63,10 +63,6 @@ const shaders = {
     fragmentSource: require('../../build/min/src/shaders/fill_extrusion_pattern.fragment.glsl.txt'),
     vertexSource: require('../../build/min/src/shaders/fill_extrusion_pattern.vertex.glsl.txt')
   },
-  extrusionTexture: {
-    fragmentSource: require('../../build/min/src/shaders/extrusion_texture.fragment.glsl.txt'),
-    vertexSource: require('../../build/min/src/shaders/extrusion_texture.vertex.glsl.txt')
-  },
   hillshadePrepare: {
     fragmentSource: require('../../build/min/src/shaders/hillshade_prepare.fragment.glsl.txt'),
     vertexSource: require('../../build/min/src/shaders/hillshade_prepare.vertex.glsl.txt')

@@ -22,7 +22,10 @@ function drawFill(painter, sourceCache, layer, coords) {
 
   const pattern = layer.paint.get('fill-pattern');
   const pass =
-    !pattern.constantOr(1) && color.constantOr(Color.transparent).a === 1 && opacity.constantOr(0) === 1
+    painter.opaquePassEnabledForLayer() &&
+    !pattern.constantOr(1) &&
+    color.constantOr(Color.transparent).a === 1 &&
+    opacity.constantOr(0) === 1
       ? 'opaque'
       : 'translucent';
 

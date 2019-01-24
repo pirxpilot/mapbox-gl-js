@@ -1,8 +1,4 @@
-const {
-  fillExtrusionUniforms,
-  fillExtrusionPatternUniforms,
-  extrusionTextureUniforms
-} = require('./fill_extrusion_program');
+const { fillExtrusionUniforms, fillExtrusionPatternUniforms } = require('./fill_extrusion_program');
 const {
   fillUniforms,
   fillPatternUniforms,
@@ -23,7 +19,6 @@ const { backgroundUniforms, backgroundPatternUniforms } = require('./background_
 const programUniforms = {
   fillExtrusion: fillExtrusionUniforms,
   fillExtrusionPattern: fillExtrusionPatternUniforms,
-  extrusionTexture: extrusionTextureUniforms,
   fill: fillUniforms,
   fillPattern: fillPatternUniforms,
   fillOutline: fillOutlineUniforms,

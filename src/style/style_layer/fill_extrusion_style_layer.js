@@ -20,6 +20,10 @@ class FillExtrusionStyleLayer extends StyleLayer {
     return translateDistance(this.paint.get('fill-extrusion-translate'));
   }
 
+  is3D() {
+    return true;
+  }
+
   queryIntersectsFeature(
     queryGeometry,
     feature,
@@ -46,17 +50,6 @@ class FillExtrusionStyleLayer extends StyleLayer {
     const projectedBase = projected[0];
     const projectedTop = projected[1];
     return checkIntersection(projectedBase, projectedTop, projectedQueryGeometry);
-  }
-
-  hasOffscreenPass() {
-    return this.paint.get('fill-extrusion-opacity') !== 0 && this.visibility !== 'none';
-  }
-
-  resize() {
-    if (this.viewportFrame) {
-      this.viewportFrame.destroy();
-      this.viewportFrame = null;
-    }
   }
 }
 

@@ -1,14 +1,15 @@
 const { patternUniformValues } = require('./pattern');
 const { Uniform1i, Uniform1f, Uniform2f, Uniform3f, Uniform4f, UniformMatrix4f } = require('../uniform_binding');
 
-const { mat3, vec3, mat4 } = require('@mapbox/gl-matrix');
+const { mat3, vec3 } = require('@mapbox/gl-matrix');
 
 const fillExtrusionUniforms = (context, locations) => ({
   u_matrix: new UniformMatrix4f(context, locations.u_matrix),
   u_lightpos: new Uniform3f(context, locations.u_lightpos),
   u_lightintensity: new Uniform1f(context, locations.u_lightintensity),
   u_lightcolor: new Uniform3f(context, locations.u_lightcolor),
-  u_vertical_gradient: new Uniform1f(context, locations.u_vertical_gradient)
+  u_vertical_gradient: new Uniform1f(context, locations.u_vertical_gradient),
+  u_opacity: new Uniform1f(context, locations.u_opacity)
 });
 
 const fillExtrusionPatternUniforms = (context, locations) => ({
@@ -23,17 +24,11 @@ const fillExtrusionPatternUniforms = (context, locations) => ({
   u_pixel_coord_upper: new Uniform2f(context, locations.u_pixel_coord_upper),
   u_pixel_coord_lower: new Uniform2f(context, locations.u_pixel_coord_lower),
   u_scale: new Uniform4f(context, locations.u_scale),
-  u_fade: new Uniform1f(context, locations.u_fade)
-});
-
-const extrusionTextureUniforms = (context, locations) => ({
-  u_matrix: new UniformMatrix4f(context, locations.u_matrix),
-  u_world: new Uniform2f(context, locations.u_world),
-  u_image: new Uniform1i(context, locations.u_image),
+  u_fade: new Uniform1f(context, locations.u_fade),
   u_opacity: new Uniform1f(context, locations.u_opacity)
 });
 
-const fillExtrusionUniformValues = (matrix, painter, shouldUseVerticalGradient) => {
+const fillExtrusionUniformValues = (matrix, painter, shouldUseVerticalGradient, opacity) => {
   const light = painter.style.light;
   const _lp = light.properties.get('position');
   const lightPos = [_lp.x, _lp.y, _lp.z];
@@ -50,13 +45,22 @@ const fillExtrusionUniformValues = (matrix, painter, shouldUseVerticalGradient) 
     u_lightpos: lightPos,
     u_lightintensity: light.properties.get('intensity'),
     u_lightcolor: [lightColor.r, lightColor.g, lightColor.b],
-    u_vertical_gradient: +shouldUseVerticalGradient
+    u_vertical_gradient: +shouldUseVerticalGradient,
+    u_opacity: opacity
   };
 };
 
-const fillExtrusionPatternUniformValues = (matrix, painter, shouldUseVerticalGradient, coord, crossfade, tile) => {
+const fillExtrusionPatternUniformValues = (
+  matrix,
+  painter,
+  shouldUseVerticalGradient,
+  opacity,
+  coord,
+  crossfade,
+  tile
+) => {
   return Object.assign(
-    fillExtrusionUniformValues(matrix, painter, shouldUseVerticalGradient),
+    fillExtrusionUniformValues(matrix, painter, shouldUseVerticalGradient, opacity),
     patternUniformValues(crossfade, painter, tile),
     {
       u_height_factor: -(2 ** coord.overscaledZ) / tile.tileSize / 8
@@ -64,25 +68,9 @@ const fillExtrusionPatternUniformValues = (matrix, painter, shouldUseVerticalGra
   );
 };
 
-const extrusionTextureUniformValues = (painter, layer, textureUnit) => {
-  const matrix = mat4.create();
-  mat4.ortho(matrix, 0, painter.width, painter.height, 0, 0, 1);
-
-  const gl = painter.context.gl;
-
-  return {
-    u_matrix: matrix,
-    u_world: [gl.drawingBufferWidth, gl.drawingBufferHeight],
-    u_image: textureUnit,
-    u_opacity: layer.paint.get('fill-extrusion-opacity')
-  };
-};
-
 module.exports = {
   fillExtrusionUniforms,
   fillExtrusionPatternUniforms,
-  extrusionTextureUniforms,
   fillExtrusionUniformValues,
-  fillExtrusionPatternUniformValues,
-  extrusionTextureUniformValues
+  fillExtrusionPatternUniformValues
 };
