@@ -6,6 +6,9 @@ const { ProgramConfigurationSet } = require('../program_configuration');
 const { TriangleIndexArray } = require('../index_array_type');
 const EXTENT = require('../extent');
 const earcut = require('earcut');
+const {
+  VectorTileFeature: { types: vectorTileFeatureTypes }
+} = require('@mapbox/vector-tile');
 const classifyRings = require('../../util/classify_rings');
 const assert = require('assert');
 const EARCUT_MAX_RINGS = 500;
@@ -175,6 +178,12 @@ class FillExtrusionBucket {
 
       if (segment.vertexLength + numVertices > SegmentVector.MAX_VERTEX_ARRAY_LENGTH) {
         segment = this.segments.prepareSegment(numVertices, this.layoutVertexArray, this.indexArray);
+      }
+
+      //Only triangulate and draw the area of the feature if it is a polygon
+      //Other feature types (e.g. LineString) do not have area, so triangulation is pointless / undefined
+      if (vectorTileFeatureTypes[feature.type] !== 'Polygon') {
+        continue;
       }
 
       const flattened = [];
