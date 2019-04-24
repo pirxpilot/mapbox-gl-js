@@ -1,16 +1,38 @@
 'use strict';
 
 const browser = require('../util/browser');
-const { normalizeSpriteURL } = require('../util/urls');
+const { normalizeSpriteURL, normalizeURL } = require('../util/urls');
 const { RGBAImage } = require('../util/image');
 const loadImage = require('../util/loader/image');
 const loadJSON = require('../util/loader/json');
 
-module.exports = function(baseURL, callback) {
-    let json, image, error;
-    const format = browser.devicePixelRatio > 1 ? '@2x' : '';
+module.exports = loadSprite;
 
-    loadJSON(normalizeSpriteURL(baseURL, format, '.json'), (err, data) => {
+function urlsFromBase(baseURL) {
+    const format = browser.devicePixelRatio > 1 ? '@2x' : '';
+    return {
+        json: normalizeSpriteURL(baseURL, format, '.json'),
+        png: normalizeSpriteURL(baseURL, format, '.png')
+    };
+}
+
+function urlsFromData(urls) {
+    let index = Math.round(browser.devicePixelRatio || 1) - 1;
+    if (index >= urls.length) {
+        index = urls.length - 1;
+    }
+    const bestMatch = urls[index];
+    return {
+        json: normalizeURL(bestMatch.json),
+        png: normalizeURL(bestMatch.png)
+    };
+}
+
+function loadSprite(baseURL, callback) {
+    let json, image, error;
+    const urls = Array.isArray(baseURL) ? urlsFromData(baseURL) : urlsFromBase(baseURL);
+
+    loadJSON(urls.json, (err, data) => {
         if (!error) {
             error = err;
             json = data;
@@ -18,7 +40,7 @@ module.exports = function(baseURL, callback) {
         }
     });
 
-    loadImage(normalizeSpriteURL(baseURL, format, '.png'), (err, img) => {
+    loadImage(urls.png, (err, img) => {
         if (!error) {
             error = err;
             image = img;
@@ -43,4 +65,4 @@ module.exports = function(baseURL, callback) {
             callback(null, result);
         }
     }
-};
+}
