@@ -1,4 +1,9 @@
 
+0.45.19 / 2019-04-24
+====================
+
+ * add support for extended sprite info in map style
+
 0.45.18 / 2019-01-25
 ====================
 
