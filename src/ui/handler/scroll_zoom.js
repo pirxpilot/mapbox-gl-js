@@ -200,10 +200,13 @@ function scrollZoomHandler(_map) {
 
         frame.cancel();
         active = true;
-        zooming = true;
 
-        _map.fire(new Event('movestart', { originalEvent: _lastWheelEvent }));
-        _map.fire(new Event('zoomstart', { originalEvent: _lastWheelEvent }));
+        if (!zooming) {
+            zooming = true;
+            _map.fire(new Event('movestart', { originalEvent: _lastWheelEvent }));
+            _map.fire(new Event('zoomstart', { originalEvent: _lastWheelEvent }));
+        }
+
         if (_finishTimeout) {
             clearTimeout(_finishTimeout);
         }
