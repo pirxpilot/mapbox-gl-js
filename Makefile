@@ -59,7 +59,7 @@ dist/$(PROJECT)-worker.debug.js: $(SRC) | dependencies distdir
 .DELETE_ON_ERROR: $(BUILD) $(DIST)
 
 lint: dependencies
-	$(NODE_BIN)/eslint --cache --ignore-path .gitignore src test bench debug/*.html
+	$(NODE_BIN)/eslint --cache --ignore-path .gitignore src test bench
 
 test: test-unit
 
