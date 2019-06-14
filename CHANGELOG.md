@@ -1,4 +1,35 @@
 
+0.45.20 / 2019-06-13
+====================
+
+ * include tile weight (file size) in tile debug text (#7963)
+ * Cache hillshade textures based on texture size, not tile size. Fixes #7690 -- hillshade layers leak GPU memory.
+ * Use 1px border for DEM backfilling (#7683)
+ * only align raster sources to pixel grid when map is idle to prevent shaking (#7426)
+ * Fix symbol rendering under opaque fill layers (#7612)
+ * Drop v suffix from `Uniform*` names
+ * Fix line drawing
+ * Cache gl property
+ * Break cyclic dependency between Program and ProgramConfiguration
+ * Set GL program state inside Program#draw
+ * Inline drawLineTile and hoist loop invariant code
+ * Inline Uniforms class
+ * Check for most commonly divergent matrix indices first
+ * Perf improvements: initalize location in uniform binding constructor, initialize bindings in program constructor
+ * Maintain ownership of binder uniforms on Programs
+ * Introduce state management for uniform bindings
+ * Optimize and simplify tile retention logic (#6995)
+ * simplify and optimize getting visible coords
+ * add raster-resampling raster paint property (#6411)
+ * Explicitly set stencil mode (disabled) in heatmap texture copy
+ * Remove use of gl.lineWidth
+ * fix zero-width line rendering (#6772)
+ * clean .gitignore
+ * remove .github directory
+ * remove bench directory
+ * remove debug directory
+ * Avoid unnecessary image decode. (#7550)
+
 0.45.19 / 2019-04-24
 ====================
 
