@@ -11,6 +11,7 @@ class Program {
     constructor(context,
                 source,
                 configuration,
+                fixedUniforms,
                 showOverdrawInspector) {
         const gl = context.gl;
         this.program = gl.createProgram();
@@ -51,7 +52,7 @@ class Program {
         this.numAttributes = gl.getProgramParameter(this.program, gl.ACTIVE_ATTRIBUTES);
 
         this.attributes = {};
-        this.uniforms = {};
+        const uniformLocations = {};
 
         for (let i = 0; i < this.numAttributes; i++) {
             const attribute = gl.getActiveAttrib(this.program, i);
@@ -64,26 +65,49 @@ class Program {
         for (let i = 0; i < numUniforms; i++) {
             const uniform = gl.getActiveUniform(this.program, i);
             if (uniform) {
-                this.uniforms[uniform.name] = gl.getUniformLocation(this.program, uniform.name);
+                uniformLocations[uniform.name] = gl.getUniformLocation(this.program, uniform.name);
             }
         }
+
+        this.fixedUniforms = fixedUniforms(context, uniformLocations);
+        this.binderUniforms = configuration.getUniforms(context, uniformLocations);
     }
 
     draw(context,
-         drawMode,
-         layerID,
-         layoutVertexBuffer,
-         indexBuffer,
-         segments,
-         configuration,
-         dynamicLayoutBuffer,
-         dynamicLayoutBuffer2) {
+        drawMode,
+        depthMode,
+        stencilMode,
+        colorMode,
+        uniformValues,
+        layerID,
+        layoutVertexBuffer,
+        indexBuffer,
+        segments,
+        currentProperties,
+        zoom,
+        configuration,
+        dynamicLayoutBuffer,
+        dynamicLayoutBuffer2) {
 
         const gl = context.gl;
 
+        context.program.set(this.program);
+        context.setDepthMode(depthMode);
+        context.setStencilMode(stencilMode);
+        context.setColorMode(colorMode);
+
+        for (const name in this.fixedUniforms) {
+            this.fixedUniforms[name].set(uniformValues[name]);
+        }
+
+        if (configuration) {
+            configuration.setUniforms(context, this.binderUniforms, currentProperties, {zoom});
+        }
+
         const primitiveSize = {
             [gl.LINES]: 2,
-            [gl.TRIANGLES]: 3
+            [gl.TRIANGLES]: 3,
+            [gl.LINE_STRIP]: 1
         }[drawMode];
 
         for (const segment of segments.get()) {

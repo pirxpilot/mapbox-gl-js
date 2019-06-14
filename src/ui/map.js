@@ -225,6 +225,7 @@ class Map extends Camera {
         this._setupPainter();
 
         this.on('move', this._update.bind(this, false));
+        this.on('moveend', this._update.bind(this, false));
         this.on('zoom', this._update.bind(this, true));
 
         if (typeof window !== 'undefined') {
@@ -1363,6 +1364,7 @@ class Map extends Camera {
             showOverdrawInspector: this._showOverdrawInspector,
             rotating: this.isRotating(),
             zooming: this.isZooming(),
+            moving: this.isMoving(),
             fadeDuration: this._fadeDuration
         });
 

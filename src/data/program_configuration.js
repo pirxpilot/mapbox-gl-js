@@ -2,12 +2,11 @@
 
 const { packUint8ToFloat } = require('../shaders/encode_attribute');
 const { supportsPropertyExpression } = require('../style-spec/util/properties');
-const { register, serialize, deserialize } = require('../util/web_worker_transfer');
+const { register } = require('../util/web_worker_transfer');
 const { PossiblyEvaluatedPropertyValue } = require('../style/properties');
 const { StructArrayLayout1f4, StructArrayLayout2f8, StructArrayLayout4f16 } = require('./array_types');
 const EvaluationParameters = require('../style/evaluation_parameters');
-
-
+const {  Uniform1f, UniformColor } = require('../render/uniform_binding');
 
 function packColor(color) {
     return [
@@ -46,6 +45,7 @@ class ConstantBinder {
     constructor(value, name, type) {
         this.value = value;
         this.name = name;
+        this.uniformName = `u_${this.name}`;
         this.type = type;
         this.maxValue = -Infinity;
     }
@@ -59,38 +59,25 @@ class ConstantBinder {
     upload() {}
     destroy() {}
 
-    setUniforms(context,
-                program,
-                globals,
-                currentValue) {
-        const value = currentValue.constantOr(this.value);
-        const gl = context.gl;
-        if (this.type === 'color') {
-            gl.uniform4f(program.uniforms[`u_${this.name}`], value.r, value.g, value.b, value.a);
-        } else {
-            gl.uniform1f(program.uniforms[`u_${this.name}`], value);
-        }
+    setUniforms(context, uniform, globals, currentValue) {
+        uniform.set(currentValue.constantOr(this.value));
     }
 
-    static serialize(binder) {
-        const {value, name, type} = binder;
-        return {value: serialize(value), name, type};
-    }
-
-    static deserialize(serialized) {
-        const {value, name, type} = serialized;
-        return new ConstantBinder(deserialize(value), name, type);
+    getBinding(context, location) {
+        return (this.type === 'color') ?
+            new UniformColor(context, location) :
+            new Uniform1f(context, location);
     }
 }
 
 class SourceExpressionBinder {
 
-
     constructor(expression, name, type) {
         this.expression = expression;
         this.name = name;
         this.type = type;
-        this.maxValue = -Infinity;
+        this.uniformName = `a_${name}`;
+        this.statistics = { max: -Infinity };
         const PaintVertexArray = type === 'color' ? StructArrayLayout2f8 : StructArrayLayout1f4;
         this.paintVertexAttributes = [{
             name: `a_${name}`,
@@ -157,17 +144,21 @@ class SourceExpressionBinder {
         }
     }
 
-    setUniforms(context, program) {
-        context.gl.uniform1f(program.uniforms[`a_${this.name}_t`], 0);
+    setUniforms(context, uniform) {
+        uniform.set(0);
+    }
+
+    getBinding(context, location) {
+        return new Uniform1f(context, location);
     }
 }
 
 class CompositeExpressionBinder {
 
-
     constructor(expression, name, type, useIntegerZoom, zoom) {
         this.expression = expression;
         this.name = name;
+        this.uniformName = `a_${this.name}_t`;
         this.type = type;
         this.useIntegerZoom = useIntegerZoom;
         this.zoom = zoom;
@@ -249,8 +240,13 @@ class CompositeExpressionBinder {
         }
     }
 
-    setUniforms(context, program, globals) {
-        context.gl.uniform1f(program.uniforms[`a_${this.name}_t`], this.interpolationFactor(globals.zoom));
+    setUniforms(context, uniform,
+                globals) {
+        uniform.set(this.interpolationFactor(globals.zoom));
+    }
+
+    getBinding(context, location) {
+        return new Uniform1f(context, location);
     }
 }
 
@@ -367,15 +363,27 @@ class ProgramConfiguration {
         return result;
     }
 
-    setUniforms(context, program, properties, globals) {
-        for (const property in this.binders) {
-            const binder = this.binders[property];
-            binder.setUniforms(context, program, globals, properties.get(property));
-        }
-    }
-
     getPaintVertexBuffers() {
         return this._buffers;
+    }
+
+    getUniforms(context, locations) {
+        const result = {};
+        for (const property in this.binders) {
+            const binder = this.binders[property];
+            result[binder.uniformName] = binder.getBinding(context, locations[binder.uniformName]);
+        }
+        return result;
+    }
+
+    setUniforms(context, uniformBindings, properties, globals) {
+        // Uniform state bindings are owned by the Program, but we set them
+        // from within the ProgramConfiguraton's binder members.
+
+        for (const property in this.binders) {
+            const binder = this.binders[property];
+            binder.setUniforms(context, uniformBindings[binder.uniformName], globals, properties.get(property));
+        }
     }
 
     upload(context) {
