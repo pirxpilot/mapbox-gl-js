@@ -5,42 +5,39 @@ const browser = require('../../util/browser');
 module.exports = inertia;
 
 const INERTIA_CUTOFF = 160; // msec
+const EMPTY = { empty: true };
+const MAX_LEN = 1000;
+const MIN_REMOVE = Math.floor(MAX_LEN / 2);
 
 function inertia(map, calculateInertia) {
-    let first, last;
+    const states = [];
 
     function update(value) {
         const now = browser.now();
         const data = { time: now, value };
-        if (!first) {
-            first = data;
-            return;
+        const len = states.push(data);
+        if (len > MAX_LEN) {
+            let first = getFirst(now);
+            if (first < 0) {
+                first = len - 1;
+            } else if (first < MIN_REMOVE) {
+                first = MIN_REMOVE;
+            }
+            states.splice(0, first);
         }
-        if (last && now - last.time > INERTIA_CUTOFF) {
-            first = data;
-            last = undefined;
-            return;
-        }
-        if (now - first.time > INERTIA_CUTOFF) {
-            first = last;
-        }
-        last = data;
     }
 
-    function isEmpty() {
-        if (!first) {
-            return true;
-        }
-        if (browser.now() - first.time > INERTIA_CUTOFF) {
-            return true;
-        }
-        if (!last) {
-            return true;
-        }
+    function getFirst(now = browser.now()) {
+        return states.findIndex(item => now - item.time < INERTIA_CUTOFF);
     }
 
     function calculate() {
-        return isEmpty() ? { empty: true } : calculateInertia(first, last);
+        const first = getFirst();
+        const last = states.length - 1;
+        if (first < 0 || first >= last) {
+            return EMPTY;
+        }
+        return calculateInertia(states[first], states[last]);
     }
 
     return {
