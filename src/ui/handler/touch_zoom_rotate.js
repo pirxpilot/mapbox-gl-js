@@ -34,7 +34,7 @@ function makeMovement(map, { rotationDisabled, aroundCenter }, e) {
         const { vector, center } = getVector(e);
         lastCenter = center;
 
-        const scale =  vector.mag() / startVector.mag();
+        const scale = vector.mag() / startVector.mag();
         inertia.update(scale);
         frame.request(e, { vector, scale, center });
 
@@ -50,7 +50,6 @@ function makeMovement(map, { rotationDisabled, aroundCenter }, e) {
         }
 
         if (!gestureIntent) {
-            const scale =  vector.mag() / startVector.mag();
             if (rotationDisabled && scale !== 1) {
                 // when rotation is disabled, any scale change triggers the zoom gesture to start
                 gestureIntent = 'zoom';
