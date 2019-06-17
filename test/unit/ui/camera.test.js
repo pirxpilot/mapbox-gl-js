@@ -912,6 +912,31 @@ test('camera', (t) => {
             t.end();
         });
 
+        t.test('zooms to integer level without floating point errors', (t) => {
+            const camera = createCamera({zoom: 0.6});
+            camera.flyTo({ zoom: 2, animate: false });
+            t.equal(camera.getZoom(), 2);
+            t.end();
+        });
+
+        t.test('Zoom out from the same position to the same position with animation', (t) => {
+            const pos = { lng: 0, lat: 0 };
+            const camera = createCamera({zoom: 20, center: pos});
+            const stub = t.stub(browser, 'now');
+
+            camera.once('zoomend', () => {
+                t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat(pos));
+                t.equal(camera.getZoom(), 19);
+                t.end();
+            });
+
+            stub.callsFake(() => 0);
+            camera.flyTo({ zoom: 19, center: pos, duration: 2 });
+
+            stub.callsFake(() => 3);
+            camera.simulateFrame();
+        });
+
         t.test('rotates to specified bearing', (t) => {
             const camera = createCamera();
             camera.flyTo({ bearing: 90, animate: false });
