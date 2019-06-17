@@ -1,4 +1,14 @@
 
+0.45.21 / 2019-06-16
+====================
+
+ * minor optimization for touch-zoom-rotate
+ * fix intertia calculation
+ * begin touch zoom immediately when rotation disabled (#7582)
+ * fix shaky sprites on scrollZoom (#7558)
+ * Fix flyTo when the final zoom value is not the requested one (#7222) (#7223)
+ * fix flyTo not zooming to exact given zoom (#6828)
+
 0.45.20 / 2019-06-13
 ====================
 
