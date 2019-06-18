@@ -77,7 +77,7 @@ class SourceExpressionBinder {
         this.name = name;
         this.type = type;
         this.uniformName = `a_${name}`;
-        this.statistics = { max: -Infinity };
+        this.maxValue = -Infinity;
         const PaintVertexArray = type === 'color' ? StructArrayLayout2f8 : StructArrayLayout1f4;
         this.paintVertexAttributes = [{
             name: `a_${name}`,
