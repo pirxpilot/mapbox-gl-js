@@ -7,11 +7,10 @@ const LngLat = require('../geo/lng_lat');
 const Point = require('@mapbox/point-geometry');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 const loadImage = require('../util/loader/image');
-const browser = require('../util/browser');
 const EXTENT = require('../data/extent');
 const { RasterBoundsArray } = require('../data/array_types');
 const rasterBoundsAttributes = require('../data/raster_bounds_attributes');
-const VertexArrayObject = require('../render/vertex_array_object');
+const SegmentVector = require('../data/segment');
 const Texture = require('../render/texture');
 
 
@@ -76,7 +75,7 @@ class ImageSource extends Evented {
             if (err) {
                 this.fire(new ErrorEvent(err));
             } else if (image) {
-                this.image = browser.getImageData(image);
+                this.image = image;
                 this._finishLoading();
             }
         });
@@ -167,8 +166,8 @@ class ImageSource extends Evented {
             this.boundsBuffer = context.createVertexBuffer(this._boundsArray, rasterBoundsAttributes.members);
         }
 
-        if (!this.boundsVAO) {
-            this.boundsVAO = new VertexArrayObject();
+        if (!this.boundsSegments) {
+            this.boundsSegments = SegmentVector.simpleSegment(0, 0, 4, 2);
         }
 
         if (!this.texture) {

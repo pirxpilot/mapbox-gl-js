@@ -3,10 +3,6 @@
 const window = require('../util/window');
 const { HTMLImageElement, HTMLCanvasElement, HTMLVideoElement, ImageData } = window;
 
-
-
-
-
 class Texture {
 
     constructor(context, image, format, options) {
