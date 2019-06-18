@@ -1,4 +1,43 @@
 
+0.45.22 / 2019-06-18
+====================
+
+ * minor optimization for touch-zoom-rotate
+ * fix intertia calculation
+ * fixes zoomstart and movestart firing multiple times (#8259)
+ * begin touch zoom immediately when rotation disabled (#7582)
+ * fix shaky sprites on scrollZoom (#7558)
+ * Fix flyTo when the final zoom value is not the requested one (#7222) (#7223)
+ * fix flyTo not zooming to exact given zoom (#6828)
+ * fix querySourceFeatures on overscaled tiles (#7061)
+ * include tile weight (file size) in tile debug text (#7963)
+ * Cache hillshade textures based on texture size, not tile size. Fixes #7690 -- hillshade layers leak GPU memory.
+ * Use 1px border for DEM backfilling (#7683)
+ * only align raster sources to pixel grid when map is idle to prevent shaking (#7426)
+ * Fix symbol rendering under opaque fill layers (#7612)
+ * Drop v suffix from `Uniform*` names
+ * Fix line drawing
+ * Cache gl property
+ * Break cyclic dependency between Program and ProgramConfiguration
+ * Set GL program state inside Program#draw
+ * Inline drawLineTile and hoist loop invariant code
+ * Inline Uniforms class
+ * Check for most commonly divergent matrix indices first
+ * Perf improvements: initalize location in uniform binding constructor, initialize bindings in program constructor
+ * Maintain ownership of binder uniforms on Programs
+ * Introduce state management for uniform bindings
+ * Optimize and simplify tile retention logic (#6995)
+ * simplify and optimize getting visible coords
+ * add raster-resampling raster paint property (#6411)
+ * Explicitly set stencil mode (disabled) in heatmap texture copy
+ * Remove use of gl.lineWidth
+ * fix zero-width line rendering (#6772)
+ * Avoid unnecessary image decode. (#7550)
+ * clean .gitignore
+ * remove .github directory
+ * remove bench directory
+ * remove debug directory
+
 0.45.19 / 2019-04-24
 ====================
 
