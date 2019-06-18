@@ -823,7 +823,7 @@ class Camera extends Evented {
             // s: The distance traveled along the flight path, measured in ρ-screenfuls.
             const s = k * S;
             const scale = 1 / w(s);
-            tr.zoom = startZoom + tr.scaleZoom(scale);
+            tr.zoom = k === 1 ? zoom : startZoom + tr.scaleZoom(scale);
 
             if (this._rotating) {
                 tr.bearing = interpolate(startBearing, bearing, k);
@@ -832,7 +832,7 @@ class Camera extends Evented {
                 tr.pitch = interpolate(startPitch, pitch, k);
             }
 
-            const newCenter = tr.unproject(from.add(delta.mult(u(s))).mult(scale));
+            const newCenter = k === 1 ? center : tr.unproject(from.add(delta.mult(u(s))).mult(scale));
             tr.setLocationAtPoint(tr.renderWorldCopies ? newCenter.wrap() : newCenter, pointAtOffset);
 
             this._fireMoveEvents(eventData);

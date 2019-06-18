@@ -66,6 +66,7 @@ function scrollZoomHandler(_map) {
 
     let enabled = false;
     let active = false;
+    let zooming = false;
     let aroundCenter;
 
     let _lastWheelEvent;
@@ -98,6 +99,10 @@ function scrollZoomHandler(_map) {
 
     function isActive() {
         return active;
+    }
+
+    function isZooming() {
+        return zooming;
     }
 
     /**
@@ -196,8 +201,12 @@ function scrollZoomHandler(_map) {
         frame.cancel();
         active = true;
 
-        _map.fire(new Event('movestart', { originalEvent: _lastWheelEvent }));
-        _map.fire(new Event('zoomstart', { originalEvent: _lastWheelEvent }));
+        if (!zooming) {
+            zooming = true;
+            _map.fire(new Event('movestart', { originalEvent: _lastWheelEvent }));
+            _map.fire(new Event('zoomstart', { originalEvent: _lastWheelEvent }));
+        }
+
         if (_finishTimeout) {
             clearTimeout(_finishTimeout);
         }
@@ -266,6 +275,7 @@ function scrollZoomHandler(_map) {
         if (finished) {
             active = false;
             _finishTimeout = setTimeout(() => {
+                zooming = false;
                 _finishTimeout = undefined;
                 _map.fire(new Event('zoomend', {originalEvent: _lastWheelEvent}));
                 _map.fire(new Event('moveend', {originalEvent: _lastWheelEvent}));
@@ -276,6 +286,7 @@ function scrollZoomHandler(_map) {
 
     return {
         isActive,
+        isZooming,
         isEnabled,
         enable,
         disable,
