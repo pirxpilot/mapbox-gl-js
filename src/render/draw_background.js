@@ -18,7 +18,8 @@ function drawBackground(painter, sourceCache, layer) {
   const image = layer.paint.get('background-pattern');
   if (painter.isPatternMissing(image)) return;
 
-  const pass = !image && color.a === 1 && opacity === 1 ? 'opaque' : 'translucent';
+  const pass =
+    !image && color.a === 1 && opacity === 1 && painter.opaquePassEnabledForLayer() ? 'opaque' : 'translucent';
   if (painter.renderPass !== pass) return;
 
   const stencilMode = StencilMode.disabled;
