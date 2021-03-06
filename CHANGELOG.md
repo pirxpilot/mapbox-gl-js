@@ -1,4 +1,9 @@
 
+0.45.23 / 2021-03-06
+====================
+
+ * fix issue with fractional position in `click` event
+
 0.45.22 / 2019-06-18
 ====================
 
