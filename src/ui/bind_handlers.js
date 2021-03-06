@@ -155,10 +155,13 @@ module.exports = function bindHandlers(map, options) {
     }
 
     function onClick(e) {
-        const pos = DOM.mousePos(el, e);
-        if (pos.equals(startPos)) {
-            map.fire(new MapMouseEvent('click', map, e));
+        if (startPos) {
+            const pos = DOM.mousePos(el, e);
+            if (pos.dist(startPos) > options.clickTolerance) {
+                return;
+            }
         }
+        map.fire(new MapMouseEvent('click', map, e));
     }
 
     function onDblClick(e) {
