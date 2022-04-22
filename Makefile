@@ -8,10 +8,9 @@ SRC = $(call find, src, *.js)
 BUILD = dist/$(PROJECT).js dist/$(PROJECT)-worker.js
 DIST = $(BUILD:%.js=%.min.js)
 
-BROWSERIFY_OPTIONS = --debug --transform-path ./build/node_modules
-
 %/node_modules: %/package.json
-	(cd $(@D) && yarn --no-progress) && touch $@
+	yarn --cwd $(@D) --no-progress
+	touch $@
 
 %.min.js: %.js
 	$(NODE_BIN)/terser \
@@ -43,6 +42,25 @@ DEPENDENCIES = build/node_modules $(CURDIR)/node_modules src/style-spec/node_mod
 
 dependencies: | $(DEPENDENCIES)
 
+ifeq "$(BUNDLER)" "esbuild"
+
+ESBUILD_OPTIONS = --loader:.glsl=text --define:global=globalThis
+
+dist/$(PROJECT).js: $(SRC) | dependencies distdir
+	esbuild --bundle src/index.js \
+		$(ESBUILD_OPTIONS) \
+		--global-name=mapboxgl \
+		--outfile=$@
+
+dist/$(PROJECT)-worker.js: $(SRC) | dependencies distdir
+	esbuild --bundle src/source/worker.js  \
+		$(ESBUILD_OPTIONS) \
+		--outfile=$@
+
+else
+
+BROWSERIFY_OPTIONS = --debug --transform-path ./build/node_modules
+
 dist/$(PROJECT).debug.js: $(SRC) | dependencies distdir
 	$(NODE_BIN)/browserify src/index.js \
 		$(BROWSERIFY_OPTIONS) \
@@ -57,6 +75,8 @@ dist/$(PROJECT)-worker.debug.js: $(SRC) | dependencies distdir
 .INTERMEDIATE: dist/$(PROJECT).debug.js dist/$(PROJECT)-worker.debug.js
 
 .DELETE_ON_ERROR: $(BUILD) $(DIST)
+
+endif
 
 lint: dependencies
 	$(NODE_BIN)/eslint --cache --ignore-path .gitignore src test
