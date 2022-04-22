@@ -29,8 +29,8 @@
     "transform": [
       "unassertify",
       "package-json-versionify",
-      "brfs",
-      "./build/minifyify_style_spec"
+      "./build/minifyify_style_spec",
+      "./build/textify-glsl"
     ]
   },
   "browser": {
@@ -42,6 +42,7 @@
   },
   "files": [
     "src",
-    "build/minifyify_style_spec.js"
+    "build/minifyify_style_spec.js",
+    "build/textify-glsl.js"
   ]
 }
