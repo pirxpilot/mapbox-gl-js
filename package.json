@@ -18,6 +18,7 @@
     "earcut": "^2.0.3",
     "geojson-vt": "^3.1.2",
     "grid-index": "^1.0.0",
+    "nanoassert": "^2.0.0",
     "pbf": "~3",
     "quickselect": "^2.0.0",
     "supercluster": "^2.0.1",
@@ -27,13 +28,13 @@
   },
   "browserify": {
     "transform": [
-      "unassertify",
       "package-json-versionify",
       "./build/minifyify_style_spec",
       "./build/textify-glsl"
     ]
   },
   "browser": {
+    "assert": "nanoassert",
     "./src/util/window.js": "./src/util/browser/window.js",
     "./src/util/web_worker.js": "./src/util/browser/web_worker.js"
   },
