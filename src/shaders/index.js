@@ -2,108 +2,108 @@
 
 const shaders = {
     prelude: {
-        fragmentSource: require('../shaders/_prelude.fragment.glsl'),
-        vertexSource: require('../shaders/_prelude.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/_prelude.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/_prelude.vertex.glsl.txt')
     },
     background: {
-        fragmentSource: require('../shaders/background.fragment.glsl'),
-        vertexSource: require('../shaders/background.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/background.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/background.vertex.glsl.txt')
     },
     backgroundPattern: {
-        fragmentSource: require('../shaders/background_pattern.fragment.glsl'),
-        vertexSource: require('../shaders/background_pattern.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/background_pattern.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/background_pattern.vertex.glsl.txt')
     },
     circle: {
-        fragmentSource: require('../shaders/circle.fragment.glsl'),
-        vertexSource: require('../shaders/circle.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/circle.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/circle.vertex.glsl.txt')
     },
     clippingMask: {
-        fragmentSource: require('../shaders/clipping_mask.fragment.glsl'),
-        vertexSource: require('../shaders/clipping_mask.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/clipping_mask.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/clipping_mask.vertex.glsl.txt')
     },
     heatmap: {
-        fragmentSource: require('../shaders/heatmap.fragment.glsl'),
-        vertexSource: require('../shaders/heatmap.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/heatmap.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/heatmap.vertex.glsl.txt')
     },
     heatmapTexture: {
-        fragmentSource: require('../shaders/heatmap_texture.fragment.glsl'),
-        vertexSource: require('../shaders/heatmap_texture.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/heatmap_texture.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/heatmap_texture.vertex.glsl.txt')
     },
     collisionBox: {
-        fragmentSource: require('../shaders/collision_box.fragment.glsl'),
-        vertexSource: require('../shaders/collision_box.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/collision_box.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/collision_box.vertex.glsl.txt')
     },
     collisionCircle: {
-        fragmentSource: require('../shaders/collision_circle.fragment.glsl'),
-        vertexSource: require('../shaders/collision_circle.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/collision_circle.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/collision_circle.vertex.glsl.txt')
     },
     debug: {
-        fragmentSource: require('../shaders/debug.fragment.glsl'),
-        vertexSource: require('../shaders/debug.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/debug.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/debug.vertex.glsl.txt')
     },
     fill: {
-        fragmentSource: require('../shaders/fill.fragment.glsl'),
-        vertexSource: require('../shaders/fill.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/fill.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/fill.vertex.glsl.txt')
     },
     fillOutline: {
-        fragmentSource: require('../shaders/fill_outline.fragment.glsl'),
-        vertexSource: require('../shaders/fill_outline.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/fill_outline.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/fill_outline.vertex.glsl.txt')
     },
     fillOutlinePattern: {
-        fragmentSource: require('../shaders/fill_outline_pattern.fragment.glsl'),
-        vertexSource: require('../shaders/fill_outline_pattern.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/fill_outline_pattern.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/fill_outline_pattern.vertex.glsl.txt')
     },
     fillPattern: {
-        fragmentSource: require('../shaders/fill_pattern.fragment.glsl'),
-        vertexSource: require('../shaders/fill_pattern.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/fill_pattern.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/fill_pattern.vertex.glsl.txt')
     },
     fillExtrusion: {
-        fragmentSource: require('../shaders/fill_extrusion.fragment.glsl'),
-        vertexSource: require('../shaders/fill_extrusion.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/fill_extrusion.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/fill_extrusion.vertex.glsl.txt')
     },
     fillExtrusionPattern: {
-        fragmentSource: require('../shaders/fill_extrusion_pattern.fragment.glsl'),
-        vertexSource: require('../shaders/fill_extrusion_pattern.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/fill_extrusion_pattern.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/fill_extrusion_pattern.vertex.glsl.txt')
     },
     extrusionTexture: {
-        fragmentSource: require('../shaders/extrusion_texture.fragment.glsl'),
-        vertexSource: require('../shaders/extrusion_texture.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/extrusion_texture.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/extrusion_texture.vertex.glsl.txt')
     },
     hillshadePrepare: {
-        fragmentSource: require('../shaders/hillshade_prepare.fragment.glsl'),
-        vertexSource: require('../shaders/hillshade_prepare.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/hillshade_prepare.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/hillshade_prepare.vertex.glsl.txt')
     },
     hillshade: {
-        fragmentSource: require('../shaders/hillshade.fragment.glsl'),
-        vertexSource: require('../shaders/hillshade.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/hillshade.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/hillshade.vertex.glsl.txt')
     },
     line: {
-        fragmentSource: require('../shaders/line.fragment.glsl'),
-        vertexSource: require('../shaders/line.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/line.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/line.vertex.glsl.txt')
     },
     lineGradient: {
-        fragmentSource: require('../shaders/line_gradient.fragment.glsl'),
-        vertexSource: require('../shaders/line_gradient.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/line_gradient.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/line_gradient.vertex.glsl.txt')
     },
     linePattern: {
-        fragmentSource: require('../shaders/line_pattern.fragment.glsl'),
-        vertexSource: require('../shaders/line_pattern.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/line_pattern.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/line_pattern.vertex.glsl.txt')
     },
     lineSDF: {
-        fragmentSource: require('../shaders/line_sdf.fragment.glsl'),
-        vertexSource: require('../shaders/line_sdf.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/line_sdf.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/line_sdf.vertex.glsl.txt')
     },
     raster: {
-        fragmentSource: require('../shaders/raster.fragment.glsl'),
-        vertexSource: require('../shaders/raster.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/raster.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/raster.vertex.glsl.txt')
     },
     symbolIcon: {
-        fragmentSource: require('../shaders/symbol_icon.fragment.glsl'),
-        vertexSource: require('../shaders/symbol_icon.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/symbol_icon.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/symbol_icon.vertex.glsl.txt')
     },
     symbolSDF: {
-        fragmentSource: require('../shaders/symbol_sdf.fragment.glsl'),
-        vertexSource: require('../shaders/symbol_sdf.vertex.glsl')
+        fragmentSource: require('../../build/min/glsl/symbol_sdf.fragment.glsl.txt'),
+        vertexSource: require('../../build/min/glsl/symbol_sdf.vertex.glsl.txt')
     }
 };
 

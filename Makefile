@@ -66,7 +66,7 @@ dependencies: | $(DEPENDENCIES)
 
 ifeq "$(BUNDLER)" "esbuild"
 
-ESBUILD_OPTIONS = --loader:.glsl=text --define:global=globalThis
+ESBUILD_OPTIONS = --define:global=globalThis
 
 dist/$(PROJECT).js: $(SRC) | dependencies distdir
 	esbuild --bundle src/index.js \
