@@ -47,12 +47,17 @@ build/min/src/shaders/%.glsl.txt: src/shaders/%.glsl  | $$(@D)/.dir
 		--ext=.txt \
 		$<
 
+JQ_FILTER = walk(if type == "object" then delpaths([["doc"],["example"],["sdk-support"]]) else . end)
+
+build/min/style-spec/reference/%.json: src/style-spec/reference/%.json  | $$(@D)/.dir
+	jq '$(JQ_FILTER)' $< > $@
+
 PREBUILD = \
 	build/min/package.json \
+	build/min/style-spec/reference/v8.json \
 	$(GLSL:%.glsl=build/min/%.glsl.txt)
 
 prebuild: $(PREBUILD)
-
 
 .PHONY: prebuild
 
