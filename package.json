@@ -35,6 +35,7 @@
   },
   "browser": {
     "assert": "nanoassert",
+    "./package.json": "./build/min/package.json",
     "./src/util/window.js": "./src/util/browser/window.js",
     "./src/util/web_worker.js": "./src/util/browser/web_worker.js"
   },
@@ -43,6 +44,7 @@
   },
   "files": [
     "src",
+    "build/min",
     "build/minifyify_style_spec.js",
     "build/textify-glsl.js"
   ]

@@ -27,10 +27,32 @@ DIST = $(BUILD:%.js=%.min.js)
 %.js: %.debug.js
 	$(NODE_BIN)/exorcist --error-on-missing --base $(CURDIR) $@.map < $< > $@
 
+.SECONDEXPANSION:
+
+%/.dir:
+	mkdir --parent $(@D)
+	touch $@
+
+build/min/package.json: package.json | $$(@D)/.dir
+	jq  '{ version }' < $< > $@
+
+GLSL = $(wildcard src/shaders/*.glsl)
+
+build/min/glsl/%.glsl.txt: src/shaders/%.glsl | $$(@D)/.dir
+	sed -e '/^$$/d' -e '\/^\s*\/\/.*$$/d' -e 's/^ *//' $< > $@
+
+PREBUILD = build/min/package.json $(GLSL:src/shaders/%.glsl=build/min/glsl/%.glsl.txt)
+
+prebuild: $(PREBUILD)
+
+
+.PHONY: prebuild
+
 all: check build
 
 check: lint test
 
+build: $(PREBUILD)
 build: $(BUILD)
 
 dist: $(DIST)
@@ -99,7 +121,7 @@ distclean: clean
 	rm -fr $(DEPENDENCIES) .eslintcache
 
 clean:
-	rm -fr dist
+	rm -fr dist build/min
 
 clean-test:
 	find test/integration/*-tests -mindepth 2 -type d -not -exec test -e "{}/style.json" \; -print
