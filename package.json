@@ -41,7 +41,8 @@
     "./src/util/web_worker.js": "./src/util/browser/web_worker.js"
   },
   "scripts": {
-    "test": "make check"
+    "test": "make check",
+    "prepublish": "make prebuild"
   },
   "files": [
     "src",
