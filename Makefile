@@ -14,8 +14,7 @@ DIST = $(BUILD:%.js=%.min.js)
 
 %.min.js: %.js
 	$(NODE_BIN)/terser \
-		--mangle \
-		--compress warnings=false \
+	    --mangle \
 		--compress drop_console \
 		--compress pure_funcs=['assert'] \
 		--source-map filename='$@.map' \
@@ -38,10 +37,19 @@ build/min/package.json: package.json | $$(@D)/.dir
 
 GLSL = $(wildcard src/shaders/*.glsl)
 
-build/min/glsl/%.glsl.txt: src/shaders/%.glsl | $$(@D)/.dir
-	sed -e '/^$$/d' -e '\/^\s*\/\/.*$$/d' -e 's/^ *//' $< > $@
+build/min/src/shaders/%.glsl.txt: src/shaders/%.glsl  | $$(@D)/.dir
+	$(NODE_BIN)/webpack-glsl-minify \
+	    --preserveUniforms=true \
+	    --preserveDefines=true \
+	    --preserveVariables=true \
+		--output=sourceOnly \
+		--outDir=build/min \
+		--ext=.txt \
+		$<
 
-PREBUILD = build/min/package.json $(GLSL:src/shaders/%.glsl=build/min/glsl/%.glsl.txt)
+PREBUILD = \
+	build/min/package.json \
+	$(GLSL:%.glsl=build/min/%.glsl.txt)
 
 prebuild: $(PREBUILD)
 
@@ -55,6 +63,7 @@ check: lint test
 build: $(PREBUILD)
 build: $(BUILD)
 
+dist: $(PREBUILD)
 dist: $(DIST)
 
 distdir:
