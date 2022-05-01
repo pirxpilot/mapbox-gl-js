@@ -19,12 +19,8 @@ DIST = $(BUILD:%.js=%.min.js)
 		--compress pure_funcs=['assert'] \
 		--source-map filename='$@.map' \
 		--source-map content='$<.map' \
-		--source-map "root='/ui/script'" \
 		--output $@ \
 		-- $<
-
-%.js: %.debug.js
-	$(NODE_BIN)/exorcist --error-on-missing --base $(CURDIR) $@.map < $< > $@
 
 .SECONDEXPANSION:
 
@@ -78,8 +74,6 @@ DEPENDENCIES = build/node_modules $(CURDIR)/node_modules src/style-spec/node_mod
 
 dependencies: | $(DEPENDENCIES)
 
-ifeq "$(BUNDLER)" "esbuild"
-
 ESBUILD_OPTIONS = --define:global=globalThis
 
 dist/$(PROJECT).js: $(SRC) | dependencies distdir
@@ -92,27 +86,6 @@ dist/$(PROJECT)-worker.js: $(SRC) | dependencies distdir
 	esbuild --bundle src/source/worker.js  \
 		$(ESBUILD_OPTIONS) \
 		--outfile=$@
-
-else
-
-BROWSERIFY_OPTIONS = --debug --transform-path ./build/node_modules
-
-dist/$(PROJECT).debug.js: $(SRC) | dependencies distdir
-	$(NODE_BIN)/browserify src/index.js \
-		$(BROWSERIFY_OPTIONS) \
-		--outfile $@ \
-		--standalone mapboxgl
-
-dist/$(PROJECT)-worker.debug.js: $(SRC) | dependencies distdir
-	$(NODE_BIN)/browserify src/source/worker.js  \
-		$(BROWSERIFY_OPTIONS) \
-		--outfile $@
-
-.INTERMEDIATE: dist/$(PROJECT).debug.js dist/$(PROJECT)-worker.debug.js
-
-.DELETE_ON_ERROR: $(BUILD) $(DIST)
-
-endif
 
 lint: dependencies
 	$(NODE_BIN)/eslint --cache --ignore-path .gitignore src test

@@ -26,13 +26,6 @@
     "tinyqueue": "^1.1.0",
     "vt-pbf": "^3.1.1"
   },
-  "browserify": {
-    "transform": [
-      "package-json-versionify",
-      "./build/minifyify_style_spec",
-      "./build/textify-glsl"
-    ]
-  },
   "browser": {
     "assert": "nanoassert",
     "./package.json": "./build/min/package.json",
@@ -46,8 +39,6 @@
   },
   "files": [
     "src",
-    "build/min",
-    "build/minifyify_style_spec.js",
-    "build/textify-glsl.js"
+    "build/min"
   ]
 }
