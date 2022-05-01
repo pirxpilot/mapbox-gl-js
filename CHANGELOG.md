@@ -1,4 +1,12 @@
 
+0.45.26 / 2022-05-01
+====================
+
+ * remove browserify build option
+ * add style-spec minimalization
+ * minify glsl files using webpack-glsl-minify
+ * minimize package.json
+
 0.45.25 / 2022-04-23
 ====================
 
