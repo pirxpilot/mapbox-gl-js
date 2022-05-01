@@ -26,24 +26,19 @@
     "tinyqueue": "^1.1.0",
     "vt-pbf": "^3.1.1"
   },
-  "browserify": {
-    "transform": [
-      "package-json-versionify",
-      "./build/minifyify_style_spec",
-      "./build/textify-glsl"
-    ]
-  },
   "browser": {
     "assert": "nanoassert",
+    "./package.json": "./build/min/package.json",
+    "./src/style-spec/reference/v8.json": "./build/min/style-spec/reference/v8.json",
     "./src/util/window.js": "./src/util/browser/window.js",
     "./src/util/web_worker.js": "./src/util/browser/web_worker.js"
   },
   "scripts": {
-    "test": "make check"
+    "test": "make check",
+    "prepublish": "make prebuild"
   },
   "files": [
     "src",
-    "build/minifyify_style_spec.js",
-    "build/textify-glsl.js"
+    "build/min"
   ]
 }

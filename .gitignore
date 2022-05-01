@@ -1,5 +1,6 @@
 .eslintcache
 .nyc_output
+build/min
 coverage
 dist
 node_modules
