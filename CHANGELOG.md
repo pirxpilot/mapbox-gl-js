@@ -1,4 +1,9 @@
 
+0.45.27 / 2022-06-26
+====================
+
+ * prevent sending operations to workers after worker pool has been cleared
+
 0.45.26 / 2022-05-01
 ====================
 
