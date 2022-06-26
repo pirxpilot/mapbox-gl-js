@@ -50,7 +50,10 @@ function dispatcher(workerPool, parent, makeActor = actor) {
             targetID = nextActorId();
         }
 
-        actors[targetID].send(type, data, callback);
+        const actor = actors[targetID];
+        if (actor) {
+            actor.send(type, data, callback);
+        }
         return targetID;
     }
 
