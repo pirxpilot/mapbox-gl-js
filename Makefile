@@ -8,6 +8,8 @@ SRC = $(call find, src, *.js)
 BUILD = dist/$(PROJECT).js dist/$(PROJECT)-worker.js
 DIST = $(BUILD:%.js=%.min.js)
 
+DEBUG_FLAG ?= true
+
 %/node_modules: %/package.json
 	yarn --cwd $(@D) --no-progress
 	touch $@
@@ -15,6 +17,7 @@ DIST = $(BUILD:%.js=%.min.js)
 %.min.js: %.js
 	$(NODE_BIN)/terser \
 	    --mangle \
+		--define DEBUG=$(DEBUG_FLAG) \
 		--compress drop_console \
 		--compress pure_funcs=['assert'] \
 		--source-map filename='$@.map' \
@@ -64,6 +67,7 @@ check: lint test
 build: $(PREBUILD)
 build: $(BUILD)
 
+dist: DEBUG_FLAG=false
 dist: $(PREBUILD)
 dist: $(DIST)
 
@@ -74,7 +78,7 @@ DEPENDENCIES = build/node_modules $(CURDIR)/node_modules src/style-spec/node_mod
 
 dependencies: | $(DEPENDENCIES)
 
-ESBUILD_OPTIONS = --define:global=globalThis
+ESBUILD_OPTIONS = --define:global=globalThis --define:DEBUG=$(DEBUG_FLAG)
 
 dist/$(PROJECT).js: $(SRC) | dependencies distdir
 	esbuild --bundle src/index.js \
