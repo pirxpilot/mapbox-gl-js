@@ -10,6 +10,9 @@ module.exports = {
 /* global URL */
 
 function normalizeURL(url) {
+    if (url === undefined) {
+        return;
+    }
     return new URL(url, config.BASE_URL).href;
 }
 

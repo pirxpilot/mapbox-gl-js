@@ -32,6 +32,9 @@ class AJAXError extends Error {
 }
 
 function makeRequest(requestParameters) {
+    if (!requestParameters.url) {
+        return;
+    }
     const xhr = new window.XMLHttpRequest();
 
     xhr.open('GET', requestParameters.url, true);
@@ -44,6 +47,9 @@ function makeRequest(requestParameters) {
 
 function getJSON(requestParameters, callback) {
     const xhr = makeRequest(requestParameters);
+    if (!xhr) {
+        return callback(new AJAXError('Missing URL'));
+    }
     xhr.setRequestHeader('Accept', 'application/json');
     xhr.onerror = function() {
         callback(new Error(xhr.statusText));
@@ -71,6 +77,9 @@ function getJSON(requestParameters, callback) {
 
 function getArrayBuffer(requestParameters, callback) {
     const xhr = makeRequest(requestParameters);
+    if (!xhr) {
+        return callback(new AJAXError('Missing URL'));
+    }
     xhr.responseType = 'arraybuffer';
     xhr.onerror = function() {
         callback(new Error(xhr.statusText));
