@@ -24,6 +24,9 @@ class CanonicalTileID {
 
     // given a list of urls, choose a url template and return a tile URL
     url(urls, scheme) {
+        if (!urls) {
+            return;
+        }
         const bbox = getTileBBox(this.x, this.y, this.z);
         const quadkey = getQuadkey(this.z, this.x, this.y);
 
