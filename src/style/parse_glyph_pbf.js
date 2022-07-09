@@ -2,7 +2,7 @@
 
 const { AlphaImage } = require('../util/image');
 
-const Protobuf = require('pbf');
+const Protobuf = require('@mapwhit/pbf');
 const border = 3;
 
 

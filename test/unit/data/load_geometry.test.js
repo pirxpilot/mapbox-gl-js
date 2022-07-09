@@ -1,7 +1,7 @@
 const { test } = require('mapbox-gl-js-test');
 const fs = require('fs');
 const path = require('path');
-const Protobuf = require('pbf');
+const Protobuf = require('@mapwhit/pbf');
 const { VectorTile } = require('@mapbox/vector-tile');
 const loadGeometry = require('../../../src/data/load_geometry.js');
 
