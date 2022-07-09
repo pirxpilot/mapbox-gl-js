@@ -1,4 +1,10 @@
 
+0.45.31 / 2022-07-09
+====================
+
+ * replace `pbf` with `@mapwhit/pbf`
+ * replace `vt-pbf` with `@mapwhit/vt-pbf`
+
 0.45.29 / 2022-07-04
 ====================
 
