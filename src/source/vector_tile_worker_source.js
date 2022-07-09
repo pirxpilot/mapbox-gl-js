@@ -2,7 +2,7 @@
 
 const vt = require('@mapbox/vector-tile');
 const loader = require('../util/loader');
-const Protobuf = require('pbf');
+const Protobuf = require('@mapwhit/pbf');
 const WorkerTile = require('./worker_tile');
 
 function loadVectorTile(params, callback) {
