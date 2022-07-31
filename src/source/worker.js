@@ -8,7 +8,6 @@ const RasterDEMTileWorkerSource = require('./raster_dem_tile_worker_source');
 const GeoJSONWorkerSource = require('./geojson_worker_source');
 const assert = require('assert');
 const { plugin: globalRTLTextPlugin } = require('./rtl_text_plugin');
-const polyfill = require('../util/polyfill');
 
 /**
  * @private
@@ -174,6 +173,5 @@ class Worker {
 }
 
 module.exports = function createWorker(self) {
-    polyfill(self);
     return new Worker(self);
 };
