@@ -93,6 +93,7 @@ function getArrayBuffer(requestParameters, callback) {
             callback(null, {
                 data: response,
                 cacheControl: xhr.getResponseHeader('Cache-Control'),
+                type: xhr.getResponseHeader('Content-Type'),
                 expires: xhr.getResponseHeader('Expires')
             });
         } else {
