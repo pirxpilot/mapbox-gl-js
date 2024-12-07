@@ -1,4 +1,10 @@
 
+0.45.33 / 2024-12-07
+====================
+
+ * add support for `src` entry in sprite map style
+ * add support for images in formats other than png
+
 0.45.32 / 2022-07-31
 ====================
 
