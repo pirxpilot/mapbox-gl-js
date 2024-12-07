@@ -12,7 +12,7 @@ function urlsFromBase(baseURL) {
     const format = browser.devicePixelRatio > 1 ? '@2x' : '';
     return {
         json: normalizeSpriteURL(baseURL, format, '.json'),
-        png: normalizeSpriteURL(baseURL, format, '.png')
+        src: normalizeSpriteURL(baseURL, format, '.png')
     };
 }
 
@@ -24,7 +24,7 @@ function urlsFromData(urls) {
     const bestMatch = urls[index];
     return {
         json: normalizeURL(bestMatch.json),
-        png: normalizeURL(bestMatch.png)
+        src: normalizeURL(bestMatch.src || bestMatch.png)
     };
 }
 
@@ -40,7 +40,7 @@ function loadSprite(baseURL, callback) {
         }
     });
 
-    loadImage(urls.png, (err, img) => {
+    loadImage(urls.src, (err, img) => {
         if (!error) {
             error = err;
             image = img;

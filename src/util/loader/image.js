@@ -26,7 +26,7 @@ function image(url, fn) {
 }
 
 function imageFromData(imgData, fn) {
-    const blob = new window.Blob([imgData.data], { type: 'image/png' });
+    const blob = new window.Blob([imgData.data], { type: imgData.type || 'image/png' });
     const img = new window.Image();
 
     img.onload = () => {
