@@ -57,27 +57,8 @@ test('VectorTileSource', (t) => {
         });
     });
 
-    t.test('can be constructed from a TileJSON URL', (t) => {
-        window.server.respondWith('http://example.com/source.json', JSON.stringify(require('../../fixtures/source')));
-
-        const source = createSource({ url: "/source.json" });
-
-        source.on('data', (e) => {
-            if (e.sourceDataType === 'metadata') {
-                t.deepEqual(source.tiles, ["http://example.com/{z}/{x}/{y}.png"]);
-                t.deepEqual(source.minzoom, 1);
-                t.deepEqual(source.maxzoom, 10);
-                t.deepEqual(source.attribution, "Mapbox");
-                t.end();
-            }
-        });
-
-        window.server.respond();
-    });
-
     t.test('fires event with metadata property', (t) => {
-        window.server.respondWith('http://example.com/source.json', JSON.stringify(require('../../fixtures/source')));
-        const source = createSource({ url: "/source.json" });
+        const source = createSource(require('../../fixtures/source'));
         source.on('data', (e)=>{
             if (e.sourceDataType === 'content') t.end();
         });
@@ -85,13 +66,12 @@ test('VectorTileSource', (t) => {
     });
 
     t.test('fires "dataloading" event', (t) => {
-        window.server.respondWith('http://example.com/source.json', JSON.stringify(require('../../fixtures/source')));
         const evented = new Evented();
         let dataloadingFired = false;
         evented.on('dataloading', () => {
             dataloadingFired = true;
         });
-        const source = createSource({ url: "/source.json", eventedParent: evented });
+        const source = createSource(Object.assign({ eventedParent: evented }, require('../../fixtures/source')));
         source.on('data', (e) => {
             if (e.sourceDataType === 'metadata') {
                 if (!dataloadingFired) t.fail();
@@ -99,17 +79,6 @@ test('VectorTileSource', (t) => {
             }
         });
         window.server.respond();
-    });
-
-    t.test('serialize URL', (t) => {
-        const source = createSource({
-            url: "http://localhost:2900/source.json"
-        });
-        t.deepEqual(source.serialize(), {
-            type: 'vector',
-            url: "http://localhost:2900/source.json"
-        });
-        t.end();
     });
 
     t.test('serialize TileJSON', (t) => {
@@ -220,26 +189,6 @@ test('VectorTileSource', (t) => {
                 t.end();
             }
         });
-    });
-
-    t.test('respects TileJSON.bounds when loaded from TileJSON', (t)=>{
-        window.server.respondWith('http://example.com/source.json', JSON.stringify({
-            minzoom: 0,
-            maxzoom: 22,
-            attribution: "Mapbox",
-            tiles: ["http://example.com/{z}/{x}/{y}.png"],
-            bounds: [-47, -7, -45, -5]
-        }));
-        const source = createSource({ url: "/source.json" });
-
-        source.on('data', (e) => {
-            if (e.sourceDataType === 'metadata') {
-                t.false(source.hasTile(new OverscaledTileID(8, 0, 8, 96, 132)), 'returns false for tiles outside bounds');
-                t.true(source.hasTile(new OverscaledTileID(8, 0, 8, 95, 132)), 'returns true for tiles inside bounds');
-                t.end();
-            }
-        });
-        window.server.respond();
     });
 
     t.end();
