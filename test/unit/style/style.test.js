@@ -92,38 +92,6 @@ test('Style', (t) => {
     t.end();
 });
 
-test('Style#loadURL', (t) => {
-    let baseUrl;
-
-    t.beforeEach((callback) => {
-        baseUrl = config.BASE_URL;
-        config.BASE_URL = 'https://example.com';
-        window.useFakeXMLHttpRequest();
-        callback();
-    });
-
-    t.afterEach((callback) => {
-        config.BASE_URL = baseUrl;
-        window.restore();
-        callback();
-    });
-
-    t.test('fires "dataloading"', (t) => {
-        const style = new Style(new StubMap());
-        const spy = t.spy();
-
-        style.on('dataloading', spy);
-        style.loadURL('style.json');
-
-        t.ok(spy.calledOnce);
-        t.equal(spy.getCall(0).args[0].target, style);
-        t.equal(spy.getCall(0).args[0].dataType, 'style');
-        t.end();
-    });
-
-    t.end();
-});
-
 test('Style#loadJSON', (t) => {
     t.afterEach((callback) => {
         window.restore();
