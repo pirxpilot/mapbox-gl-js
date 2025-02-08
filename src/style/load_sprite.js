@@ -28,8 +28,18 @@ function urlsFromData(urls) {
     };
 }
 
-function loadSprite(baseURL, callback) {
+function loadSprite(sprite, callback) {
     let json, image, error;
+    if (typeof sprite === 'object' && !Array.isArray(sprite)) {
+        json = sprite.json;
+        loadImage(sprite.image, (err, img) => {
+            error = err;
+            image = img;
+            maybeComplete();
+        });
+        return;
+    }
+    const baseURL = sprite;
     const urls = Array.isArray(baseURL) ? urlsFromData(baseURL) : urlsFromBase(baseURL);
 
     loadJSON(urls.json, (err, data) => {
