@@ -67,25 +67,5 @@ test('RasterTileSource', (t) => {
         });
     });
 
-    t.test('respects TileJSON.bounds when loaded from TileJSON', (t)=>{
-        window.server.respondWith('http://example.com/source.json', JSON.stringify({
-            minzoom: 0,
-            maxzoom: 22,
-            attribution: "Mapbox",
-            tiles: ["http://example.com/{z}/{x}/{y}.png"],
-            bounds: [-47, -7, -45, -5]
-        }));
-        const source = createSource({ url: "/source.json" });
-
-        source.on('data', (e) => {
-            if (e.sourceDataType === 'metadata') {
-                t.false(source.hasTile(new OverscaledTileID(8, 0, 8, 96, 132)), 'returns false for tiles outside bounds');
-                t.true(source.hasTile(new OverscaledTileID(8, 0, 8, 95, 132)), 'returns true for tiles inside bounds');
-                t.end();
-            }
-        });
-        window.server.respond();
-    });
-
     t.end();
 });

@@ -17,8 +17,8 @@ class GlyphManager {
         this.entries = {};
     }
 
-    setURL(url) {
-        this.url = url;
+    setGlyphsLoader(loader) {
+        this.loader = loader;
     }
 
     getGlyphs(glyphs, callback) {
@@ -60,7 +60,7 @@ class GlyphManager {
             let requests = entry.requests[range];
             if (!requests) {
                 requests = entry.requests[range] = [];
-                GlyphManager.loadGlyphRange(stack, range, this.url,
+                GlyphManager.loadGlyphRange(stack, range, this.loader,
                     (err, response) => {
                         if (response) {
                             for (const id in response) {

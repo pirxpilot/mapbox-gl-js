@@ -7,7 +7,12 @@ const window = require('../window');
 module.exports = image;
 module.exports.load = loadImage;
 
-function loadImage(load, url, fn) {
+function loadImage(load, data, fn) {
+    if (data instanceof ArrayBuffer) {
+        done(null, { data });
+        return;
+    }
+    const url = data;
     load({ request: { url }, _ilk: 'image' }, done);
 
     function done(err, data) {

@@ -733,11 +733,8 @@ class Map extends Camera {
 
         this.style.setEventedParent(this, {style: this.style});
 
-        if (typeof style === 'string') {
-            this.style.loadURL(style);
-        } else {
-            this.style.loadJSON(style);
-        }
+        // style is expected to be an object
+        this.style.loadJSON(style);
 
         return this;
     }
