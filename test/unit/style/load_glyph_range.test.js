@@ -3,20 +3,17 @@
 const { test } = require('mapbox-gl-js-test');
 const fs = require('fs');
 const path = require('path');
-const window = require('../../../src/util/window');
 const loadGlyphRange = require('../../../src/style/load_glyph_range');
 
 test('loadGlyphRange', (t) => {
-    window.useFakeXMLHttpRequest();
 
-    t.tearDown(() => {
-        window.restore();
-    });
+    function load(fontstack, range) {
+        t.equal(fontstack, 'Arial Unicode MS');
+        t.equal(range, 0);
+        return fs.readFileSync(path.join(__dirname, '../../fixtures/0-255.pbf'));
+    }
 
-    let request;
-    window.XMLHttpRequest.onCreate = (req) => { request = req; };
-
-    loadGlyphRange('Arial Unicode MS', 0, 'https://localhost/fonts/v1/{fontstack}/{range}.pbf', (err, result) => {
+    loadGlyphRange('Arial Unicode MS', 0, load, (err, result) => {
         t.ifError(err);
 
         if (!result) return t.fail(); // appease flow
@@ -35,12 +32,5 @@ test('loadGlyphRange', (t) => {
         }
         t.end();
     });
-
-    if (!request) return t.fail(); // appease flow
-
-    t.equal(request.url, 'https://localhost/fonts/v1/Arial%20Unicode%20MS/0-255.pbf');
-    request.setStatus(200);
-    request.response = fs.readFileSync(path.join(__dirname, '../../fixtures/0-255.pbf'));
-    request.onload();
 
 });

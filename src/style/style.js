@@ -120,7 +120,7 @@ class Style extends Evented {
             this.imageManager.setLoaded(true);
         }
 
-        this.glyphManager.setURL(json.glyphs);
+        this.glyphManager.setGlyphsLoader(json.glyphs);
 
         const layers = deref(this.stylesheet.layers);
 
