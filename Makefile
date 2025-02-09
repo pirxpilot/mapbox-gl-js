@@ -81,7 +81,7 @@ dist/$(PROJECT)-worker.js: $(SRC) | dependencies distdir
 		--outfile=$@
 
 lint: dependencies
-	$(NODE_BIN)/eslint --cache --ignore-path .gitignore src test
+	$(NODE_BIN)/biome lint
 
 test: test-unit
 
@@ -98,7 +98,7 @@ test-query: dependencies
 	node test/query.test.js
 
 distclean: clean
-	rm -fr $(DEPENDENCIES) .eslintcache
+	rm -fr $(DEPENDENCIES)
 
 clean:
 	rm -fr dist build/min
