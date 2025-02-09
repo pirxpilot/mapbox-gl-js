@@ -6,7 +6,6 @@ find = $(foreach dir,$(1),$(foreach d,$(wildcard $(dir)/*),$(call find,$(d),$(2)
 SRC = $(call find, src, *.js)
 
 BUILD = dist/$(PROJECT).js dist/$(PROJECT)-worker.js
-DIST = $(BUILD:%.js=%.min.js)
 
 DEBUG_FLAG ?= true
 
@@ -25,7 +24,7 @@ build/min/package.json: package.json | $$(@D)/.dir
 
 GLSL = $(wildcard src/shaders/*.glsl)
 
-build/min/src/shaders/%.glsl.txt: src/shaders/%.glsl  | $$(@D)/.dir
+build/min/src/shaders/%.glsl.txt: src/shaders/%.glsl  | $$(@D)/.dir build/node_modules
 	$(NODE_BIN)/webpack-glsl-minify \
 	    --preserveUniforms=true \
 	    --preserveDefines=true \
@@ -57,8 +56,7 @@ build: $(PREBUILD)
 build: $(BUILD)
 
 dist: DEBUG_FLAG=false
-dist: $(PREBUILD)
-dist: $(DIST)
+dist: build
 
 distdir:
 	mkdir -p dist
