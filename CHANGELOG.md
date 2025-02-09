@@ -1,4 +1,15 @@
 
+0.46.0 / 2025-02-09
+===================
+
+ * remove direct loading of glyphs
+ * expect sprite as loaded JSON with image as the ArrayBuffer
+ * expect source as a loaded object
+ * expect map style to be an object
+ * stop minifying scripts in `dist` target
+ * replace eslint with biome
+ * remove outdated tools
+
 0.45.33 / 2024-12-07
 ====================
 
