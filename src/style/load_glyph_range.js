@@ -4,10 +4,21 @@ const { normalizeURL } = require('../util/urls');
 const makeLoader = require('../util/loader');
 const config = require('../util/config');
 const parseGlyphPBF = require('./parse_glyph_pbf');
+const { callback } = require('../util/callback');
 
 module.exports = loadGlyphRange;
 
-function loadGlyphRange(fontstack, range, urlTemplate, callback) {
+async function loadGlyphRange(fontstack, range, urlTemplate, fn) {
+    if (typeof urlTemplate === 'function') {
+        return callback(done, perform());
+
+        async function perform() {
+            const data = await urlTemplate(fontstack, range);
+            if (data) {
+                return { data };
+            }
+        }
+    }
     const begin = range * 256;
     const end = begin + 255;
 
@@ -21,13 +32,13 @@ function loadGlyphRange(fontstack, range, urlTemplate, callback) {
     loader({ request: { url }, fontstack, range }, done);
 
     function done(err, { data } = {}) {
-        if (err) return callback(err);
+        if (err) return fn(err);
         const glyphs = {};
         if (data) {
             for (const glyph of parseGlyphPBF(data)) {
                 glyphs[glyph.id] = glyph;
             }
         }
-        callback(null, glyphs);
+        fn(null, glyphs);
     }
 }
