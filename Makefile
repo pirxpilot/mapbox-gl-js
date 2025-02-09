@@ -14,17 +14,6 @@ DEBUG_FLAG ?= true
 	yarn --cwd $(@D) --no-progress
 	touch $@
 
-%.min.js: %.js
-	$(NODE_BIN)/terser \
-	    --mangle \
-		--define DEBUG=$(DEBUG_FLAG) \
-		--compress drop_console \
-		--compress pure_funcs=['assert'] \
-		--source-map filename='$@.map' \
-		--source-map content='$<.map' \
-		--output $@ \
-		-- $<
-
 .SECONDEXPANSION:
 
 %/.dir:
