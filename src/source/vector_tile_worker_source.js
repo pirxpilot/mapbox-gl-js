@@ -6,6 +6,10 @@ const Protobuf = require('@mapwhit/pbf');
 const WorkerTile = require('./worker_tile');
 
 function loadVectorTile(params, callback) {
+    if (params.response) {
+        done(null, params.response);
+        return;
+    }
     const { strategies } = this;
     const load = loader(strategies[params.source] || strategies['*']);
     return load(params, done);

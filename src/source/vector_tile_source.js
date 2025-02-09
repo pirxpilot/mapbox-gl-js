@@ -18,7 +18,6 @@ function getLanguage() {
 
 class VectorTileSource extends Evented {
 
-
     constructor(id, options, dispatcher, eventedParent) {
         super();
         this.id = id;
@@ -77,10 +76,24 @@ class VectorTileSource extends Evented {
         return Object.assign({}, this._options);
     }
 
-    loadTile(tile, callback) {
-        const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme));
+    async loadTile(tile, callback) {
+        let request, response;
+        if (typeof this.tiles === 'function') {
+            tile.abortController = new window.AbortController();
+            const data = await this.tiles(tile.tileID.canonical, tile.abortController).catch(() => {});
+            if (!data) {
+                return done(new Error('Tile could not be loaded'));
+            }
+            // 24 hours for cached tiles
+            response = { data, cacheControl: 'max-age=3600' };
+        }
+        else {
+            const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme));
+            request = { url };
+        }
         const params = {
-            request: { url },
+            request,
+            response,
             uid: tile.uid,
             tileID: tile.tileID,
             zoom: tile.tileID.overscaledZ,
@@ -124,6 +137,10 @@ class VectorTileSource extends Evented {
     }
 
     abortTile(tile) {
+        if (tile.abortController) {
+            tile.aborted = true;
+            tile.abortController.abort();
+        }
         this.dispatcher.send('abortTile', { uid: tile.uid, type: this.type, source: this.id }, undefined, tile.workerID);
     }
 
