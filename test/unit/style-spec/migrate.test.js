@@ -11,27 +11,27 @@ const spec = require('../../../src/style-spec/style-spec');
 
 const UPDATE = !!process.env.UPDATE;
 
-t('does not migrate from version 5', (t) => {
+t('does not migrate from version 5', async (t) => {
     t.throws(() => {
         migrate({version: 5, layers: []});
     }, new Error('cannot migrate from', 5));
     t.end();
 });
 
-t('does not migrate from version 6', (t) => {
+t('does not migrate from version 6', async (t) => {
     t.throws(() => {
         migrate({version: 6, layers: []});
     }, new Error('cannot migrate from', 6));
     t.end();
 });
 
-t('migrates to latest version from version 7', (t) => {
+t('migrates to latest version from version 7', async (t) => {
     t.deepEqual(migrate({version: 7, layers: []}).version, spec.latest.$version);
     t.end();
 });
 
 glob.sync(`${__dirname}/fixture/v7-migrate/*.input.json`).forEach((file) => {
-    t(path.basename(file), (t) => {
+    t(path.basename(file), async (t) => {
         const outputfile = file.replace('.input', '.output');
         const style = JSON.parse(fs.readFileSync(file));
         const result = migrate(style);

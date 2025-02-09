@@ -1,9 +1,9 @@
 const { test } = require('mapbox-gl-js-test');
 const Wrapper = require('../../../src/source/geojson_wrapper');
 
-test('geojsonwrapper', (t) => {
+test('geojsonwrapper', async (t) => {
 
-    t.test('linestring', (t) => {
+    await t.test('linestring', async (t) => {
         const features = [{
             type: 2,
             geometry: [[[0, 0], [10, 10]]],
@@ -21,7 +21,7 @@ test('geojsonwrapper', (t) => {
         t.end();
     });
 
-    t.test('point', (t) => {
+    await t.test('point', async (t) => {
         const features = [{
             type: 1,
             geometry: [[0, 1]],

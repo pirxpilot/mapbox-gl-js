@@ -6,8 +6,8 @@ const _self = {
     addEventListener: function() {}
 };
 
-test('load tile', (t) => {
-    t.test('calls callback on error', (t) => {
+test('load tile', async (t) => {
+    await t.test('calls callback on error', (t, done) => {
         window.useFakeXMLHttpRequest();
         const worker = new Worker(_self);
         worker.loadTile(0, {
@@ -19,12 +19,10 @@ test('load tile', (t) => {
         }, (err) => {
             t.ok(err);
             window.restore();
-            t.end();
+            done();
         });
         window.server.respond();
     });
-
-    t.end();
 });
 
 test('isolates different instances\' data', (t) => {
@@ -40,16 +38,15 @@ test('isolates different instances\' data', (t) => {
     ], () => {});
 
     t.notEqual(worker.layerIndexes[0], worker.layerIndexes[1]);
-    t.end();
 });
 
-test('worker source messages dispatched to the correct map instance', (t) => {
+test('worker source messages dispatched to the correct map instance', (t, done) => {
     const worker = new Worker(_self);
 
     worker.actor.send = function (type, data, callback, mapId) {
         t.equal(type, 'main thread task');
         t.equal(mapId, 999);
-        t.end();
+        done();
     };
 
     _self.registerWorkerSource('test', function(actor) {

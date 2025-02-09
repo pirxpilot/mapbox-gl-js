@@ -17,12 +17,12 @@ function createMap(options) {
     }, options));
 }
 
-test('ScrollZoomHandler', (t) => {
+test('ScrollZoomHandler', async (t) => {
     const browserNow = t.stub(browser, 'now');
     let now = 1555555555555;
     browserNow.callsFake(() => now);
 
-    t.test('Zooms for single mouse wheel tick', (t) => {
+    await t.test('Zooms for single mouse wheel tick', async (t) => {
         const map = createMap();
         map._renderTaskQueue.run();
 
@@ -41,7 +41,7 @@ test('ScrollZoomHandler', (t) => {
         t.end();
     });
 
-    t.test('Zooms for single mouse wheel tick with non-magical deltaY', (t) => {
+    await t.test('Zooms for single mouse wheel tick with non-magical deltaY', async (t) => {
         const map = createMap();
         map._renderTaskQueue.run();
 
@@ -55,7 +55,7 @@ test('ScrollZoomHandler', (t) => {
         });
     });
 
-    t.test('Zooms for multiple mouse wheel ticks', (t) => {
+    await t.test('Zooms for multiple mouse wheel ticks', async (t) => {
         const map = createMap();
 
         map._renderTaskQueue.run();
@@ -93,7 +93,7 @@ test('ScrollZoomHandler', (t) => {
         t.end();
     });
 
-    t.test('Gracefully ignores wheel events with deltaY: 0', (t) => {
+    await t.test('Gracefully ignores wheel events with deltaY: 0', async (t) => {
         const map = createMap();
         map._renderTaskQueue.run();
 
@@ -113,7 +113,7 @@ test('ScrollZoomHandler', (t) => {
         t.end();
     });
 
-    test('does not zoom if preventDefault is called on the wheel event', (t) => {
+    test('does not zoom if preventDefault is called on the wheel event', async (t) => {
         const map = createMap();
 
         map.on('wheel', e => e.preventDefault());
@@ -130,7 +130,7 @@ test('ScrollZoomHandler', (t) => {
         t.end();
     });
 
-    t.test('emits one movestart event and one moveend event while zooming', (t) => {
+    await t.test('emits one movestart event and one moveend event while zooming', async (t) => {
         const clock = sinon.useFakeTimers(now);
         const map = createMap(t);
 
@@ -174,7 +174,7 @@ test('ScrollZoomHandler', (t) => {
         t.end();
     });
 
-    t.test('emits one zoomstart event and one zoomend event while zooming', (t) => {
+    await t.test('emits one zoomstart event and one zoomend event while zooming', async (t) => {
         const clock = sinon.useFakeTimers(now);
         const map = createMap(t);
 

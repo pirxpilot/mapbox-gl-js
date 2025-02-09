@@ -20,7 +20,7 @@ function createLine(numPoints) {
     return points;
 }
 
-test('LineBucket', (t) => {
+test('LineBucket', async (t) => {
     const layer = new LineStyleLayer({ id: 'test', type: 'line' });
     layer.recalculate({zoom: 0, zoomHistory: {}});
 
@@ -97,7 +97,7 @@ test('LineBucket', (t) => {
     t.end();
 });
 
-test('LineBucket segmentation', (t) => {
+test('LineBucket segmentation', async (t) => {
     t.stub(console, 'warn');
 
     // Stub MAX_VERTEX_ARRAY_LENGTH so we can test features

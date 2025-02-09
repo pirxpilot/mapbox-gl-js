@@ -5,7 +5,7 @@ function roundtrip(style) {
     return JSON.parse(format(style));
 }
 
-t('orders top-level keys', (t) => {
+t('orders top-level keys', async (t) => {
     t.deepEqual(Object.keys(roundtrip({
         "layers": [],
         "other": {},
@@ -17,7 +17,7 @@ t('orders top-level keys', (t) => {
     t.end();
 });
 
-t('orders layer keys', (t) => {
+t('orders layer keys', async (t) => {
     t.deepEqual(Object.keys(roundtrip({
         "layers": [{
             "paint": {},

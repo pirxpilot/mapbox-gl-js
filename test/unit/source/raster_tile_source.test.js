@@ -17,23 +17,21 @@ function createSource(options) {
     return source;
 }
 
-test('RasterTileSource', (t) => {
+test('RasterTileSource', async (t) => {
     let baseUrl;
 
-    t.beforeEach((callback) => {
+    t.beforeEach(() => {
         baseUrl = config.BASE_URL;
         config.BASE_URL = 'http://example.com';
         window.useFakeXMLHttpRequest();
-        callback();
     });
 
-    t.afterEach((callback) => {
+    t.afterEach(() => {
         config.BASE_URL = baseUrl;
         window.restore();
-        callback();
     });
 
-    t.test('respects TileJSON.bounds', (t)=>{
+    await t.test('respects TileJSON.bounds', (t)=>{
         const source = createSource({
             minzoom: 0,
             maxzoom: 22,
@@ -50,7 +48,7 @@ test('RasterTileSource', (t) => {
         });
     });
 
-    t.test('does not error on invalid bounds', (t)=>{
+    await t.test('does not error on invalid bounds', (t)=>{
         const source = createSource({
             minzoom: 0,
             maxzoom: 22,

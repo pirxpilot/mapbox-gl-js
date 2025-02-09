@@ -1,8 +1,8 @@
 const { test } = require('mapbox-gl-js-test');
 const filter = require('../../../src/style-spec/feature_filter');
 
-test('filter', (t) => {
-    t.test('expression, zoom', (t) => {
+test('filter', async (t) => {
+    await t.test('expression, zoom', async (t) => {
         const f = filter(['>=', ['number', ['get', 'x']], ['zoom']]);
         t.equal(f({zoom: 1}, {properties: {x: 0}}), false);
         t.equal(f({zoom: 1}, {properties: {x: 1.5}}), true);
@@ -13,7 +13,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('expression, compare two properties', (t) => {
+    await t.test('expression, compare two properties', async (t) => {
         t.stub(console, 'warn');
         const f = filter(['==', ['string', ['get', 'x']], ['string', ['get', 'y']]]);
         t.equal(f({zoom: 0}, {properties: {x: 1, y: 1}}), false);
@@ -24,7 +24,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('expression, any/all', (t) => {
+    await t.test('expression, any/all', async (t) => {
         t.equal(filter(['all'])(), true);
         t.equal(filter(['all', true])(), true);
         t.equal(filter(['all', true, false])(), false);
@@ -36,7 +36,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('expression, type error', (t) => {
+    await t.test('expression, type error', async (t) => {
         t.throws(() => {
             filter(['==', ['number', ['get', 'x']], ['string', ['get', 'y']]]);
         });
@@ -53,21 +53,21 @@ test('filter', (t) => {
     });
 
 
-    t.test('degenerate', (t) => {
+    await t.test('degenerate', async (t) => {
         t.equal(filter()(), true);
         t.equal(filter(undefined)(), true);
         t.equal(filter(null)(), true);
         t.end();
     });
 
-    t.test('==, string', (t) => {
+    await t.test('==, string', async (t) => {
         const f = filter(['==', 'foo', 'bar']);
         t.equal(f({zoom: 0}, {properties: {foo: 'bar'}}), true);
         t.equal(f({zoom: 0}, {properties: {foo: 'baz'}}), false);
         t.end();
     });
 
-    t.test('==, number', (t) => {
+    await t.test('==, number', async (t) => {
         const f = filter(['==', 'foo', 0]);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), true);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), false);
@@ -80,7 +80,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('==, null', (t) => {
+    await t.test('==, null', async (t) => {
         const f = filter(['==', 'foo', null]);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), false);
@@ -93,14 +93,14 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('==, $type', (t) => {
+    await t.test('==, $type', async (t) => {
         const f = filter(['==', '$type', 'LineString']);
         t.equal(f({zoom: 0}, {type: 1}), false);
         t.equal(f({zoom: 0}, {type: 2}), true);
         t.end();
     });
 
-    t.test('==, $id', (t) => {
+    await t.test('==, $id', async (t) => {
         const f = filter(['==', '$id', 1234]);
 
         t.equal(f({zoom: 0}, {id: 1234}), true);
@@ -110,14 +110,14 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('!=, string', (t) => {
+    await t.test('!=, string', async (t) => {
         const f = filter(['!=', 'foo', 'bar']);
         t.equal(f({zoom: 0}, {properties: {foo: 'bar'}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: 'baz'}}), true);
         t.end();
     });
 
-    t.test('!=, number', (t) => {
+    await t.test('!=, number', async (t) => {
         const f = filter(['!=', 'foo', 0]);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), true);
@@ -130,7 +130,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('!=, null', (t) => {
+    await t.test('!=, null', async (t) => {
         const f = filter(['!=', 'foo', null]);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), true);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), true);
@@ -143,14 +143,14 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('!=, $type', (t) => {
+    await t.test('!=, $type', async (t) => {
         const f = filter(['!=', '$type', 'LineString']);
         t.equal(f({zoom: 0}, {type: 1}), true);
         t.equal(f({zoom: 0}, {type: 2}), false);
         t.end();
     });
 
-    t.test('<, number', (t) => {
+    await t.test('<, number', async (t) => {
         const f = filter(['<', 'foo', 0]);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
@@ -166,7 +166,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('<, string', (t) => {
+    await t.test('<, string', async (t) => {
         const f = filter(['<', 'foo', '0']);
         t.equal(f({zoom: 0}, {properties: {foo: -1}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
@@ -181,7 +181,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('<=, number', (t) => {
+    await t.test('<=, number', async (t) => {
         const f = filter(['<=', 'foo', 0]);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), true);
@@ -197,7 +197,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('<=, string', (t) => {
+    await t.test('<=, string', async (t) => {
         const f = filter(['<=', 'foo', '0']);
         t.equal(f({zoom: 0}, {properties: {foo: -1}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
@@ -212,7 +212,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('>, number', (t) => {
+    await t.test('>, number', async (t) => {
         const f = filter(['>', 'foo', 0]);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), true);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
@@ -228,7 +228,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('>, string', (t) => {
+    await t.test('>, string', async (t) => {
         const f = filter(['>', 'foo', '0']);
         t.equal(f({zoom: 0}, {properties: {foo: -1}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
@@ -243,7 +243,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('>=, number', (t) => {
+    await t.test('>=, number', async (t) => {
         const f = filter(['>=', 'foo', 0]);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), true);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), true);
@@ -259,7 +259,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('>=, string', (t) => {
+    await t.test('>=, string', async (t) => {
         const f = filter(['>=', 'foo', '0']);
         t.equal(f({zoom: 0}, {properties: {foo: -1}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
@@ -274,13 +274,13 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('in, degenerate', (t) => {
+    await t.test('in, degenerate', async (t) => {
         const f = filter(['in', 'foo']);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), false);
         t.end();
     });
 
-    t.test('in, string', (t) => {
+    await t.test('in, string', async (t) => {
         const f = filter(['in', 'foo', '0']);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: '0'}}), true);
@@ -292,7 +292,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('in, number', (t) => {
+    await t.test('in, number', async (t) => {
         const f = filter(['in', 'foo', 0]);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), true);
         t.equal(f({zoom: 0}, {properties: {foo: '0'}}), false);
@@ -303,7 +303,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('in, null', (t) => {
+    await t.test('in, null', async (t) => {
         const f = filter(['in', 'foo', null]);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: '0'}}), false);
@@ -314,7 +314,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('in, multiple', (t) => {
+    await t.test('in, multiple', async (t) => {
         const f = filter(['in', 'foo', 0, 1]);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), true);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), true);
@@ -322,7 +322,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('in, large_multiple', (t) => {
+    await t.test('in, large_multiple', async (t) => {
         const values = Array.apply(null, {length: 2000}).map(Number.call, Number);
         values.reverse();
         const f = filter(['in', 'foo'].concat(values));
@@ -333,7 +333,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('in, large_multiple, heterogeneous', (t) => {
+    await t.test('in, large_multiple, heterogeneous', async (t) => {
         const values = Array.apply(null, {length: 2000}).map(Number.call, Number);
         values.push('a');
         values.unshift('b');
@@ -347,7 +347,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('in, $type', (t) => {
+    await t.test('in, $type', async (t) => {
         const f = filter(['in', '$type', 'LineString', 'Polygon']);
         t.equal(f({zoom: 0}, {type: 1}), false);
         t.equal(f({zoom: 0}, {type: 2}), true);
@@ -361,13 +361,13 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('!in, degenerate', (t) => {
+    await t.test('!in, degenerate', async (t) => {
         const f = filter(['!in', 'foo']);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), true);
         t.end();
     });
 
-    t.test('!in, string', (t) => {
+    await t.test('!in, string', async (t) => {
         const f = filter(['!in', 'foo', '0']);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), true);
         t.equal(f({zoom: 0}, {properties: {foo: '0'}}), false);
@@ -377,7 +377,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('!in, number', (t) => {
+    await t.test('!in, number', async (t) => {
         const f = filter(['!in', 'foo', 0]);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: '0'}}), true);
@@ -386,7 +386,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('!in, null', (t) => {
+    await t.test('!in, null', async (t) => {
         const f = filter(['!in', 'foo', null]);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), true);
         t.equal(f({zoom: 0}, {properties: {foo: '0'}}), true);
@@ -395,7 +395,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('!in, multiple', (t) => {
+    await t.test('!in, multiple', async (t) => {
         const f = filter(['!in', 'foo', 0, 1]);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), false);
@@ -403,7 +403,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('!in, large_multiple', (t) => {
+    await t.test('!in, large_multiple', async (t) => {
         const f = filter(['!in', 'foo'].concat(Array.apply(null, {length: 2000}).map(Number.call, Number)));
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), false);
@@ -412,7 +412,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('!in, $type', (t) => {
+    await t.test('!in, $type', async (t) => {
         const f = filter(['!in', '$type', 'LineString', 'Polygon']);
         t.equal(f({zoom: 0}, {type: 1}), true);
         t.equal(f({zoom: 0}, {type: 2}), false);
@@ -420,7 +420,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('any', (t) => {
+    await t.test('any', async (t) => {
         const f1 = filter(['any']);
         t.equal(f1({zoom: 0}, {properties: {foo: 1}}), false);
 
@@ -436,7 +436,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('all', (t) => {
+    await t.test('all', async (t) => {
         const f1 = filter(['all']);
         t.equal(f1({zoom: 0}, {properties: {foo: 1}}), true);
 
@@ -452,7 +452,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('none', (t) => {
+    await t.test('none', async (t) => {
         const f1 = filter(['none']);
         t.equal(f1({zoom: 0}, {properties: {foo: 1}}), true);
 
@@ -468,7 +468,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('has', (t) => {
+    await t.test('has', async (t) => {
         const f = filter(['has', 'foo']);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), true);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), true);
@@ -481,7 +481,7 @@ test('filter', (t) => {
         t.end();
     });
 
-    t.test('!has', (t) => {
+    await t.test('!has', async (t) => {
         const f = filter(['!has', 'foo']);
         t.equal(f({zoom: 0}, {properties: {foo: 0}}), false);
         t.equal(f({zoom: 0}, {properties: {foo: 1}}), false);

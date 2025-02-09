@@ -2,14 +2,14 @@ const { test } = require('mapbox-gl-js-test');
 const { normalizeSpriteURL, normalizeURL } = require('../../../src/util/urls');
 const config = require('../../../src/util/config');
 
-test("mapbox", (t) => {
-    t.test('.normalizeURL', (t) => {
-        t.test('ignores non-relative URLs', (t) => {
+test("mapbox", async (t) => {
+    await t.test('.normalizeURL', async (t) => {
+        await t.test('ignores non-relative URLs', async (t) => {
             t.equal(normalizeURL('http://path/style.json'), 'http://path/style.json');
             t.end();
         });
 
-        t.test('handles custom BASE_URLs with paths', (t) => {
+        await t.test('handles custom BASE_URLs with paths', async (t) => {
             const previousUrl = config.BASE_URL;
             config.BASE_URL = 'https://test.example.com/api.mapbox.com';
             t.equal(
@@ -23,18 +23,18 @@ test("mapbox", (t) => {
         t.end();
     });
 
-    t.test('.normalizeSpriteURL', (t) => {
-        t.test('concantenates path, ratio, and extension for non-relative scheme', (t) => {
+    await t.test('.normalizeSpriteURL', async (t) => {
+        await t.test('concantenates path, ratio, and extension for non-relative scheme', async (t) => {
             t.equal(normalizeSpriteURL('http://www.foo.com/bar', '@2x', '.png'), 'http://www.foo.com/bar@2x.png');
             t.end();
         });
 
-        t.test('concantenates path, ratio, and extension for file:/// scheme', (t) => {
+        await t.test('concantenates path, ratio, and extension for file:/// scheme', async (t) => {
             t.equal(normalizeSpriteURL('file:///path/to/bar', '@2x', '.png'), 'file:///path/to/bar@2x.png');
             t.end();
         });
 
-        t.test('normalizes non-relative scheme when query string exists', (t) => {
+        await t.test('normalizes non-relative scheme when query string exists', async (t) => {
             t.equal(
                 normalizeSpriteURL('http://www.foo.com/bar?fresh=true', '@2x', '.png'),
                 'http://www.foo.com/bar@2x.png?fresh=true'
@@ -42,7 +42,7 @@ test("mapbox", (t) => {
             t.end();
         });
 
-        t.test('handles custom BASE_URLs with paths', (t) => {
+        await t.test('handles custom BASE_URLs with paths', async (t) => {
             const previousUrl = config.BASE_URL;
             config.BASE_URL = 'https://test.example.com/api.mapbox.com';
             t.equal(

@@ -8,8 +8,8 @@ for (const glyph of parseGlyphPBF(fs.readFileSync('./test/fixtures/0-255.pbf')))
     glyphs[glyph.id] = glyph;
 }
 
-test('GlyphManager requests 0-255 PBF', (t) => {
-    function glyphLoader() {}
+test('GlyphManager requests 0-255 PBF', (t, done) => {
+    function glyphLoader() { }
 
     t.stub(GlyphManager, 'loadGlyphRange').callsFake((stack, range, load, callback) => {
         t.equal(stack, 'Arial Unicode MS');
@@ -19,31 +19,31 @@ test('GlyphManager requests 0-255 PBF', (t) => {
     });
 
     const manager = new GlyphManager();
-    manager.setGlyphLoader(glyphLoader);
+    manager.setGlyphsLoader(glyphLoader);
 
-    manager.getGlyphs({'Arial Unicode MS': [55]}, (err, glyphs) => {
+    manager.getGlyphs({ 'Arial Unicode MS': [55] }, (err, glyphs) => {
         t.ifError(err);
         t.equal(glyphs['Arial Unicode MS']['55'].metrics.advance, 12);
-        t.end();
+        done();
     });
 });
 
-test('GlyphManager requests remote CJK PBF', (t) => {
+test('GlyphManager requests remote CJK PBF', (t, done) => {
     t.stub(GlyphManager, 'loadGlyphRange').callsFake((stack, range, load, callback) => {
         setImmediate(() => callback(null, glyphs));
     });
 
     const manager = new GlyphManager();
-    manager.setGlyphLoader(() => {});
+    manager.setGlyphsLoader(() => { });
 
-    manager.getGlyphs({'Arial Unicode MS': [0x5e73]}, (err, glyphs) => {
+    manager.getGlyphs({ 'Arial Unicode MS': [0x5e73] }, (err, glyphs) => {
         t.ifError(err);
         t.equal(glyphs['Arial Unicode MS'][0x5e73], null); // The fixture returns a PBF without the glyph we requested
-        t.end();
+        done();
     });
 });
 
-test('GlyphManager generates CJK PBF locally', (t) => {
+test('GlyphManager generates CJK PBF locally', (t, done) => {
     t.stub(GlyphManager, 'TinySDF').value(class {
         // Return empty 30x30 bitmap (24 fontsize + 3 * 2 buffer)
         draw() {
@@ -52,11 +52,11 @@ test('GlyphManager generates CJK PBF locally', (t) => {
     });
 
     const manager = new GlyphManager('sans-serif');
-    manager.setURL('https://localhost/fonts/v1/{fontstack}/{range}.pbf');
+    manager.setGlyphsLoader(() => { });
 
-    manager.getGlyphs({'Arial Unicode MS': [0x5e73]}, (err, glyphs) => {
+    manager.getGlyphs({ 'Arial Unicode MS': [0x5e73] }, (err, glyphs) => {
         t.ifError(err);
         t.equal(glyphs['Arial Unicode MS'][0x5e73].metrics.advance, 24);
-        t.end();
+        done();
     });
 });

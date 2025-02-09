@@ -2,7 +2,7 @@ const { test } = require('mapbox-gl-js-test');
 const { mapObject } = require('../../../src/util/object');
 const StyleLayerIndex = require('../../../src/style/style_layer_index');
 
-test('StyleLayerIndex#replace', (t) => {
+test('StyleLayerIndex#replace', async (t) => {
     const index = new StyleLayerIndex([
         { id: '1', type: 'fill', source: 'source', 'source-layer': 'layer', paint: { 'fill-color': 'red' }  },
         { id: '2', type: 'circle', source: 'source', 'source-layer': 'layer', paint: { 'circle-color': 'green' }  },
@@ -23,7 +23,7 @@ test('StyleLayerIndex#replace', (t) => {
     t.end();
 });
 
-test('StyleLayerIndex#update', (t) => {
+test('StyleLayerIndex#update', async (t) => {
     const index = new StyleLayerIndex([
         { id: '1', type: 'fill', source: 'foo', 'source-layer': 'layer', paint: { 'fill-color': 'red' } },
         { id: '2', type: 'circle', source: 'foo', 'source-layer': 'layer', paint: { 'circle-color': 'green' } },
@@ -49,7 +49,7 @@ test('StyleLayerIndex#update', (t) => {
     t.end();
 });
 
-test('StyleLayerIndex#familiesBySource', (t) => {
+test('StyleLayerIndex#familiesBySource', async (t) => {
     const index = new StyleLayerIndex([
         { id: '0', type: 'fill', 'source': 'A', 'source-layer': 'foo' },
         { id: '1', type: 'fill', 'source': 'A', 'source-layer': 'foo' },
@@ -87,7 +87,7 @@ test('StyleLayerIndex#familiesBySource', (t) => {
     t.end();
 });
 
-test('StyleLayerIndex groups families even if layout key order differs', (t) => {
+test('StyleLayerIndex groups families even if layout key order differs', async (t) => {
     const index = new StyleLayerIndex([
         { id: '0', type: 'line', 'source': 'source', 'source-layer': 'layer',
             'layout': {'line-cap': 'butt', 'line-join': 'miter'} },

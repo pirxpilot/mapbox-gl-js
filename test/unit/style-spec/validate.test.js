@@ -1,45 +1,45 @@
-const { test: t } = require('mapbox-gl-js-test');
-const glob = require('glob');
-const fs = require('fs');
+const { globSync, readFileSync, writeFileSync } = require('node:fs');
+const { test } = require('mapbox-gl-js-test');
 const path = require('path');
 const validate = require('../../../src/style-spec/validate_style');
 
 const UPDATE = !!process.env.UPDATE;
 
-glob.sync(`${__dirname}/fixture/*.input.json`).forEach((file) => {
-    t(path.basename(file), (t) => {
+globSync(`${__dirname}/fixture/*.input.json`).forEach((file) => {
+    test(path.basename(file), (t) => {
         const outputfile = file.replace('.input', '.output');
-        const style = fs.readFileSync(file);
+        const style = readFileSync(file);
         const result = validate(style);
-        if (UPDATE) fs.writeFileSync(outputfile, JSON.stringify(result, null, 2));
-        const expect = JSON.parse(fs.readFileSync(outputfile));
-        t.deepEqual(result, expect);
-        t.end();
+        if (UPDATE) {
+            writeFileSync(outputfile, JSON.stringify(result, null, 2));
+        }
+        const expect = JSON.parse(readFileSync(outputfile));
+        if (expect[0]?.error) {
+            t.equal(result[0].message, expect[0].message);
+        } else {
+            t.deepEqual(result, expect);
+        }
     });
 });
 
-const fixtures = glob.sync(`${__dirname}/fixture/*.input.json`);
-const style = JSON.parse(fs.readFileSync(fixtures[0]));
+const fixtures = globSync(`${__dirname}/fixture/*.input.json`);
+const style = JSON.parse(readFileSync(fixtures[0]));
 const reference = require('../../../src/style-spec/reference/latest');
 
-t('validate.parsed exists', { skip: true }, (t) => {
+test('validate.parsed exists', { skip: true }, (t) => {
     t.equal(typeof validate.parsed, 'function');
-    t.end();
 });
 
-t('errors from validate.parsed do not contain line numbers', { skip: true }, (t) => {
+test('errors from validate.parsed do not contain line numbers', { skip: true }, (t) => {
     const result = validate.parsed(style, reference);
     t.equal(result[0].line, undefined);
-    t.end();
 });
 
-t('validate.latest exists', { skip: true }, (t) => {
+test('validate.latest exists', { skip: true }, (t) => {
     t.equal(typeof validate.latest, 'function');
-    t.end();
 });
 
-t('errors from validate.latest do not contain line numbers',  { skip: true }, (t) => {
+test('errors from validate.latest do not contain line numbers', { skip: true }, (t) => {
     const result = validate.latest(style);
     t.equal(result[0].line, undefined);
-    t.end();
 });

@@ -3,17 +3,17 @@
 const { test } = require('mapbox-gl-js-test');
 const { StructArrayLayout3i6, FeatureIndexArray } = require('../../../src/data/array_types');
 
-test('StructArray', (t) => {
+test('StructArray', async (t) => {
     class TestArray extends StructArrayLayout3i6 {}
 
-    t.test('array constructs itself', (t) => {
+    await t.test('array constructs itself', async (t) => {
         const array = new TestArray();
         t.equal(array.length, 0);
         t.ok(array.arrayBuffer);
         t.end();
     });
 
-    t.test('emplaceBack', (t) => {
+    await t.test('emplaceBack', async (t) => {
         const array = new TestArray();
 
         t.equal(0, array.emplaceBack(1, 7, 3));
@@ -21,22 +21,22 @@ test('StructArray', (t) => {
 
         t.equal(array.length, 2);
 
-        t.deepEqual(array.int16.slice(0, 6), [1, 7, 3, 4, 2, 5]);
+        t.deepEqual(array.int16.slice(0, 6), Int16Array.from([1, 7, 3, 4, 2, 5]));
 
         t.end();
     });
 
-    t.test('emplaceBack gracefully accepts extra arguments', (t) => {
+    await t.test('emplaceBack gracefully accepts extra arguments', async (t) => {
         // emplaceBack is typically used in fairly hot code paths, where
         // conditionally varying the number of arguments can be expensive.
         const array = new TestArray();
         t.equal((array/*: any*/).emplaceBack(3, 1, 4, 1, 5, 9), 0);
         t.equal(array.length, 1);
-        t.deepEqual(array.int16.slice(0, 3), [3, 1, 4]);
+        t.deepEqual(array.int16.slice(0, 3), Int16Array.from([3, 1, 4]));
         t.end();
     });
 
-    t.test('reserve', (t) => {
+    await t.test('reserve', async (t) => {
         const array = new TestArray();
 
         array.reserve(100);
@@ -50,7 +50,7 @@ test('StructArray', (t) => {
         t.end();
     });
 
-    t.test('automatically resizes', (t) => {
+    await t.test('automatically resizes', async (t) => {
         const array = new TestArray();
         const initialCapacity = array.capacity;
 
@@ -66,7 +66,7 @@ test('StructArray', (t) => {
         t.end();
     });
 
-    t.test('trims', (t) => {
+    await t.test('trims', async (t) => {
         const array = new TestArray();
         const capacityInitial = array.capacity;
 
@@ -83,17 +83,17 @@ test('StructArray', (t) => {
     t.end();
 });
 
-test('FeatureIndexArray', (t) => {
+test('FeatureIndexArray', async (t) => {
     class TestArray extends FeatureIndexArray {}
 
-    t.test('array constructs itself', (t) => {
+    await t.test('array constructs itself', async (t) => {
         const array = new TestArray();
         t.equal(array.length, 0);
         t.ok(array.arrayBuffer);
         t.end();
     });
 
-    t.test('emplace and retrieve', (t) => {
+    await t.test('emplace and retrieve', async (t) => {
         const array = new TestArray();
         t.equal(0, array.emplaceBack(1, 7, 3));
         t.equal(1, array.emplaceBack(4, 2, 5));

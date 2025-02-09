@@ -14,21 +14,21 @@ function makeFeatures(lines) {
     return features;
 }
 
-test('mergeLines merges lines with the same text', (t) => {
+test('mergeLines merges lines with the same text', async (t) => {
     t.deepEqual(
         mergeLines(makeFeatures([['a', 0, 1, 2], ['b', 4, 5, 6], ['a', 8, 9], ['a', 2, 3, 4], ['a', 6, 7, 8], ['a', 5, 6]])),
         makeFeatures([['a', 0, 1, 2, 3, 4], ['b', 4, 5, 6], ['a', 5, 6, 7, 8, 9]]));
     t.end();
 });
 
-test('mergeLines handles merge from both ends', (t) => {
+test('mergeLines handles merge from both ends', async (t) => {
     t.deepEqual(
         mergeLines(makeFeatures([['a', 0, 1, 2], ['a', 4, 5, 6], ['a', 2, 3, 4]])),
         makeFeatures([['a', 0, 1, 2, 3, 4, 5, 6]]));
     t.end();
 });
 
-test('mergeLines handles circular lines', (t) => {
+test('mergeLines handles circular lines', async (t) => {
     t.deepEqual(
         mergeLines(makeFeatures([['a', 0, 1, 2], ['a', 2, 3, 4], ['a', 4, 0]])),
         makeFeatures([['a', 0, 1, 2, 3, 4, 0]]));

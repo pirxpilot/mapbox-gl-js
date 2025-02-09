@@ -2,8 +2,8 @@ const { test } = require('mapbox-gl-js-test');
 const { createFunction } = require('../../../src/style-spec/function');
 const Color = require('../../../src/style-spec/util/color');
 
-test('binary search', (t) => {
-    t.test('will eventually terminate.', (t) => {
+test('binary search', async (t) => {
+    await t.test('will eventually terminate.', async (t) => {
         const f = createFunction({
             stops: [[9, 10], [17, 11], [17, 11], [18, 13]],
             base: 2
@@ -23,8 +23,8 @@ test('binary search', (t) => {
     t.end();
 });
 
-test('exponential function', (t) => {
-    t.test('is the default for interpolated properties', (t) => {
+test('exponential function', async (t) => {
+    await t.test('is the default for interpolated properties', async (t) => {
         const f = createFunction({
             stops: [[1, 2], [3, 6]],
             base: 2
@@ -42,7 +42,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('base', (t) => {
+    await t.test('base', async (t) => {
         const f = createFunction({
             type: 'exponential',
             stops: [[1, 2], [3, 6]],
@@ -60,7 +60,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('one stop', (t) => {
+    await t.test('one stop', async (t) => {
         const f = createFunction({
             type: 'exponential',
             stops: [[1, 2]]
@@ -75,7 +75,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('two stops', (t) => {
+    await t.test('two stops', async (t) => {
         const f = createFunction({
             type: 'exponential',
             stops: [[1, 2], [3, 6]]
@@ -92,7 +92,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('three stops', (t) => {
+    await t.test('three stops', async (t) => {
         const f = createFunction({
             type: 'exponential',
             stops: [[1, 2], [3, 6], [5, 10]]
@@ -113,7 +113,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('four stops', (t) => {
+    await t.test('four stops', async (t) => {
         const f = createFunction({
             type: 'exponential',
             stops: [[1, 2], [3, 6], [5, 10], [7, 14]]
@@ -138,7 +138,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('many stops', (t) => {
+    await t.test('many stops', async (t) => {
         const stops = [
             [2, 100],
             [55, 200],
@@ -175,7 +175,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('color', (t) => {
+    await t.test('color', async (t) => {
         const f = createFunction({
             type: 'exponential',
             stops: [[1, 'red'], [11, 'blue']]
@@ -190,7 +190,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('lab colorspace', (t) => {
+    await t.test('lab colorspace', async (t) => {
         const f = createFunction({
             type: 'exponential',
             colorSpace: 'lab',
@@ -207,7 +207,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('rgb colorspace', (t) => {
+    await t.test('rgb colorspace', async (t) => {
         const f = createFunction({
             type: 'exponential',
             colorSpace: 'rgb',
@@ -221,7 +221,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('unknown color spaces', (t) => {
+    await t.test('unknown color spaces', async (t) => {
         t.throws(() => {
             createFunction({
                 type: 'exponential',
@@ -230,12 +230,12 @@ test('exponential function', (t) => {
             }, {
                 type: 'color'
             });
-        }, 'Unknown color space: unknown');
+        }, /Unknown color space: unknown/);
 
         t.end();
     });
 
-    t.test('interpolation mutation avoidance', (t) => {
+    await t.test('interpolation mutation avoidance', async (t) => {
         const params = {
             type: 'exponential',
             colorSpace: 'lab',
@@ -249,7 +249,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('property present', (t) => {
+    await t.test('property present', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'exponential',
@@ -263,7 +263,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('property absent, function default', (t) => {
+    await t.test('property absent, function default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'exponential',
@@ -278,7 +278,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('property absent, spec default', (t) => {
+    await t.test('property absent, spec default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'exponential',
@@ -293,7 +293,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('property type mismatch, function default', (t) => {
+    await t.test('property type mismatch, function default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'exponential',
@@ -308,7 +308,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('property type mismatch, spec default', (t) => {
+    await t.test('property type mismatch, spec default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'exponential',
@@ -323,7 +323,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('zoom-and-property function, one stop', (t) => {
+    await t.test('zoom-and-property function, one stop', async (t) => {
         const f = createFunction({
             type: 'exponential',
             property: 'prop',
@@ -345,7 +345,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('zoom-and-property function, two stops', (t) => {
+    await t.test('zoom-and-property function, two stops', async (t) => {
         const f = createFunction({
             type: 'exponential',
             property: 'prop',
@@ -373,7 +373,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('zoom-and-property function, three stops', (t) => {
+    await t.test('zoom-and-property function, three stops', async (t) => {
         const f = createFunction({
             type: 'exponential',
             property: 'prop',
@@ -396,7 +396,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    t.test('zoom-and-property function, two stops, fractional zoom', (t) => {
+    await t.test('zoom-and-property function, two stops, fractional zoom', async (t) => {
         const f = createFunction({
             type: 'exponential',
             property: 'prop',
@@ -416,7 +416,7 @@ test('exponential function', (t) => {
         t.end();
     });
 
-    test('zoom-and-property function, four stops, integer and fractional zooms', (t) => {
+    test('zoom-and-property function, four stops, integer and fractional zooms', async (t) => {
         const f = createFunction({
             type: 'exponential',
             property: 'prop',
@@ -440,7 +440,7 @@ test('exponential function', (t) => {
     });
 
 
-    t.test('zoom-and-property function, no default', (t) => {
+    await t.test('zoom-and-property function, no default', async (t) => {
         // This can happen for fill-outline-color, where the spec has no default.
 
         const f = createFunction({
@@ -465,8 +465,8 @@ test('exponential function', (t) => {
     t.end();
 });
 
-test('interval function', (t) => {
-    t.test('is the default for non-interpolated properties', (t) => {
+test('interval function', async (t) => {
+    await t.test('is the default for non-interpolated properties', async (t) => {
         const f = createFunction({
             stops: [[-1, 11], [0, 111]]
         }, {
@@ -486,7 +486,7 @@ test('interval function', (t) => {
         t.end();
     });
 
-    t.test('one stop', (t) => {
+    await t.test('one stop', async (t) => {
         const f = createFunction({
             type: 'interval',
             stops: [[0, 11]]
@@ -501,7 +501,7 @@ test('interval function', (t) => {
         t.end();
     });
 
-    t.test('two stops', (t) => {
+    await t.test('two stops', async (t) => {
         const f = createFunction({
             type: 'interval',
             stops: [[-1, 11], [0, 111]]
@@ -517,7 +517,7 @@ test('interval function', (t) => {
         t.end();
     });
 
-    t.test('three stops', (t) => {
+    await t.test('three stops', async (t) => {
         const f = createFunction({
             type: 'interval',
             stops: [[-1, 11], [0, 111], [1, 1111]]
@@ -535,7 +535,7 @@ test('interval function', (t) => {
         t.end();
     });
 
-    t.test('four stops', (t) => {
+    await t.test('four stops', async (t) => {
         const f = createFunction({
             type: 'interval',
             stops: [[-1, 11], [0, 111], [1, 1111], [2, 11111]]
@@ -555,7 +555,7 @@ test('interval function', (t) => {
         t.end();
     });
 
-    t.test('color', (t) => {
+    await t.test('color', async (t) => {
         const f = createFunction({
             type: 'interval',
             stops: [[1, 'red'], [11, 'blue']]
@@ -570,7 +570,7 @@ test('interval function', (t) => {
         t.end();
     });
 
-    t.test('property present', (t) => {
+    await t.test('property present', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'interval',
@@ -584,7 +584,7 @@ test('interval function', (t) => {
         t.end();
     });
 
-    t.test('property absent, function default', (t) => {
+    await t.test('property absent, function default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'interval',
@@ -599,7 +599,7 @@ test('interval function', (t) => {
         t.end();
     });
 
-    t.test('property absent, spec default', (t) => {
+    await t.test('property absent, spec default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'interval',
@@ -614,7 +614,7 @@ test('interval function', (t) => {
         t.end();
     });
 
-    t.test('property type mismatch, function default', (t) => {
+    await t.test('property type mismatch, function default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'interval',
@@ -629,7 +629,7 @@ test('interval function', (t) => {
         t.end();
     });
 
-    t.test('property type mismatch, spec default', (t) => {
+    await t.test('property type mismatch, spec default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'interval',
@@ -647,8 +647,8 @@ test('interval function', (t) => {
     t.end();
 });
 
-test('categorical function', (t) => {
-    t.test('string', (t) => {
+test('categorical function', async (t) => {
+    await t.test('string', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'categorical',
@@ -664,7 +664,7 @@ test('categorical function', (t) => {
         t.end();
     });
 
-    t.test('string function default', (t) => {
+    await t.test('string function default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'categorical',
@@ -680,7 +680,7 @@ test('categorical function', (t) => {
         t.end();
     });
 
-    t.test('string zoom-and-property function default', (t) => {
+    await t.test('string zoom-and-property function default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'categorical',
@@ -698,7 +698,7 @@ test('categorical function', (t) => {
         t.end();
     });
 
-    t.test('strict type checking', (t) => {
+    await t.test('strict type checking', async (t) => {
         const numberKeys = createFunction({
             property: 'foo',
             type: 'categorical',
@@ -731,7 +731,7 @@ test('categorical function', (t) => {
     });
 
 
-    t.test('string spec default', (t) => {
+    await t.test('string spec default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'categorical',
@@ -747,7 +747,7 @@ test('categorical function', (t) => {
         t.end();
     });
 
-    t.test('color', (t) => {
+    await t.test('color', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'categorical',
@@ -762,7 +762,7 @@ test('categorical function', (t) => {
         t.end();
     });
 
-    t.test('color function default', (t) => {
+    await t.test('color function default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'categorical',
@@ -778,7 +778,7 @@ test('categorical function', (t) => {
         t.end();
     });
 
-    t.test('color spec default', (t) => {
+    await t.test('color spec default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'categorical',
@@ -794,7 +794,7 @@ test('categorical function', (t) => {
         t.end();
     });
 
-    t.test('boolean', (t) => {
+    await t.test('boolean', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'categorical',
@@ -812,8 +812,8 @@ test('categorical function', (t) => {
     t.end();
 });
 
-test('identity function', (t) => {
-    t.test('number', (t) => {
+test('identity function', async (t) => {
+    await t.test('number', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'identity'
@@ -826,7 +826,7 @@ test('identity function', (t) => {
         t.end();
     });
 
-    t.test('number function default', (t) => {
+    await t.test('number function default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'identity',
@@ -840,7 +840,7 @@ test('identity function', (t) => {
         t.end();
     });
 
-    t.test('number spec default', (t) => {
+    await t.test('number spec default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'identity'
@@ -854,7 +854,7 @@ test('identity function', (t) => {
         t.end();
     });
 
-    t.test('color', (t) => {
+    await t.test('color', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'identity'
@@ -868,7 +868,7 @@ test('identity function', (t) => {
         t.end();
     });
 
-    t.test('color function default', (t) => {
+    await t.test('color function default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'identity',
@@ -882,7 +882,7 @@ test('identity function', (t) => {
         t.end();
     });
 
-    t.test('color spec default', (t) => {
+    await t.test('color spec default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'identity'
@@ -896,7 +896,7 @@ test('identity function', (t) => {
         t.end();
     });
 
-    t.test('color invalid', (t) => {
+    await t.test('color invalid', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'identity'
@@ -910,7 +910,7 @@ test('identity function', (t) => {
         t.end();
     });
 
-    t.test('property type mismatch, function default', (t) => {
+    await t.test('property type mismatch, function default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'identity',
@@ -924,7 +924,7 @@ test('identity function', (t) => {
         t.end();
     });
 
-    t.test('property type mismatch, spec default', (t) => {
+    await t.test('property type mismatch, spec default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'identity'
@@ -938,7 +938,7 @@ test('identity function', (t) => {
         t.end();
     });
 
-    t.test('valid enum', (t) => {
+    await t.test('valid enum', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'identity'
@@ -955,7 +955,7 @@ test('identity function', (t) => {
         t.end();
     });
 
-    t.test('invalid enum, spec default', (t) => {
+    await t.test('invalid enum, spec default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'identity'
@@ -972,7 +972,7 @@ test('identity function', (t) => {
         t.end();
     });
 
-    t.test('invalid type for enum, spec default', (t) => {
+    await t.test('invalid type for enum, spec default', async (t) => {
         const f = createFunction({
             property: 'foo',
             type: 'identity'
@@ -992,7 +992,7 @@ test('identity function', (t) => {
     t.end();
 });
 
-test('unknown function', (t) => {
+test('unknown function', async (t) => {
     t.throws(() => createFunction({
         type: 'nonesuch', stops: [[]]
     }, {
@@ -1001,8 +1001,8 @@ test('unknown function', (t) => {
     t.end();
 });
 
-test('kind', (t) => {
-    t.test('camera', (t) => {
+test('kind', async (t) => {
+    await t.test('camera', async (t) => {
         const f = createFunction({
             stops: [[1, 1]]
         }, {
@@ -1013,7 +1013,7 @@ test('kind', (t) => {
         t.end();
     });
 
-    t.test('source', (t) => {
+    await t.test('source', async (t) => {
         const f = createFunction({
             stops: [[1, 1]],
             property: 'mapbox'
@@ -1025,7 +1025,7 @@ test('kind', (t) => {
         t.end();
     });
 
-    t.test('composite', (t) => {
+    await t.test('composite', async (t) => {
         const f = createFunction({
             stops: [[{ zoom: 1, value: 1 }, 1]],
             property: 'mapbox'

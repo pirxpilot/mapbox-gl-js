@@ -3,8 +3,8 @@ const RasterDEMTileWorkerSource = require('../../../src/source/raster_dem_tile_w
 const StyleLayerIndex = require('../../../src/style/style_layer_index');
 const DEMData = require('../../../src/data/dem_data');
 
-test('loadTile', (t) => {
-    t.test('loads DEM tile', (t) => {
+test('loadTile', async (t) => {
+    await t.test('loads DEM tile', async (t) => {
         const source = new RasterDEMTileWorkerSource(null, new StyleLayerIndex());
 
         source.loadTile({
@@ -24,8 +24,8 @@ test('loadTile', (t) => {
     t.end();
 });
 
-test('removeTile', (t) => {
-    t.test('removes loaded tile', (t) => {
+test('removeTile', async (t) => {
+    await t.test('removes loaded tile', async (t) => {
         const source = new RasterDEMTileWorkerSource(null, new StyleLayerIndex());
 
         source.loaded = {

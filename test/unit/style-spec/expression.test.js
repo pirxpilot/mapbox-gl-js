@@ -11,12 +11,12 @@ const definitionList = Object.keys(definitions).filter((expression) => {
 
 test('v8.json includes all definitions from style-spec', (t) => {
     const v8List = Object.keys(v8.expression_name.values);
-    t.deepEquals(definitionList, v8List.sort());
+    t.deepEqual(definitionList, v8List.sort());
     t.end();
 });
 
-test('createPropertyExpression', (t) => {
-    test('prohibits non-interpolable properties from using an "interpolate" expression', (t) => {
+test('createPropertyExpression', async (t) => {
+    await t.test('prohibits non-interpolable properties from using an "interpolate" expression', (t) => {
         const {result, value} = createPropertyExpression([
             'interpolate', ['linear'], ['zoom'], 0, 0, 10, 10
         ], {
@@ -36,8 +36,8 @@ test('createPropertyExpression', (t) => {
     t.end();
 });
 
-test('evaluate expression', (t) => {
-    test('warns and falls back to default for invalid enum values', (t) => {
+test('evaluate expression', async (t) => {
+    await t.test('warns and falls back to default for invalid enum values', (t) => {
         const {value} = createPropertyExpression([ 'get', 'x' ], {
             type: 'enum',
             values: {a: {}, b: {}, c: {}},

@@ -2,7 +2,7 @@ const { test } = require('mapbox-gl-js-test');
 const VectorTileWorkerSource = require('../../../src/source/vector_tile_worker_source');
 const StyleLayerIndex = require('../../../src/style/style_layer_index');
 
-test('VectorTileWorkerSource#abortTile aborts pending request', (t) => {
+test('VectorTileWorkerSource#abortTile aborts pending request', async (t) => {
     const source = new VectorTileWorkerSource(null, new StyleLayerIndex());
 
     source.loadTile({
@@ -27,7 +27,7 @@ test('VectorTileWorkerSource#abortTile aborts pending request', (t) => {
     t.end();
 });
 
-test('VectorTileWorkerSource#removeTile removes loaded tile', (t) => {
+test('VectorTileWorkerSource#removeTile removes loaded tile', async (t) => {
     const source = new VectorTileWorkerSource(null, new StyleLayerIndex());
 
     source.loaded = {
@@ -46,7 +46,7 @@ test('VectorTileWorkerSource#removeTile removes loaded tile', (t) => {
     t.end();
 });
 
-test('VectorTileWorkerSource#reloadTile reloads a previously-loaded tile', (t) => {
+test('VectorTileWorkerSource#reloadTile reloads a previously-loaded tile', async (t) => {
     const source = new VectorTileWorkerSource(null, new StyleLayerIndex());
     const parse = t.spy();
 
@@ -67,7 +67,7 @@ test('VectorTileWorkerSource#reloadTile reloads a previously-loaded tile', (t) =
     t.end();
 });
 
-test('VectorTileWorkerSource#reloadTile queues a reload when parsing is in progress', (t) => {
+test('VectorTileWorkerSource#reloadTile queues a reload when parsing is in progress', async (t) => {
     const source = new VectorTileWorkerSource(null, new StyleLayerIndex());
     const parse = t.spy();
 
@@ -99,7 +99,7 @@ test('VectorTileWorkerSource#reloadTile queues a reload when parsing is in progr
     t.end();
 });
 
-test('VectorTileWorkerSource#reloadTile handles multiple pending reloads', (t) => {
+test('VectorTileWorkerSource#reloadTile handles multiple pending reloads', async (t) => {
     // https://github.com/mapbox/mapbox-gl-js/issues/6308
     const source = new VectorTileWorkerSource(null, new StyleLayerIndex());
     const parse = t.spy();

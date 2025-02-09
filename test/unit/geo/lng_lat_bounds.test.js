@@ -2,8 +2,8 @@ const { test } = require('mapbox-gl-js-test');
 const LngLat = require('../../../src/geo/lng_lat');
 const LngLatBounds = require('../../../src/geo/lng_lat_bounds');
 
-test('LngLatBounds', (t) => {
-    t.test('#constructor', (t) => {
+test('LngLatBounds', async (t) => {
+    await t.test('#constructor', async (t) => {
         const sw = new LngLat(0, 0);
         const ne = new LngLat(-10, 10);
         const bounds = new LngLatBounds(sw, ne);
@@ -14,7 +14,7 @@ test('LngLatBounds', (t) => {
         t.end();
     });
 
-    t.test('#constructor across dateline', (t) => {
+    await t.test('#constructor across dateline', async (t) => {
         const sw = new LngLat(170, 0);
         const ne = new LngLat(-170, 10);
         const bounds = new LngLatBounds(sw, ne);
@@ -25,7 +25,7 @@ test('LngLatBounds', (t) => {
         t.end();
     });
 
-    t.test('#constructor across pole', (t) => {
+    await t.test('#constructor across pole', async (t) => {
         const sw = new LngLat(0, 85);
         const ne = new LngLat(-10, -85);
         const bounds = new LngLatBounds(sw, ne);
@@ -36,7 +36,7 @@ test('LngLatBounds', (t) => {
         t.end();
     });
 
-    t.test('#constructor no args', (t) => {
+    await t.test('#constructor no args', async (t) => {
         const bounds = new LngLatBounds();
         t.throws(() => {
             bounds.getCenter();
@@ -44,7 +44,7 @@ test('LngLatBounds', (t) => {
         t.end();
     });
 
-    t.test('#extend with coordinate', (t) => {
+    await t.test('#extend with coordinate', async (t) => {
         const bounds = new LngLatBounds([0, 0], [10, 10]);
         bounds.extend([-10, -10]);
 
@@ -63,7 +63,7 @@ test('LngLatBounds', (t) => {
         t.end();
     });
 
-    t.test('#extend with bounds', (t) => {
+    await t.test('#extend with bounds', async (t) => {
         const bounds1 = new LngLatBounds([0, 0], [10, 10]);
         const bounds2 = new LngLatBounds([-10, -10], [10, 10]);
         bounds1.extend(bounds2);
@@ -84,7 +84,7 @@ test('LngLatBounds', (t) => {
         t.end();
     });
 
-    t.test('#extend with null', (t) => {
+    await t.test('#extend with null', async (t) => {
         const bounds = new LngLatBounds([0, 0], [10, 10]);
 
         bounds.extend(null);
@@ -97,7 +97,7 @@ test('LngLatBounds', (t) => {
         t.end();
     });
 
-    t.test('#extend undefined bounding box', (t) => {
+    await t.test('#extend undefined bounding box', async (t) => {
         const bounds1 = new LngLatBounds(undefined, undefined);
         const bounds2 = new LngLatBounds([-10, -10], [10, 10]);
 
@@ -111,7 +111,7 @@ test('LngLatBounds', (t) => {
         t.end();
     });
 
-    t.test('#extend same LngLat instance', (t) => {
+    await t.test('#extend same LngLat instance', async (t) => {
         const point = new LngLat(0, 0);
         const bounds = new LngLatBounds(point, point);
 
@@ -125,7 +125,7 @@ test('LngLatBounds', (t) => {
         t.end();
     });
 
-    t.test('accessors', (t) => {
+    await t.test('accessors', async (t) => {
         const sw = new LngLat(0, 0);
         const ne = new LngLat(-10, -20);
         const bounds = new LngLatBounds(sw, ne);
@@ -141,7 +141,7 @@ test('LngLatBounds', (t) => {
         t.end();
     });
 
-    t.test('#convert', (t) => {
+    await t.test('#convert', async (t) => {
         const sw = new LngLat(0, 0);
         const ne = new LngLat(-10, 10);
         const bounds = new LngLatBounds(sw, ne);
@@ -152,19 +152,19 @@ test('LngLatBounds', (t) => {
         t.end();
     });
 
-    t.test('#toArray', (t) => {
+    await t.test('#toArray', async (t) => {
         const llb = new LngLatBounds([-73.9876, 40.7661], [-73.9397, 40.8002]);
         t.deepEqual(llb.toArray(), [[-73.9876, 40.7661], [-73.9397, 40.8002]]);
         t.end();
     });
 
-    t.test('#toString', (t) => {
+    await t.test('#toString', async (t) => {
         const llb = new LngLatBounds([-73.9876, 40.7661], [-73.9397, 40.8002]);
         t.deepEqual(llb.toString(), 'LngLatBounds(LngLat(-73.9876, 40.7661), LngLat(-73.9397, 40.8002))');
         t.end();
     });
 
-    t.test('#isEmpty', (t) => {
+    await t.test('#isEmpty', async (t) => {
         const nullBounds = new LngLatBounds();
         t.equal(nullBounds.isEmpty(), true);
         nullBounds.extend([-73.9876, 40.7661], [-73.9397, 40.8002]);

@@ -20,7 +20,7 @@ function createPolygon(numPoints) {
     return points;
 }
 
-test('FillBucket', (t) => {
+test('FillBucket', async (t) => {
     const layer = new FillStyleLayer({ id: 'test', type: 'fill', layout: {} });
     layer.recalculate({zoom: 0, zoomHistory: {}});
 
@@ -42,7 +42,7 @@ test('FillBucket', (t) => {
     t.end();
 });
 
-test('FillBucket segmentation', (t) => {
+test('FillBucket segmentation', async (t) => {
     // Stub MAX_VERTEX_ARRAY_LENGTH so we can test features
     // breaking across array groups without tests taking a _long_ time.
     t.stub(segment, 'MAX_VERTEX_ARRAY_LENGTH').value(256);

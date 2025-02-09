@@ -20,7 +20,6 @@ test('Map#on adds a non-delegated event listener', (t) => {
     simulate.click(map.getCanvas());
 
     t.ok(spy.calledOnce);
-    t.end();
 });
 
 test('Map#off removes a non-delegated event listener', (t) => {
@@ -32,7 +31,6 @@ test('Map#off removes a non-delegated event listener', (t) => {
     simulate.click(map.getCanvas());
 
     t.ok(spy.notCalled);
-    t.end();
 });
 
 test(`Map#on mousedown can have default behavior prevented and still fire subsequent click event`, (t) => {
@@ -47,7 +45,6 @@ test(`Map#on mousedown can have default behavior prevented and still fire subseq
     t.ok(click.callCount, 1);
 
     map.remove();
-    t.end();
 });
 
 test(`Map#on mousedown doesn't fire subsequent click event if mousepos changes`, (t) => {
@@ -63,7 +60,6 @@ test(`Map#on mousedown doesn't fire subsequent click event if mousepos changes`,
     t.ok(click.notCalled);
 
     map.remove();
-    t.end();
 });
 
 test(`Map#on mousedown fires subsequent click event if mouse position changes less than click tolerance`, (t) => {
@@ -79,7 +75,6 @@ test(`Map#on mousedown fires subsequent click event if mouse position changes le
     t.ok(click.called);
 
     map.remove();
-    t.end();
 });
 
 test(`Map#on mousedown does not fire subsequent click event if mouse position changes more than click tolerance`, (t) => {
@@ -95,5 +90,4 @@ test(`Map#on mousedown does not fire subsequent click event if mouse position ch
     t.ok(click.notCalled);
 
     map.remove();
-    t.end();
 });

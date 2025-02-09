@@ -1,8 +1,8 @@
 const { test } = require('mapbox-gl-js-test');
 const convertFunction = require('../../../src/style-spec/function/convert');
 
-test('convertFunction', (t) => {
-    t.test('boolean categorical', (t) => {
+test('convertFunction', async (t) => {
+    await t.test('boolean categorical', async (t) => {
         const fn = {
             type: 'categorical',
             property: 'p',
@@ -25,7 +25,7 @@ test('convertFunction', (t) => {
         t.end();
     });
 
-    t.test('numeric categorical', (t) => {
+    await t.test('numeric categorical', async (t) => {
         const fn = {
             type: 'categorical',
             property: 'p',
@@ -47,7 +47,7 @@ test('convertFunction', (t) => {
         t.end();
     });
 
-    t.test('feature-constant text-field with token replacement', (t) => {
+    await t.test('feature-constant text-field with token replacement', async (t) => {
         const functionValue = {
             stops: [
                 [0, 'my name is {name}.'],
@@ -99,7 +99,7 @@ test('convertFunction', (t) => {
         t.end();
     });
 
-    t.test('duplicate step function stops', (t) => {
+    await t.test('duplicate step function stops', async (t) => {
         const functionValue = {
             stops: [
                 [0, 'a'],
@@ -130,7 +130,7 @@ test('convertFunction', (t) => {
         t.end();
     });
 
-    t.test('duplicate interpolate function stops', (t) => {
+    await t.test('duplicate interpolate function stops', async (t) => {
         const functionValue = {
             stops: [
                 [0, 'a'],

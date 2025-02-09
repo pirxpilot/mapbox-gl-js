@@ -1,8 +1,8 @@
 const { test } = require('mapbox-gl-js-test');
 const makeWorkerPool = require('../../../src/util/worker_pool');
 
-test('WorkerPool', (t) => {
-    t.test('#acquire', (t) => {
+test('WorkerPool', async (t) => {
+    await t.test('#acquire', async (t) => {
         const pool = makeWorkerPool(4);
 
         t.notOk(pool.workers);
@@ -16,7 +16,7 @@ test('WorkerPool', (t) => {
         t.end();
     });
 
-    t.test('#release', (t) => {
+    await t.test('#release', async (t) => {
         let workersTerminated = 0;
 
         const pool = makeWorkerPool(4);
