@@ -6,24 +6,12 @@ find = $(foreach dir,$(1),$(foreach d,$(wildcard $(dir)/*),$(call find,$(d),$(2)
 SRC = $(call find, src, *.js)
 
 BUILD = dist/$(PROJECT).js dist/$(PROJECT)-worker.js
-DIST = $(BUILD:%.js=%.min.js)
 
 DEBUG_FLAG ?= true
 
 %/node_modules: %/package.json
 	yarn --cwd $(@D) --no-progress
 	touch $@
-
-%.min.js: %.js
-	$(NODE_BIN)/terser \
-	    --mangle \
-		--define DEBUG=$(DEBUG_FLAG) \
-		--compress drop_console \
-		--compress pure_funcs=['assert'] \
-		--source-map filename='$@.map' \
-		--source-map content='$<.map' \
-		--output $@ \
-		-- $<
 
 .SECONDEXPANSION:
 
@@ -36,7 +24,7 @@ build/min/package.json: package.json | $$(@D)/.dir
 
 GLSL = $(wildcard src/shaders/*.glsl)
 
-build/min/src/shaders/%.glsl.txt: src/shaders/%.glsl  | $$(@D)/.dir
+build/min/src/shaders/%.glsl.txt: src/shaders/%.glsl  | $$(@D)/.dir build/node_modules
 	$(NODE_BIN)/webpack-glsl-minify \
 	    --preserveUniforms=true \
 	    --preserveDefines=true \
@@ -68,8 +56,7 @@ build: $(PREBUILD)
 build: $(BUILD)
 
 dist: DEBUG_FLAG=false
-dist: $(PREBUILD)
-dist: $(DIST)
+dist: build
 
 distdir:
 	mkdir -p dist
@@ -92,7 +79,7 @@ dist/$(PROJECT)-worker.js: $(SRC) | dependencies distdir
 		--outfile=$@
 
 lint: dependencies
-	$(NODE_BIN)/eslint --cache --ignore-path .gitignore src test
+	$(NODE_BIN)/biome lint
 
 test: test-unit
 
@@ -109,7 +96,7 @@ test-query: dependencies
 	node test/query.test.js
 
 distclean: clean
-	rm -fr $(DEPENDENCIES) .eslintcache
+	rm -fr $(DEPENDENCIES)
 
 clean:
 	rm -fr dist build/min

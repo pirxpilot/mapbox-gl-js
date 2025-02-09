@@ -1,0 +1,110 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "vcs": {
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": true,
+    "include": [
+      "src",
+      "test"
+    ],
+    "ignore": [
+      "package.json",
+      "build/",
+      "test/**/fixture"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "useEditorconfig": true,
+    "lineWidth": 120
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "trailingCommas": "none",
+      "arrowParentheses": "asNeeded"
+    },
+    "globals": [
+      "arguments"
+    ]
+  },
+  "json": {
+    "formatter": {
+      "enabled": false
+    }
+  },
+  "css": {
+    "linter": {
+      "enabled": false
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "correctness": {
+        "noConstructorReturn": "off",
+        "noNodejsModules": "off",
+        "noUndeclaredVariables": "error",
+        "noUnnecessaryContinue": "off"
+      },
+      "complexity": {
+        "noForEach": "off",
+        "noThisInStatic": "off",
+        "noUselessThisAlias":"off",
+        "useArrowFunction": "off",
+        "useOptionalChain": "off",
+        "useLiteralKeys": "off"
+      },
+      "style": {
+        "noArguments": "off",
+        "noParameterAssign": "off",
+        "noUnusedTemplateLiteral": "off",
+        "noUselessElse": "off",
+        "useDefaultParameterLast": "off",
+        "useExponentiationOperator": "off",
+        "useNodejsImportProtocol": "off",
+        "useNumberNamespace": "off",
+        "useSingleVarDeclarator": "off",
+        "useTemplate": "off"
+      },
+      "performance": {
+        "noDelete": "off"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "off",
+        "noControlCharactersInRegex": "off",
+        "noFallthroughSwitchClause": "off",
+        "noGlobalIsFinite": "off",
+        "noGlobalIsNan": "off",
+        "noPrototypeBuiltins": "off",
+        "noShadowRestrictedNames": "off",
+        "noRedundantUseStrict": "off",
+        "useValidTypeof": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "include": [
+        "test"
+      ],
+        "linter": {
+          "rules": {
+            "style": {
+              "useConst": "off"
+            },
+            "suspicious": {
+              "noDoubleEquals": "off",
+              "noSelfCompare": "off"
+            }
+          }
+      }
+    }
+  ]
+}
