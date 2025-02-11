@@ -1,7 +1,7 @@
 const { test: t } = require('mapbox-gl-js-test');
 const migrate = require('../../../../src/style-spec/migrate/v9');
 
-t('deref layers', (t) => {
+t('deref layers', async (t) => {
     const input = {
         version: 8,
         sources: {
@@ -39,7 +39,7 @@ t('deref layers', (t) => {
     t.end();
 });
 
-t('declass style', (t) => {
+t('declass style', async (t) => {
     const input = {
         version: 8,
         sources: {

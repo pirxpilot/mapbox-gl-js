@@ -26,9 +26,9 @@ function makeTile(tileID, symbolInstances) {
     };
 }
 
-test('CrossTileSymbolIndex.addLayer', (t) => {
+test('CrossTileSymbolIndex.addLayer', async (t) => {
 
-    t.test('matches ids', (t) => {
+    await t.test('matches ids', async (t) => {
         const index = new CrossTileSymbolIndex();
 
         const mainID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -89,7 +89,7 @@ test('CrossTileSymbolIndex.addLayer', (t) => {
         t.end();
     });
 
-    t.test('overwrites ids when re-adding', (t) => {
+    await t.test('overwrites ids when re-adding', async (t) => {
         const index = new CrossTileSymbolIndex();
 
         const mainID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -119,7 +119,7 @@ test('CrossTileSymbolIndex.addLayer', (t) => {
         t.end();
     });
 
-    t.test('does not duplicate ids within one zoom level', (t) => {
+    await t.test('does not duplicate ids within one zoom level', async (t) => {
         const index = new CrossTileSymbolIndex();
 
         const mainID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -158,7 +158,7 @@ test('CrossTileSymbolIndex.addLayer', (t) => {
         t.end();
     });
 
-    t.test('does not regenerate ids for same zoom', (t) => {
+    await t.test('does not regenerate ids for same zoom', async (t) => {
         const index = new CrossTileSymbolIndex();
 
         const tileID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -194,7 +194,7 @@ test('CrossTileSymbolIndex.addLayer', (t) => {
         t.end();
     });
 
-    t.test('reuses indexes when longitude is wrapped', (t) => {
+    await t.test('reuses indexes when longitude is wrapped', async (t) => {
         const index = new CrossTileSymbolIndex();
         const longitude = 370;
 
@@ -218,7 +218,7 @@ test('CrossTileSymbolIndex.addLayer', (t) => {
     t.end();
 });
 
-test('CrossTileSymbolIndex.pruneUnusedLayers', (t) => {
+test('CrossTileSymbolIndex.pruneUnusedLayers', async (t) => {
     const index = new CrossTileSymbolIndex();
 
     const tileID = new OverscaledTileID(6, 0, 6, 8, 8);

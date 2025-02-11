@@ -18,23 +18,21 @@ function createSource(options) {
 }
 
 
-test('RasterTileSource', (t) => {
+test('RasterTileSource', async (t) => {
     let baseUrl;
 
-    t.beforeEach((callback) => {
+    t.beforeEach(() => {
         baseUrl = config.BASE_URL;
         config.BASE_URL = 'http://example.com';
         window.useFakeXMLHttpRequest();
-        callback();
     });
 
-    t.afterEach((callback) => {
+    t.afterEach(() => {
         config.BASE_URL = baseUrl;
         window.restore();
-        callback();
     });
 
-    t.test('populates neighboringTiles', (t) => {
+    await t.test('populates neighboringTiles', async (t) => {
         window.server.respondWith('http://example.com/source.json', JSON.stringify({
             minzoom: 0,
             maxzoom: 22,
@@ -70,7 +68,7 @@ test('RasterTileSource', (t) => {
         window.server.respond();
     });
 
-    t.test('populates neighboringTiles with wrapped tiles', (t) => {
+    await t.test('populates neighboringTiles with wrapped tiles', async (t) => {
         window.server.respondWith('http://example.com/source.json', JSON.stringify({
             minzoom: 0,
             maxzoom: 22,

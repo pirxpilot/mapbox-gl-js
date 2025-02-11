@@ -6,8 +6,8 @@ const { deepEqual } = require('../../../src/util/object');
 
 const context = new Context(require('gl')(10, 10));
 
-function ValueTest(Constructor, options, t) {
-    t.test('#constructor', (t) => {
+async function ValueTest(Constructor, options, t) {
+    await t.test('#constructor', async (t) => {
         const v = new Constructor(context);
         t.ok(v);
         const currentV = v.get();
@@ -15,7 +15,7 @@ function ValueTest(Constructor, options, t) {
         t.end();
     });
 
-    t.test('#set', (t) => {
+    await t.test('#set', async (t) => {
         const v = new Constructor(context);
         v.set(options.setValue);
         const equality = (options.equality) || ((a, b) => deepEqual(a, b));

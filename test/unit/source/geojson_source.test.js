@@ -43,7 +43,7 @@ const hawkHill = {
     }]
 };
 
-test('GeoJSONSource#setData', (t) => {
+test('GeoJSONSource#setData', async (t) => {
     function createSource(opts) {
         opts = opts || {};
         opts = Object.assign(opts, { data: {} });
@@ -56,13 +56,13 @@ test('GeoJSONSource#setData', (t) => {
         });
     }
 
-    t.test('returns self', (t) => {
+    await t.test('returns self', async (t) => {
         const source = createSource();
         t.equal(source.setData({}), source);
         t.end();
     });
 
-    t.test('fires "data" event', (t) => {
+    await t.test('fires "data" event', async (t) => {
         const source = createSource();
         source.once('data', () => {
             source.once('data', t.end);
@@ -71,7 +71,7 @@ test('GeoJSONSource#setData', (t) => {
         source.load();
     });
 
-    t.test('fires "dataloading" event', (t) => {
+    await t.test('fires "dataloading" event', async (t) => {
         const source = createSource();
         source.on('dataloading', t.end);
         source.load();
@@ -80,8 +80,8 @@ test('GeoJSONSource#setData', (t) => {
     t.end();
 });
 
-test('GeoJSONSource#onRemove', (t) => {
-    t.test('broadcasts "removeSource" event', (t) => {
+test('GeoJSONSource#onRemove', async (t) => {
+    await t.test('broadcasts "removeSource" event', async (t) => {
         const source = new GeoJSONSource('id', {data: {}}, {
             send: function (type, data, callback) {
                 t.false(callback);
@@ -99,7 +99,7 @@ test('GeoJSONSource#onRemove', (t) => {
     t.end();
 });
 
-test('GeoJSONSource#update', (t) => {
+test('GeoJSONSource#update', async (t) => {
     const transform = new Transform();
     transform.resize(200, 200);
     const lngLat = LngLat.convert([-122.486052, 37.830348]);
@@ -107,7 +107,7 @@ test('GeoJSONSource#update', (t) => {
     transform.zoom = 15;
     transform.setLocationAtPoint(lngLat, point);
 
-    t.test('sends initial loadData request to dispatcher', (t) => {
+    await t.test('sends initial loadData request to dispatcher', async (t) => {
         const mockDispatcher = {
             send: function(message) {
                 t.equal(message, 'geojson.loadData');
@@ -119,7 +119,7 @@ test('GeoJSONSource#update', (t) => {
         new GeoJSONSource('id', {data: {}}, mockDispatcher).load();
     });
 
-    t.test('forwards geojson-vt options with worker request', (t) => {
+    await t.test('forwards geojson-vt options with worker request', async (t) => {
         const mockDispatcher = {
             send: function(message, params) {
                 t.equal(message, 'geojson.loadData');
@@ -142,7 +142,7 @@ test('GeoJSONSource#update', (t) => {
         }, mockDispatcher).load();
     });
 
-    t.test('fires event when metadata loads', (t) => {
+    await t.test('fires event when metadata loads', async (t) => {
         const mockDispatcher = {
             send: function(message, args, callback) {
                 if (callback) {
@@ -160,7 +160,7 @@ test('GeoJSONSource#update', (t) => {
         source.load();
     });
 
-    t.test('fires "error"', (t) => {
+    await t.test('fires "error"', async (t) => {
         const mockDispatcher = {
             send: function(message, args, callback) {
                 if (callback) {
@@ -179,7 +179,7 @@ test('GeoJSONSource#update', (t) => {
         source.load();
     });
 
-    t.test('sends loadData request to dispatcher after data update', (t) => {
+    await t.test('sends loadData request to dispatcher after data update', async (t) => {
         let expectedLoadDataCalls = 2;
         const mockDispatcher = {
             send: function(message, args, callback) {
@@ -210,8 +210,8 @@ test('GeoJSONSource#update', (t) => {
     t.end();
 });
 
-test('GeoJSONSource#serialize', (t) => {
-    t.test('serialize source with inline data', (t) => {
+test('GeoJSONSource#serialize', async (t) => {
+    await t.test('serialize source with inline data', async (t) => {
         const source = new GeoJSONSource('id', {data: hawkHill}, mockDispatcher);
         source.load();
         t.deepEqual(source.serialize(), {
@@ -221,7 +221,7 @@ test('GeoJSONSource#serialize', (t) => {
         t.end();
     });
 
-    t.test('serialize source with url', (t) => {
+    await t.test('serialize source with url', async (t) => {
         const source = new GeoJSONSource('id', {data: 'local://data.json'}, mockDispatcher);
         source.load();
         t.deepEqual(source.serialize(), {
@@ -231,7 +231,7 @@ test('GeoJSONSource#serialize', (t) => {
         t.end();
     });
 
-    t.test('serialize source with updated data', (t) => {
+    await t.test('serialize source with updated data', async (t) => {
         const source = new GeoJSONSource('id', {data: {}}, mockDispatcher);
         source.load();
         source.setData(hawkHill);
@@ -242,7 +242,7 @@ test('GeoJSONSource#serialize', (t) => {
         t.end();
     });
 
-    t.test('serialize source with additional options', (t) => {
+    await t.test('serialize source with additional options', async (t) => {
         const source = new GeoJSONSource('id', {data: {}, cluster: true}, mockDispatcher);
         t.deepEqual(source.serialize(), {
             type: 'geojson',

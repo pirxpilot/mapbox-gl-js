@@ -10,7 +10,7 @@ const { CollisionBoxArray } = require('../../../src/data/array_types');
 const Context = require('../../../src/gl/context');
 const { serialize, deserialize } = require('../../../src/util/web_worker_transfer');
 
-test('querySourceFeatures', (t) => {
+test('querySourceFeatures', async (t) => {
     const features = [{
         type: 1,
         geometry: [0, 0],
@@ -18,7 +18,7 @@ test('querySourceFeatures', (t) => {
     }];
 
 
-    t.test('geojson tile', (t) => {
+    await t.test('geojson tile', async (t) => {
         const tile = new Tile(new OverscaledTileID(3, 0, 2, 1, 2));
         let result;
 
@@ -29,7 +29,7 @@ test('querySourceFeatures', (t) => {
         const geojsonWrapper = new GeoJSONWrapper(features);
         geojsonWrapper.name = '_geojsonTileLayer';
         tile.loadVectorData(
-            createVectorData({rawTileData: vtpbf({ layers: { '_geojsonTileLayer': geojsonWrapper }})}),
+            createVectorData({ rawTileData: vtpbf({ layers: { '_geojsonTileLayer': geojsonWrapper } }) }),
             createPainter()
         );
 
@@ -42,15 +42,15 @@ test('querySourceFeatures', (t) => {
         t.equal(result.length, 1);
         t.deepEqual(result[0].properties, features[0].tags);
         result = [];
-        tile.querySourceFeatures(result, { filter: ['==', 'oneway', true]});
+        tile.querySourceFeatures(result, { filter: ['==', 'oneway', true] });
         t.equal(result.length, 1);
         result = [];
-        tile.querySourceFeatures(result, { filter: ['!=', 'oneway', true]});
+        tile.querySourceFeatures(result, { filter: ['!=', 'oneway', true] });
         t.equal(result.length, 0);
         t.end();
     });
 
-    t.test('empty geojson tile', (t) => {
+    await t.test('empty geojson tile', async (t) => {
         const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
         let result;
 
@@ -60,14 +60,14 @@ test('querySourceFeatures', (t) => {
 
         const geojsonWrapper = new GeoJSONWrapper([]);
         geojsonWrapper.name = '_geojsonTileLayer';
-        tile.rawTileData = vtpbf({ layers: { '_geojsonTileLayer': geojsonWrapper }});
+        tile.rawTileData = vtpbf({ layers: { '_geojsonTileLayer': geojsonWrapper } });
         result = [];
         t.doesNotThrow(() => { tile.querySourceFeatures(result); });
         t.equal(result.length, 0);
         t.end();
     });
 
-    t.test('vector tile', (t) => {
+    await t.test('vector tile', async (t) => {
         const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
         let result;
 
@@ -76,12 +76,12 @@ test('querySourceFeatures', (t) => {
         t.equal(result.length, 0);
 
         tile.loadVectorData(
-            createVectorData({rawTileData: createRawTileData()}),
+            createVectorData({ rawTileData: createRawTileData() }),
             createPainter()
         );
 
         result = [];
-        tile.querySourceFeatures(result, { 'sourceLayer': 'does-not-exist'});
+        tile.querySourceFeatures(result, { 'sourceLayer': 'does-not-exist' });
         t.equal(result.length, 0);
 
         result = [];
@@ -98,7 +98,7 @@ test('querySourceFeatures', (t) => {
         t.end();
     });
 
-    t.test('loadVectorData unloads existing data before overwriting it', (t) => {
+    await t.test('loadVectorData unloads existing data before overwriting it', async (t) => {
         const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
         tile.state = 'loaded';
         t.stub(tile, 'unloadVectorData');
@@ -110,12 +110,12 @@ test('querySourceFeatures', (t) => {
         t.end();
     });
 
-    t.test('loadVectorData preserves the most recent rawTileData', (t) => {
+    await t.test('loadVectorData preserves the most recent rawTileData', async (t) => {
         const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
         tile.state = 'loaded';
 
         tile.loadVectorData(
-            createVectorData({rawTileData: createRawTileData()}),
+            createVectorData({ rawTileData: createRawTileData() }),
             createPainter()
         );
         tile.loadVectorData(
@@ -133,9 +133,9 @@ test('querySourceFeatures', (t) => {
     t.end();
 });
 
-test('Tile#setMask', (t) => {
+test('Tile#setMask', async (t) => {
 
-    t.test('simple mask', (t)=>{
+    await t.test('simple mask', (t) => {
         const tile = new Tile(0, 0, 0);
         const context = new Context(require('gl')(10, 10));
         const a = new OverscaledTileID(1, 0, 1, 0, 0);
@@ -148,7 +148,7 @@ test('Tile#setMask', (t) => {
         t.end();
     });
 
-    t.test('complex mask', (t) => {
+    await t.test('complex mask', async (t) => {
         const tile = new Tile(0, 0, 0);
         const context = new Context(require('gl')(10, 10));
         const a = new OverscaledTileID(1, 0, 1, 0, 1);
@@ -173,8 +173,8 @@ test('Tile#setMask', (t) => {
 
 });
 
-test('Tile#isLessThan', (t)=>{
-    t.test('correctly sorts tiles', (t)=>{
+test('Tile#isLessThan', async (t) => {
+    await t.test('correctly sorts tiles', (t) => {
         const tiles = [
             new OverscaledTileID(9, 0, 9, 146, 195),
             new OverscaledTileID(9, 0, 9, 147, 195),
@@ -219,8 +219,8 @@ test('Tile#isLessThan', (t)=>{
     t.end();
 });
 
-test('expiring tiles', (t) => {
-    t.test('regular tiles do not expire', (t) => {
+test('expiring tiles', async (t) => {
+    await t.test('regular tiles do not expire', async (t) => {
         const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
         tile.state = 'loaded';
         tile.timeAdded = Date.now();
@@ -231,7 +231,7 @@ test('expiring tiles', (t) => {
         t.end();
     });
 
-    t.test('set, get expiry', (t) => {
+    await t.test('set, get expiry', async (t) => {
         const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
         tile.state = 'loaded';
         tile.timeAdded = Date.now();
@@ -261,7 +261,7 @@ test('expiring tiles', (t) => {
         t.end();
     });
 
-    t.test('exponential backoff handling', (t) => {
+    await t.test('exponential backoff handling', async (t) => {
         const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
         tile.state = 'loaded';
         tile.timeAdded = Date.now();

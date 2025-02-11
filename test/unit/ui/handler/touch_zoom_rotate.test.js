@@ -8,7 +8,7 @@ function createMap() {
     return new Map({ container: DOM.create('div', '', window.document.body) });
 }
 
-test('TouchZoomRotateHandler fires zoomstart, zoom, and zoomend events at appropriate times in response to a pinch-zoom gesture', (t) => {
+test('TouchZoomRotateHandler fires zoomstart, zoom, and zoomend events at appropriate times in response to a pinch-zoom gesture', async (t) => {
     const map = createMap();
 
     const zoomstart = t.spy();
@@ -47,7 +47,7 @@ test('TouchZoomRotateHandler fires zoomstart, zoom, and zoomend events at approp
     t.end();
 });
 
-test('TouchZoomRotateHandler fires rotatestart, rotate, and rotateend events at appropriate times in response to a pinch-rotate gesture', (t) => {
+test('TouchZoomRotateHandler fires rotatestart, rotate, and rotateend events at appropriate times in response to a pinch-rotate gesture', async (t) => {
     const map = createMap();
 
     const rotatestart = t.spy();
@@ -86,7 +86,7 @@ test('TouchZoomRotateHandler fires rotatestart, rotate, and rotateend events at 
     t.end();
 });
 
-test('TouchZoomRotateHandler does not begin a gesture if preventDefault is called on the touchstart event', (t) => {
+test('TouchZoomRotateHandler does not begin a gesture if preventDefault is called on the touchstart event', async (t) => {
     const map = createMap();
 
     map.on('touchstart', e => e.preventDefault());
@@ -109,7 +109,7 @@ test('TouchZoomRotateHandler does not begin a gesture if preventDefault is calle
     t.end();
 });
 
-test('TouchZoomRotateHandler starts zoom immediately when rotation disabled', (t) => {
+test('TouchZoomRotateHandler starts zoom immediately when rotation disabled', async (t) => {
     const map = createMap(t);
     map.touchZoomRotate.disableRotation();
 

@@ -4,16 +4,16 @@ const { test } = require('mapbox-gl-js-test');
 
 const throttle = require('../../../src/util/throttle');
 
-test('throttle', (t) => {
+test('throttle', async (t) => {
 
-    t.test('does not execute unthrottled function unless throttled function is invoked', (t) => {
+    await t.test('does not execute unthrottled function unless throttled function is invoked', async (t) => {
         let executionCount = 0;
         throttle(() => { executionCount++; }, 0);
         t.equal(executionCount, 0);
         t.end();
     });
 
-    t.test('executes unthrottled function once per tick when period is 0', (t) => {
+    await t.test('executes unthrottled function once per tick when period is 0', async (t) => {
         let executionCount = 0;
         const throttledFunction = throttle(() => { executionCount++; }, 0);
         throttledFunction();
@@ -27,7 +27,7 @@ test('throttle', (t) => {
         }, 0);
     });
 
-    t.test('executes unthrottled function immediately once when period is > 0', (t) => {
+    await t.test('executes unthrottled function immediately once when period is > 0', async (t) => {
         let executionCount = 0;
         const throttledFunction = throttle(() => { executionCount++; }, 5);
         throttledFunction();
@@ -37,7 +37,7 @@ test('throttle', (t) => {
         t.end();
     });
 
-    t.test('queues exactly one execution of unthrottled function when period is > 0', (t) => {
+    await t.test('queues exactly one execution of unthrottled function when period is > 0', async (t) => {
         let executionCount = 0;
         const throttledFunction = throttle(() => { executionCount++; }, 5);
         throttledFunction();

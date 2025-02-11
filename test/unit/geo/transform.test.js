@@ -7,9 +7,9 @@ const fixed = require('mapbox-gl-js-test/fixed');
 const fixedLngLat = fixed.LngLat;
 const fixedCoord = fixed.Coord;
 
-test('transform', (t) => {
+test('transform', async (t) => {
 
-    t.test('creates a transform', (t) => {
+    await t.test('creates a transform', async (t) => {
         const transform = new Transform();
         transform.resize(500, 500);
         t.equal(transform.unmodified, true);
@@ -42,14 +42,14 @@ test('transform', (t) => {
         t.end();
     });
 
-    t.test('does not throw on bad center', (t) => {
+    await t.test('does not throw on bad center', async (t) => {
         const transform = new Transform();
         transform.resize(500, 500);
         transform.center = {lng: 50, lat: -90};
         t.end();
     });
 
-    t.test('setLocationAt', (t) => {
+    await t.test('setLocationAt', async (t) => {
         const transform = new Transform();
         transform.resize(500, 500);
         transform.zoom = 4;
@@ -59,7 +59,7 @@ test('transform', (t) => {
         t.end();
     });
 
-    t.test('setLocationAt tilted', (t) => {
+    await t.test('setLocationAt tilted', async (t) => {
         const transform = new Transform();
         transform.resize(500, 500);
         transform.zoom = 4;
@@ -70,7 +70,7 @@ test('transform', (t) => {
         t.end();
     });
 
-    t.test('has a default zoom', (t) => {
+    await t.test('has a default zoom', async (t) => {
         const transform = new Transform();
         transform.resize(500, 500);
         t.equal(transform.tileZoom, 0);
@@ -78,7 +78,7 @@ test('transform', (t) => {
         t.end();
     });
 
-    t.test('set fov', (t) => {
+    await t.test('set fov', async (t) => {
         const transform = new Transform();
         transform.fov = 10;
         t.equal(transform.fov, 10);
@@ -87,7 +87,7 @@ test('transform', (t) => {
         t.end();
     });
 
-    t.test('lngRange & latRange constrain zoom and center', (t) => {
+    await t.test('lngRange & latRange constrain zoom and center', async (t) => {
         const transform = new Transform();
         transform.center = new LngLat(0, 0);
         transform.zoom = 10;
@@ -109,7 +109,7 @@ test('transform', (t) => {
         t.end();
     });
 
-    test('coveringTiles', (t) => {
+    test('coveringTiles', async (t) => {
         const options = {
             minzoom: 1,
             maxzoom: 10,
@@ -156,7 +156,7 @@ test('transform', (t) => {
         t.end();
     });
 
-    test('coveringZoomLevel', (t) => {
+    test('coveringZoomLevel', async (t) => {
         const options = {
             minzoom: 1,
             maxzoom: 10,
@@ -216,7 +216,7 @@ test('transform', (t) => {
         t.end();
     });
 
-    t.test('clamps pitch', (t) => {
+    await t.test('clamps pitch', async (t) => {
         const transform = new Transform();
 
         transform.pitch = 45;
@@ -231,7 +231,7 @@ test('transform', (t) => {
         t.end();
     });
 
-    t.test('visibleUnwrappedCoordinates', (t) => {
+    await t.test('visibleUnwrappedCoordinates', async (t) => {
         const transform = new Transform();
         transform.resize(200, 200);
         transform.zoom = 0;

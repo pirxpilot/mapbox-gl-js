@@ -86,8 +86,7 @@ test: test-unit
 test-integration: test-render test-query
 
 test-unit: dependencies
-	NODE_PATH=build/node_modules \
-	$(NODE_BIN)/tap --reporter dot --no-coverage test/unit
+	NODE_PATH=build/node_modules node --test test/unit/**/*.test.js
 
 test-render: dependencies
 	node test/render.test.js

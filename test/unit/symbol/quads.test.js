@@ -22,9 +22,9 @@ function createShapedIcon() {
     };
 }
 
-test('getIconQuads', (t) => {
+test('getIconQuads', async (t) => {
 
-    t.test('point', (t) => {
+    await t.test('point', async (t) => {
         const anchor = new Anchor(2, 3, 0, undefined);
         const layer = createLayer({
             layout: {'icon-rotate': 0}
@@ -42,7 +42,7 @@ test('getIconQuads', (t) => {
         t.end();
     });
 
-    t.test('line', (t) => {
+    await t.test('line', async (t) => {
         const anchor = new Anchor(2, 3, 0, 0);
         const layer = createLayer({
             layout: {'icon-rotate': 0}
@@ -62,7 +62,7 @@ test('getIconQuads', (t) => {
     t.end();
 });
 
-test('getIconQuads text-fit', (t) => {
+test('getIconQuads text-fit', async (t) => {
     const anchor = new Anchor(0, 0, 0, undefined);
     function createShapedIcon() {
         return {
@@ -86,7 +86,7 @@ test('getIconQuads text-fit', (t) => {
         };
     }
 
-    t.test('icon-text-fit: none', (t) => {
+    await t.test('icon-text-fit: none', async (t) => {
         const quads = getIconQuads(anchor, createShapedIcon(), createLayer({
             layout: {
                 'icon-text-fit': 'none'
@@ -107,7 +107,7 @@ test('getIconQuads text-fit', (t) => {
         t.end();
     });
 
-    t.test('icon-text-fit: width', (t) => {
+    await t.test('icon-text-fit: width', async (t) => {
         // - Uses text width
         // - Preserves icon height, centers vertically
         const quads = getIconQuads(anchor, createShapedIcon(), createLayer({
@@ -124,7 +124,7 @@ test('getIconQuads text-fit', (t) => {
         t.end();
     });
 
-    t.test('icon-text-fit: width, x textSize', (t) => {
+    await t.test('icon-text-fit: width, x textSize', async (t) => {
         // - Uses text width (adjusted for textSize)
         // - Preserves icon height, centers vertically
         const quads = getIconQuads(anchor, createShapedIcon(), createLayer({
@@ -141,7 +141,7 @@ test('getIconQuads text-fit', (t) => {
         t.end();
     });
 
-    t.test('icon-text-fit: width, x textSize, + padding', (t) => {
+    await t.test('icon-text-fit: width, x textSize, + padding', async (t) => {
         // - Uses text width (adjusted for textSize)
         // - Preserves icon height, centers vertically
         // - Applies padding x, padding y
@@ -159,7 +159,7 @@ test('getIconQuads text-fit', (t) => {
         t.end();
     });
 
-    t.test('icon-text-fit: height', (t) => {
+    await t.test('icon-text-fit: height', async (t) => {
         // - Uses text height
         // - Preserves icon width, centers horizontally
         const quads = getIconQuads(anchor, createShapedIcon(), createLayer({
@@ -176,7 +176,7 @@ test('getIconQuads text-fit', (t) => {
         t.end();
     });
 
-    t.test('icon-text-fit: height, x textSize', (t) => {
+    await t.test('icon-text-fit: height, x textSize', async (t) => {
         // - Uses text height (adjusted for textSize)
         // - Preserves icon width, centers horizontally
         const quads = getIconQuads(anchor, createShapedIcon(), createLayer({
@@ -193,7 +193,7 @@ test('getIconQuads text-fit', (t) => {
         t.end();
     });
 
-    t.test('icon-text-fit: height, x textSize, + padding', (t) => {
+    await t.test('icon-text-fit: height, x textSize, + padding', async (t) => {
         // - Uses text height (adjusted for textSize)
         // - Preserves icon width, centers horizontally
         // - Applies padding x, padding y
@@ -211,7 +211,7 @@ test('getIconQuads text-fit', (t) => {
         t.end();
     });
 
-    t.test('icon-text-fit: both', (t) => {
+    await t.test('icon-text-fit: both', async (t) => {
         // - Uses text width + height
         const quads = getIconQuads(anchor, createShapedIcon(), createLayer({
             layout: {
@@ -227,7 +227,7 @@ test('getIconQuads text-fit', (t) => {
         t.end();
     });
 
-    t.test('icon-text-fit: both, x textSize', (t) => {
+    await t.test('icon-text-fit: both, x textSize', async (t) => {
         // - Uses text width + height (adjusted for textSize)
         const quads = getIconQuads(anchor, createShapedIcon(), createLayer({
             layout: {
@@ -243,7 +243,7 @@ test('getIconQuads text-fit', (t) => {
         t.end();
     });
 
-    t.test('icon-text-fit: both, x textSize, + padding', (t) => {
+    await t.test('icon-text-fit: both, x textSize, + padding', async (t) => {
         // - Uses text width + height (adjusted for textSize)
         // - Applies padding x, padding y
         const quads = getIconQuads(anchor, createShapedIcon(), createLayer({
@@ -260,7 +260,7 @@ test('getIconQuads text-fit', (t) => {
         t.end();
     });
 
-    t.test('icon-text-fit: both, padding t/r/b/l', (t) => {
+    await t.test('icon-text-fit: both, padding t/r/b/l', async (t) => {
         // - Uses text width + height (adjusted for textSize)
         // - Applies padding t/r/b/l
         const quads = getIconQuads(anchor, createShapedIcon(), createLayer({

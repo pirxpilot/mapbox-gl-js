@@ -1,8 +1,8 @@
 const { test } = require('mapbox-gl-js-test');
 const browser = require('../../../src/util/browser');
 
-test('browser', (t) => {
-    t.test('frame', (t) => {
+test('browser', async (t) => {
+    await t.test('frame', async (t) => {
         const id = browser.frame(() => {
             t.pass('called frame');
             t.ok(id, 'returns id');
@@ -10,12 +10,12 @@ test('browser', (t) => {
         });
     });
 
-    t.test('now', (t) => {
+    await t.test('now', async (t) => {
         t.equal(typeof browser.now(), 'number');
         t.end();
     });
 
-    t.test('cancelFrame', (t) => {
+    await t.test('cancelFrame', async (t) => {
         const id = browser.frame(() => {
             t.fail();
         });
@@ -23,12 +23,12 @@ test('browser', (t) => {
         t.end();
     });
 
-    t.test('devicePixelRatio', (t) => {
+    await t.test('devicePixelRatio', async (t) => {
         t.equal(typeof browser.devicePixelRatio, 'number');
         t.end();
     });
 
-    t.test('hardwareConcurrency', (t) => {
+    await t.test('hardwareConcurrency', async (t) => {
         t.equal(typeof browser.hardwareConcurrency, 'number');
         t.end();
     });

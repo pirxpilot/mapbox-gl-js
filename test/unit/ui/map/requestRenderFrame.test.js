@@ -14,7 +14,7 @@ function createMap() {
     });
 }
 
-test('Map#_requestRenderFrame schedules a new render frame if necessary', (t) => {
+test('Map#_requestRenderFrame schedules a new render frame if necessary', async (t) => {
     const map = createMap();
     t.stub(map, '_rerender');
     map._requestRenderFrame(() => {});
@@ -23,7 +23,7 @@ test('Map#_requestRenderFrame schedules a new render frame if necessary', (t) =>
     t.end();
 });
 
-test('Map#_requestRenderFrame queues a task for the next render frame', (t) => {
+test('Map#_requestRenderFrame queues a task for the next render frame', async (t) => {
     const map = createMap();
     const cb = t.spy();
     map._requestRenderFrame(cb);
@@ -34,7 +34,7 @@ test('Map#_requestRenderFrame queues a task for the next render frame', (t) => {
     });
 });
 
-test('Map#_cancelRenderFrame cancels a queued task', (t) => {
+test('Map#_cancelRenderFrame cancels a queued task', async (t) => {
     const map = createMap();
     const cb = t.spy();
     const id = map._requestRenderFrame(cb);

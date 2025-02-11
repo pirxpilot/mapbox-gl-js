@@ -16,7 +16,7 @@ function keysExpected(t, cache, ids) {
     t.deepEqual(cache.order, ids.map((id) => id.key), 'keys');
 }
 
-test('TileCache', (t) => {
+test('TileCache', async (t) => {
     const cache = new TileCache(10, (removed) => {
         t.equal(removed, 'dc');
     });
@@ -31,7 +31,7 @@ test('TileCache', (t) => {
     t.end();
 });
 
-test('TileCache - getWithoutRemoving', (t) => {
+test('TileCache - getWithoutRemoving', async (t) => {
     const cache = new TileCache(10, () => {
         t.fail();
     });
@@ -42,7 +42,7 @@ test('TileCache - getWithoutRemoving', (t) => {
     t.end();
 });
 
-test('TileCache - duplicate add', (t) => {
+test('TileCache - duplicate add', async (t) => {
     const cache = new TileCache(10, () => {
         t.fail();
     });
@@ -58,7 +58,7 @@ test('TileCache - duplicate add', (t) => {
     t.end();
 });
 
-test('TileCache - expiry', (t) => {
+test('TileCache - expiry', async (t) => {
     const cache = new TileCache(10, (removed) => {
         t.ok(cache.has(idB));
         t.equal(removed, tileA2);
@@ -75,7 +75,7 @@ test('TileCache - expiry', (t) => {
     cache.add(idA, tileA2, 0); // expires immediately and `onRemove` is called.
 });
 
-test('TileCache - remove', (t) => {
+test('TileCache - remove', async (t) => {
     const cache = new TileCache(10, () => {});
 
     cache.add(idA, tileA);
@@ -95,7 +95,7 @@ test('TileCache - remove', (t) => {
     t.end();
 });
 
-test('TileCache - overflow', (t) => {
+test('TileCache - overflow', async (t) => {
     const cache = new TileCache(1, (removed) => {
         t.equal(removed, tileA);
     });
@@ -107,7 +107,7 @@ test('TileCache - overflow', (t) => {
     t.end();
 });
 
-test('TileCache#reset', (t) => {
+test('TileCache#reset', async (t) => {
     let called;
     const cache = new TileCache(10, (removed) => {
         t.equal(removed, tileA);
@@ -120,7 +120,7 @@ test('TileCache#reset', (t) => {
     t.end();
 });
 
-test('TileCache#setMaxSize', (t) => {
+test('TileCache#setMaxSize', async (t) => {
     let numRemoved = 0;
     const cache = new TileCache(10, () => {
         numRemoved++;

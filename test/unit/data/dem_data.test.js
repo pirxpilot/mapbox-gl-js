@@ -8,13 +8,13 @@ function createMockImage(height, width) {
     for (let i = 0; i < pixels.length; i++) {
         pixels[i] = (i + 1) % 4 === 0 ? 1 : Math.floor(Math.random() * 256);
     }
-    return new RGBAImage({height: height, width: width}, pixels);
+    return new RGBAImage({ height: height, width: width }, pixels);
 }
 
 
-test('DEMData', (t) => {
-    t.test('constructor', (t) => {
-        const dem = new DEMData(0, {width: 4, height: 4, data: new Uint8ClampedArray(4 * 4 * 4)});
+test('DEMData', async (t) => {
+    await t.test('constructor', async (t) => {
+        const dem = new DEMData(0, { width: 4, height: 4, data: new Uint8ClampedArray(4 * 4 * 4) });
         t.equal(dem.uid, 0);
         t.equal(dem.dim, 4);
         t.equal(dem.stride, 6);
@@ -22,19 +22,27 @@ test('DEMData', (t) => {
         t.end();
     });
 
-    t.test('setters and getters throw for invalid data coordinates', (t) => {
-        const dem = new DEMData(0, {width: 4, height: 4, data: new Uint8ClampedArray(4 * 4 * 4)});
+    await t.test('setters and getters throw for invalid data coordinates', async (t) => {
+        const dem = new DEMData(0, { width: 4, height: 4, data: new Uint8ClampedArray(4 * 4 * 4) });
 
-        t.throws(()=>dem.set(20, 0, 255), 'out of range source coordinates for DEM data', 'detects and throws on invalid input');
-        t.throws(()=>dem.set(10, 20, 255), 'out of range source coordinates for DEM data', 'detects and throws on invalid input');
+        t.throws(
+            () => dem.set(20, 0, 255),
+            { message: 'out of range source coordinates for DEM data' },
+            'detects and throws on invalid input'
+        );
+        t.throws(
+            () => dem.set(10, 20, 255),
+            { message : 'out of range source coordinates for DEM data' },
+            'detects and throws on invalid input'
+        );
 
         t.end();
     });
 
-    t.test('loadFromImage with invalid encoding', (t) => {
+    await t.test('loadFromImage with invalid encoding', async (t) => {
         t.stub(console, 'warn');
 
-        const dem = new DEMData(0, {width: 4, height: 4, data: new Uint8ClampedArray(4 * 4 * 4)}, "derp");
+        const dem = new DEMData(0, { width: 4, height: 4, data: new Uint8ClampedArray(4 * 4 * 4) }, "derp");
         t.equal(dem.uid, 0);
         t.ok(console.warn.calledOnce);
         t.ok(console.warn.getCall(0).calledWithMatch(/"derp" is not a valid encoding type/));
@@ -45,11 +53,11 @@ test('DEMData', (t) => {
 });
 
 
-test('DEMData#backfillBorder', (t) => {
+test('DEMData#backfillBorder', async (t) => {
     const dem0 = new DEMData(0, createMockImage(4, 4));
     const dem1 = new DEMData(1, createMockImage(4, 4));
 
-    t.test('border region is initially populated with neighboring data', (t)=>{
+    await t.test('border region is initially populated with neighboring data', (t) => {
         let nonempty = true;
         for (let x = -1; x < 5; x++) {
             for (let y = -1; y < 5; y++) {
@@ -92,7 +100,7 @@ test('DEMData#backfillBorder', (t) => {
         t.end();
     });
 
-    t.test('backfillBorder correctly populates borders with neighboring data', (t)=>{
+    await t.test('backfillBorder correctly populates borders with neighboring data', (t) => {
         dem0.backfillBorder(dem1, -1, 0);
         for (let y = 0; y < 4; y++) {
             // dx = -1, dy = 0, so the left edge of dem1 should equal the right edge of dem0
@@ -131,7 +139,7 @@ test('DEMData#backfillBorder', (t) => {
         t.end();
     });
 
-    t.test('DEMData is correctly serialized', (t)=>{
+    await t.test('DEMData is correctly serialized', (t) => {
         const imageData0 = createMockImage(4, 4);
         const dem0 = new DEMData(0, imageData0);
         const serialized = serialize(dem0);
@@ -146,12 +154,12 @@ test('DEMData#backfillBorder', (t) => {
 
         const transferrables = [];
         serialize(dem0, transferrables);
-        t.deepEqual(new Uint32Array(transferrables[0]), dem0.data, 'populates transferrables with correct data');
+        t.deepEqual(new Int32Array(transferrables[0]), dem0.data, 'populates transferrables with correct data');
 
         t.end();
     });
 
-    t.test('DEMData is correctly deserialized', (t)=>{
+    await t.test('DEMData is correctly deserialized', (t) => {
         const imageData0 = createMockImage(4, 4);
         const dem0 = new DEMData(0, imageData0);
         const serialized = serialize(dem0);

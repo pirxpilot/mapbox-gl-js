@@ -75,7 +75,7 @@ test('classifyRings', (assert) => {
     assert.end();
 });
 
-test('classifyRings + maxRings', (t) => {
+test('classifyRings + maxRings', async (t) => {
 
     function createGeometry(options) {
         const geometry = [
@@ -95,7 +95,7 @@ test('classifyRings + maxRings', (t) => {
     }
 
 
-    t.test('maxRings=undefined', (t) => {
+    await t.test('maxRings=undefined', async (t) => {
         const geometry = sortRings(classifyRings(createGeometry()));
         t.equal(geometry.length, 1);
         t.equal(geometry[0].length, 3);
@@ -105,7 +105,7 @@ test('classifyRings + maxRings', (t) => {
         t.end();
     });
 
-    t.test('maxRings=2', (t) => {
+    await t.test('maxRings=2', async (t) => {
         const geometry = sortRings(classifyRings(createGeometry(), 2));
         t.equal(geometry.length, 1);
         t.equal(geometry[0].length, 2);
@@ -114,7 +114,7 @@ test('classifyRings + maxRings', (t) => {
         t.end();
     });
 
-    t.test('maxRings=2, reversed geometry', (t) => {
+    await t.test('maxRings=2, reversed geometry', async (t) => {
         const geometry = sortRings(classifyRings(createGeometry({reverse: true}), 2));
         t.equal(geometry.length, 1);
         t.equal(geometry[0].length, 2);
@@ -123,7 +123,7 @@ test('classifyRings + maxRings', (t) => {
         t.end();
     });
 
-    t.test('maxRings=5, geometry from fixture', (t) => {
+    await t.test('maxRings=5, geometry from fixture', async (t) => {
         const geometry = sortRings(classifyRings(feature.loadGeometry(), 5));
         t.equal(geometry.length, 2);
         t.equal(geometry[0].length, 1);

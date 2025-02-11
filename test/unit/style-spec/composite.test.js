@@ -1,7 +1,7 @@
 const { test } = require('mapbox-gl-js-test');
 const composite = require('../../../src/style-spec/composite');
 
-test('composites Mapbox vector sources', (t) => {
+test('composites Mapbox vector sources', async (t) => {
     const result = composite({
         "version": 7,
         "sources": {
@@ -37,7 +37,7 @@ test('composites Mapbox vector sources', (t) => {
     t.end();
 });
 
-test('does not composite vector + raster', (t) => {
+test('does not composite vector + raster', async (t) => {
     const result = composite({
         "version": 7,
         "sources": {
@@ -57,7 +57,7 @@ test('does not composite vector + raster', (t) => {
     t.end();
 });
 
-test('incorrect url match', (t) => {
+test('incorrect url match', async (t) => {
     const result = composite({
         "version": 7,
         "sources": {
@@ -77,7 +77,7 @@ test('incorrect url match', (t) => {
     t.end();
 });
 
-test('composites Mapbox vector sources with conflicting source layer names', (t) => {
+test('composites Mapbox vector sources with conflicting source layer names', async (t) => {
     t.throws(() => {
         composite({
             "version": 7,

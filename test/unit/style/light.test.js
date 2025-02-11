@@ -6,7 +6,7 @@ const { sphericalToCartesian } = require('../../../src/util/util');
 
 const spec = styleSpec.light;
 
-test('Light with defaults', (t) => {
+test('Light with defaults', async (t) => {
     const light = new Light({});
     light.recalculate({zoom: 0, zoomHistory: {}});
 
@@ -18,7 +18,7 @@ test('Light with defaults', (t) => {
     t.end();
 });
 
-test('Light with options', (t) => {
+test('Light with options', async (t) => {
     const light = new Light({
         anchor: 'map',
         position: [2, 30, 30],
@@ -34,7 +34,7 @@ test('Light with options', (t) => {
     t.end();
 });
 
-test('Light with stops function', (t) => {
+test('Light with stops function', async (t) => {
     const light = new Light({
         intensity: {
             stops: [[16, 0.2], [17, 0.8]]
@@ -47,7 +47,7 @@ test('Light with stops function', (t) => {
     t.end();
 });
 
-test('Light#getLight', (t) => {
+test('Light#getLight', async (t) => {
     const defaults = {};
     for (const key in spec) {
         defaults[key] = spec[key].default;
@@ -57,7 +57,7 @@ test('Light#getLight', (t) => {
     t.end();
 });
 
-test('Light#setLight', (t) => {
+test('Light#setLight', async (t) => {
     const light = new Light({});
     light.setLight({ color: 'red', "color-transition": { duration: 3000 }});
     light.updateTransitions({ transition: true }, {});

@@ -9,14 +9,14 @@ function createMap() {
     return new Map({ container: DOM.create('div', '', window.document.body) });
 }
 
-test('Map#isMoving returns false by default', (t) => {
+test('Map#isMoving returns false by default', async (t) => {
     const map = createMap();
     t.equal(map.isMoving(), false);
     map.remove();
     t.end();
 });
 
-test('Map#isMoving returns true during a camera zoom animation', (t) => {
+test('Map#isMoving returns true during a camera zoom animation', async (t) => {
     const map = createMap();
 
     map.on('zoomstart', () => {
@@ -32,7 +32,7 @@ test('Map#isMoving returns true during a camera zoom animation', (t) => {
     map.zoomTo(5, { duration: 0 });
 });
 
-test('Map#isMoving returns true when drag panning', (t) => {
+test('Map#isMoving returns true when drag panning', async (t) => {
     const map = createMap();
 
     map.on('dragstart', () => {
@@ -55,7 +55,7 @@ test('Map#isMoving returns true when drag panning', (t) => {
     map._renderTaskQueue.run();
 });
 
-test('Map#isMoving returns true when drag rotating', (t) => {
+test('Map#isMoving returns true when drag rotating', async (t) => {
     const map = createMap();
 
     map.on('rotatestart', () => {
@@ -78,7 +78,7 @@ test('Map#isMoving returns true when drag rotating', (t) => {
     map._renderTaskQueue.run();
 });
 
-test('Map#isMoving returns true when scroll zooming', (t) => {
+test('Map#isMoving returns true when scroll zooming', async (t) => {
     const map = createMap();
 
     map.on('zoomstart', () => {
@@ -102,7 +102,7 @@ test('Map#isMoving returns true when scroll zooming', (t) => {
     map._renderTaskQueue.run();
 });
 
-test('Map#isMoving returns true when drag panning and scroll zooming interleave', (t) => {
+test('Map#isMoving returns true when drag panning and scroll zooming interleave', async (t) => {
     const map = createMap();
 
     map.on('dragstart', () => {

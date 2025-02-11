@@ -1,7 +1,7 @@
 const { test } = require('mapbox-gl-js-test');
 const { packUint8ToFloat } = require('../../../src/shaders/encode_attribute');
 
-test('packUint8ToFloat', (t) => {
+test('packUint8ToFloat', async (t) => {
     t.equal(packUint8ToFloat(0, 0), 0);
     t.equal(packUint8ToFloat(255, 255), 65535);
     t.equal(packUint8ToFloat(123, 45), 31533);

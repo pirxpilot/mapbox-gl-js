@@ -3,7 +3,7 @@
 const { test } = require('mapbox-gl-js-test');
 const Color = require('../../../src/style-spec/util/color');
 
-test('Color.parse', (t) => {
+test('Color.parse', async (t) => {
     t.deepEqual(Color.parse('red'), new Color(1, 0, 0, 1));
     t.deepEqual(Color.parse('#ff00ff'), new Color(1, 0, 1, 1));
     t.deepEqual(Color.parse('invalid'), undefined);
@@ -12,7 +12,7 @@ test('Color.parse', (t) => {
     t.end();
 });
 
-test('Color#toString', (t) => {
+test('Color#toString', async (t) => {
     const purple = Color.parse('purple');
     t.equal(purple && purple.toString(), 'rgba(128,0,128,1)');
     const translucentGreen = Color.parse('rgba(26, 207, 26, .73)');

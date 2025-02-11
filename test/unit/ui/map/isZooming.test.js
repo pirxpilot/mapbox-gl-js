@@ -9,14 +9,14 @@ function createMap() {
     return new Map({ container: DOM.create('div', '', window.document.body) });
 }
 
-test('Map#isZooming returns false by default', (t) => {
+test('Map#isZooming returns false by default', async (t) => {
     const map = createMap();
     t.equal(map.isZooming(), false);
     map.remove();
     t.end();
 });
 
-test('Map#isZooming returns true during a camera zoom animation', (t) => {
+test('Map#isZooming returns true during a camera zoom animation', async (t) => {
     const map = createMap();
 
     map.on('zoomstart', () => {
@@ -32,7 +32,7 @@ test('Map#isZooming returns true during a camera zoom animation', (t) => {
     map.zoomTo(5, { duration: 0 });
 });
 
-test('Map#isZooming returns true when scroll zooming', (t) => {
+test('Map#isZooming returns true when scroll zooming', async (t) => {
     const map = createMap();
 
     map.on('zoomstart', () => {
@@ -55,7 +55,7 @@ test('Map#isZooming returns true when scroll zooming', (t) => {
     map._renderTaskQueue.run();
 });
 
-test('Map#isZooming returns true when double-click zooming', (t) => {
+test('Map#isZooming returns true when double-click zooming', async (t) => {
     const map = createMap();
 
     map.on('zoomstart', () => {

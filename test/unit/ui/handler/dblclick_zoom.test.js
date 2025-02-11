@@ -8,7 +8,7 @@ function createMap() {
     return new Map({ container: DOM.create('div', '', window.document.body) });
 }
 
-test('DoubleClickZoomHandler does not zoom if preventDefault is called on the dblclick event', (t) => {
+test('DoubleClickZoomHandler does not zoom if preventDefault is called on the dblclick event', async (t) => {
     const map = createMap();
 
     map.on('dblclick', e => e.preventDefault());

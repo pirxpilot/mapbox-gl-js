@@ -6,20 +6,17 @@ const {
 const SourceCache = require('../../../src/source/source_cache.js');
 const Transform = require('../../../src/geo/transform.js');
 
-test('QueryFeatures#rendered', (t) => {
-    t.test('returns empty object if source returns no tiles', (t) => {
+test('QueryFeatures#rendered', async (t) => {
+    await t.test('returns empty object if source returns no tiles', (t) => {
         const mockSourceCache = { tilesIn: function () { return []; } };
         const transform = new Transform();
         const result = queryRenderedFeatures(mockSourceCache, undefined, {}, undefined, transform);
-        t.deepEqual(result, []);
-        t.end();
+        t.deepEqual(result, {});
     });
-
-    t.end();
 });
 
-test('QueryFeatures#source', (t) => {
-    t.test('returns empty result when source has no features', (t) => {
+test('QueryFeatures#source', async (t) => {
+    await t.test('returns empty result when source has no features', (t) => {
         const sourceCache = new SourceCache('test', {
             type: 'geojson',
             data: { type: 'FeatureCollection', features: [] }
@@ -28,8 +25,5 @@ test('QueryFeatures#source', (t) => {
         });
         const result = querySourceFeatures(sourceCache, {});
         t.deepEqual(result, []);
-        t.end();
     });
-
-    t.end();
 });

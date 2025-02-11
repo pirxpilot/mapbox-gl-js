@@ -4,7 +4,7 @@ const { test } = require('mapbox-gl-js-test');
 const { register, serialize, deserialize } = require('../../../src/util/web_worker_transfer');
 
 
-test('round trip', (t) => {
+test('round trip', async (t) => {
     class Foo {
 
         constructor(n) {
@@ -27,30 +27,30 @@ test('round trip', (t) => {
     const foo = new Foo(10);
     const transferables = [];
     const deserialized = deserialize(serialize(foo, transferables));
-    t.assert(deserialized instanceof Foo);
+    t.assert.ok(deserialized instanceof Foo);
     const bar = (deserialized);
 
-    t.assert(foo !== bar);
-    t.assert(bar.constructor === Foo);
-    t.assert(bar.n === 10);
-    t.assert(bar.buffer === foo.buffer);
-    t.assert(transferables[0] === foo.buffer);
-    t.assert(bar._cached === undefined);
-    t.assert(bar.squared() === 100);
+    t.assert.ok(foo !== bar);
+    t.assert.ok(bar.constructor === Foo);
+    t.assert.ok(bar.n === 10);
+    t.assert.ok(bar.buffer === foo.buffer);
+    t.assert.ok(transferables[0] === foo.buffer);
+    t.assert.ok(bar._cached === undefined);
+    t.assert.ok(bar.squared() === 100);
     t.end();
 });
 
-test('anonymous class', (t) => {
+test('anonymous class', async (t) => {
     const Klass = (() => class {})();
-    t.assert(!Klass.name);
+    t.assert.ok(!Klass.name);
     register('Anon', Klass);
     const x = new Klass();
     const deserialized = deserialize(serialize(x));
-    t.assert(deserialized instanceof Klass);
+    t.assert.ok(deserialized instanceof Klass);
     t.end();
 });
 
-test('custom serialization', (t) => {
+test('custom serialization', async (t) => {
     class Bar {
         constructor(id) {
             this.id = id;
@@ -71,13 +71,13 @@ test('custom serialization', (t) => {
     register('Bar', Bar);
 
     const bar = new Bar('a');
-    t.assert(!bar._deserialized);
+    t.assert.ok(!bar._deserialized);
 
     const deserialized = deserialize(serialize(bar));
-    t.assert(deserialized instanceof Bar);
+    t.assert.ok(deserialized instanceof Bar);
     const bar2 = (deserialized);
     t.equal(bar2.id, bar.id);
-    t.assert(bar2._deserialized);
+    t.assert.ok(bar2._deserialized);
     t.end();
 });
 

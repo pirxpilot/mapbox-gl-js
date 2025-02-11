@@ -8,7 +8,7 @@ function createMap(options) {
     return new Map(Object.assign({ container: DOM.create('div', '', window.document.body) }, options));
 }
 
-test('DragRotateHandler fires rotatestart, rotate, and rotateend events at appropriate times in response to a right-click drag', (t) => {
+test('DragRotateHandler fires rotatestart, rotate, and rotateend events at appropriate times in response to a right-click drag', async (t) => {
     const map = createMap();
 
     const rotatestart = t.spy();
@@ -41,7 +41,7 @@ test('DragRotateHandler fires rotatestart, rotate, and rotateend events at appro
     t.end();
 });
 
-test('DragRotateHandler stops firing events after mouseup', (t) => {
+test('DragRotateHandler stops firing events after mouseup', async (t) => {
     const map = createMap();
 
     const spy = t.spy();
@@ -64,7 +64,7 @@ test('DragRotateHandler stops firing events after mouseup', (t) => {
     t.end();
 });
 
-test('DragRotateHandler fires rotatestart, rotate, and rotateend events at appropriate times in response to a control-left-click drag', (t) => {
+test('DragRotateHandler fires rotatestart, rotate, and rotateend events at appropriate times in response to a control-left-click drag', async (t) => {
     const map = createMap();
 
     const rotatestart = t.spy();
@@ -97,7 +97,7 @@ test('DragRotateHandler fires rotatestart, rotate, and rotateend events at appro
     t.end();
 });
 
-test('DragRotateHandler pitches in response to a right-click drag by default', (t) => {
+test('DragRotateHandler pitches in response to a right-click drag by default', async (t) => {
     const map = createMap();
 
     const pitchstart = t.spy();
@@ -121,7 +121,7 @@ test('DragRotateHandler pitches in response to a right-click drag by default', (
     t.end();
 });
 
-test('DragRotateHandler pitches in response to a control-left-click drag', (t) => {
+test('DragRotateHandler pitches in response to a control-left-click drag', async (t) => {
     const map = createMap();
 
     const pitchstart = t.spy();
@@ -145,7 +145,7 @@ test('DragRotateHandler pitches in response to a control-left-click drag', (t) =
     t.end();
 });
 
-test('DragRotateHandler does not pitch if given pitchWithRotate: false', (t) => {
+test('DragRotateHandler does not pitch if given pitchWithRotate: false', async (t) => {
     const map = createMap({pitchWithRotate: false});
 
     const spy = t.spy();
@@ -170,7 +170,7 @@ test('DragRotateHandler does not pitch if given pitchWithRotate: false', (t) => 
     t.end();
 });
 
-test('DragRotateHandler does not rotate or pitch when disabled', (t) => {
+test('DragRotateHandler does not rotate or pitch when disabled', async (t) => {
     const map = createMap();
 
     map.dragRotate.disable();
@@ -195,7 +195,7 @@ test('DragRotateHandler does not rotate or pitch when disabled', (t) => {
     t.end();
 });
 
-test('DragRotateHandler ensures that map.isMoving() returns true during drag', (t) => {
+test('DragRotateHandler ensures that map.isMoving() returns true during drag', async (t) => {
     // The bearingSnap option here ensures that the moveend event is sent synchronously.
     const map = createMap({bearingSnap: 0});
 
@@ -210,7 +210,7 @@ test('DragRotateHandler ensures that map.isMoving() returns true during drag', (
     t.end();
 });
 
-test('DragRotateHandler fires move events', (t) => {
+test('DragRotateHandler fires move events', async (t) => {
     // The bearingSnap option here ensures that the moveend event is sent synchronously.
     const map = createMap({bearingSnap: 0});
 
@@ -235,7 +235,7 @@ test('DragRotateHandler fires move events', (t) => {
     t.end();
 });
 
-test('DragRotateHandler includes originalEvent property in triggered events', (t) => {
+test('DragRotateHandler includes originalEvent property in triggered events', async (t) => {
     // The bearingSnap option here ensures that the moveend event is sent synchronously.
     const map = createMap({bearingSnap: 0});
 
@@ -281,7 +281,7 @@ test('DragRotateHandler includes originalEvent property in triggered events', (t
     t.end();
 });
 
-test('DragRotateHandler responds to events on the canvas container (#1301)', (t) => {
+test('DragRotateHandler responds to events on the canvas container (#1301)', async (t) => {
     const map = createMap();
 
     const rotatestart = t.spy();
@@ -305,7 +305,7 @@ test('DragRotateHandler responds to events on the canvas container (#1301)', (t)
     t.end();
 });
 
-test('DragRotateHandler prevents mousemove events from firing during a drag (#1555)', (t) => {
+test('DragRotateHandler prevents mousemove events from firing during a drag (#1555)', async (t) => {
     const map = createMap();
 
     const mousemove = t.spy();
@@ -322,7 +322,7 @@ test('DragRotateHandler prevents mousemove events from firing during a drag (#15
     t.end();
 });
 
-test('DragRotateHandler ends a control-left-click drag on mouseup even when the control key was previously released (#1888)', (t) => {
+test('DragRotateHandler ends a control-left-click drag on mouseup even when the control key was previously released (#1888)', async (t) => {
     const map = createMap();
 
     const rotatestart = t.spy();
@@ -346,7 +346,7 @@ test('DragRotateHandler ends a control-left-click drag on mouseup even when the 
     t.end();
 });
 
-test('DragRotateHandler ends rotation if the window blurs (#3389)', (t) => {
+test('DragRotateHandler ends rotation if the window blurs (#3389)', async (t) => {
     const map = createMap();
 
     const rotatestart = t.spy();
@@ -370,7 +370,7 @@ test('DragRotateHandler ends rotation if the window blurs (#3389)', (t) => {
     t.end();
 });
 
-test('DragRotateHandler requests a new render frame after each mousemove event', (t) => {
+test('DragRotateHandler requests a new render frame after each mousemove event', async (t) => {
     const map = createMap();
     const requestRenderFrame = t.spy(map, '_requestRenderFrame');
 
@@ -389,7 +389,7 @@ test('DragRotateHandler requests a new render frame after each mousemove event',
     t.end();
 });
 
-test('DragRotateHandler can interleave with another handler', (t) => {
+test('DragRotateHandler can interleave with another handler', async (t) => {
     // https://github.com/mapbox/mapbox-gl-js/issues/6106
     const map = createMap();
 
@@ -437,7 +437,7 @@ test('DragRotateHandler can interleave with another handler', (t) => {
     t.end();
 });
 
-test('DragRotateHandler does not begin a drag on left-button mousedown without the control key', (t) => {
+test('DragRotateHandler does not begin a drag on left-button mousedown without the control key', async (t) => {
     const map = createMap();
     map.dragPan.disable();
 
@@ -471,7 +471,7 @@ test('DragRotateHandler does not begin a drag on left-button mousedown without t
     t.end();
 });
 
-test('DragRotateHandler does not end a right-button drag on left-button mouseup', (t) => {
+test('DragRotateHandler does not end a right-button drag on left-button mouseup', async (t) => {
     const map = createMap();
     map.dragPan.disable();
 
@@ -523,7 +523,7 @@ test('DragRotateHandler does not end a right-button drag on left-button mouseup'
     t.end();
 });
 
-test('DragRotateHandler does not end a control-left-button drag on right-button mouseup', (t) => {
+test('DragRotateHandler does not end a control-left-button drag on right-button mouseup', async (t) => {
     const map = createMap();
     map.dragPan.disable();
 
@@ -575,7 +575,7 @@ test('DragRotateHandler does not end a control-left-button drag on right-button 
     t.end();
 });
 
-test('DragRotateHandler does not begin a drag if preventDefault is called on the mousedown event', (t) => {
+test('DragRotateHandler does not begin a drag if preventDefault is called on the mousedown event', async (t) => {
     const map = createMap();
 
     map.on('mousedown', e => e.preventDefault());
@@ -606,7 +606,7 @@ test('DragRotateHandler does not begin a drag if preventDefault is called on the
 });
 
 ['rotatestart', 'rotate'].forEach(event => {
-    test(`DragRotateHandler can be disabled on ${event} (#2419)`, (t) => {
+    test(`DragRotateHandler can be disabled on ${event} (#2419)`, async (t) => {
         const map = createMap();
 
         map.on(event, () => map.dragRotate.disable());
@@ -645,7 +645,7 @@ test('DragRotateHandler does not begin a drag if preventDefault is called on the
     });
 });
 
-test(`DragRotateHandler can be disabled after mousedown (#2419)`, (t) => {
+test(`DragRotateHandler can be disabled after mousedown (#2419)`, async (t) => {
     const map = createMap();
 
     const rotatestart = t.spy();

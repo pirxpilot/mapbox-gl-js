@@ -21,7 +21,7 @@ function nearlyEquals(a, b) {
     return a.every((e, i) => Math.abs(e - b[i]) <= 3);
 }
 
-test('renderColorRamp', (t) => {
+test('renderColorRamp', async (t) => {
 
     const expression = createPropertyExpression([
         'interpolate',

@@ -3,8 +3,8 @@ const createStyleLayer = require('../../../src/style/create_style_layer');
 const FillStyleLayer = require('../../../src/style/style_layer/fill_style_layer');
 const Color = require('../../../src/style-spec/util/color');
 
-test('StyleLayer', (t) => {
-    t.test('instantiates the correct subclass', (t) => {
+test('StyleLayer', async (t) => {
+    await t.test('instantiates the correct subclass', async (t) => {
         const layer = createStyleLayer({type: 'fill'});
 
         t.ok(layer instanceof FillStyleLayer);
@@ -14,8 +14,8 @@ test('StyleLayer', (t) => {
     t.end();
 });
 
-test('StyleLayer#setPaintProperty', (t) => {
-    t.test('sets new property value', (t) => {
+test('StyleLayer#setPaintProperty', async (t) => {
+    await t.test('sets new property value', async (t) => {
         const layer = createStyleLayer({
             "id": "background",
             "type": "background"
@@ -27,7 +27,7 @@ test('StyleLayer#setPaintProperty', (t) => {
         t.end();
     });
 
-    t.test('updates property value', (t) => {
+    await t.test('updates property value', async (t) => {
         const layer = createStyleLayer({
             "id": "background",
             "type": "background",
@@ -42,7 +42,7 @@ test('StyleLayer#setPaintProperty', (t) => {
         t.end();
     });
 
-    t.test('unsets value', (t) => {
+    await t.test('unsets value', async (t) => {
         const layer = createStyleLayer({
             "id": "background",
             "type": "background",
@@ -64,7 +64,7 @@ test('StyleLayer#setPaintProperty', (t) => {
         t.end();
     });
 
-    t.test('preserves existing transition', (t) => {
+    await t.test('preserves existing transition', async (t) => {
         const layer = createStyleLayer({
             "id": "background",
             "type": "background",
@@ -82,7 +82,7 @@ test('StyleLayer#setPaintProperty', (t) => {
         t.end();
     });
 
-    t.test('sets transition', (t) => {
+    await t.test('sets transition', async (t) => {
         const layer = createStyleLayer({
             "id": "background",
             "type": "background",
@@ -97,7 +97,7 @@ test('StyleLayer#setPaintProperty', (t) => {
         t.end();
     });
 
-    t.test('can unset fill-outline-color #2886', (t) => {
+    await t.test('can unset fill-outline-color #2886', async (t) => {
         const layer = createStyleLayer({
             id: 'building',
             type: 'fill',
@@ -120,7 +120,7 @@ test('StyleLayer#setPaintProperty', (t) => {
         t.end();
     });
 
-    t.test('can transition fill-outline-color from undefined to a value #3657', (t) => {
+    await t.test('can transition fill-outline-color from undefined to a value #3657', async (t) => {
         const layer = createStyleLayer({
             id: 'building',
             type: 'fill',
@@ -151,7 +151,7 @@ test('StyleLayer#setPaintProperty', (t) => {
         t.end();
     });
 
-    t.test('sets null property value', (t) => {
+    await t.test('sets null property value', async (t) => {
         const layer = createStyleLayer({
             "id": "background",
             "type": "background"
@@ -166,8 +166,8 @@ test('StyleLayer#setPaintProperty', (t) => {
     t.end();
 });
 
-test('StyleLayer#setLayoutProperty', (t) => {
-    t.test('sets new property value', (t) => {
+test('StyleLayer#setLayoutProperty', async (t) => {
+    await t.test('sets new property value', async (t) => {
         const layer = createStyleLayer({
             "id": "symbol",
             "type": "symbol"
@@ -179,7 +179,7 @@ test('StyleLayer#setLayoutProperty', (t) => {
         t.end();
     });
 
-    t.test('updates property value', (t) => {
+    await t.test('updates property value', async (t) => {
         const layer = createStyleLayer({
             "id": "symbol",
             "type": "symbol",
@@ -194,7 +194,7 @@ test('StyleLayer#setLayoutProperty', (t) => {
         t.end();
     });
 
-    t.test('unsets property value', (t) => {
+    await t.test('unsets property value', async (t) => {
         const layer = createStyleLayer({
             "id": "symbol",
             "type": "symbol",
@@ -214,7 +214,7 @@ test('StyleLayer#setLayoutProperty', (t) => {
     t.end();
 });
 
-test('StyleLayer#serialize', (t) => {
+test('StyleLayer#serialize', async (t) => {
 
     function createSymbolLayer(layer) {
         return Object.assign({
@@ -229,7 +229,7 @@ test('StyleLayer#serialize', (t) => {
         }, layer);
     }
 
-    t.test('serializes layers', (t) => {
+    await t.test('serializes layers', async (t) => {
         t.deepEqual(
             createStyleLayer(createSymbolLayer()).serialize(),
             createSymbolLayer()
@@ -237,7 +237,7 @@ test('StyleLayer#serialize', (t) => {
         t.end();
     });
 
-    t.test('serializes functions', (t) => {
+    await t.test('serializes functions', async (t) => {
         const layerPaint = {
             'text-color': {
                 base: 2,
@@ -252,7 +252,7 @@ test('StyleLayer#serialize', (t) => {
         t.end();
     });
 
-    t.test('serializes added paint properties', (t) => {
+    await t.test('serializes added paint properties', async (t) => {
         const layer = createStyleLayer(createSymbolLayer());
         layer.setPaintProperty('text-halo-color', 'orange');
 
@@ -262,7 +262,7 @@ test('StyleLayer#serialize', (t) => {
         t.end();
     });
 
-    t.test('serializes added layout properties', (t) => {
+    await t.test('serializes added layout properties', async (t) => {
         const layer = createStyleLayer(createSymbolLayer());
         layer.setLayoutProperty('text-size', 20);
 
@@ -275,7 +275,7 @@ test('StyleLayer#serialize', (t) => {
     t.end();
 });
 
-test('StyleLayer#serialize', (t) => {
+test('StyleLayer#serialize', async (t) => {
 
     function createSymbolLayer(layer) {
         return Object.assign({
@@ -290,7 +290,7 @@ test('StyleLayer#serialize', (t) => {
         }, layer);
     }
 
-    t.test('serializes layers', (t) => {
+    await t.test('serializes layers', async (t) => {
         t.deepEqual(
             createStyleLayer(createSymbolLayer()).serialize(),
             createSymbolLayer()
@@ -298,7 +298,7 @@ test('StyleLayer#serialize', (t) => {
         t.end();
     });
 
-    t.test('serializes functions', (t) => {
+    await t.test('serializes functions', async (t) => {
         const layerPaint = {
             'text-color': {
                 base: 2,
@@ -313,7 +313,7 @@ test('StyleLayer#serialize', (t) => {
         t.end();
     });
 
-    t.test('serializes added paint properties', (t) => {
+    await t.test('serializes added paint properties', async (t) => {
         const layer = createStyleLayer(createSymbolLayer());
         layer.setPaintProperty('text-halo-color', 'orange');
 
@@ -323,7 +323,7 @@ test('StyleLayer#serialize', (t) => {
         t.end();
     });
 
-    t.test('serializes added layout properties', (t) => {
+    await t.test('serializes added layout properties', async (t) => {
         const layer = createStyleLayer(createSymbolLayer());
         layer.setLayoutProperty('text-size', 20);
 

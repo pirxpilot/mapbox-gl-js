@@ -2,10 +2,10 @@ const { test } = require('mapbox-gl-js-test');
 const tileCover = require('../../../src/util/tile_cover');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
 
-test('tileCover', (t) => {
+test('tileCover', async (t) => {
 
-    t.test('.cover', (t) => {
-        t.test('calculates tile coverage at w = 0', (t) => {
+    await t.test('.cover', async (t) => {
+        await t.test('calculates tile coverage at w = 0', async (t) => {
             const z = 2,
                 coords = [
                     {column: 0, row: 1, zoom: 2},
@@ -18,7 +18,7 @@ test('tileCover', (t) => {
             t.end();
         });
 
-        t.test('calculates tile coverage at w > 0', (t) => {
+        await t.test('calculates tile coverage at w > 0', async (t) => {
             const z = 2,
                 coords = [
                     {column: 12, row: 1, zoom: 2},
@@ -31,7 +31,7 @@ test('tileCover', (t) => {
             t.end();
         });
 
-        t.test('calculates tile coverage at w = -1', (t) => {
+        await t.test('calculates tile coverage at w = -1', async (t) => {
             const z = 2,
                 coords = [
                     {column: -1, row: 1, zoom: 2},
@@ -44,7 +44,7 @@ test('tileCover', (t) => {
             t.end();
         });
 
-        t.test('calculates tile coverage at w < -1', (t) => {
+        await t.test('calculates tile coverage at w < -1', async (t) => {
             const z = 2,
                 coords = [
                     {column: -13, row: 1, zoom: 2},
@@ -57,7 +57,7 @@ test('tileCover', (t) => {
             t.end();
         });
 
-        t.test('calculates tile coverage across meridian', (t) => {
+        await t.test('calculates tile coverage across meridian', async (t) => {
             const z = 2,
                 coords = [
                     {column: -0.5, row: 1, zoom: 2},
@@ -72,7 +72,7 @@ test('tileCover', (t) => {
             t.end();
         });
 
-        t.test('only includes tiles for a single world, if renderWorldCopies is set to false', (t) => {
+        await t.test('only includes tiles for a single world, if renderWorldCopies is set to false', async (t) => {
             const z = 2,
                 coords = [
                     {column: -0.5, row: 1, zoom: 2},

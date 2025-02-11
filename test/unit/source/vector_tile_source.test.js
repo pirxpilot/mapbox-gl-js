@@ -22,23 +22,21 @@ function createSource(options) {
     return source;
 }
 
-test('VectorTileSource', (t) => {
+test('VectorTileSource', async (t) => {
     let baseUrl;
 
-    t.beforeEach((callback) => {
+    t.beforeEach(() => {
         baseUrl = config.BASE_URL;
         config.BASE_URL = 'http://example.com';
         window.useFakeXMLHttpRequest();
-        callback();
     });
 
-    t.afterEach((callback) => {
+    t.afterEach(() => {
         config.BASE_URL = baseUrl;
         window.restore();
-        callback();
     });
 
-    t.test('can be constructed from TileJSON', (t) => {
+    await t.test('can be constructed from TileJSON', async (t) => {
         const source = createSource({
             minzoom: 1,
             maxzoom: 10,
@@ -57,7 +55,7 @@ test('VectorTileSource', (t) => {
         });
     });
 
-    t.test('fires event with metadata property', (t) => {
+    await t.test('fires event with metadata property', (t) => {
         const source = createSource(require('../../fixtures/source'));
         source.on('data', (e)=>{
             if (e.sourceDataType === 'content') t.end();
@@ -65,7 +63,7 @@ test('VectorTileSource', (t) => {
         window.server.respond();
     });
 
-    t.test('fires "dataloading" event', (t) => {
+    await t.test('fires "dataloading" event', (t) => {
         const evented = new Evented();
         let dataloadingFired = false;
         evented.on('dataloading', () => {
@@ -81,7 +79,7 @@ test('VectorTileSource', (t) => {
         window.server.respond();
     });
 
-    t.test('serialize TileJSON', (t) => {
+    await t.test('serialize TileJSON', (t) => {
         const source = createSource({
             minzoom: 1,
             maxzoom: 10,
@@ -98,8 +96,8 @@ test('VectorTileSource', (t) => {
         t.end();
     });
 
-    function testScheme(scheme, expectedURL) {
-        t.test(`scheme "${scheme}"`, (t) => {
+    async function testScheme(scheme, expectedURL) {
+        await t.test(`scheme "${scheme}"`, async (t) => {
             const source = createSource({
                 minzoom: 1,
                 maxzoom: 10,
@@ -122,10 +120,10 @@ test('VectorTileSource', (t) => {
         });
     }
 
-    testScheme('xyz', 'http://example.com/10/5/5.png');
-    testScheme('tms', 'http://example.com/10/5/1018.png');
+    await testScheme('xyz', 'http://example.com/10/5/5.png');
+    await testScheme('tms', 'http://example.com/10/5/1018.png');
 
-    t.test('reloads a loading tile properly', (t) => {
+    await t.test('reloads a loading tile properly', async (t) => {
         const source = createSource({
             tiles: ["http://example.com/{z}/{x}/{y}.png"]
         });
@@ -157,7 +155,7 @@ test('VectorTileSource', (t) => {
         });
     });
 
-    t.test('respects TileJSON.bounds', (t)=>{
+    await t.test('respects TileJSON.bounds', (t)=>{
         const source = createSource({
             minzoom: 0,
             maxzoom: 22,
@@ -174,7 +172,7 @@ test('VectorTileSource', (t) => {
         });
     });
 
-    t.test('does not error on invalid bounds', (t)=>{
+    await t.test('does not error on invalid bounds', (t)=>{
         const source = createSource({
             minzoom: 0,
             maxzoom: 22,

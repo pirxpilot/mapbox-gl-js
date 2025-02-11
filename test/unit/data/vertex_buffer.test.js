@@ -3,14 +3,14 @@ const VertexBuffer = require('../../../src/gl/vertex_buffer');
 const { StructArrayLayout3i6 } = require('../../../src/data/array_types');
 const Context = require('../../../src/gl/context');
 
-test('VertexBuffer', (t) => {
+test('VertexBuffer', async (t) => {
     class TestArray extends StructArrayLayout3i6 {}
     const attributes = [
         { name: 'map', components: 1, type: 'Int16', offset: 0 },
         { name: 'box', components: 2, type: 'Int16', offset: 4 }
     ];
 
-    t.test('constructs itself', (t) => {
+    await t.test('constructs itself', async (t) => {
         const context = new Context(require('gl')(10, 10));
         const array = new TestArray();
         array.emplaceBack(1, 1, 1);
@@ -28,7 +28,7 @@ test('VertexBuffer', (t) => {
         t.end();
     });
 
-    t.test('enableAttributes', (t) => {
+    await t.test('enableAttributes', async (t) => {
         const context = new Context(require('gl')(10, 10));
         const array = new TestArray();
         const buffer = new VertexBuffer(context, array, attributes);
@@ -38,7 +38,7 @@ test('VertexBuffer', (t) => {
         t.end();
     });
 
-    t.test('setVertexAttribPointers', (t) => {
+    await t.test('setVertexAttribPointers', async (t) => {
         const context = new Context(require('gl')(10, 10));
         const array = new TestArray();
         const buffer = new VertexBuffer(context, array, attributes);

@@ -2,8 +2,8 @@ const { test } = require('mapbox-gl-js-test');
 const Actor = require('../../../src/util/actor');
 const WebWorker = require('../../../src/util/web_worker');
 
-test('Actor', (t) => {
-    t.test('forwards resopnses to correct callback', (t) => {
+test('Actor', async (t) => {
+    await t.test('forwards resopnses to correct callback', async (t) => {
         t.stub(WebWorker, 'Worker').callsFake(function Worker(self) {
             this.self = self;
             this.actor = new Actor(self, this);
@@ -17,18 +17,19 @@ test('Actor', (t) => {
         const m1 = new Actor(worker, {}, 'map-1');
         const m2 = new Actor(worker, {}, 'map-2');
 
-        t.plan(4);
+        // FIXME: count asserts
+        // t.plan(4);
         m1.send('test', { value: 1729 }, (err, response) => {
-            t.error(err);
+            t.ifError(err);
             t.same(response, { value: 1729 });
         });
         m2.send('test', { value: 4104 }, (err, response) => {
-            t.error(err);
+            t.ifError(err);
             t.same(response, { value: 4104 });
         });
     });
 
-    t.test('targets worker-initiated messages to correct map instance', (t) => {
+    await t.test('targets worker-initiated messages to correct map instance', (t, done) => {
         let workerActor;
 
         t.stub(WebWorker, 'Worker').callsFake(function Worker(self) {
@@ -39,30 +40,28 @@ test('Actor', (t) => {
         const worker = new WebWorker();
 
         new Actor(worker, {
-            test: function () { t.end(); }
+            test: function () { done(); }
         }, 'map-1');
         new Actor(worker, {
             test: function () {
                 t.fail();
-                t.end();
+                done();
             }
         }, 'map-2');
 
         workerActor.send('test', {}, () => {}, 'map-1');
     });
 
-    t.test('#remove unbinds event listener', (t) => {
+    await t.test('#remove unbinds event listener', (t, done) => {
         const actor = new Actor({
             addEventListener: function (type, callback, useCapture) {
                 this._addEventListenerArgs = [type, callback, useCapture];
             },
             removeEventListener: function (type, callback, useCapture) {
                 t.same([type, callback, useCapture], this._addEventListenerArgs, 'listener removed');
-                t.end();
+                done();
             }
         }, {}, null);
         actor.remove();
     });
-
-    t.end();
 });

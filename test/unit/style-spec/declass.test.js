@@ -1,7 +1,7 @@
 const { test: t } = require('mapbox-gl-js-test');
 const declass = require('../../../src/style-spec/declass');
 
-t('declass a style, one class', (t) => {
+t('declass a style, one class', async (t) => {
     const style = {
         layers: [{
             id: 'a',
@@ -37,7 +37,7 @@ t('declass a style, one class', (t) => {
     t.end();
 });
 
-t('declass a style, missing class ==> noop', (t) => {
+t('declass a style, missing class ==> noop', async (t) => {
     const style = {
         layers: [{
             id: 'a',
@@ -61,7 +61,7 @@ t('declass a style, missing class ==> noop', (t) => {
     t.end();
 });
 
-t('declass a style, multiple classes', (t) => {
+t('declass a style, multiple classes', async (t) => {
     const style = {
         layers: [{
             id: 'a',
@@ -95,7 +95,7 @@ t('declass a style, multiple classes', (t) => {
     t.end();
 });
 
-t('declassing a style removes paint.CLASS definitions, whether or not they are applied', (t) => {
+t('declassing a style removes paint.CLASS definitions, whether or not they are applied', async (t) => {
     const style = {
         layers: [{
             id: 'a',
