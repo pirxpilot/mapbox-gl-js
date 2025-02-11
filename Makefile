@@ -85,14 +85,19 @@ test: test-unit
 
 test-integration: test-render test-query
 
-test-unit: dependencies
-	NODE_PATH=build/node_modules node --test test/unit/**/*.test.js
+test-unit test-render test-query: export NODE_PATH = build/node_modules
 
-test-render: dependencies
+test-unit: dependencies
+	node --test test/unit/**/*.test.js
+
+test-render: dependencies dependencies-integration test.env
 	node test/render.test.js
 
-test-query: dependencies
+test-query: dependencies dependencies-integration test.env
 	node test/query.test.js
+
+dependencies-integration: | test/integration/node_modules test/integration/tiles/node_modules
+.PHONY: dependencies-integration
 
 distclean: clean
 	rm -fr $(DEPENDENCIES)
