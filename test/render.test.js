@@ -1,4 +1,4 @@
-/* eslint-disable import/unambiguous, import/no-commonjs, no-global-assign */
+require('mapbox-gl-js-test/glsl-loader');
 
 const suite = require('./integration').render;
 const suiteImplementation = require('./suite_implementation');
