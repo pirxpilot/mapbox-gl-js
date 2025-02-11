@@ -9,7 +9,8 @@ module.exports.load = loadImage;
 
 function loadImage(load, data, fn) {
     if (data instanceof ArrayBuffer) {
-        done(null, { data });
+        // 24 hours for cached tiles
+        done(null, { data, cacheControl: 'max-age=3600' });
         return;
     }
     const url = data;
