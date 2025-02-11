@@ -1,6 +1,9 @@
 PROJECT=mapbox-gl
 NODE_BIN=./build/node_modules/.bin
 
+all: check build
+.PHONY: all
+
 find = $(foreach dir,$(1),$(foreach d,$(wildcard $(dir)/*),$(call find,$(d),$(2))) $(wildcard $(dir)/$(strip $(2))))
 
 SRC = $(call find, src, *.js)
@@ -45,18 +48,18 @@ PREBUILD = \
 	$(GLSL:%.glsl=build/min/%.glsl.txt)
 
 prebuild: $(PREBUILD)
-
 .PHONY: prebuild
 
-all: check build
-
 check: lint test
+.PHONY: check
 
 build: $(PREBUILD)
 build: $(BUILD)
+.PHONY: build
 
 dist: DEBUG_FLAG=false
 dist: build
+.PHONY: dist
 
 distdir:
 	mkdir -p dist
@@ -80,24 +83,30 @@ dist/$(PROJECT)-worker.js: $(SRC) | dependencies distdir
 
 lint: dependencies
 	$(NODE_BIN)/biome lint
+.PHONY: lint
 
 test: test-unit
 
-test-integration: test-render test-query
+test-integration: test-render test-query test-expression
+.NOTPARALLEL: test-render test-query test-expression
 
 test-unit test-render test-query: export NODE_PATH = build/node_modules
 
 test-unit: dependencies
 	node --test test/unit/**/*.test.js
 
-test-render: dependencies dependencies-integration test.env
+test-expression: dependencies dependencies-integration
+	node test/expression.test.js
+
+test-render: dependencies dependencies-integration
 	node test/render.test.js
 
-test-query: dependencies dependencies-integration test.env
+test-query: dependencies dependencies-integration
 	node test/query.test.js
 
 dependencies-integration: | test/integration/node_modules test/integration/tiles/node_modules
-.PHONY: dependencies-integration
+
+.PHONY: dependencies-integration test test-integration test-unit test-render test-query
 
 distclean: clean
 	rm -fr $(DEPENDENCIES)
@@ -109,5 +118,4 @@ clean-test:
 	find test/integration/*-tests -mindepth 2 -type d -not -exec test -e "{}/style.json" \; -print
 	# | xargs -t rm -r
 
-.PHONY: all clean clean-test check lint build dist distclean dependencies
-.PHONY: test test-unit test-render test-query
+.PHONY: clean clean-test distclean
