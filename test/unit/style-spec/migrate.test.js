@@ -1,6 +1,5 @@
 const { test: t } = require('mapbox-gl-js-test');
 const fs = require('fs');
-const glob = require('glob');
 const path = require('path');
 const validate = require('../../../src/style-spec/validate_style');
 const v8 = require('../../../src/style-spec/reference/v8');
@@ -30,7 +29,7 @@ t('migrates to latest version from version 7', async (t) => {
     t.end();
 });
 
-glob.sync(`${__dirname}/fixture/v7-migrate/*.input.json`).forEach((file) => {
+fs.globSync(`${__dirname}/fixture/v7-migrate/*.input.json`).forEach((file) => {
     t(path.basename(file), async (t) => {
         const outputfile = file.replace('.input', '.output');
         const style = JSON.parse(fs.readFileSync(file));

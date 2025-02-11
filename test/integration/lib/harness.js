@@ -1,14 +1,9 @@
-'use strict';
-
-/* eslint-disable no-process-exit */
-
 const fs = require('fs');
 const path = require('path');
 const queue = require('d3-queue').queue;
 const colors = require('chalk');
 const template = require('lodash.template');
 const shuffler = require('shuffle-seed');
-const glob = require('glob');
 
 module.exports = function (directory, implementation, options, run) {
     const q = queue(1);
@@ -17,7 +12,7 @@ module.exports = function (directory, implementation, options, run) {
     const tests = options.tests || [];
     const ignores = options.ignores || {};
 
-    let sequence = glob.sync(`**/${options.fixtureFilename || 'style.json'}`, {cwd: directory})
+    let sequence = fs.globSync(`**/${options.fixtureFilename || 'style.json'}`, {cwd: directory})
         .map(fixture => {
             const id = path.dirname(fixture);
             const style = require(path.join(directory, fixture));
