@@ -991,19 +991,19 @@ test('Map', async (t) => {
         await t.test('sets visibility on raster layer', (t, done) => {
             const map = createMap({
                 style: {
-                    "version": 8,
-                    "sources": {
-                        "mapbox://mapbox.satellite": {
-                            "type": "raster",
-                            "tiles": ["http://example.com/{z}/{x}/{y}.png"]
+                    version: 8,
+                    sources: {
+                        satellite: {
+                            type: 'raster',
+                            tiles: async () => {}
                         }
                     },
-                    "layers": [{
-                        "id": "satellite",
-                        "type": "raster",
-                        "source": "mapbox://mapbox.satellite",
-                        "layout": {
-                            "visibility": "none"
+                    layers: [{
+                        id: 'satellite',
+                        type: 'raster',
+                        source: 'satellite',
+                        layout: {
+                            visibility: 'none'
                         }
                     }]
                 }
@@ -1022,12 +1022,12 @@ test('Map', async (t) => {
         await t.test('sets visibility on image layer', (t, done) => {
             const map = createMap({
                 style: {
-                    "version": 8,
-                    "sources": {
-                        "image": {
-                            "type": "image",
-                            "url": "",
-                            "coordinates": [
+                    version: 8,
+                    sources: {
+                        image: {
+                            type: 'image',
+                            url: new ArrayBuffer(0),
+                            coordinates: [
                                 [-122.51596391201019, 37.56238816766053],
                                 [-122.51467645168304, 37.56410183312965],
                                 [-122.51309394836426, 37.563391708549425],
@@ -1035,12 +1035,12 @@ test('Map', async (t) => {
                             ]
                         }
                     },
-                    "layers": [{
-                        "id": "image",
-                        "type": "raster",
-                        "source": "image",
-                        "layout": {
-                            "visibility": "none"
+                    layers: [{
+                        id: 'image',
+                        type: 'raster',
+                        source: 'image',
+                        layout: {
+                            visibility: 'none'
                         }
                     }]
                 }

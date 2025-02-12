@@ -1,6 +1,5 @@
 'use strict';
 
-const { normalizeURL } = require('../util/urls');
 const browser = require('../util/browser');
 const loadImage = require('../util/loader/image');
 const { OverscaledTileID } = require('./tile_id');
@@ -30,7 +29,7 @@ class RasterDEMTileSource extends RasterTileSource {
         };
     }
 
-    async loadTile(tile, callback) {
+    loadTile(tile, callback) {
         const done = (err, dem) => {
             if (err) {
                 tile.state = 'errored';
@@ -72,19 +71,16 @@ class RasterDEMTileSource extends RasterTileSource {
             }
         };
 
-        let data;
-        if (typeof this.tiles === 'function') {
-            tile.abortController = new window.AbortController();
-            data = await this.tiles(tile.tileID.canonical, tile.abortController).catch(() => {});
-            if (!data) {
-                return done(new Error('Tile could not be loaded'));
-            }
-        }
-        else {
-            data =  normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url, this.tileSize);
-        }
-        tile.request = loadImage(data, imageLoaded);
-        tile.neighboringTiles = this._getNeighboringTiles(tile.tileID);
+        tile.abortController = new window.AbortController();
+        this.tiles(tile.tileID.canonical, tile.abortController)
+            .catch(() => {})
+            .then((data) => {
+                tile.neighboringTiles = this._getNeighboringTiles(tile.tileID);
+                if (!data) {
+                    return done(new Error('Tile could not be loaded'));
+                }
+                tile.request = loadImage(data, imageLoaded);
+            });
     }
 
     _getNeighboringTiles(tileID) {

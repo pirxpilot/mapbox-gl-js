@@ -1,10 +1,9 @@
 const { test } = require('mapbox-gl-js-test');
-const config = require('../../../src/util/config');
 const RasterDEMTileSource = require('../../../src/source/raster_dem_tile_source');
-const window = require('../../../src/util/window');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
 
 function createSource(options) {
+    options.tiles = options.tiles ?? loadTile
     const source = new RasterDEMTileSource('id', options, { send: function() {} }, options.eventedParent);
     source.onAdd({
         transform: { angle: 0, pitch: 0, showCollisionBoxes: false }
@@ -15,31 +14,20 @@ function createSource(options) {
     });
 
     return source;
+
+    async function loadTile() {
+        return ;
+    }
 }
 
-
 test('RasterTileSource', async (t) => {
-    let baseUrl;
 
-    t.beforeEach(() => {
-        baseUrl = config.BASE_URL;
-        config.BASE_URL = 'http://example.com';
-        window.useFakeXMLHttpRequest();
-    });
-
-    t.afterEach(() => {
-        config.BASE_URL = baseUrl;
-        window.restore();
-    });
-
-    await t.test('populates neighboringTiles', async (t) => {
-        window.server.respondWith('http://example.com/source.json', JSON.stringify({
+    await t.test('populates neighboringTiles', (t, done) => {
+        const source = createSource({
             minzoom: 0,
             maxzoom: 22,
-            attribution: "Mapbox",
-            tiles: ["http://example.com/{z}/{x}/{y}.png"]
-        }));
-        const source = createSource({ url: "/source.json" });
+            attribution: "Mapbox"
+        });
         source.on('data', (e) => {
             if (e.sourceDataType === 'metadata') {
                 const tile = {
@@ -48,34 +36,31 @@ test('RasterTileSource', async (t) => {
                     loadVectorData: function () {},
                     setExpiryData: function() {}
                 };
-                source.loadTile(tile, () => {});
+                source.loadTile(tile, () => {
 
-                t.deepEqual(Object.keys(tile.neighboringTiles), [
-                    new OverscaledTileID(10, 0, 10, 4, 4).key,
-                    new OverscaledTileID(10, 0, 10, 5, 4).key,
-                    new OverscaledTileID(10, 0, 10, 6, 4).key,
-                    new OverscaledTileID(10, 0, 10, 4, 5).key,
-                    new OverscaledTileID(10, 0, 10, 6, 5).key,
-                    new OverscaledTileID(10, 0, 10, 4, 6).key,
-                    new OverscaledTileID(10, 0, 10, 5, 6).key,
-                    new OverscaledTileID(10, 0, 10, 6, 6).key
-                ]);
+                    t.deepEqual(Object.keys(tile.neighboringTiles), [
+                        new OverscaledTileID(10, 0, 10, 4, 4).key,
+                        new OverscaledTileID(10, 0, 10, 5, 4).key,
+                        new OverscaledTileID(10, 0, 10, 6, 4).key,
+                        new OverscaledTileID(10, 0, 10, 4, 5).key,
+                        new OverscaledTileID(10, 0, 10, 6, 5).key,
+                        new OverscaledTileID(10, 0, 10, 4, 6).key,
+                        new OverscaledTileID(10, 0, 10, 5, 6).key,
+                        new OverscaledTileID(10, 0, 10, 6, 6).key
+                    ]);
 
-                t.end();
-
+                    done();
+                });
             }
         });
-        window.server.respond();
     });
 
-    await t.test('populates neighboringTiles with wrapped tiles', async (t) => {
-        window.server.respondWith('http://example.com/source.json', JSON.stringify({
+    await t.test('populates neighboringTiles with wrapped tiles', (t, done) => {
+        const source = createSource({
             minzoom: 0,
             maxzoom: 22,
-            attribution: "Mapbox",
-            tiles: ["http://example.com/{z}/{x}/{y}.png"]
-        }));
-        const source = createSource({ url: "/source.json" });
+            attribution: "Mapbox"
+        });
         source.on('data', (e) => {
             if (e.sourceDataType === 'metadata') {
                 const tile = {
@@ -84,23 +69,21 @@ test('RasterTileSource', async (t) => {
                     loadVectorData: function () {},
                     setExpiryData: function() {}
                 };
-                source.loadTile(tile, () => {});
+                source.loadTile(tile, () => {
 
-                t.deepEqual(Object.keys(tile.neighboringTiles), [
-                    new OverscaledTileID(5, 0, 5, 30, 4).key,
-                    new OverscaledTileID(5, 0, 5, 31, 4).key,
-                    new OverscaledTileID(5, 0, 5, 30, 5).key,
-                    new OverscaledTileID(5, 0, 5, 30, 6).key,
-                    new OverscaledTileID(5, 0, 5, 31, 6).key,
-                    new OverscaledTileID(5, 1, 5, 0,  4).key,
-                    new OverscaledTileID(5, 1, 5, 0,  5).key,
-                    new OverscaledTileID(5, 1, 5, 0,  6).key
-                ]);
-                t.end();
+                    t.deepEqual(Object.keys(tile.neighboringTiles), [
+                        new OverscaledTileID(5, 0, 5, 30, 4).key,
+                        new OverscaledTileID(5, 0, 5, 31, 4).key,
+                        new OverscaledTileID(5, 0, 5, 30, 5).key,
+                        new OverscaledTileID(5, 0, 5, 30, 6).key,
+                        new OverscaledTileID(5, 0, 5, 31, 6).key,
+                        new OverscaledTileID(5, 1, 5, 0,  4).key,
+                        new OverscaledTileID(5, 1, 5, 0,  5).key,
+                        new OverscaledTileID(5, 1, 5, 0,  6).key
+                    ]);
+                    done();
+                });
             }
         });
-        window.server.respond();
     });
-    t.end();
-
 });

@@ -1,34 +1,19 @@
 'use strict';
 
-const config = require('../config');
-const loader = require('./index');
 const window = require('../window');
 
 module.exports = image;
-module.exports.load = loadImage;
 
-function loadImage(load, data, fn) {
-    if (data instanceof ArrayBuffer) {
+function image(data, fn) {
+    if (!(data instanceof ArrayBuffer)) {
+        return fn(new Error('image data not loaded'));
+    }
+    if (data.byteLength === 0) {
+        transparentImage(fn);
+    } else {
         // 24 hours for cached tiles
-        done(null, { data, cacheControl: 'max-age=3600' });
-        return;
+        imageFromData({ data, cacheControl: 'max-age=3600' }, fn);
     }
-    const url = data;
-    load({ request: { url }, _ilk: 'image' }, done);
-
-    function done(err, data) {
-        if (err) return fn(err);
-        if (data.data.byteLength === 0) {
-            transparentImage(fn);
-        } else {
-            imageFromData(data, fn);
-        }
-    }
-}
-
-function image(url, fn) {
-    const load = loader(config.LOADER_STRATEGY);
-    loadImage(load, url, fn);
 }
 
 function imageFromData(imgData, fn) {
