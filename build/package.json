@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@mapbox/mapbox-gl-rtl-text": "^0.1.0",
+    "@mapbox/mapbox-gl-rtl-text": "^0.3.0",
     "gl": "~8",
     "jsdom": "~26",
     "mock-geolocation": "^1.0.11",
