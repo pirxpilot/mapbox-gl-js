@@ -8,7 +8,6 @@
     "pirates": "~4",
     "pngjs": "^7.0.0",
     "sinon": "^5.0.10",
-    "stylelint": "^7.10.1",
     "webpack-glsl-minify": "^1.5.0"
   },
   "license": "BSD-3-Clause"
