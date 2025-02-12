@@ -4,7 +4,6 @@ const config = require('../util/config');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 const { pick } = require('../util/object');
 const loadTileJSON = require('./load_tilejson');
-const { normalizeURL } = require('../util/urls');
 const TileBounds = require('./tile_bounds');
 const browser = require('../util/browser');
 const window = require('../util/window');
@@ -76,42 +75,39 @@ class VectorTileSource extends Evented {
         return Object.assign({}, this._options);
     }
 
-    async loadTile(tile, callback) {
-        let request, response;
-        if (typeof this.tiles === 'function') {
-            tile.abortController = new window.AbortController();
-            const data = await this.tiles(tile.tileID.canonical, tile.abortController).catch(() => {});
-            if (!data) {
-                return done(new Error('Tile could not be loaded'));
-            }
-            // 24 hours for cached tiles
-            response = { data, cacheControl: 'max-age=3600' };
-        }
-        else {
-            const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme));
-            request = { url };
-        }
-        const params = {
-            request,
-            response,
-            uid: tile.uid,
-            tileID: tile.tileID,
-            zoom: tile.tileID.overscaledZ,
-            tileSize: this.tileSize * tile.tileID.overscaleFactor(),
-            type: this.type,
-            source: this.id,
-            pixelRatio: browser.devicePixelRatio,
-            showCollisionBoxes: this.map.showCollisionBoxes,
-        };
+    loadTile(tile, callback) {
+        tile.abortController = new window.AbortController();
+        this.tiles(tile.tileID.canonical, tile.abortController)
+            .catch(() => {})
+            .then((data) => {
+                if (!data) {
+                    const err = new Error('Tile could not be loaded');
+                    err.doNothing = true;
+                    return done(err);
+                }
+                // 24 hours for cached tiles
+                const response = { data, cacheControl: 'max-age=3600' };
+                const params = {
+                    response,
+                    uid: tile.uid,
+                    tileID: tile.tileID,
+                    zoom: tile.tileID.overscaledZ,
+                    tileSize: this.tileSize * tile.tileID.overscaleFactor(),
+                    type: this.type,
+                    source: this.id,
+                    pixelRatio: browser.devicePixelRatio,
+                    showCollisionBoxes: this.map.showCollisionBoxes,
+                };
 
-        if (tile.workerID === undefined || tile.state === 'expired') {
-            tile.workerID = this.dispatcher.send('loadTile', params, done.bind(this));
-        } else if (tile.state === 'loading') {
-            // schedule tile reloading after it has been loaded
-            tile.reloadCallback = callback;
-        } else {
-            this.dispatcher.send('reloadTile', params, done.bind(this), tile.workerID);
-        }
+                if (tile.workerID === undefined || tile.state === 'expired') {
+                    tile.workerID = this.dispatcher.send('loadTile', params, done.bind(this));
+                } else if (tile.state === 'loading') {
+                    // schedule tile reloading after it has been loaded
+                    tile.reloadCallback = callback;
+                } else {
+                    this.dispatcher.send('reloadTile', params, done.bind(this), tile.workerID);
+                }
+            });
 
         function done(err, data) {
             if (tile.aborted)
@@ -137,10 +133,8 @@ class VectorTileSource extends Evented {
     }
 
     abortTile(tile) {
-        if (tile.abortController) {
-            tile.aborted = true;
-            tile.abortController.abort();
-        }
+        tile.aborted = true;
+        tile.abortController.abort();
         this.dispatcher.send('abortTile', { uid: tile.uid, type: this.type, source: this.id }, undefined, tile.workerID);
     }
 

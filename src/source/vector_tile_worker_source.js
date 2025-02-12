@@ -1,27 +1,23 @@
 'use strict';
 
 const vt = require('@mapbox/vector-tile');
-const loader = require('../util/loader');
 const Protobuf = require('@mapwhit/pbf');
 const WorkerTile = require('./worker_tile');
 
 function loadVectorTile(params, callback) {
-    if (params.response) {
-        done(null, params.response);
-        return;
+    if (!params.response) {
+        return callback(new Error('no tile data'));
     }
-    const { strategies } = this;
-    const load = loader(strategies[params.source] || strategies['*']);
-    return load(params, done);
-    function done(err, { data, cacheControl, expires } = {}) {
-        if (err) return callback(err);
-        callback(err, {
-            vectorTile: new vt.VectorTile(new Protobuf(data)),
-            rawData: data,
-            cacheControl,
-            expires
-        });
+    const { data, cacheControl, expires } = params.response;
+    if (!data) {
+        return callback();
     }
+    callback(null, {
+        vectorTile: new vt.VectorTile(new Protobuf(data)),
+        rawData: data,
+        cacheControl,
+        expires
+    });
 }
 
 /**
@@ -45,7 +41,6 @@ class VectorTileWorkerSource {
         this.actor = actor;
         this.layerIndex = layerIndex;
         this.loadVectorData = loadVectorData || loadVectorTile.bind(this);
-        this.loading = {};
         this.loaded = {};
         this.strategies = {};
         this.lang = false;
@@ -59,13 +54,8 @@ class VectorTileWorkerSource {
     loadTile(params, callback) {
         const uid = params.uid;
 
-        if (!this.loading)
-            this.loading = {};
-
-        const workerTile = this.loading[uid] = new WorkerTile(params);
-        workerTile.abort = this.loadVectorData(params, (err, response) => {
-            delete this.loading[uid];
-
+        const workerTile = new WorkerTile(params);
+        this.loadVectorData(params, (err, response) => {
             if (err || !response) {
                 return callback(err);
             }
@@ -123,12 +113,6 @@ class VectorTileWorkerSource {
      * @param params.uid The UID for this tile.
      */
     abortTile(params, callback) {
-        const loading = this.loading,
-            uid = params.uid;
-        if (loading && loading[uid] && loading[uid].abort) {
-            loading[uid].abort();
-            delete loading[uid];
-        }
         callback();
     }
 

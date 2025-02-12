@@ -381,7 +381,7 @@ test('Map', async (t) => {
                         type: 'vector',
                         minzoom: 1,
                         maxzoom: 10,
-                        tiles: ['http://example.com/{z}/{x}/{y}.png']
+                        tiles: async () => {}
                     }
                 },
                 layers: [{
@@ -420,7 +420,7 @@ test('Map', async (t) => {
                         type: 'vector',
                         minzoom: 1,
                         maxzoom: 10,
-                        tiles: ['http://example.com/{z}/{x}/{y}.png']
+                        tiles: async () => {}
                     }
                 },
                 layers: [layer]
@@ -1162,14 +1162,14 @@ test('Map', async (t) => {
         await t.test('fires an error if sourceLayer not provided for a vector source', (t, done) => {
             const map = createMap({
                 style: {
-                    "version": 8,
-                    "sources": {
-                        "vector": {
-                            "type": "vector",
-                            "tiles": ["http://example.com/{z}/{x}/{y}.png"]
+                    version: 8,
+                    sources: {
+                        vector: {
+                            type: 'vector',
+                            tiles: async () => {}
                         }
                     },
-                    "layers": []
+                    layers: []
                 }
             });
             map.on('load', () => {
@@ -1213,7 +1213,7 @@ test('Map', async (t) => {
             type: 'vector',
             minzoom: 1,
             maxzoom: 10,
-            tiles: ['http://example.com/{z}/{x}/{y}.png']
+            tiles: async () => {}
         };
         style.layers.push({
             id: 'layerId',
@@ -1243,7 +1243,7 @@ test('Map', async (t) => {
                         type: 'vector',
                         minzoom: 1,
                         maxzoom: 10,
-                        tiles: ['http://example.com/{z}/{x}/{y}.png']
+                        tiles: async () => {}
                     }
                 },
                 layers: [{
