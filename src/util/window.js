@@ -5,25 +5,12 @@ const jsdom = require('jsdom');
 const gl = require('gl');
 const sinon = require('sinon');
 
-const { window: _window } = new jsdom.JSDOM('', {
-    url: "https://example.org/",
-    virtualConsole: new jsdom.VirtualConsole().sendTo(console)
-});
 
-restore();
+const _window = create();
 
 module.exports = _window;
 
-function restore() {
-    // Remove previous window from exported object
-    const previousWindow = _window;
-    if (previousWindow.close) previousWindow.close();
-    for (const key in previousWindow) {
-        if (previousWindow.hasOwnProperty(key)) {
-            delete (previousWindow)[key];
-        }
-    }
-
+function create() {
     // Create new window and inject into exported object
     const { window } = new jsdom.JSDOM('', {
         url: "https://example.org/",
@@ -33,7 +20,7 @@ function restore() {
 
     window.devicePixelRatio = 1;
 
-    window.requestAnimationFrame = function(callback) {
+    window.requestAnimationFrame = function (callback) {
         return setImmediate(callback, 0);
     };
     window.cancelAnimationFrame = clearImmediate;
@@ -51,18 +38,27 @@ function restore() {
         return originalGetContext.call(this, type, attributes);
     };
 
-    window.useFakeHTMLCanvasGetContext = function() {
-        this.HTMLCanvasElement.prototype.getContext = function() { return '2d'; };
+    window.useFakeHTMLCanvasGetContext = function () {
+        this.HTMLCanvasElement.prototype.getContext = function () { return '2d'; };
     };
 
-    window.URL.revokeObjectURL = function () {};
+    window.Blob = Blob
+    window.URL.createObjectURL ??= URL.createObjectURL;
+    window.URL.revokeObjectURL ??= URL.revokeObjectURL;
+
+    window.ImageData ??= function () { return false; };
+    window.ImageBitmap ??= function () { return false; };
+    window.WebGLFramebuffer ??= Object;
 
     window.restore = restore;
-
-    window.ImageData = window.ImageData || function() { return false; };
-    window.ImageBitmap = window.ImageBitmap || function() { return false; };
-    window.WebGLFramebuffer = window.WebGLFramebuffer || Object;
-    Object.assign(_window, window);
-
     return window;
+}
+
+function restore() {
+    // TODO: implement window restore
+    // Remove previous window from exported object
+    // const previousWindow = _window;
+    // if (previousWindow.close) previousWindow.close();
+
+    return _window;
 }

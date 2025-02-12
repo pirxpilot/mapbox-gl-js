@@ -1,5 +1,4 @@
 const { test } = require('mapbox-gl-js-test');
-const assert = require('assert');
 const ImageSource = require('../../../src/source/image_source');
 const { Evented } = require('../../../src/util/evented');
 const Transform = require('../../../src/geo/transform');
@@ -25,12 +24,8 @@ class StubMap extends Evented {
 test('ImageSource', async (t) => {
     let respond;
 
-    t.after(() => delete window.URL.createObjectURL);
-
     t.before(() => {
-        // stub this manually because sinon does not stub non-existent methods
-        assert(!window.URL.createObjectURL);
-        window.URL.createObjectURL = () => 'blob:';
+        t.stub(window.URL, 'createObjectURL').returns('blob:');
         // stub Image so we can invoke 'onload'
         // https://github.com/jsdom/jsdom/commit/58a7028d0d5b6aacc5b435daee9fd8f9eacbb14c
         const img = {};
