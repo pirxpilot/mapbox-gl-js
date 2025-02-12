@@ -78,11 +78,11 @@ module.exports = function(style, options, _callback) { // eslint-disable-line im
             const pixels = new Uint8Array(w * h * 4);
             gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
-            const data = new Buffer(pixels);
+            const data = Buffer.from(pixels);
 
             // Flip the scanlines.
             const stride = w * 4;
-            const tmp = new Buffer(stride);
+            const tmp = Buffer.alloc(stride);
             for (let i = 0, j = h - 1; i < j; i++, j--) {
                 const start = i * stride;
                 const end = j * stride;
