@@ -6,7 +6,7 @@
     "jsdom": "~26",
     "mock-geolocation": "^1.0.11",
     "pirates": "~4",
-    "pngjs": "^3.0.0",
+    "pngjs": "^7.0.0",
     "sinon": "^5.0.10",
     "stylelint": "^7.10.1",
     "webpack-glsl-minify": "^1.5.0"
