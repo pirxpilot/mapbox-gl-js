@@ -1,4 +1,12 @@
 
+0.46.1 / 2025-02-13
+===================
+
+ * remove caching/loading, ajax, and useFakeXMLHttpRequest
+ * remove direct loading of GeoJSON, imagesi, and vector tiles from URL
+ * load GeoJSON, raster DEM tiles, raster tiles, and vector tiles using external loader
+ * use `node:test` instead of tap
+
 0.46.0 / 2025-02-09
 ===================
 
