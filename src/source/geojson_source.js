@@ -159,30 +159,20 @@ class GeoJSONSource extends Evented {
      */
     _updateWorkerData(callback) {
 
-        async function loadGeoJSON(options, data) {
+        async function loadGeoJSON(data) {
             if (typeof data === 'function') {
-                const json = await data();
-                if (!json) {
-                    return ;
-                }
-                options.data = json;
-            } else if (typeof data === 'string') {
-                options.request = { url: resolveURL(data) };
-            } else {
-                options.data = data;
+                return data();
             }
-            return options;
+            return data;
         }
 
-        const options = Object.assign({}, this.workerOptions);
         const data = this._data;
-        loadGeoJSON(options, data).catch(() => {}).then((options) => {
-            if (!options) {
+        loadGeoJSON(data).catch(() => {}).then((json) => {
+            if (!json) {
                 return callback(new Error('no GeoJSON data'));
             }
-            if (options.data) {
-                options.data = JSON.stringify(options.data);
-            }
+            const options = Object.assign({}, this.workerOptions);
+            options.data = JSON.stringify(json);
             // target {this.type}.loadData rather than literally geojson.loadData,
             // so that other geojson-like source types can easily reuse this
             // implementation

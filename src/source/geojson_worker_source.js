@@ -1,7 +1,5 @@
 'use strict';
 
-const { getJSON } = require('../util/ajax');
-
 const rewind = require('@mapwhit/geojson-rewind');
 const GeoJSONWrapper = require('./geojson_wrapper');
 const vtpbf = require('@mapwhit/vt-pbf');
@@ -188,21 +186,13 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * Fetch and parse GeoJSON according to the given params.  Calls `callback`
      * with `(err, data)`, where `data` is a parsed GeoJSON object.
      *
-     * GeoJSON is loaded and parsed from `params.url` if it exists, or else
-     * expected as a literal (string or object) `params.data`.
+     * GeoJSON is expected as a literal (string or object) `params.data`.
      *
      * @param params
-     * @param [params.url] A URL to the remote GeoJSON data.
-     * @param [params.data] Literal GeoJSON data. Must be provided if `params.url` is not.
+     * @param [params.data] Literal GeoJSON data. Must be provided.
      */
     loadGeoJSON(params, callback) {
-        // Because of same origin issues, urls must either include an explicit
-        // origin or absolute path.
-        // ie: /foo/bar.json or http://example.com/bar.json
-        // but not ../foo/bar.json
-        if (params.request) {
-            getJSON(params.request, callback);
-        } else if (typeof params.data === 'string') {
+        if (typeof params.data === 'string') {
             try {
                 return callback(null, JSON.parse(params.data));
             } catch (e) {
