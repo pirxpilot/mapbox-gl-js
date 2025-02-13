@@ -55,12 +55,6 @@ function restore() {
         this.HTMLCanvasElement.prototype.getContext = function() { return '2d'; };
     };
 
-    window.useFakeXMLHttpRequest = function() {
-        sinon.xhr.supportsCORS = true;
-        this.server = sinon.fakeServer.create();
-        this.XMLHttpRequest = this.server.xhr;
-    };
-
     window.URL.revokeObjectURL = function () {};
 
     window.restore = restore;

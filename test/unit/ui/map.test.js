@@ -47,14 +47,6 @@ function createStyleSource() {
 }
 
 test('Map', async (t) => {
-    t.beforeEach(() => {
-        window.useFakeXMLHttpRequest();
-    });
-
-    t.afterEach(() => {
-        window.restore();
-    });
-
     await t.test('constructor', (t) => {
         const map = createMap({ interactive: true, style: null });
         t.ok(map.getContainer());
