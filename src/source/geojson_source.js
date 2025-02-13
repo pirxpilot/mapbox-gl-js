@@ -158,37 +158,45 @@ class GeoJSONSource extends Evented {
      * using geojson-vt or supercluster as appropriate.
      */
     _updateWorkerData(callback) {
-        const options = Object.assign({}, this.workerOptions);
-        const data = this._data;
-        if (typeof data === 'string') {
-            options.request = { url: resolveURL(data) };
-        } else {
-            options.data = JSON.stringify(data);
+
+        async function loadGeoJSON(data) {
+            if (typeof data === 'function') {
+                return data();
+            }
+            return data;
         }
 
-        // target {this.type}.loadData rather than literally geojson.loadData,
-        // so that other geojson-like source types can easily reuse this
-        // implementation
-        this.workerID = this.dispatcher.send(`${this.type}.loadData`, options, (err, result) => {
-            if (this._removed || (result && result.abandoned)) {
-                return;
+        const data = this._data;
+        loadGeoJSON(data).catch(() => {}).then((json) => {
+            if (!json) {
+                return callback(new Error('no GeoJSON data'));
             }
+            const options = Object.assign({}, this.workerOptions);
+            options.data = JSON.stringify(json);
+            // target {this.type}.loadData rather than literally geojson.loadData,
+            // so that other geojson-like source types can easily reuse this
+            // implementation
+            this.workerID = this.dispatcher.send(`${this.type}.loadData`, options, (err, result) => {
+                if (this._removed || (result && result.abandoned)) {
+                    return;
+                }
 
-            this._loaded = true;
+                this._loaded = true;
 
-            if (result && result.resourceTiming && result.resourceTiming[this.id])
-                this._resourceTiming = result.resourceTiming[this.id].slice(0);
-            // Any `loadData` calls that piled up while we were processing
-            // this one will get coalesced into a single call when this
-            // 'coalesce' message is processed.
-            // We would self-send from the worker if we had access to its
-            // message queue. Waiting instead for the 'coalesce' to round-trip
-            // through the foreground just means we're throttling the worker
-            // to run at a little less than full-throttle.
-            this.dispatcher.send(`${this.type}.coalesce`, { source: options.source }, null, this.workerID);
-            callback(err);
+                if (result && result.resourceTiming && result.resourceTiming[this.id])
+                    this._resourceTiming = result.resourceTiming[this.id].slice(0);
+                // Any `loadData` calls that piled up while we were processing
+                // this one will get coalesced into a single call when this
+                // 'coalesce' message is processed.
+                // We would self-send from the worker if we had access to its
+                // message queue. Waiting instead for the 'coalesce' to round-trip
+                // through the foreground just means we're throttling the worker
+                // to run at a little less than full-throttle.
+                this.dispatcher.send(`${this.type}.coalesce`, { source: options.source }, null, this.workerID);
+                callback(err);
 
-        }, this.workerID);
+            }, this.workerID);
+        });
     }
 
     loadTile(tile, callback) {

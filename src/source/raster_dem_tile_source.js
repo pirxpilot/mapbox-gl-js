@@ -1,13 +1,12 @@
 'use strict';
 
-const { normalizeURL } = require('../util/urls');
 const browser = require('../util/browser');
 const loadImage = require('../util/loader/image');
 const { OverscaledTileID } = require('./tile_id');
 const RasterTileSource = require('./raster_tile_source');
+const window = require('../util/window');
 // ensure DEMData is registered for worker transfer on main thread:
 require('../data/dem_data');
-
 
 class RasterDEMTileSource extends RasterTileSource {
 
@@ -31,7 +30,6 @@ class RasterDEMTileSource extends RasterTileSource {
     }
 
     loadTile(tile, callback) {
-        const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url, this.tileSize);
         const done = (err, dem) => {
             if (err) {
                 tile.state = 'errored';
@@ -73,10 +71,17 @@ class RasterDEMTileSource extends RasterTileSource {
             }
         };
 
-        tile.request = loadImage(url, imageLoaded);
-        tile.neighboringTiles = this._getNeighboringTiles(tile.tileID);
+        tile.abortController = new window.AbortController();
+        this.tiles(tile.tileID.canonical, tile.abortController)
+            .catch(() => {})
+            .then((data) => {
+                tile.neighboringTiles = this._getNeighboringTiles(tile.tileID);
+                if (!data) {
+                    return done(new Error('Tile could not be loaded'));
+                }
+                tile.request = loadImage(data, imageLoaded);
+            });
     }
-
 
     _getNeighboringTiles(tileID) {
         const canonical = tileID.canonical;
@@ -107,7 +112,6 @@ class RasterDEMTileSource extends RasterTileSource {
 
         return neighboringTiles;
     }
-
 
     unloadTile(tile) {
         if (tile.demTexture) this.map.painter.saveTileTexture(tile.demTexture);

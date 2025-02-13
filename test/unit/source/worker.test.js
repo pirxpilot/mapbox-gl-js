@@ -1,6 +1,5 @@
 const { test } = require('mapbox-gl-js-test');
 const Worker = require('../../../src/source/worker');
-const window = require('../../../src/util/window');
 
 const _self = {
     addEventListener: function() {}
@@ -8,20 +7,16 @@ const _self = {
 
 test('load tile', async (t) => {
     await t.test('calls callback on error', (t, done) => {
-        window.useFakeXMLHttpRequest();
         const worker = new Worker(_self);
         worker.loadTile(0, {
             type: 'vector',
             source: 'source',
             uid: 0,
-            tileID: { overscaledZ: 0, wrap: 0, canonical: {x: 0, y: 0, z: 0, w: 0} },
-            request: { url: '/error' }// Sinon fake server gives 404 responses by default
+            tileID: { overscaledZ: 0, wrap: 0, canonical: {x: 0, y: 0, z: 0, w: 0} }
         }, (err) => {
             t.ok(err);
-            window.restore();
             done();
         });
-        window.server.respond();
     });
 });
 

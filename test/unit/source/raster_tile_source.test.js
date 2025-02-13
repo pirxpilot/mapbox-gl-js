@@ -1,10 +1,9 @@
 const { test } = require('mapbox-gl-js-test');
-const config = require('../../../src/util/config');
 const RasterTileSource = require('../../../src/source/raster_tile_source');
-const window = require('../../../src/util/window');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
 
 function createSource(options) {
+    options.tiles = options.tiles ?? loadTile
     const source = new RasterTileSource('id', options, { send: function() {} }, options.eventedParent);
     source.onAdd({
         transform: { angle: 0, pitch: 0, showCollisionBoxes: false }
@@ -15,28 +14,19 @@ function createSource(options) {
     });
 
     return source;
+
+    async function loadTile() {
+        return new ArrayBuffer(1);
+    }
 }
 
 test('RasterTileSource', async (t) => {
-    let baseUrl;
 
-    t.beforeEach(() => {
-        baseUrl = config.BASE_URL;
-        config.BASE_URL = 'http://example.com';
-        window.useFakeXMLHttpRequest();
-    });
-
-    t.afterEach(() => {
-        config.BASE_URL = baseUrl;
-        window.restore();
-    });
-
-    await t.test('respects TileJSON.bounds', (t)=>{
+    await t.test('respects TileJSON.bounds', (t) => {
         const source = createSource({
             minzoom: 0,
             maxzoom: 22,
             attribution: "Mapbox",
-            tiles: ["http://example.com/{z}/{x}/{y}.png"],
             bounds: [-47, -7, -45, -5]
         });
         source.on('data', (e)=>{
@@ -53,7 +43,6 @@ test('RasterTileSource', async (t) => {
             minzoom: 0,
             maxzoom: 22,
             attribution: "Mapbox",
-            tiles: ["http://example.com/{z}/{x}/{y}.png"],
             bounds: [-47, -7, -45, 91]
         });
 

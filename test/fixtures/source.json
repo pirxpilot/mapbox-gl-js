@@ -1,5 +1,4 @@
 {
-    "tiles": ["http://example.com/{z}/{x}/{y}.png"],
     "minzoom": 1,
     "maxzoom": 10,
     "attribution": "Mapbox"

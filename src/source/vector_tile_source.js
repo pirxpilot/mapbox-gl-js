@@ -4,7 +4,6 @@ const config = require('../util/config');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 const { pick } = require('../util/object');
 const loadTileJSON = require('./load_tilejson');
-const { normalizeURL } = require('../util/urls');
 const TileBounds = require('./tile_bounds');
 const browser = require('../util/browser');
 const window = require('../util/window');
@@ -17,7 +16,6 @@ function getLanguage() {
 }
 
 class VectorTileSource extends Evented {
-
 
     constructor(id, options, dispatcher, eventedParent) {
         super();
@@ -78,27 +76,38 @@ class VectorTileSource extends Evented {
     }
 
     loadTile(tile, callback) {
-        const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme));
-        const params = {
-            request: { url },
-            uid: tile.uid,
-            tileID: tile.tileID,
-            zoom: tile.tileID.overscaledZ,
-            tileSize: this.tileSize * tile.tileID.overscaleFactor(),
-            type: this.type,
-            source: this.id,
-            pixelRatio: browser.devicePixelRatio,
-            showCollisionBoxes: this.map.showCollisionBoxes,
-        };
+        tile.abortController = new window.AbortController();
+        this.tiles(tile.tileID.canonical, tile.abortController)
+            .catch(() => {})
+            .then((data) => {
+                if (!data) {
+                    const err = new Error('Tile could not be loaded');
+                    err.doNothing = true;
+                    return done(err);
+                }
+                // 24 hours for cached tiles
+                const response = { data, cacheControl: 'max-age=3600' };
+                const params = {
+                    response,
+                    uid: tile.uid,
+                    tileID: tile.tileID,
+                    zoom: tile.tileID.overscaledZ,
+                    tileSize: this.tileSize * tile.tileID.overscaleFactor(),
+                    type: this.type,
+                    source: this.id,
+                    pixelRatio: browser.devicePixelRatio,
+                    showCollisionBoxes: this.map.showCollisionBoxes,
+                };
 
-        if (tile.workerID === undefined || tile.state === 'expired') {
-            tile.workerID = this.dispatcher.send('loadTile', params, done.bind(this));
-        } else if (tile.state === 'loading') {
-            // schedule tile reloading after it has been loaded
-            tile.reloadCallback = callback;
-        } else {
-            this.dispatcher.send('reloadTile', params, done.bind(this), tile.workerID);
-        }
+                if (tile.workerID === undefined || tile.state === 'expired') {
+                    tile.workerID = this.dispatcher.send('loadTile', params, done.bind(this));
+                } else if (tile.state === 'loading') {
+                    // schedule tile reloading after it has been loaded
+                    tile.reloadCallback = callback;
+                } else {
+                    this.dispatcher.send('reloadTile', params, done.bind(this), tile.workerID);
+                }
+            });
 
         function done(err, data) {
             if (tile.aborted)
@@ -124,6 +133,8 @@ class VectorTileSource extends Evented {
     }
 
     abortTile(tile) {
+        tile.aborted = true;
+        tile.abortController.abort();
         this.dispatcher.send('abortTile', { uid: tile.uid, type: this.type, source: this.id }, undefined, tile.workerID);
     }
 
@@ -140,7 +151,6 @@ class VectorTileSource extends Evented {
         const lang = config.LOCALIZED_NAMES && getLanguage();
         this.dispatcher.broadcast('vector.updateConfig', {
             lang,
-            strategy: config.SOURCE_LOADER_STRATEGY,
             source: this.id
         });
     }

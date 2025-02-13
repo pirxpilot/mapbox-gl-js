@@ -28,11 +28,7 @@ config.set({
     BASE_URL: getBaseUri(),
     LOCALIZED_NAMES: true,
     WORKER_COUNT: getDefaultWorkerCount(),
-    WORKER_URL: '',
-    LOADER_STRATEGY: 'network-only',
-    SOURCE_LOADER_STRATEGY: {
-        '*': 'network-only'
-    }
+    WORKER_URL: ''
 });
 
 module.exports = config;

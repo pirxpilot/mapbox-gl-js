@@ -1,19 +1,14 @@
 'use strict';
 
-const config = require('../util/config');
 const { pick } = require('../util/object');
-const loader = require('../util/loader');
-const { load: loadImage } = require('../util/loader/image');
+const loadImage = require('../util/loader/image');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 const loadTileJSON = require('./load_tilejson');
-const { normalizeURL } = require('../util/urls');
 const TileBounds = require('./tile_bounds');
 const Texture = require('../render/texture');
-
+const window = require('../util/window');
 
 class RasterTileSource extends Evented {
-
-
 
     constructor(id, options, dispatcher, eventedParent) {
         super();
@@ -98,15 +93,23 @@ class RasterTileSource extends Evented {
                 callback(null);
             }
         };
-        const url = normalizeURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.url, this.tileSize);
-        const strategies = config.SOURCE_LOADER_STRATEGY;
-        const load = loader(strategies[this.id] || strategies['*']);
-        tile.request = loadImage(load, url, done);
+
+        tile.abortController = new window.AbortController();
+        this.tiles(tile.tileID.canonical, tile.abortController)
+            .catch(() => {})
+            .then((data) => {
+                if (!data) {
+                    return done(new Error('Tile could not be loaded'));
+                }
+                tile.request = loadImage(data, done);
+            });
     }
 
     abortTile(tile, callback) {
-        if (tile.request) {
-            tile.request.abort();
+        if (tile.abortController) {
+            tile.aborted = true;
+            tile.abortController.abort();
+            delete tile.abortController;
             delete tile.request;
         }
         callback();

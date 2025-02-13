@@ -9,7 +9,7 @@ test('VectorTileWorkerSource#abortTile aborts pending request', async (t) => {
         source: 'tiles',
         uid: 0,
         tileID: { overscaledZ: 0, wrap: 0, canonical: {x: 0, y: 0, z: 0, w: 0} },
-        request: { url: 'http://localhost:2900/abort' }
+        response: { }
     }, (err, res) => {
         t.false(err);
         t.false(res);
@@ -23,7 +23,7 @@ test('VectorTileWorkerSource#abortTile aborts pending request', async (t) => {
         t.false(res);
     });
 
-    t.deepEqual(source.loading, {});
+    t.deepEqual(source.loading, undefined);
     t.end();
 });
 
