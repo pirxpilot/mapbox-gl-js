@@ -151,7 +151,6 @@ class VectorTileSource extends Evented {
         const lang = config.LOCALIZED_NAMES && getLanguage();
         this.dispatcher.broadcast('vector.updateConfig', {
             lang,
-            strategy: config.SOURCE_LOADER_STRATEGY,
             source: this.id
         });
     }
