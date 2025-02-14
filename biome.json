@@ -89,19 +89,5 @@
         "useValidTypeof": "off"
       }
     }
-  },
-  "overrides": [
-    {
-      "include": [
-        "test"
-      ],
-        "linter": {
-          "rules": {
-            "style": {
-              "useConst": "off"
-            }
-          }
-      }
-    }
-  ]
+  }
 }

@@ -37,9 +37,9 @@ test('TaskQueue', async t => {
     const yes = t.spy();
     const no = t.spy();
     q.add(yes);
-    let id; // eslint-disable-line prefer-const
-    q.add(() => q.remove(id));
-    id = q.add(no);
+    const data = {};
+    q.add(() => q.remove(data.id));
+    data.id = q.add(no);
     q.run();
     t.assert.equal(yes.callCount, 1);
     t.assert.equal(no.callCount, 0);
