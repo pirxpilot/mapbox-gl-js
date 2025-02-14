@@ -99,9 +99,6 @@
           "rules": {
             "style": {
               "useConst": "off"
-            },
-            "suspicious": {
-              "noSelfCompare": "off"
             }
           }
       }
