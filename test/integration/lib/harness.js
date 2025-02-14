@@ -72,6 +72,7 @@ module.exports = function (directory, implementation, options, run) {
             const test = style.metadata.test;
 
             try {
+                console.log(colors.blue(`* testing ${test.id}`));
                 run(style, test, handleResult);
             } catch (error) {
                 handleResult(error);
