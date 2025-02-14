@@ -1,4 +1,3 @@
-'use strict';
 const { ColorAttachment, DepthAttachment } = require('./value');
 
 class Framebuffer {

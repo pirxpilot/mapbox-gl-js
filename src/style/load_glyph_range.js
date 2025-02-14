@@ -1,5 +1,3 @@
-'use strict';
-
 const parseGlyphPBF = require('./parse_glyph_pbf');
 const { callback } = require('../util/callback');
 

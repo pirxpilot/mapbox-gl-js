@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * May be implemented by custom source types to provide code that can be run on
  * the WebWorkers. In addition to providing a custom

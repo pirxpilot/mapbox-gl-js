@@ -1,5 +1,3 @@
-'use strict';
-
 const { OverscaledTileID } = require('../source/tile_id');
 
 module.exports = tileCover;

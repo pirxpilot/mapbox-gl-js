@@ -1,5 +1,3 @@
-'use strict';
-
 const assert = require('assert');
 const pixelsToTileUnits = require('../../source/pixels_to_tile_units');
 

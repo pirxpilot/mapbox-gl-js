@@ -1,5 +1,3 @@
-'use strict';
-
 const test = require('mapbox-gl-js-test').test;
 const uniqueId = require('../../../src/util/unique_id');
 

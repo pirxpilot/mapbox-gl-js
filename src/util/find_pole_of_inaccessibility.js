@@ -1,5 +1,3 @@
-'use strict';
-
 const Queue = require('tinyqueue');
 
 const Point = require('@mapbox/point-geometry');

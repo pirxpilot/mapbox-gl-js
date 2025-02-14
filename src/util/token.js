@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = resolveTokens;
 
 function getValue(properties, key, lang) {

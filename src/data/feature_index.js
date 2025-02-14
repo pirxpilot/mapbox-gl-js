@@ -1,5 +1,3 @@
-'use strict';
-
 const loadGeometry = require('./load_geometry');
 const EXTENT = require('./extent');
 const featureFilter = require('../style-spec/feature_filter');

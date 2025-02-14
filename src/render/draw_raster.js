@@ -1,5 +1,3 @@
-'use strict';
-
 const { clamp } = require('../util/util');
 
 const ImageSource = require('../source/image_source');

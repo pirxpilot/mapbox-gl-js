@@ -1,5 +1,3 @@
-'use strict';
-
 const { Uniform1i, Uniform1f, Uniform2f, UniformMatrix4f } = require('../uniform_binding');
 
 const symbolIconUniforms = (context, locations) => ({

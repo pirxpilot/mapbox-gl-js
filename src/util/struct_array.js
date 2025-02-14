@@ -1,5 +1,3 @@
-'use strict';
-
 // Note: all "sizes" are measured in bytes
 
 const assert = require('assert');

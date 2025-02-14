@@ -1,5 +1,3 @@
-'use strict';
-
 const deref = require('../deref');
 
 function eachLayer(style, callback) {

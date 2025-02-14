@@ -1,5 +1,3 @@
-'use strict';
-
 class Var {
   constructor(name, boundExpression) {
     this.type = boundExpression.type;

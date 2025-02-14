@@ -1,5 +1,3 @@
-'use strict';
-
 const loadGlyphRange = require('../style/load_glyph_range');
 
 const TinySDF = require('@mapbox/tiny-sdf');

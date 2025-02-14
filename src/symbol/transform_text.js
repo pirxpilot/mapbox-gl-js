@@ -1,5 +1,3 @@
-'use strict';
-
 const { plugin: rtlTextPlugin } = require('../source/rtl_text_plugin');
 
 module.exports = function (text, layer, feature) {

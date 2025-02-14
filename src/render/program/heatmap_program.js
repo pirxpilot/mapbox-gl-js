@@ -1,5 +1,3 @@
-'use strict';
-
 const { mat4 } = require('@mapbox/gl-matrix');
 
 const { Uniform1i, Uniform1f, Uniform2f, UniformMatrix4f } = require('../uniform_binding');

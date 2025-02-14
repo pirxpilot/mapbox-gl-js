@@ -1,5 +1,3 @@
-'use strict';
-
 const { LineLayoutArray } = require('../array_types');
 
 const { members: layoutAttributes } = require('./line_attributes');

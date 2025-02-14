@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = function (features) {
   const leftIndex = {};
   const rightIndex = {};

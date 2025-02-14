@@ -1,5 +1,3 @@
-'use strict';
-
 const { serialize, deserialize } = require('./web_worker_transfer');
 
 module.exports = actor;

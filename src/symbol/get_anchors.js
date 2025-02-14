@@ -1,5 +1,3 @@
-'use strict';
-
 const interpolate = require('../util/interpolate');
 
 const Anchor = require('../symbol/anchor');

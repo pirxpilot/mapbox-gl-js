@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Deeply compares two object literals.
  *

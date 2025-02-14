@@ -1,5 +1,3 @@
-'use strict';
-
 const ValidationError = require('../error/validation_error');
 const { unbundle } = require('../util/unbundle_jsonlint');
 const validateObject = require('./validate_object');

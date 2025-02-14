@@ -1,5 +1,3 @@
-'use strict';
-
 const { Uniform1f, Uniform2f, UniformMatrix4f } = require('../uniform_binding');
 const pixelsToTileUnits = require('../../source/pixels_to_tile_units');
 

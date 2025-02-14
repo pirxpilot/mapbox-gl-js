@@ -1,5 +1,3 @@
-'use strict';
-
 const anchorTranslate = {
   center: 'translate(-50%,-50%)',
   top: 'translate(-50%,0)',

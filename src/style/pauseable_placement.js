@@ -1,5 +1,3 @@
-'use strict';
-
 const browser = require('../util/browser');
 
 const { Placement } = require('../symbol/placement');

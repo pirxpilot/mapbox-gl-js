@@ -1,5 +1,3 @@
-'use strict';
-
 const { test } = require('mapbox-gl-js-test');
 const Color = require('../../../src/style-spec/util/color');
 

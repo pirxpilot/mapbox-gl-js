@@ -1,5 +1,3 @@
-'use strict';
-
 const replace = require('rollup-plugin-replace');
 const buble = require('rollup-plugin-buble');
 const resolve = require('rollup-plugin-node-resolve');

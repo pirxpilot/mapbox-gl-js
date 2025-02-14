@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = function (output, ...inputs) {
   for (const input of inputs) {
     for (const k in input) {

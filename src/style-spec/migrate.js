@@ -1,5 +1,3 @@
-'use strict';
-
 const migrateToV8 = require('./migrate/v8');
 
 /**

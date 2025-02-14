@@ -1,5 +1,3 @@
-'use strict';
-
 const { wrap } = require('../util/util');
 
 /**

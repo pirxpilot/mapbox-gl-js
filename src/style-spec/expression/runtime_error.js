@@ -1,5 +1,3 @@
-'use strict';
-
 class RuntimeError {
   constructor(message) {
     this.name = 'ExpressionEvaluationError';

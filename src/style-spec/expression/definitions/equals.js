@@ -1,5 +1,3 @@
-'use strict';
-
 const { toString, ValueType, BooleanType, CollatorType } = require('../types');
 
 function isComparableType(type) {

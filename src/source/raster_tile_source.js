@@ -1,5 +1,3 @@
-'use strict';
-
 const { pick } = require('../util/object');
 const loadImage = require('../util/loader/image');
 const { Event, ErrorEvent, Evented } = require('../util/evented');

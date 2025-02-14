@@ -1,5 +1,3 @@
-'use strict';
-
 const cacheControl = require('../util/cache_control');
 const { deepEqual } = require('../util/object');
 const uniqueId = require('../util/unique_id');

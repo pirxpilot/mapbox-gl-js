@@ -1,5 +1,3 @@
-'use strict';
-
 const { OverscaledTileID, CanonicalTileID } = require('../source/tile_id');
 
 // Updates the TileMasks for all renderable tiles. A TileMask describes all regions

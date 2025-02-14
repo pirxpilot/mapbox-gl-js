@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = function (style) {
   const styleIDs = [];
   const sourceIDs = [];

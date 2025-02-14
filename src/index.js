@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   version: require('../package.json').version,
   setRTLTextPlugin: require('./source/rtl_text_plugin').setRTLTextPlugin,

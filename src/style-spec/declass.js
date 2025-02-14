@@ -1,5 +1,3 @@
-'use strict';
-
 const extend = require('./util/extend');
 
 module.exports = declassStyle;

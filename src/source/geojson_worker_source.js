@@ -1,5 +1,3 @@
-'use strict';
-
 const rewind = require('@mapwhit/geojson-rewind');
 const GeoJSONWrapper = require('./geojson_wrapper');
 const vtpbf = require('@mapwhit/vt-pbf');

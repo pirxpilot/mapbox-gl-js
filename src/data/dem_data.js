@@ -1,4 +1,3 @@
-'use strict';
 const { RGBAImage } = require('../util/image');
 
 const warn = require('../util/warn');

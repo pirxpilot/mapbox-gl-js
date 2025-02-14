@@ -85,7 +85,6 @@
         "noGlobalIsNan": "off",
         "noPrototypeBuiltins": "off",
         "noShadowRestrictedNames": "off",
-        "noRedundantUseStrict": "off",
         "useValidTypeof": "off"
       }
     }

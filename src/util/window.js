@@ -1,5 +1,3 @@
-'use strict';
-
 const jsdom = require('jsdom');
 const canvas = require('canvas');
 const gl = require('gl');

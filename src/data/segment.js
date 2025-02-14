@@ -1,5 +1,3 @@
-'use strict';
-
 const warn = require('../util/warn');
 
 const { register } = require('../util/web_worker_transfer');

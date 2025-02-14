@@ -1,5 +1,3 @@
-'use strict';
-
 const shaders = {
   prelude: {
     fragmentSource: require('../../build/min/src/shaders/_prelude.fragment.glsl.txt'),

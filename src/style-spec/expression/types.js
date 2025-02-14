@@ -1,5 +1,3 @@
-'use strict';
-
 const NullType = { kind: 'null' };
 const NumberType = { kind: 'number' };
 const StringType = { kind: 'string' };

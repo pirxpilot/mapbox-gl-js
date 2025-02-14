@@ -1,5 +1,3 @@
-'use strict';
-
 function ParsingError(error) {
   this.error = error;
   this.message = error.message;

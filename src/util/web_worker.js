@@ -1,5 +1,3 @@
-'use strict';
-
 const Worker = require('../source/worker');
 
 // The main thread interface. Provided by Worker in a browser environment,

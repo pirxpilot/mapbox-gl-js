@@ -1,5 +1,3 @@
-'use strict';
-
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 
 const window = require('../util/window');

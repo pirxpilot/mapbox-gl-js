@@ -1,5 +1,3 @@
-'use strict';
-
 const { pick } = require('../util/object');
 const browser = require('../util/browser');
 

@@ -1,5 +1,3 @@
-'use strict';
-
 const Scope = require('./scope');
 
 const { checkSubtype } = require('./types');

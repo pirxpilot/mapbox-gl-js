@@ -1,5 +1,3 @@
-'use strict';
-
 const path = require('path');
 const colors = require('chalk');
 const { readFileSync } = require('fs');

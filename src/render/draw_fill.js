@@ -1,5 +1,3 @@
-'use strict';
-
 const Color = require('../style-spec/util/color');
 const DepthMode = require('../gl/depth_mode');
 const {

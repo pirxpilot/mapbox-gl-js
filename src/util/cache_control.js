@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Parses data from 'Cache-Control' headers.
  *

@@ -1,5 +1,3 @@
-'use strict';
-
 const assert = require('assert');
 
 const { ColorType, ValueType, NumberType } = require('../types');

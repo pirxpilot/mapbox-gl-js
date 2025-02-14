@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 const window = require('./window');

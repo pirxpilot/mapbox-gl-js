@@ -1,5 +1,3 @@
-'use strict';
-
 const { StringType, BooleanType, CollatorType } = require('../types');
 
 class Collator {

@@ -1,5 +1,3 @@
-'use strict';
-
 // The following table comes from <http://www.unicode.org/Public/10.0.0/ucd/Blocks.txt>.
 // Keep it synchronized with <http://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt>.
 

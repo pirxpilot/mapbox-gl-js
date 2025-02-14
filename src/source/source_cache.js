@@ -1,5 +1,3 @@
-'use strict';
-
 const { create: createSource } = require('./source');
 const Tile = require('./tile');
 const { Event, ErrorEvent, Evented } = require('../util/evented');

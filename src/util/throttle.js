@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Throttle the given function to run at most every `period` milliseconds.
  Throttle the given function to run at most every period milliseconds.

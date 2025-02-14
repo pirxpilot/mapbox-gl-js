@@ -1,5 +1,3 @@
-'use strict';
-
 const { createExpression } = require('../expression');
 
 module.exports = createFilter;

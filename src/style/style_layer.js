@@ -1,5 +1,3 @@
-'use strict';
-
 const { filterObject } = require('../util/object');
 
 const { Evented } = require('../util/evented');

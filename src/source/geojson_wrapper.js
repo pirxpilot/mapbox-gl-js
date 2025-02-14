@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 const mvt = require('@mapbox/vector-tile');

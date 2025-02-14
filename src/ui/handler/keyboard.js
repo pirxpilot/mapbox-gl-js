@@ -1,5 +1,3 @@
-'use strict';
-
 const panStep = 100,
   bearingStep = 15,
   pitchStep = 10;

@@ -1,5 +1,3 @@
-'use strict';
-
 const { Event } = require('../util/evented');
 
 const DOM = require('../util/dom');

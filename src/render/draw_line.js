@@ -1,5 +1,3 @@
-'use strict';
-
 const DepthMode = require('../gl/depth_mode');
 const Texture = require('./texture');
 const {

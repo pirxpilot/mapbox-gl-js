@@ -1,5 +1,3 @@
-'use strict';
-
 const { NumberType, toString } = require('../types');
 
 const { typeOf } = require('../values');

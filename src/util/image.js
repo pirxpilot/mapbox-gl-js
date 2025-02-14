@@ -1,5 +1,3 @@
-'use strict';
-
 const assert = require('assert');
 
 const { register } = require('./web_worker_transfer');

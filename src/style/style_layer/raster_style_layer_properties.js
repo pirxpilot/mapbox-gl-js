@@ -1,5 +1,3 @@
-// This file is generated. Edit build/generate-style-code.js, then run `yarn run codegen`.
-'use strict';
 /* eslint-disable */
 
 const styleSpec = require('../../style-spec/reference/latest');

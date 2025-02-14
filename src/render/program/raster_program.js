@@ -1,5 +1,3 @@
-'use strict';
-
 const { Uniform1i, Uniform1f, Uniform2f, Uniform3f, UniformMatrix4f } = require('../uniform_binding');
 
 const rasterUniforms = (context, locations) => ({

@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 const StyleLayer = require('../style_layer');

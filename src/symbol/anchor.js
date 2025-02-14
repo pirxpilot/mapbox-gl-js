@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 const { register } = require('../util/web_worker_transfer');

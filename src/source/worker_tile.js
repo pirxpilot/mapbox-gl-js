@@ -1,5 +1,3 @@
-'use strict';
-
 const FeatureIndex = require('../data/feature_index');
 
 const { performSymbolLayout } = require('../symbol/symbol_layout');

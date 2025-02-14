@@ -1,5 +1,3 @@
-'use strict';
-
 const config = require('../util/config');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 const { pick } = require('../util/object');

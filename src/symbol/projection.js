@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 const { mat4, vec4 } = require('@mapbox/gl-matrix');

@@ -1,5 +1,3 @@
-'use strict';
-
 const { normalizePropertyExpression } = require('../style-spec/expression');
 
 const interpolate = require('../util/interpolate');

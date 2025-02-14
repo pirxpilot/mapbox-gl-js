@@ -1,5 +1,3 @@
-'use strict';
-
 const browser = require('../util/browser');
 const loadImage = require('../util/loader/image');
 const { OverscaledTileID } = require('./tile_id');

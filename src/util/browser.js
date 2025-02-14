@@ -1,5 +1,3 @@
-'use strict';
-
 const window = require('./window');
 
 const now = window.performance?.now ? window.performance.now.bind(window.performance) : Date.now.bind(Date);

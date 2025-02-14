@@ -1,5 +1,3 @@
-'use strict';
-
 const { getCoordinatesCenter } = require('../util/util');
 
 const { CanonicalTileID } = require('./tile_id');

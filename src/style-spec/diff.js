@@ -1,5 +1,3 @@
-'use strict';
-
 const isEqual = require('./util/deep_equal');
 
 const operations = {

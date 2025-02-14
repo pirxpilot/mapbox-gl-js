@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = interpolate;
 
 function interpolate(a, b, t) {

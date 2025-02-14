@@ -1,5 +1,3 @@
-'use strict';
-
 const { NumberType } = require('../types');
 
 const { findStopLessThanOrEqualTo } = require('../stops');

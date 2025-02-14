@@ -1,5 +1,3 @@
-'use strict';
-
 const { bindAll, deepEqual } = require('../util/object');
 const { clamp, wrap, ease: defaultEasing } = require('../util/util');
 const warn = require('../util/warn');

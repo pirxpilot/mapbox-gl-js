@@ -1,5 +1,3 @@
-'use strict';
-
 const { charHasUprightVerticalOrientation, charAllowsIdeographicBreaking } = require('../util/script_detection');
 const verticalizePunctuation = require('../util/verticalize_punctuation');
 const { plugin: rtlTextPlugin } = require('../source/rtl_text_plugin');

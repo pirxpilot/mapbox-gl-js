@@ -1,4 +1,3 @@
-'use strict';
 const { createLayout } = require('../util/struct_array');
 
 module.exports = createLayout([

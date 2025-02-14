@@ -1,5 +1,3 @@
-'use strict';
-
 const { getTileBBox } = require('@mapbox/whoots-js');
 
 const assert = require('assert');

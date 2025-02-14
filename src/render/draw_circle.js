@@ -1,5 +1,3 @@
-'use strict';
-
 const StencilMode = require('../gl/stencil_mode');
 const DepthMode = require('../gl/depth_mode');
 const { circleUniformValues } = require('./program/circle_program');

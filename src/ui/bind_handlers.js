@@ -1,5 +1,3 @@
-'use strict';
-
 const { MapMouseEvent, MapTouchEvent, MapWheelEvent } = require('../ui/events');
 const DOM = require('../util/dom');
 const scrollZoom = require('./handler/scroll_zoom');

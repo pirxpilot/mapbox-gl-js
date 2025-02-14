@@ -1,5 +1,3 @@
-'use strict';
-
 const path = require('path');
 const harness = require('./harness');
 const diff = require('diff');

@@ -1,5 +1,3 @@
-'use strict';
-
 const Color = require('./color');
 
 function number(a, b, t) {

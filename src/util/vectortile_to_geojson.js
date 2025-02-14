@@ -1,5 +1,3 @@
-'use strict';
-
 class Feature {
   constructor(vectorTileFeature, z, x, y) {
     this.type = 'Feature';

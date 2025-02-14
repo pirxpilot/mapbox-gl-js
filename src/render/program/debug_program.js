@@ -1,5 +1,3 @@
-'use strict';
-
 const { UniformColor, UniformMatrix4f } = require('../uniform_binding');
 
 const debugUniforms = (context, locations) => ({

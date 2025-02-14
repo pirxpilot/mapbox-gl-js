@@ -1,5 +1,3 @@
-'use strict';
-
 class Let {
   constructor(bindings, result) {
     this.type = result.type;

@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 const { GLYPH_PBF_BORDER } = require('../style/parse_glyph_pbf');

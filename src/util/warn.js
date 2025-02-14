@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Print a warning message to the console and ensure duplicate warning messages
  * are not printed.

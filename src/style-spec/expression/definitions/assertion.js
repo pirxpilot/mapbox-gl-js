@@ -1,5 +1,3 @@
-'use strict';
-
 const assert = require('assert');
 
 const { ObjectType, ValueType, StringType, NumberType, BooleanType, checkSubtype, toString } = require('../types');

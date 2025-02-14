@@ -1,5 +1,3 @@
-'use strict';
-
 /*
  * Polyfill for Object.values. Not fully spec compliant, but we don't
  * need it to be.

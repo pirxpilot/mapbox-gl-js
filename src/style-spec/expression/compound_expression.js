@@ -1,5 +1,3 @@
-'use strict';
-
 const { toString } = require('./types');
 
 const assert = require('assert');

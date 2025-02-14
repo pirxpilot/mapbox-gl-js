@@ -1,5 +1,3 @@
-'use strict';
-
 const CollisionIndex = require('./collision_index');
 
 const EXTENT = require('../data/extent');

@@ -1,5 +1,3 @@
-'use strict';
-
 const CompoundExpression = require('./compound_expression');
 
 function isFeatureConstant(e) {

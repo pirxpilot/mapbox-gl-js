@@ -1,5 +1,3 @@
-'use strict';
-
 const window = require('../util/window');
 const { HTMLImageElement, HTMLCanvasElement, HTMLVideoElement, ImageData } = window;
 

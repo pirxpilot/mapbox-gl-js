@@ -1,5 +1,3 @@
-'use strict';
-
 const LngLat = require('./lng_lat');
 
 const Point = require('@mapbox/point-geometry');

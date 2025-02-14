@@ -1,5 +1,3 @@
-'use strict';
-
 const createStyleLayer = require('./create_style_layer');
 
 const { values } = require('../util/object');

@@ -1,4 +1,3 @@
-'use strict';
 const IndexBuffer = require('./index_buffer');
 
 const VertexBuffer = require('./vertex_buffer');

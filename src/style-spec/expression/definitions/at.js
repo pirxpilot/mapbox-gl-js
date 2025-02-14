@@ -1,5 +1,3 @@
-'use strict';
-
 const { array, ValueType, NumberType } = require('../types');
 
 const RuntimeError = require('../runtime_error');

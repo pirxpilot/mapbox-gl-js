@@ -1,5 +1,3 @@
-'use strict';
-
 const RuntimeError = require('./runtime_error');
 
 /**

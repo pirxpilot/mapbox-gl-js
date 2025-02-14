@@ -1,5 +1,3 @@
-'use strict';
-
 const { Evented } = require('./evented');
 
 function getDefaultWorkerCount() {

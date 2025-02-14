@@ -1,5 +1,3 @@
-'use strict';
-
 const ZoomHistory = require('./zoom_history');
 const { isStringInSupportedScript } = require('../util/script_detection');
 const { plugin: rtlTextPlugin } = require('../source/rtl_text_plugin');

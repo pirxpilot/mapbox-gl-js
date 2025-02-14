@@ -1,5 +1,3 @@
-'use strict';
-
 const { Color } = require('./values');
 
 const geometryTypes = ['Unknown', 'Point', 'LineString', 'Polygon'];

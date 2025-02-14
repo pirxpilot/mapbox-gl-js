@@ -1,6 +1,3 @@
-// This file is generated. Edit build/generate-struct-arrays.js, then run `yarn run codegen`.
-'use strict';
-
 const assert = require('assert');
 const { Struct, StructArray } = require('../util/struct_array');
 const { register } = require('../util/web_worker_transfer');

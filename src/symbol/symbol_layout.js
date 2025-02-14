@@ -1,5 +1,3 @@
-'use strict';
-
 const Anchor = require('./anchor');
 
 const getAnchors = require('./get_anchors');

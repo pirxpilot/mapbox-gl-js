@@ -1,4 +1,3 @@
-'use strict';
 const assert = require('assert');
 
 // can't mark opaque due to https://github.com/flowtype/flow-remove-types/pull/61

@@ -1,5 +1,3 @@
-'use strict';
-
 const UnitBezier = require('@mapbox/unitbezier');
 
 const interpolate = require('../../util/interpolate');

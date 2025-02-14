@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * GridIndex is a data structure for testing the intersection of
  * circles and rectangles in a 2d plane.

@@ -1,5 +1,3 @@
-'use strict';
-
 const colorSpaces = require('../util/color_spaces');
 const Color = require('../util/color');
 const extend = require('../util/extend');

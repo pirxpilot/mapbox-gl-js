@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * A coordinate is a column, row, zoom combination, often used
  * as the data component of a tile.

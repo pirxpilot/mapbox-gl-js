@@ -1,5 +1,3 @@
-'use strict';
-
 const ValidationError = require('../error/validation_error');
 
 module.exports = function validateConstants(options) {

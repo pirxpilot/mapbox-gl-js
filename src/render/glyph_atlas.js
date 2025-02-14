@@ -1,5 +1,3 @@
-'use strict';
-
 const ShelfPack = require('@mapbox/shelf-pack');
 
 const { AlphaImage } = require('../util/image');

@@ -1,5 +1,3 @@
-'use strict';
-
 const { FillExtrusionLayoutArray } = require('../array_types');
 
 const { members: layoutAttributes } = require('./fill_extrusion_attributes');

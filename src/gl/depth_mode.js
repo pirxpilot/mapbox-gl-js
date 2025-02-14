@@ -1,5 +1,3 @@
-'use strict';
-
 const ALWAYS = 0x0207;
 
 class DepthMode {

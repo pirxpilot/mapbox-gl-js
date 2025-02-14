@@ -1,5 +1,3 @@
-'use strict';
-
 const circle = require('./style_layer/circle_style_layer');
 const heatmap = require('./style_layer/heatmap_style_layer');
 const hillshade = require('./style_layer/hillshade_style_layer');

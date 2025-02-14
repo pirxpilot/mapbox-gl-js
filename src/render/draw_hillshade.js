@@ -1,5 +1,3 @@
-'use strict';
-
 const Texture = require('./texture');
 const StencilMode = require('../gl/stencil_mode');
 const DepthMode = require('../gl/depth_mode');

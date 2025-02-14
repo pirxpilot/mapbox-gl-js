@@ -1,5 +1,3 @@
-'use strict';
-
 const { createLayout } = require('../../util/struct_array');
 
 const symbolLayoutAttributes = createLayout([

@@ -1,5 +1,3 @@
-'use strict';
-
 const workerPool = require('./worker_pool');
 
 let globalWorkerPool;

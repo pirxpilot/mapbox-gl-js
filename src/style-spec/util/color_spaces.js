@@ -1,5 +1,3 @@
-'use strict';
-
 const Color = require('./color');
 
 const { number: interpolateNumber } = require('./interpolate');

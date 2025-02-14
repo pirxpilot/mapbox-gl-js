@@ -1,5 +1,3 @@
-'use strict';
-
 const DEMData = require('../data/dem_data');
 
 class RasterDEMTileWorkerSource {

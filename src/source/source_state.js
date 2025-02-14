@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * SourceFeatureState manages the state and state changes
  * to features in a source, separated by source layer.

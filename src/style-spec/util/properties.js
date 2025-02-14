@@ -1,5 +1,3 @@
-'use strict';
-
 function supportsPropertyExpression(spec) {
   return spec['property-type'] === 'data-driven' || spec['property-type'] === 'cross-faded-data-driven';
 }

@@ -1,5 +1,3 @@
-'use strict';
-
 function _addEventListener(type, listener, listenerList) {
   const listenerExists = listenerList[type] && listenerList[type].indexOf(listener) !== -1;
   if (!listenerExists) {

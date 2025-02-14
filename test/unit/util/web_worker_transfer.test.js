@@ -1,5 +1,3 @@
-'use strict';
-
 const { test } = require('mapbox-gl-js-test');
 const { register, serialize, deserialize } = require('../../../src/util/web_worker_transfer');
 

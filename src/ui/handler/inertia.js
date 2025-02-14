@@ -1,5 +1,3 @@
-'use strict';
-
 const browser = require('../../util/browser');
 
 module.exports = inertia;

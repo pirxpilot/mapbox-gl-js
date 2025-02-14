@@ -1,5 +1,3 @@
-'use strict';
-
 const { patternUniformValues } = require('./pattern');
 const { Uniform1i, Uniform1f, Uniform2f, UniformColor, UniformMatrix4f } = require('../uniform_binding');
 
