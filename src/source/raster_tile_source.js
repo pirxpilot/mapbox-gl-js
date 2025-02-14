@@ -99,7 +99,9 @@ class RasterTileSource extends Evented {
             .catch(() => {})
             .then((data) => {
                 if (!data) {
-                    return done(new Error('Tile could not be loaded'));
+                    const err = new Error('Tile could not be loaded');
+                    err.status = 404; // will try to use the parent/child tile
+                    return done(err);
                 }
                 tile.request = loadImage(data, done);
             });
