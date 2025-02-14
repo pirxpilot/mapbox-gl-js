@@ -82,7 +82,7 @@ class VectorTileSource extends Evented {
             .then((data) => {
                 if (!data) {
                     const err = new Error('Tile could not be loaded');
-                    err.doNothing = true;
+                    err.status = 404; // will try to use the parent/child tile
                     return done(err);
                 }
                 // 24 hours for cached tiles

@@ -5,7 +5,7 @@ const window = require('../window');
 module.exports = image;
 
 function image(data, fn) {
-    if (!(data instanceof ArrayBuffer)) {
+    if (!data) {
         return fn(new Error('image data not loaded'));
     }
     if (data.byteLength === 0) {
@@ -16,7 +16,7 @@ function image(data, fn) {
     }
 }
 
-function imageFromData(imgData, fn) {
+async function imageFromData(imgData, fn) {
     const blob = new window.Blob([imgData.data], { type: imgData.type || 'image/png' });
     const img = new window.Image();
 
@@ -26,7 +26,7 @@ function imageFromData(imgData, fn) {
     };
     img.cacheControl = imgData.cacheControl;
     img.expires = imgData.expires;
-    img.src = window.URL.createObjectURL(blob);
+    img.src = await window.URL.createObjectURL(blob);
 }
 
 const transparentPngUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=';

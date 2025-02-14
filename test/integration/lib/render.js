@@ -1,11 +1,8 @@
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
 const PNG = require('pngjs').PNG;
 const harness = require('./harness');
 const pixelmatch = require('pixelmatch');
-const glob = require('glob');
 
 function compare(actualPath, expectedPaths, diffPath, callback) {
 
@@ -155,7 +152,7 @@ exports.run = function (implementation, ignores, render) {
             png.data = data;
 
             // there may be multiple expected images, covering different platforms
-            const expectedPaths = glob.sync(path.join(dir, 'expected*.png'));
+            const expectedPaths = fs.globSync(path.join(dir, 'expected*.png'));
 
             if (!process.env.UPDATE && expectedPaths.length === 0) {
                 throw new Error('No expected*.png files found; did you mean to run tests with UPDATE=true?');
