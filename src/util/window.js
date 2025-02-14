@@ -1,10 +1,8 @@
 'use strict';
 
 const jsdom = require('jsdom');
-
+const canvas = require('canvas');
 const gl = require('gl');
-const sinon = require('sinon');
-
 
 const _window = create();
 
@@ -15,7 +13,9 @@ function create() {
     const { window } = new jsdom.JSDOM('', {
         url: "https://example.org/",
         // Send jsdom console output to the node console object.
-        virtualConsole: new jsdom.VirtualConsole().sendTo(console)
+        virtualConsole: new jsdom.VirtualConsole().sendTo(console),
+        // load images
+        resources: 'usable'
     });
 
     window.devicePixelRatio = 1;
@@ -38,20 +38,25 @@ function create() {
         return originalGetContext.call(this, type, attributes);
     };
 
-    window.useFakeHTMLCanvasGetContext = function () {
-        this.HTMLCanvasElement.prototype.getContext = function () { return '2d'; };
-    };
-
-    window.Blob = Blob
-    window.URL.createObjectURL ??= URL.createObjectURL;
+    window.Blob = Blob;
+    window.URL.createObjectURL ??= obj => obj?.type === 'image/png' ? createPngUrl(obj) : URL.createObjectURL(obj);
     window.URL.revokeObjectURL ??= URL.revokeObjectURL;
 
-    window.ImageData ??= function () { return false; };
+    window.ImageData ??= canvas.ImageData ?? function () { return false; };
     window.ImageBitmap ??= function () { return false; };
     window.WebGLFramebuffer ??= Object;
 
     window.restore = restore;
+
+    globalThis.document ??= window.document;
+
     return window;
+}
+
+async function createPngUrl(obj) {
+    const png = await obj.bytes();
+    const pngUrl = `data:${obj.type};base64,${Buffer.from(png).toString('base64')}`;
+    return pngUrl;
 }
 
 function restore() {
