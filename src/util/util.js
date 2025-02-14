@@ -17,11 +17,11 @@ const Coordinate = require('../geo/coordinate');
  * @private
  */
 function easeCubicInOut(t) {
-    if (t <= 0) return 0;
-    if (t >= 1) return 1;
-    const t2 = t * t,
-        t3 = t2 * t;
-    return 4 * (t < 0.5 ? t3 : 3 * (t - t2) + t3 - 0.75);
+  if (t <= 0) return 0;
+  if (t >= 1) return 1;
+  const t2 = t * t,
+    t3 = t2 * t;
+  return 4 * (t < 0.5 ? t3 : 3 * (t - t2) + t3 - 0.75);
 }
 
 /**
@@ -35,10 +35,10 @@ function easeCubicInOut(t) {
  * @private
  */
 function bezier(p1x, p1y, p2x, p2y) {
-    const bezier = new UnitBezier(p1x, p1y, p2x, p2y);
-    return function(t) {
-        return bezier.solve(t);
-    };
+  const bezier = new UnitBezier(p1x, p1y, p2x, p2y);
+  return function (t) {
+    return bezier.solve(t);
+  };
 }
 
 /**
@@ -59,7 +59,7 @@ const ease = bezier(0.25, 0.1, 0.25, 1);
  * @private
  */
 function clamp(n, min, max) {
-    return Math.min(max, Math.max(min, n));
+  return Math.min(max, Math.max(min, n));
 }
 
 /**
@@ -72,9 +72,9 @@ function clamp(n, min, max) {
  * @private
  */
 function wrap(n, min, max) {
-    const d = max - min;
-    const w = ((n - min) % d + d) % d + min;
-    return (w === min) ? max : w;
+  const d = max - min;
+  const w = ((((n - min) % d) + d) % d) + min;
+  return w === min ? max : w;
 }
 
 /**
@@ -84,24 +84,23 @@ function wrap(n, min, max) {
  * @private
  */
 function getCoordinatesCenter(coords) {
-    let minX = Infinity;
-    let minY = Infinity;
-    let maxX = -Infinity;
-    let maxY = -Infinity;
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
 
-    for (let i = 0; i < coords.length; i++) {
-        minX = Math.min(minX, coords[i].column);
-        minY = Math.min(minY, coords[i].row);
-        maxX = Math.max(maxX, coords[i].column);
-        maxY = Math.max(maxY, coords[i].row);
-    }
+  for (let i = 0; i < coords.length; i++) {
+    minX = Math.min(minX, coords[i].column);
+    minY = Math.min(minY, coords[i].row);
+    maxX = Math.max(maxX, coords[i].column);
+    maxY = Math.max(maxY, coords[i].row);
+  }
 
-    const dx = maxX - minX;
-    const dy = maxY - minY;
-    const dMax = Math.max(dx, dy);
-    const zoom = Math.max(0, Math.floor(-Math.log(dMax) / Math.LN2));
-    return new Coordinate((minX + maxX) / 2, (minY + maxY) / 2, 0)
-        .zoomTo(zoom);
+  const dx = maxX - minX;
+  const dy = maxY - minY;
+  const dMax = Math.max(dx, dy);
+  const zoom = Math.max(0, Math.floor(-Math.log(dMax) / Math.LN2));
+  return new Coordinate((minX + maxX) / 2, (minY + maxY) / 2, 0).zoomTo(zoom);
 }
 
 /**
@@ -112,7 +111,7 @@ function getCoordinatesCenter(coords) {
  */
 // http://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
 function isCounterClockwise(a, b, c) {
-    return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
+  return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
 }
 
 /**
@@ -124,14 +123,14 @@ function isCounterClockwise(a, b, c) {
  * @param ring Exterior or interior ring
  */
 function calculateSignedArea(ring) {
-    let sum = 0;
-    const len = ring.length;
-    let p2 = ring[len - 1]; // last point
-    for (const p1 of ring) {
-        sum += (p2.x - p1.x) * (p1.y + p2.y);
-        p2 = p1;
-    }
-    return sum;
+  let sum = 0;
+  const len = ring.length;
+  let p2 = ring[len - 1]; // last point
+  for (const p1 of ring) {
+    sum += (p2.x - p1.x) * (p1.y + p2.y);
+    p2 = p1;
+  }
+  return sum;
 }
 
 /**
@@ -142,21 +141,19 @@ function calculateSignedArea(ring) {
  * @return true if the points are a closed polygon
  */
 function isClosedPolygon(points) {
-    // If it is 2 points that are the same then it is a point
-    // If it is 3 points with start and end the same then it is a line
-    if (points.length < 4)
-        return false;
+  // If it is 2 points that are the same then it is a point
+  // If it is 3 points with start and end the same then it is a line
+  if (points.length < 4) return false;
 
-    const p1 = points[0];
-    const p2 = points[points.length - 1];
+  const p1 = points[0];
+  const p2 = points[points.length - 1];
 
-    if (Math.abs(p1.x - p2.x) > 0 ||
-        Math.abs(p1.y - p2.y) > 0) {
-        return false;
-    }
+  if (Math.abs(p1.x - p2.x) > 0 || Math.abs(p1.y - p2.y) > 0) {
+    return false;
+  }
 
-    // polygon simplification can produce polygons with zero area and more than 3 points
-    return Math.abs(calculateSignedArea(points)) > 0.01;
+  // polygon simplification can produce polygons with zero area and more than 3 points
+  return Math.abs(calculateSignedArea(points)) > 0.01;
 }
 
 /**
@@ -168,30 +165,30 @@ function isClosedPolygon(points) {
  */
 
 function sphericalToCartesian([r, azimuthal, polar]) {
-    // We abstract "north"/"up" (compass-wise) to be 0° when really this is 90° (π/2):
-    // correct for that here
-    azimuthal += 90;
+  // We abstract "north"/"up" (compass-wise) to be 0° when really this is 90° (π/2):
+  // correct for that here
+  azimuthal += 90;
 
-    // Convert azimuthal and polar angles to radians
-    azimuthal *= Math.PI / 180;
-    polar *= Math.PI / 180;
+  // Convert azimuthal and polar angles to radians
+  azimuthal *= Math.PI / 180;
+  polar *= Math.PI / 180;
 
-    return {
-        x: r * Math.cos(azimuthal) * Math.sin(polar),
-        y: r * Math.sin(azimuthal) * Math.sin(polar),
-        z: r * Math.cos(polar)
-    };
+  return {
+    x: r * Math.cos(azimuthal) * Math.sin(polar),
+    y: r * Math.sin(azimuthal) * Math.sin(polar),
+    z: r * Math.cos(polar)
+  };
 }
 
 module.exports = {
-    easeCubicInOut,
-    bezier,
-    ease,
-    clamp,
-    wrap,
-    getCoordinatesCenter,
-    isCounterClockwise,
-    calculateSignedArea,
-    isClosedPolygon,
-    sphericalToCartesian
+  easeCubicInOut,
+  bezier,
+  ease,
+  clamp,
+  wrap,
+  getCoordinatesCenter,
+  isCounterClockwise,
+  calculateSignedArea,
+  isClosedPolygon,
+  sphericalToCartesian
 };

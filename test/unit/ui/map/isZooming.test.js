@@ -6,74 +6,74 @@ const DOM = require('../../../../src/util/dom');
 const simulate = require('mapbox-gl-js-test/simulate_interaction');
 
 function createMap() {
-    return new Map({ container: DOM.create('div', '', window.document.body) });
+  return new Map({ container: DOM.create('div', '', window.document.body) });
 }
 
-test('Map#isZooming returns false by default', async (t) => {
-    const map = createMap();
+test('Map#isZooming returns false by default', async t => {
+  const map = createMap();
+  t.equal(map.isZooming(), false);
+  map.remove();
+  t.end();
+});
+
+test('Map#isZooming returns true during a camera zoom animation', async t => {
+  const map = createMap();
+
+  map.on('zoomstart', () => {
+    t.equal(map.isZooming(), true);
+  });
+
+  map.on('zoomend', () => {
     t.equal(map.isZooming(), false);
     map.remove();
     t.end();
+  });
+
+  map.zoomTo(5, { duration: 0 });
 });
 
-test('Map#isZooming returns true during a camera zoom animation', async (t) => {
-    const map = createMap();
+test('Map#isZooming returns true when scroll zooming', async t => {
+  const map = createMap();
 
-    map.on('zoomstart', () => {
-        t.equal(map.isZooming(), true);
-    });
+  map.on('zoomstart', () => {
+    t.equal(map.isZooming(), true);
+  });
 
-    map.on('zoomend', () => {
-        t.equal(map.isZooming(), false);
-        map.remove();
-        t.end();
-    });
+  map.on('zoomend', () => {
+    t.equal(map.isZooming(), false);
+    map.remove();
+    t.end();
+  });
 
-    map.zoomTo(5, { duration: 0 });
+  let now = 0;
+  t.stub(browser, 'now').callsFake(() => now);
+
+  simulate.wheel(map.getCanvas(), { type: 'wheel', deltaY: -simulate.magicWheelZoomDelta });
+  map._renderTaskQueue.run();
+
+  now += 400;
+  map._renderTaskQueue.run();
 });
 
-test('Map#isZooming returns true when scroll zooming', async (t) => {
-    const map = createMap();
+test('Map#isZooming returns true when double-click zooming', async t => {
+  const map = createMap();
 
-    map.on('zoomstart', () => {
-        t.equal(map.isZooming(), true);
-    });
+  map.on('zoomstart', () => {
+    t.equal(map.isZooming(), true);
+  });
 
-    map.on('zoomend', () => {
-        t.equal(map.isZooming(), false);
-        map.remove();
-        t.end();
-    });
+  map.on('zoomend', () => {
+    t.equal(map.isZooming(), false);
+    map.remove();
+    t.end();
+  });
 
-    let now = 0;
-    t.stub(browser, 'now').callsFake(() => now);
+  let now = 0;
+  t.stub(browser, 'now').callsFake(() => now);
 
-    simulate.wheel(map.getCanvas(), {type: 'wheel', deltaY: -simulate.magicWheelZoomDelta});
-    map._renderTaskQueue.run();
+  simulate.dblclick(map.getCanvas());
+  map._renderTaskQueue.run();
 
-    now += 400;
-    map._renderTaskQueue.run();
-});
-
-test('Map#isZooming returns true when double-click zooming', async (t) => {
-    const map = createMap();
-
-    map.on('zoomstart', () => {
-        t.equal(map.isZooming(), true);
-    });
-
-    map.on('zoomend', () => {
-        t.equal(map.isZooming(), false);
-        map.remove();
-        t.end();
-    });
-
-    let now = 0;
-    t.stub(browser, 'now').callsFake(() => now);
-
-    simulate.dblclick(map.getCanvas());
-    map._renderTaskQueue.run();
-
-    now += 500;
-    map._renderTaskQueue.run();
+  now += 500;
+  map._renderTaskQueue.run();
 });

@@ -34,11 +34,11 @@ const geojson = require('../source/geojson_source');
 const image = require('../source/image_source');
 
 const sourceTypes = {
-    vector,
-    raster,
-    'raster-dem': rasterDem,
-    geojson,
-    image
+  vector,
+  raster,
+  'raster-dem': rasterDem,
+  geojson,
+  image
 };
 
 /*
@@ -47,31 +47,31 @@ const sourceTypes = {
  * @param id
  * @param {Object} source A source definition object compliant with
  * [`mapbox-gl-style-spec`](https://www.mapbox.com/mapbox-gl-style-spec/#sources) or, for a third-party source type,
-  * with that type's requirements.
+ * with that type's requirements.
  * @param {Dispatcher} dispatcher
  * @returns {Source}
  */
 function create(id, specification, dispatcher, eventedParent) {
-    const source = new sourceTypes[specification.type](id, (specification), dispatcher, eventedParent);
+  const source = new sourceTypes[specification.type](id, specification, dispatcher, eventedParent);
 
-    if (source.id !== id) {
-        throw new Error(`Expected Source id to be ${id} instead of ${source.id}`);
-    }
+  if (source.id !== id) {
+    throw new Error(`Expected Source id to be ${id} instead of ${source.id}`);
+  }
 
-    bindAll(['load', 'abort', 'unload', 'serialize', 'prepare'], source);
-    return source;
+  bindAll(['load', 'abort', 'unload', 'serialize', 'prepare'], source);
+  return source;
 }
 
-function getType (name) {
-    return sourceTypes[name];
+function getType(name) {
+  return sourceTypes[name];
 }
 
-function setType (name, type) {
-    sourceTypes[name] = type;
+function setType(name, type) {
+  sourceTypes[name] = type;
 }
 
 module.exports = {
-    create,
-    getType,
-    setType
+  create,
+  getType,
+  setType
 };

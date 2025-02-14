@@ -11,33 +11,33 @@ module.exports = workerPool;
  * @private
  */
 function workerPool(workerCount = config.WORKER_COUNT) {
-    const active = {};
-    let workers;
+  const active = {};
+  let workers;
 
-    function acquire(mapId) {
-        if (!workers) {
-            assert(typeof workerCount === 'number' && workerCount < Infinity);
+  function acquire(mapId) {
+    if (!workers) {
+      assert(typeof workerCount === 'number' && workerCount < Infinity);
 
-            workers = new Array(workerCount);
-            for (let i = 0; i < workerCount; i++) {
-                workers[i] = new WebWorker();
-            }
-        }
-
-        active[mapId] = true;
-        return workers.slice();
+      workers = new Array(workerCount);
+      for (let i = 0; i < workerCount; i++) {
+        workers[i] = new WebWorker();
+      }
     }
 
-    function release(mapId) {
-        delete active[mapId];
-        if (Object.keys(active).length === 0) {
-            workers.forEach(w => w.terminate());
-            workers = undefined;
-        }
-    }
+    active[mapId] = true;
+    return workers.slice();
+  }
 
-    return {
-        acquire,
-        release
-    };
+  function release(mapId) {
+    delete active[mapId];
+    if (Object.keys(active).length === 0) {
+      workers.forEach(w => w.terminate());
+      workers = undefined;
+    }
+  }
+
+  return {
+    acquire,
+    release
+  };
 }

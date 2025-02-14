@@ -1,10 +1,6 @@
 'use strict';
 
-const {
-    LineIndexArray,
-    TriangleIndexArray,
-    LineStripIndexArray
-} = require('./array_types');
+const { LineIndexArray, TriangleIndexArray, LineStripIndexArray } = require('./array_types');
 
 /**
  * An index array stores Uint16 indices of vertexes in a corresponding vertex array. We use
@@ -14,7 +10,7 @@ const {
  * @private
  */
 module.exports = {
-    LineIndexArray,
-    TriangleIndexArray,
-    LineStripIndexArray
+  LineIndexArray,
+  TriangleIndexArray,
+  LineStripIndexArray
 };

@@ -5,42 +5,45 @@ const harness = require('./harness');
 const pixelmatch = require('pixelmatch');
 
 function compare(actualPath, expectedPaths, diffPath, callback) {
+  const actualImg = fs.createReadStream(actualPath).pipe(new PNG()).on('parsed', doneReading);
 
-    const actualImg = fs.createReadStream(actualPath).pipe(new PNG()).on('parsed', doneReading);
+  const expectedImgs = [];
+  for (const path of expectedPaths) {
+    expectedImgs.push(fs.createReadStream(path).pipe(new PNG()).on('parsed', doneReading));
+  }
 
-    const expectedImgs = [];
-    for (const path of expectedPaths) {
-        expectedImgs.push(fs.createReadStream(path).pipe(new PNG()).on('parsed', doneReading));
+  let read = 0;
+
+  function doneReading() {
+    if (++read < expectedPaths.length + 1) return;
+
+    // if we have multiple expected images, we'll compare against each one and pick the one with
+    // the least amount of difference; this is useful for covering features that render differently
+    // depending on platform, i.e. heatmaps use half-float textures for improved rendering where supported
+
+    let minNumPixels = Infinity;
+    let minDiff, minIndex;
+
+    for (let i = 0; i < expectedImgs.length; i++) {
+      const diff = new PNG({ width: actualImg.width, height: actualImg.height });
+      const numPixels = pixelmatch(actualImg.data, expectedImgs[i].data, diff.data, actualImg.width, actualImg.height, {
+        threshold: 0.13
+      });
+
+      if (numPixels < minNumPixels) {
+        minNumPixels = numPixels;
+        minDiff = diff;
+        minIndex = i;
+      }
     }
 
-    let read = 0;
-
-    function doneReading() {
-        if (++read < expectedPaths.length + 1) return;
-
-        // if we have multiple expected images, we'll compare against each one and pick the one with
-        // the least amount of difference; this is useful for covering features that render differently
-        // depending on platform, i.e. heatmaps use half-float textures for improved rendering where supported
-
-        let minNumPixels = Infinity;
-        let minDiff, minIndex;
-
-        for (let i = 0; i < expectedImgs.length; i++) {
-            const diff = new PNG({width: actualImg.width, height: actualImg.height});
-            const numPixels = pixelmatch(actualImg.data, expectedImgs[i].data,
-                diff.data, actualImg.width, actualImg.height, {threshold: 0.13});
-
-            if (numPixels < minNumPixels) {
-                minNumPixels = numPixels;
-                minDiff = diff;
-                minIndex = i;
-            }
-        }
-
-        minDiff.pack().pipe(fs.createWriteStream(diffPath)).on('finish', () => {
-            callback(null, minNumPixels / (minDiff.width * minDiff.height), expectedPaths[minIndex]);
-        });
-    }
+    minDiff
+      .pack()
+      .pipe(fs.createWriteStream(diffPath))
+      .on('finish', () => {
+        callback(null, minNumPixels / (minDiff.width * minDiff.height), expectedPaths[minIndex]);
+      });
+  }
 }
 
 /**
@@ -75,113 +78,113 @@ function compare(actualPath, expectedPaths, diffPath, callback) {
  * @returns {undefined} terminates the process when testing is complete
  */
 exports.run = function (implementation, ignores, render) {
-    const options = { ignores, tests:[], shuffle:false, recycleMap:false, seed:makeHash() };
+  const options = { ignores, tests: [], shuffle: false, recycleMap: false, seed: makeHash() };
 
-    // https://stackoverflow.com/a/1349426/229714
-    function makeHash() {
-        const array = [];
-        const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  // https://stackoverflow.com/a/1349426/229714
+  function makeHash() {
+    const array = [];
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-        for (let i = 0; i < 10; ++i)
-            array.push(possible.charAt(Math.floor(Math.random() * possible.length)));
+    for (let i = 0; i < 10; ++i) array.push(possible.charAt(Math.floor(Math.random() * possible.length)));
 
-        // join array elements without commas.
-        return array.join('');
-    }
+    // join array elements without commas.
+    return array.join('');
+  }
 
-    function checkParameter(param) {
-        const index = options.tests.indexOf(param);
-        if (index === -1)
-            return false;
-        options.tests.splice(index, 1);
-        return true;
-    }
+  function checkParameter(param) {
+    const index = options.tests.indexOf(param);
+    if (index === -1) return false;
+    options.tests.splice(index, 1);
+    return true;
+  }
 
-    function checkValueParameter(defaultValue, param) {
-        const index = options.tests.findIndex((elem) => { return String(elem).startsWith(param); });
-        if (index === -1)
-            return defaultValue;
-
-        const split = String(options.tests.splice(index, 1)).split('=');
-        if (split.length !== 2)
-            return defaultValue;
-
-        return split[1];
-    }
-
-    if (process.argv.length > 2) {
-        options.tests = process.argv.slice(2).filter((value, index, self) => { return self.indexOf(value) === index; }) || [];
-        options.shuffle = checkParameter('--shuffle');
-        options.recycleMap = checkParameter('--recycle-map');
-        options.seed = checkValueParameter(options.seed, '--seed');
-    }
-
-    const directory = path.join(__dirname, '../render-tests');
-    harness(directory, implementation, options, (style, params, done) => {
-        render(style, params, (err, data) => {
-            if (err) return done(err);
-
-            let stats;
-            const dir = path.join(directory, params.id);
-            try {
-                stats = fs.statSync(dir, fs.R_OK | fs.W_OK);
-                if (!stats.isDirectory()) throw new Error();
-            }            catch (e) {
-                fs.mkdirSync(dir);
-            }
-
-            const expected = path.join(dir, 'expected.png');
-            const actual   = path.join(dir, 'actual.png');
-            const diff     = path.join(dir, 'diff.png');
-
-            const png = new PNG({
-                width: params.width * params.pixelRatio,
-                height: params.height * params.pixelRatio
-            });
-
-            // PNG data must be unassociated (not premultiplied)
-            for (let i = 0; i < data.length; i++) {
-                const a = data[i * 4 + 3] / 255;
-                if (a !== 0) {
-                    data[i * 4 + 0] /= a;
-                    data[i * 4 + 1] /= a;
-                    data[i * 4 + 2] /= a;
-                }
-            }
-
-            png.data = data;
-
-            // there may be multiple expected images, covering different platforms
-            const expectedPaths = fs.globSync(path.join(dir, 'expected*.png'));
-
-            if (!process.env.UPDATE && expectedPaths.length === 0) {
-                throw new Error('No expected*.png files found; did you mean to run tests with UPDATE=true?');
-            }
-
-            if (process.env.UPDATE) {
-                png.pack()
-                    .pipe(fs.createWriteStream(expected))
-                    .on('finish', done);
-            } else {
-                png.pack()
-                    .pipe(fs.createWriteStream(actual))
-                    .on('finish', () => {
-                        compare(actual, expectedPaths, diff, (err, difference, expected) => {
-                            if (err) return done(err);
-
-                            params.difference = difference;
-                            params.ok = difference <= params.allowed;
-
-                            params.actual = fs.readFileSync(actual).toString('base64');
-                            params.expected = fs.readFileSync(expected).toString('base64');
-                            params.diff = fs.readFileSync(diff).toString('base64');
-
-                            done();
-                        });
-                    });
-            }
-        });
+  function checkValueParameter(defaultValue, param) {
+    const index = options.tests.findIndex(elem => {
+      return String(elem).startsWith(param);
     });
+    if (index === -1) return defaultValue;
+
+    const split = String(options.tests.splice(index, 1)).split('=');
+    if (split.length !== 2) return defaultValue;
+
+    return split[1];
+  }
+
+  if (process.argv.length > 2) {
+    options.tests =
+      process.argv.slice(2).filter((value, index, self) => {
+        return self.indexOf(value) === index;
+      }) || [];
+    options.shuffle = checkParameter('--shuffle');
+    options.recycleMap = checkParameter('--recycle-map');
+    options.seed = checkValueParameter(options.seed, '--seed');
+  }
+
+  const directory = path.join(__dirname, '../render-tests');
+  harness(directory, implementation, options, (style, params, done) => {
+    render(style, params, (err, data) => {
+      if (err) return done(err);
+
+      let stats;
+      const dir = path.join(directory, params.id);
+      try {
+        stats = fs.statSync(dir, fs.R_OK | fs.W_OK);
+        if (!stats.isDirectory()) throw new Error();
+      } catch (e) {
+        fs.mkdirSync(dir);
+      }
+
+      const expected = path.join(dir, 'expected.png');
+      const actual = path.join(dir, 'actual.png');
+      const diff = path.join(dir, 'diff.png');
+
+      const png = new PNG({
+        width: params.width * params.pixelRatio,
+        height: params.height * params.pixelRatio
+      });
+
+      // PNG data must be unassociated (not premultiplied)
+      for (let i = 0; i < data.length; i++) {
+        const a = data[i * 4 + 3] / 255;
+        if (a !== 0) {
+          data[i * 4 + 0] /= a;
+          data[i * 4 + 1] /= a;
+          data[i * 4 + 2] /= a;
+        }
+      }
+
+      png.data = data;
+
+      // there may be multiple expected images, covering different platforms
+      const expectedPaths = fs.globSync(path.join(dir, 'expected*.png'));
+
+      if (!process.env.UPDATE && expectedPaths.length === 0) {
+        throw new Error('No expected*.png files found; did you mean to run tests with UPDATE=true?');
+      }
+
+      if (process.env.UPDATE) {
+        png.pack().pipe(fs.createWriteStream(expected)).on('finish', done);
+      } else {
+        png
+          .pack()
+          .pipe(fs.createWriteStream(actual))
+          .on('finish', () => {
+            compare(actual, expectedPaths, diff, (err, difference, expected) => {
+              if (err) return done(err);
+
+              params.difference = difference;
+              params.ok = difference <= params.allowed;
+
+              params.actual = fs.readFileSync(actual).toString('base64');
+              params.expected = fs.readFileSync(expected).toString('base64');
+              params.diff = fs.readFileSync(diff).toString('base64');
+
+              done();
+            });
+          });
+      }
+    });
+  });
 };
 
 /**

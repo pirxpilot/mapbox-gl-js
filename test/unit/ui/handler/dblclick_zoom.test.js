@@ -5,21 +5,21 @@ const DOM = require('../../../../src/util/dom');
 const simulate = require('mapbox-gl-js-test/simulate_interaction');
 
 function createMap() {
-    return new Map({ container: DOM.create('div', '', window.document.body) });
+  return new Map({ container: DOM.create('div', '', window.document.body) });
 }
 
-test('DoubleClickZoomHandler does not zoom if preventDefault is called on the dblclick event', async (t) => {
-    const map = createMap();
+test('DoubleClickZoomHandler does not zoom if preventDefault is called on the dblclick event', async t => {
+  const map = createMap();
 
-    map.on('dblclick', e => e.preventDefault());
+  map.on('dblclick', e => e.preventDefault());
 
-    const zoom = t.spy();
-    map.on('zoom', zoom);
+  const zoom = t.spy();
+  map.on('zoom', zoom);
 
-    simulate.dblclick(map.getCanvas());
+  simulate.dblclick(map.getCanvas());
 
-    t.equal(zoom.callCount, 0);
+  t.equal(zoom.callCount, 0);
 
-    map.remove();
-    t.end();
+  map.remove();
+  t.end();
 });

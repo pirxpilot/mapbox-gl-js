@@ -7,22 +7,22 @@ const loadImage = require('../util/loader/image');
 module.exports = loadSprite;
 
 function loadSprite(sprite, callback) {
-    loadImage(sprite.image, (error, image) => {
-        const { json } = sprite;
-        if (error) {
-            callback(error);
-        } else if (json && image) {
-            const imageData = browser.getImageData(image);
-            const result = {};
+  loadImage(sprite.image, (error, image) => {
+    const { json } = sprite;
+    if (error) {
+      callback(error);
+    } else if (json && image) {
+      const imageData = browser.getImageData(image);
+      const result = {};
 
-            for (const id in json) {
-                const {width, height, x, y, sdf, pixelRatio} = json[id];
-                const data = new RGBAImage({width, height});
-                RGBAImage.copy(imageData, data, {x, y}, {x: 0, y: 0}, {width, height});
-                result[id] = {data, pixelRatio, sdf};
-            }
+      for (const id in json) {
+        const { width, height, x, y, sdf, pixelRatio } = json[id];
+        const data = new RGBAImage({ width, height });
+        RGBAImage.copy(imageData, data, { x, y }, { x: 0, y: 0 }, { width, height });
+        result[id] = { data, pixelRatio, sdf };
+      }
 
-            callback(null, result);
-        }
-    });
+      callback(null, result);
+    }
+  });
 }

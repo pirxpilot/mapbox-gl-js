@@ -20,24 +20,24 @@ module.exports = declassStyle;
  * // main `paint` property.
  */
 function declassStyle(style, classes) {
-    return extend({}, style, {
-        layers: style.layers.map((layer) => {
-            const result = classes.reduce(declassLayer, layer);
+  return extend({}, style, {
+    layers: style.layers.map(layer => {
+      const result = classes.reduce(declassLayer, layer);
 
-            // strip away all `paint.CLASS` definitions
-            for (const key in result) {
-                if (/paint\..*/.test(key)) {
-                    delete result[key];
-                }
-            }
+      // strip away all `paint.CLASS` definitions
+      for (const key in result) {
+        if (/paint\..*/.test(key)) {
+          delete result[key];
+        }
+      }
 
-            return result;
-        })
-    });
+      return result;
+    })
+  });
 }
 
 function declassLayer(layer, klass) {
-    return extend({}, layer, {
-        paint: extend({}, layer.paint, layer[`paint.${klass}`])
-    });
+  return extend({}, layer, {
+    paint: extend({}, layer.paint, layer[`paint.${klass}`])
+  });
 }

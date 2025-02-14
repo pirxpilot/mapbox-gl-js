@@ -7,11 +7,11 @@
  * @private
  */
 function values(obj) {
-    const result = [];
-    for (const k in obj) {
-        result.push(obj[k]);
-    }
-    return result;
+  const result = [];
+  for (const k in obj) {
+    result.push(obj[k]);
+  }
+  return result;
 }
 
 /*
@@ -22,13 +22,13 @@ function values(obj) {
  * @private
  */
 function keysDifference(obj, other) {
-    const difference = [];
-    for (const i in obj) {
-        if (!(i in other)) {
-            difference.push(i);
-        }
+  const difference = [];
+  for (const i in obj) {
+    if (!(i in other)) {
+      difference.push(i);
     }
-    return difference;
+  }
+  return difference;
 }
 
 /**
@@ -46,14 +46,14 @@ function keysDifference(obj, other) {
  * @private
  */
 function pick(src, properties) {
-    const result = {};
-    for (let i = 0; i < properties.length; i++) {
-        const k = properties[i];
-        if (k in src) {
-            result[k] = src[k];
-        }
+  const result = {};
+  for (let i = 0; i < properties.length; i++) {
+    const k = properties[i];
+    if (k in src) {
+      result[k] = src[k];
     }
-    return result;
+  }
+  return result;
 }
 
 /**
@@ -78,10 +78,12 @@ function pick(src, properties) {
  * @private
  */
 function bindAll(fns, context) {
-    fns.forEach((fn) => {
-        if (!context[fn]) { return; }
-        context[fn] = context[fn].bind(context);
-    });
+  fns.forEach(fn => {
+    if (!context[fn]) {
+      return;
+    }
+    context[fn] = context[fn].bind(context);
+  });
 }
 
 /**
@@ -91,11 +93,11 @@ function bindAll(fns, context) {
  * @private
  */
 function mapObject(input, iterator, context) {
-    const output = {};
-    for (const key in input) {
-        output[key] = iterator.call(context || this, input[key], key, input);
-    }
-    return output;
+  const output = {};
+  for (const key in input) {
+    output[key] = iterator.call(context || this, input[key], key, input);
+  }
+  return output;
 }
 
 /**
@@ -104,13 +106,13 @@ function mapObject(input, iterator, context) {
  * @private
  */
 function filterObject(input, iterator, context) {
-    const output = {};
-    for (const key in input) {
-        if (iterator.call(context || this, input[key], key, input)) {
-            output[key] = input[key];
-        }
+  const output = {};
+  for (const key in input) {
+    if (iterator.call(context || this, input[key], key, input)) {
+      output[key] = input[key];
     }
-    return output;
+  }
+  return output;
 }
 
 /**
@@ -119,23 +121,23 @@ function filterObject(input, iterator, context) {
  * @private
  */
 function deepEqual(a, b) {
-    if (Array.isArray(a)) {
-        if (!Array.isArray(b) || a.length !== b.length) return false;
-        for (let i = 0; i < a.length; i++) {
-            if (!deepEqual(a[i], b[i])) return false;
-        }
-        return true;
+  if (Array.isArray(a)) {
+    if (!Array.isArray(b) || a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (!deepEqual(a[i], b[i])) return false;
     }
-    if (typeof a === 'object' && a !== null && b !== null) {
-        if (!(typeof b === 'object')) return false;
-        const keys = Object.keys(a);
-        if (keys.length !== Object.keys(b).length) return false;
-        for (const key in a) {
-            if (!deepEqual(a[key], b[key])) return false;
-        }
-        return true;
+    return true;
+  }
+  if (typeof a === 'object' && a !== null && b !== null) {
+    if (!(typeof b === 'object')) return false;
+    const keys = Object.keys(a);
+    if (keys.length !== Object.keys(b).length) return false;
+    for (const key in a) {
+      if (!deepEqual(a[key], b[key])) return false;
     }
-    return a === b;
+    return true;
+  }
+  return a === b;
 }
 
 /**
@@ -144,13 +146,13 @@ function deepEqual(a, b) {
  * @private
  */
 function clone(input) {
-    if (Array.isArray(input)) {
-        return input.map(clone);
-    } else if (typeof input === 'object' && input) {
-        return mapObject(input, clone);
-    } else {
-        return input;
-    }
+  if (Array.isArray(input)) {
+    return input.map(clone);
+  } else if (typeof input === 'object' && input) {
+    return mapObject(input, clone);
+  } else {
+    return input;
+  }
 }
 
 /**
@@ -159,20 +161,20 @@ function clone(input) {
  * @private
  */
 function arraysIntersect(a, b) {
-    for (let l = 0; l < a.length; l++) {
-        if (b.indexOf(a[l]) >= 0) return true;
-    }
-    return false;
+  for (let l = 0; l < a.length; l++) {
+    if (b.indexOf(a[l]) >= 0) return true;
+  }
+  return false;
 }
 
 module.exports = {
-    values,
-    keysDifference,
-    pick,
-    bindAll,
-    mapObject,
-    filterObject,
-    deepEqual,
-    clone,
-    arraysIntersect
+  values,
+  keysDifference,
+  pick,
+  bindAll,
+  mapObject,
+  filterObject,
+  deepEqual,
+  clone,
+  arraysIntersect
 };

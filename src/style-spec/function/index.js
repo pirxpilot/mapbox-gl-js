@@ -9,201 +9,206 @@ const Interpolate = require('../expression/definitions/interpolate');
 const { supportsInterpolation } = require('../util/properties');
 
 module.exports = {
-    isFunction,
-    createFunction
+  isFunction,
+  createFunction
 };
 
 function isFunction(value) {
-    return typeof value === 'object' && value !== null && !Array.isArray(value);
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function identityFunction(x) {
-    return x;
+  return x;
 }
 
 function createFunction(parameters, propertySpec) {
-    const isColor = propertySpec.type === 'color';
-    const zoomAndFeatureDependent = parameters.stops && typeof parameters.stops[0][0] === 'object';
-    const featureDependent = zoomAndFeatureDependent || parameters.property !== undefined;
-    const zoomDependent = zoomAndFeatureDependent || !featureDependent;
-    const type = parameters.type || (supportsInterpolation(propertySpec) ? 'exponential' : 'interval');
+  const isColor = propertySpec.type === 'color';
+  const zoomAndFeatureDependent = parameters.stops && typeof parameters.stops[0][0] === 'object';
+  const featureDependent = zoomAndFeatureDependent || parameters.property !== undefined;
+  const zoomDependent = zoomAndFeatureDependent || !featureDependent;
+  const type = parameters.type || (supportsInterpolation(propertySpec) ? 'exponential' : 'interval');
 
-    if (isColor) {
-        parameters = extend({}, parameters);
+  if (isColor) {
+    parameters = extend({}, parameters);
 
-        if (parameters.stops) {
-            parameters.stops = parameters.stops.map((stop) => {
-                return [stop[0], Color.parse(stop[1])];
-            });
-        }
-
-        if (parameters.default) {
-            parameters.default = Color.parse(parameters.default);
-        } else {
-            parameters.default = Color.parse(propertySpec.default);
-        }
+    if (parameters.stops) {
+      parameters.stops = parameters.stops.map(stop => {
+        return [stop[0], Color.parse(stop[1])];
+      });
     }
 
-    if (parameters.colorSpace && parameters.colorSpace !== 'rgb' && !colorSpaces[parameters.colorSpace]) { // eslint-disable-line import/namespace
-        throw new Error(`Unknown color space: ${parameters.colorSpace}`);
-    }
-
-    let innerFun;
-    let hashedStops;
-    let categoricalKeyType;
-    if (type === 'exponential') {
-        innerFun = evaluateExponentialFunction;
-    } else if (type === 'interval') {
-        innerFun = evaluateIntervalFunction;
-    } else if (type === 'categorical') {
-        innerFun = evaluateCategoricalFunction;
-
-        // For categorical functions, generate an Object as a hashmap of the stops for fast searching
-        hashedStops = Object.create(null);
-        for (const stop of parameters.stops) {
-            hashedStops[stop[0]] = stop[1];
-        }
-
-        // Infer key type based on first stop key-- used to encforce strict type checking later
-        categoricalKeyType = typeof parameters.stops[0][0];
-
-    } else if (type === 'identity') {
-        innerFun = evaluateIdentityFunction;
+    if (parameters.default) {
+      parameters.default = Color.parse(parameters.default);
     } else {
-        throw new Error(`Unknown function type "${type}"`);
+      parameters.default = Color.parse(propertySpec.default);
+    }
+  }
+
+  if (parameters.colorSpace && parameters.colorSpace !== 'rgb' && !colorSpaces[parameters.colorSpace]) {
+    // eslint-disable-line import/namespace
+    throw new Error(`Unknown color space: ${parameters.colorSpace}`);
+  }
+
+  let innerFun;
+  let hashedStops;
+  let categoricalKeyType;
+  if (type === 'exponential') {
+    innerFun = evaluateExponentialFunction;
+  } else if (type === 'interval') {
+    innerFun = evaluateIntervalFunction;
+  } else if (type === 'categorical') {
+    innerFun = evaluateCategoricalFunction;
+
+    // For categorical functions, generate an Object as a hashmap of the stops for fast searching
+    hashedStops = Object.create(null);
+    for (const stop of parameters.stops) {
+      hashedStops[stop[0]] = stop[1];
     }
 
-    if (zoomAndFeatureDependent) {
-        const featureFunctions = {};
-        const zoomStops = [];
-        for (let s = 0; s < parameters.stops.length; s++) {
-            const stop = parameters.stops[s];
-            const zoom = stop[0].zoom;
-            if (featureFunctions[zoom] === undefined) {
-                featureFunctions[zoom] = {
-                    zoom: zoom,
-                    type: parameters.type,
-                    property: parameters.property,
-                    default: parameters.default,
-                    stops: []
-                };
-                zoomStops.push(zoom);
-            }
-            featureFunctions[zoom].stops.push([stop[0].value, stop[1]]);
-        }
+    // Infer key type based on first stop key-- used to encforce strict type checking later
+    categoricalKeyType = typeof parameters.stops[0][0];
+  } else if (type === 'identity') {
+    innerFun = evaluateIdentityFunction;
+  } else {
+    throw new Error(`Unknown function type "${type}"`);
+  }
 
-        const featureFunctionStops = [];
-        for (const z of zoomStops) {
-            featureFunctionStops.push([featureFunctions[z].zoom, createFunction(featureFunctions[z], propertySpec)]);
-        }
-
-        return {
-            kind: 'composite',
-            interpolationFactor: Interpolate.interpolationFactor.bind(undefined, {name: 'linear'}),
-            zoomStops: featureFunctionStops.map(s => s[0]),
-            evaluate({zoom}, properties) {
-                return evaluateExponentialFunction({
-                    stops: featureFunctionStops,
-                    base: parameters.base
-                }, propertySpec, zoom).evaluate(zoom, properties);
-            }
+  if (zoomAndFeatureDependent) {
+    const featureFunctions = {};
+    const zoomStops = [];
+    for (let s = 0; s < parameters.stops.length; s++) {
+      const stop = parameters.stops[s];
+      const zoom = stop[0].zoom;
+      if (featureFunctions[zoom] === undefined) {
+        featureFunctions[zoom] = {
+          zoom: zoom,
+          type: parameters.type,
+          property: parameters.property,
+          default: parameters.default,
+          stops: []
         };
-    } else if (zoomDependent) {
-        return {
-            kind: 'camera',
-            interpolationFactor: type === 'exponential' ?
-                Interpolate.interpolationFactor.bind(undefined, {name: 'exponential', base: parameters.base !== undefined ? parameters.base : 1}) :
-                () => 0,
-            zoomStops: parameters.stops.map(s => s[0]),
-            evaluate: ({zoom}) => innerFun(parameters, propertySpec, zoom, hashedStops, categoricalKeyType)
-        };
-    } else {
-        return {
-            kind: 'source',
-            evaluate(_, feature) {
-                const value = feature && feature.properties ? feature.properties[parameters.property] : undefined;
-                if (value === undefined) {
-                    return coalesce(parameters.default, propertySpec.default);
-                }
-                return innerFun(parameters, propertySpec, value, hashedStops, categoricalKeyType);
-            }
-        };
+        zoomStops.push(zoom);
+      }
+      featureFunctions[zoom].stops.push([stop[0].value, stop[1]]);
     }
+
+    const featureFunctionStops = [];
+    for (const z of zoomStops) {
+      featureFunctionStops.push([featureFunctions[z].zoom, createFunction(featureFunctions[z], propertySpec)]);
+    }
+
+    return {
+      kind: 'composite',
+      interpolationFactor: Interpolate.interpolationFactor.bind(undefined, { name: 'linear' }),
+      zoomStops: featureFunctionStops.map(s => s[0]),
+      evaluate({ zoom }, properties) {
+        return evaluateExponentialFunction(
+          {
+            stops: featureFunctionStops,
+            base: parameters.base
+          },
+          propertySpec,
+          zoom
+        ).evaluate(zoom, properties);
+      }
+    };
+  } else if (zoomDependent) {
+    return {
+      kind: 'camera',
+      interpolationFactor:
+        type === 'exponential'
+          ? Interpolate.interpolationFactor.bind(undefined, {
+              name: 'exponential',
+              base: parameters.base !== undefined ? parameters.base : 1
+            })
+          : () => 0,
+      zoomStops: parameters.stops.map(s => s[0]),
+      evaluate: ({ zoom }) => innerFun(parameters, propertySpec, zoom, hashedStops, categoricalKeyType)
+    };
+  } else {
+    return {
+      kind: 'source',
+      evaluate(_, feature) {
+        const value = feature && feature.properties ? feature.properties[parameters.property] : undefined;
+        if (value === undefined) {
+          return coalesce(parameters.default, propertySpec.default);
+        }
+        return innerFun(parameters, propertySpec, value, hashedStops, categoricalKeyType);
+      }
+    };
+  }
 }
 
 function coalesce(a, b, c) {
-    if (a !== undefined) return a;
-    if (b !== undefined) return b;
-    if (c !== undefined) return c;
+  if (a !== undefined) return a;
+  if (b !== undefined) return b;
+  if (c !== undefined) return c;
 }
 
 function evaluateCategoricalFunction(parameters, propertySpec, input, hashedStops, keyType) {
-    const evaluated = typeof input === keyType ? hashedStops[input] : undefined; // Enforce strict typing on input
-    return coalesce(evaluated, parameters.default, propertySpec.default);
+  const evaluated = typeof input === keyType ? hashedStops[input] : undefined; // Enforce strict typing on input
+  return coalesce(evaluated, parameters.default, propertySpec.default);
 }
 
 function evaluateIntervalFunction(parameters, propertySpec, input) {
-    // Edge cases
-    if (getType(input) !== 'number') return coalesce(parameters.default, propertySpec.default);
-    const n = parameters.stops.length;
-    if (n === 1) return parameters.stops[0][1];
-    if (input <= parameters.stops[0][0]) return parameters.stops[0][1];
-    if (input >= parameters.stops[n - 1][0]) return parameters.stops[n - 1][1];
+  // Edge cases
+  if (getType(input) !== 'number') return coalesce(parameters.default, propertySpec.default);
+  const n = parameters.stops.length;
+  if (n === 1) return parameters.stops[0][1];
+  if (input <= parameters.stops[0][0]) return parameters.stops[0][1];
+  if (input >= parameters.stops[n - 1][0]) return parameters.stops[n - 1][1];
 
-    const index = findStopLessThanOrEqualTo(parameters.stops, input);
+  const index = findStopLessThanOrEqualTo(parameters.stops, input);
 
-    return parameters.stops[index][1];
+  return parameters.stops[index][1];
 }
 
 function evaluateExponentialFunction(parameters, propertySpec, input) {
-    const base = parameters.base !== undefined ? parameters.base : 1;
+  const base = parameters.base !== undefined ? parameters.base : 1;
 
-    // Edge cases
-    if (getType(input) !== 'number') return coalesce(parameters.default, propertySpec.default);
-    const n = parameters.stops.length;
-    if (n === 1) return parameters.stops[0][1];
-    if (input <= parameters.stops[0][0]) return parameters.stops[0][1];
-    if (input >= parameters.stops[n - 1][0]) return parameters.stops[n - 1][1];
+  // Edge cases
+  if (getType(input) !== 'number') return coalesce(parameters.default, propertySpec.default);
+  const n = parameters.stops.length;
+  if (n === 1) return parameters.stops[0][1];
+  if (input <= parameters.stops[0][0]) return parameters.stops[0][1];
+  if (input >= parameters.stops[n - 1][0]) return parameters.stops[n - 1][1];
 
-    const index = findStopLessThanOrEqualTo(parameters.stops, input);
-    const t = interpolationFactor(
-        input, base,
-        parameters.stops[index][0],
-        parameters.stops[index + 1][0]);
+  const index = findStopLessThanOrEqualTo(parameters.stops, input);
+  const t = interpolationFactor(input, base, parameters.stops[index][0], parameters.stops[index + 1][0]);
 
-    const outputLower = parameters.stops[index][1];
-    const outputUpper = parameters.stops[index + 1][1];
-    let interp = interpolate[propertySpec.type] || identityFunction; // eslint-disable-line import/namespace
+  const outputLower = parameters.stops[index][1];
+  const outputUpper = parameters.stops[index + 1][1];
+  let interp = interpolate[propertySpec.type] || identityFunction; // eslint-disable-line import/namespace
 
-    if (parameters.colorSpace && parameters.colorSpace !== 'rgb') {
-        const colorspace = colorSpaces[parameters.colorSpace]; // eslint-disable-line import/namespace
-        interp = (a, b) => colorspace.reverse(colorspace.interpolate(colorspace.forward(a), colorspace.forward(b), t));
-    }
+  if (parameters.colorSpace && parameters.colorSpace !== 'rgb') {
+    const colorspace = colorSpaces[parameters.colorSpace]; // eslint-disable-line import/namespace
+    interp = (a, b) => colorspace.reverse(colorspace.interpolate(colorspace.forward(a), colorspace.forward(b), t));
+  }
 
-    if (typeof outputLower.evaluate === 'function') {
-        return {
-            evaluate(...args) {
-                const evaluatedLower = outputLower.evaluate.apply(undefined, args);
-                const evaluatedUpper = outputUpper.evaluate.apply(undefined, args);
-                // Special case for fill-outline-color, which has no spec default.
-                if (evaluatedLower === undefined || evaluatedUpper === undefined) {
-                    return undefined;
-                }
-                return interp(evaluatedLower, evaluatedUpper, t);
-            }
-        };
-    }
+  if (typeof outputLower.evaluate === 'function') {
+    return {
+      evaluate(...args) {
+        const evaluatedLower = outputLower.evaluate.apply(undefined, args);
+        const evaluatedUpper = outputUpper.evaluate.apply(undefined, args);
+        // Special case for fill-outline-color, which has no spec default.
+        if (evaluatedLower === undefined || evaluatedUpper === undefined) {
+          return undefined;
+        }
+        return interp(evaluatedLower, evaluatedUpper, t);
+      }
+    };
+  }
 
-    return interp(outputLower, outputUpper, t);
+  return interp(outputLower, outputUpper, t);
 }
 
 function evaluateIdentityFunction(parameters, propertySpec, input) {
-    if (propertySpec.type === 'color') {
-        input = Color.parse(input);
-    } else if (getType(input) !== propertySpec.type && (propertySpec.type !== 'enum' || !propertySpec.values[input])) {
-        input = undefined;
-    }
-    return coalesce(input, parameters.default, propertySpec.default);
+  if (propertySpec.type === 'color') {
+    input = Color.parse(input);
+  } else if (getType(input) !== propertySpec.type && (propertySpec.type !== 'enum' || !propertySpec.values[input])) {
+    input = undefined;
+  }
+  return coalesce(input, parameters.default, propertySpec.default);
 }
 
 /**
@@ -212,26 +217,27 @@ function evaluateIdentityFunction(parameters, propertySpec, input) {
  * @private
  */
 function findStopLessThanOrEqualTo(stops, input) {
-    const n = stops.length;
-    let lowerIndex = 0;
-    let upperIndex = n - 1;
-    let currentIndex = 0;
-    let currentValue, upperValue;
+  const n = stops.length;
+  let lowerIndex = 0;
+  let upperIndex = n - 1;
+  let currentIndex = 0;
+  let currentValue, upperValue;
 
-    while (lowerIndex <= upperIndex) {
-        currentIndex = Math.floor((lowerIndex + upperIndex) / 2);
-        currentValue = stops[currentIndex][0];
-        upperValue = stops[currentIndex + 1][0];
-        if (input === currentValue || input > currentValue && input < upperValue) { // Search complete
-            return currentIndex;
-        } else if (currentValue < input) {
-            lowerIndex = currentIndex + 1;
-        } else if (currentValue > input) {
-            upperIndex = currentIndex - 1;
-        }
+  while (lowerIndex <= upperIndex) {
+    currentIndex = Math.floor((lowerIndex + upperIndex) / 2);
+    currentValue = stops[currentIndex][0];
+    upperValue = stops[currentIndex + 1][0];
+    if (input === currentValue || (input > currentValue && input < upperValue)) {
+      // Search complete
+      return currentIndex;
+    } else if (currentValue < input) {
+      lowerIndex = currentIndex + 1;
+    } else if (currentValue > input) {
+      upperIndex = currentIndex - 1;
     }
+  }
 
-    return Math.max(currentIndex - 1, 0);
+  return Math.max(currentIndex - 1, 0);
 }
 
 /**
@@ -273,14 +279,14 @@ function findStopLessThanOrEqualTo(stops, input) {
  * @private
  */
 function interpolationFactor(input, base, lowerValue, upperValue) {
-    const difference = upperValue - lowerValue;
-    const progress = input - lowerValue;
+  const difference = upperValue - lowerValue;
+  const progress = input - lowerValue;
 
-    if (difference === 0) {
-        return 0;
-    } else if (base === 1) {
-        return progress / difference;
-    } else {
-        return (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
-    }
+  if (difference === 0) {
+    return 0;
+  } else if (base === 1) {
+    return progress / difference;
+  } else {
+    return (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
+  }
 }

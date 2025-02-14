@@ -3,5 +3,5 @@
 const validateProperty = require('./validate_property');
 
 module.exports = function validatePaintProperty(options) {
-    return validateProperty(options, 'paint');
+  return validateProperty(options, 'paint');
 };

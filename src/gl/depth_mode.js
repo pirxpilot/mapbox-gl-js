@@ -3,15 +3,13 @@
 const ALWAYS = 0x0207;
 
 class DepthMode {
+  // DepthMask enums
 
-    // DepthMask enums
-
-    constructor(depthFunc, depthMask, depthRange) {
-        this.func = depthFunc;
-        this.mask = depthMask;
-        this.range = depthRange;
-    }
-
+  constructor(depthFunc, depthMask, depthRange) {
+    this.func = depthFunc;
+    this.mask = depthMask;
+    this.range = depthRange;
+  }
 }
 
 DepthMode.ReadOnly = false;

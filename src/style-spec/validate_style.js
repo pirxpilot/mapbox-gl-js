@@ -3,7 +3,7 @@
 const validateStyleMin = require('./validate_style.min');
 const ParsingError = require('./error/parsing_error');
 const jsonlint = require('@mapbox/jsonlint-lines-primitives');
-const {v8} = require('./style-spec');
+const { v8 } = require('./style-spec');
 
 /**
  * Validate a Mapbox GL style against the style specification.
@@ -22,17 +22,17 @@ const {v8} = require('./style-spec');
  */
 
 function validateStyle(style, styleSpec) {
-    if (style instanceof String || typeof style === 'string' || style instanceof Buffer) {
-        try {
-            style = jsonlint.parse(style.toString());
-        } catch (e) {
-            return [new ParsingError(e)];
-        }
+  if (style instanceof String || typeof style === 'string' || style instanceof Buffer) {
+    try {
+      style = jsonlint.parse(style.toString());
+    } catch (e) {
+      return [new ParsingError(e)];
     }
+  }
 
-    styleSpec = styleSpec || v8;
+  styleSpec = styleSpec || v8;
 
-    return validateStyleMin(style, styleSpec);
+  return validateStyleMin(style, styleSpec);
 }
 
 validateStyle.source = validateStyleMin.source;

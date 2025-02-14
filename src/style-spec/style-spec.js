@@ -8,7 +8,16 @@ const composite = require('./composite');
 const diff = require('./diff');
 const ValidationError = require('./error/validation_error');
 const ParsingError = require('./error/parsing_error');
-const { StyleExpression, isExpression, createExpression, createPropertyExpression, normalizePropertyExpression, ZoomConstantExpression, ZoomDependentExpression, StylePropertyFunction } = require('./expression');
+const {
+  StyleExpression,
+  isExpression,
+  createExpression,
+  createPropertyExpression,
+  normalizePropertyExpression,
+  ZoomConstantExpression,
+  ZoomDependentExpression,
+  StylePropertyFunction
+} = require('./expression');
 const featureFilter = require('./feature_filter');
 const Color = require('./util/color');
 const { createFunction, isFunction } = require('./function');
@@ -17,36 +26,36 @@ const convertFunction = require('./function/convert');
 const validate = require('./validate_style');
 
 const expression = {
-    StyleExpression,
-    isExpression,
-    createExpression,
-    createPropertyExpression,
-    normalizePropertyExpression,
-    ZoomConstantExpression,
-    ZoomDependentExpression,
-    StylePropertyFunction
+  StyleExpression,
+  isExpression,
+  createExpression,
+  createPropertyExpression,
+  normalizePropertyExpression,
+  ZoomConstantExpression,
+  ZoomDependentExpression,
+  StylePropertyFunction
 };
 
 const styleFunction = {
-    convertFunction,
-    createFunction,
-    isFunction
+  convertFunction,
+  createFunction,
+  isFunction
 };
 
 module.exports = {
-    v8,
-    latest,
-    format,
-    migrate,
-    composite,
-    diff,
-    ValidationError,
-    ParsingError,
-    expression,
-    featureFilter,
-    Color,
-    function: styleFunction,
-    validate
+  v8,
+  latest,
+  format,
+  migrate,
+  composite,
+  diff,
+  ValidationError,
+  ParsingError,
+  expression,
+  featureFilter,
+  Color,
+  function: styleFunction,
+  validate
 };
 
 validate.parsed = validate;

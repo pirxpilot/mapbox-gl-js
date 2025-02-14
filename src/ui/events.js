@@ -5,65 +5,63 @@ const { Event } = require('../util/evented');
 const DOM = require('../util/dom');
 const Point = require('@mapbox/point-geometry');
 
-
 /**
  * `MapMouseEvent` is the event type for mouse-related map events.
  * @extends {Object}
  */
 class MapMouseEvent extends Event {
-    /**
-     * The event type.
-     */
+  /**
+   * The event type.
+   */
 
-    /**
-     * The `Map` object that fired the event.
-     */
+  /**
+   * The `Map` object that fired the event.
+   */
 
-    /**
-     * The DOM event which caused the map event.
-     */
+  /**
+   * The DOM event which caused the map event.
+   */
 
-    /**
-     * The pixel coordinates of the mouse cursor, relative to the map and measured from the top left corner.
-     */
+  /**
+   * The pixel coordinates of the mouse cursor, relative to the map and measured from the top left corner.
+   */
 
-    /**
-     * The geographic location on the map of the mouse cursor.
-     */
+  /**
+   * The geographic location on the map of the mouse cursor.
+   */
 
-    /**
-     * Prevents subsequent default processing of the event by the map.
-     *
-     * Calling this method will prevent the following default map behaviors:
-     *
-     *   * On `mousedown` events, the behavior of {@link DragPanHandler}
-     *   * On `mousedown` events, the behavior of {@link DragRotateHandler}
-     *   * On `mousedown` events, the behavior of {@link BoxZoomHandler}
-     *   * On `dblclick` events, the behavior of {@link DoubleClickZoomHandler}
-     *
-     */
-    preventDefault() {
-        this._defaultPrevented = true;
-    }
+  /**
+   * Prevents subsequent default processing of the event by the map.
+   *
+   * Calling this method will prevent the following default map behaviors:
+   *
+   *   * On `mousedown` events, the behavior of {@link DragPanHandler}
+   *   * On `mousedown` events, the behavior of {@link DragRotateHandler}
+   *   * On `mousedown` events, the behavior of {@link BoxZoomHandler}
+   *   * On `dblclick` events, the behavior of {@link DoubleClickZoomHandler}
+   *
+   */
+  preventDefault() {
+    this._defaultPrevented = true;
+  }
 
-    /**
-     * `true` if `preventDefault` has been called.
-     */
-    get defaultPrevented() {
-        return this._defaultPrevented;
-    }
+  /**
+   * `true` if `preventDefault` has been called.
+   */
+  get defaultPrevented() {
+    return this._defaultPrevented;
+  }
 
-
-    /**
-     * @private
-     */
-    constructor(type, map, originalEvent, data = {}) {
-        const point = DOM.mousePos(map.getCanvasContainer(), originalEvent);
-        const lngLat = map.unproject(point);
-        super(type, Object.assign({ point, lngLat, originalEvent }, data));
-        this._defaultPrevented = false;
-        this.target = map;
-    }
+  /**
+   * @private
+   */
+  constructor(type, map, originalEvent, data = {}) {
+    const point = DOM.mousePos(map.getCanvasContainer(), originalEvent);
+    const lngLat = map.unproject(point);
+    super(type, Object.assign({ point, lngLat, originalEvent }, data));
+    this._defaultPrevented = false;
+    this.target = map;
+  }
 }
 
 /**
@@ -71,121 +69,118 @@ class MapMouseEvent extends Event {
  * @extends {Object}
  */
 class MapTouchEvent extends Event {
-    /**
-     * The event type.
-     */
+  /**
+   * The event type.
+   */
 
-    /**
-     * The `Map` object that fired the event.
-     */
+  /**
+   * The `Map` object that fired the event.
+   */
 
-    /**
-     * The DOM event which caused the map event.
-     */
+  /**
+   * The DOM event which caused the map event.
+   */
 
-    /**
-     * The geographic location on the map of the center of the touch event points.
-     */
+  /**
+   * The geographic location on the map of the center of the touch event points.
+   */
 
-    /**
-     * The pixel coordinates of the center of the touch event points, relative to the map and measured from the top left
-     * corner.
-     */
+  /**
+   * The pixel coordinates of the center of the touch event points, relative to the map and measured from the top left
+   * corner.
+   */
 
-    /**
-     * The array of pixel coordinates corresponding to a
-     * [touch event's `touches`](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/touches) property.
-     */
+  /**
+   * The array of pixel coordinates corresponding to a
+   * [touch event's `touches`](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/touches) property.
+   */
 
-    /**
-     * The geographical locations on the map corresponding to a
-     * [touch event's `touches`](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/touches) property.
-     */
+  /**
+   * The geographical locations on the map corresponding to a
+   * [touch event's `touches`](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/touches) property.
+   */
 
-    /**
-     * Prevents subsequent default processing of the event by the map.
-     *
-     * Calling this method will prevent the following default map behaviors:
-     *
-     *   * On `touchstart` events, the behavior of {@link DragPanHandler}
-     *   * On `touchstart` events, the behavior of {@link TouchZoomRotateHandler}
-     *
-     */
-    preventDefault() {
-        this._defaultPrevented = true;
-    }
+  /**
+   * Prevents subsequent default processing of the event by the map.
+   *
+   * Calling this method will prevent the following default map behaviors:
+   *
+   *   * On `touchstart` events, the behavior of {@link DragPanHandler}
+   *   * On `touchstart` events, the behavior of {@link TouchZoomRotateHandler}
+   *
+   */
+  preventDefault() {
+    this._defaultPrevented = true;
+  }
 
-    /**
-     * `true` if `preventDefault` has been called.
-     */
-    get defaultPrevented() {
-        return this._defaultPrevented;
-    }
+  /**
+   * `true` if `preventDefault` has been called.
+   */
+  get defaultPrevented() {
+    return this._defaultPrevented;
+  }
 
-
-    /**
-     * @private
-     */
-    constructor(type, map, originalEvent) {
-        const points = DOM.touchPos(map.getCanvasContainer(), originalEvent);
-        const lngLats = points.map((t) => map.unproject(t));
-        const point = points.reduce((prev, curr, i, arr) => {
-            return prev.add(curr.div(arr.length));
-        }, new Point(0, 0));
-        const lngLat = map.unproject(point);
-        super(type, { points, point, lngLats, lngLat, originalEvent });
-        this._defaultPrevented = false;
-    }
+  /**
+   * @private
+   */
+  constructor(type, map, originalEvent) {
+    const points = DOM.touchPos(map.getCanvasContainer(), originalEvent);
+    const lngLats = points.map(t => map.unproject(t));
+    const point = points.reduce((prev, curr, i, arr) => {
+      return prev.add(curr.div(arr.length));
+    }, new Point(0, 0));
+    const lngLat = map.unproject(point);
+    super(type, { points, point, lngLats, lngLat, originalEvent });
+    this._defaultPrevented = false;
+  }
 }
-
 
 /**
  * `MapWheelEvent` is the event type for the `wheel` map event.
  * @extends {Object}
  */
 class MapWheelEvent extends Event {
-    /**
-     * The event type.
-     */
+  /**
+   * The event type.
+   */
 
-    /**
-     * The `Map` object that fired the event.
-     */
+  /**
+   * The `Map` object that fired the event.
+   */
 
-    /**
-     * The DOM event which caused the map event.
-     */
+  /**
+   * The DOM event which caused the map event.
+   */
 
-    /**
-     * Prevents subsequent default processing of the event by the map.
-     *
-     * Calling this method will prevent the the behavior of {@link ScrollZoomHandler}.
-     */
-    preventDefault() {
-        this._defaultPrevented = true;
-    }
+  /**
+   * Prevents subsequent default processing of the event by the map.
+   *
+   * Calling this method will prevent the the behavior of {@link ScrollZoomHandler}.
+   */
+  preventDefault() {
+    this._defaultPrevented = true;
+  }
 
-    /**
-     * `true` if `preventDefault` has been called.
-     */
-    get defaultPrevented() {
-        return this._defaultPrevented;
-    }
+  /**
+   * `true` if `preventDefault` has been called.
+   */
+  get defaultPrevented() {
+    return this._defaultPrevented;
+  }
 
-
-    /**
-     * @private
-     */
-    constructor(type, map, originalEvent) {
-        super(type, { originalEvent });
-        this._defaultPrevented = false;
-    }
+  /**
+   * @private
+   */
+  constructor(type, map, originalEvent) {
+    super(type, { originalEvent });
+    this._defaultPrevented = false;
+  }
 }
 
 module.exports = {
-    MapMouseEvent,
-    MapTouchEvent,
-    MapWheelEvent
+  MapMouseEvent,
+  MapTouchEvent,
+  MapWheelEvent
 };
 
 /**
@@ -215,5 +210,3 @@ module.exports = {
  * @property {Coordinate} [coord] The coordinate of the tile if the event has a `dataType` of `source` and
  * the event is related to loading of a tile.
  */
-
-

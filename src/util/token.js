@@ -3,17 +3,18 @@
 module.exports = resolveTokens;
 
 function getValue(properties, key, lang) {
-    let v;
-    if (lang && key === 'name') {
-        v = properties[`name_${lang}`] ||
-            properties[`name:${lang}`] ||
-            properties.name ||
-            properties['name:latin'] ||
-            properties.name_int;
-    } else {
-        v = properties[key];
-    }
-    return v == null ? '' : String(v);
+  let v;
+  if (lang && key === 'name') {
+    v =
+      properties[`name_${lang}`] ||
+      properties[`name:${lang}`] ||
+      properties.name ||
+      properties['name:latin'] ||
+      properties.name_int;
+  } else {
+    v = properties[key];
+  }
+  return v == null ? '' : String(v);
 }
 
 /**
@@ -25,5 +26,5 @@ function getValue(properties, key, lang) {
  * @private
  */
 function resolveTokens(properties, text, lang) {
-    return text.replace(/{([^{}]+)}/g, (match, key) => getValue(properties, key, lang));
+  return text.replace(/{([^{}]+)}/g, (match, key) => getValue(properties, key, lang));
 }

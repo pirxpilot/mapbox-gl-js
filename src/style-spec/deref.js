@@ -3,21 +3,21 @@
 const refProperties = require('./util/ref_properties');
 
 function deref(layer, parent) {
-    const result = {};
+  const result = {};
 
-    for (const k in layer) {
-        if (k !== 'ref') {
-            result[k] = layer[k];
-        }
+  for (const k in layer) {
+    if (k !== 'ref') {
+      result[k] = layer[k];
     }
+  }
 
-    refProperties.forEach((k) => {
-        if (k in parent) {
-            result[k] = parent[k];
-        }
-    });
+  refProperties.forEach(k => {
+    if (k in parent) {
+      result[k] = parent[k];
+    }
+  });
 
-    return result;
+  return result;
 }
 
 module.exports = derefLayers;
@@ -36,18 +36,18 @@ module.exports = derefLayers;
  * @returns {Array<Layer>}
  */
 function derefLayers(layers) {
-    layers = layers.slice();
+  layers = layers.slice();
 
-    const map = Object.create(null);
-    for (let i = 0; i < layers.length; i++) {
-        map[layers[i].id] = layers[i];
+  const map = Object.create(null);
+  for (let i = 0; i < layers.length; i++) {
+    map[layers[i].id] = layers[i];
+  }
+
+  for (let i = 0; i < layers.length; i++) {
+    if ('ref' in layers[i]) {
+      layers[i] = deref(layers[i], map[layers[i].ref]);
     }
+  }
 
-    for (let i = 0; i < layers.length; i++) {
-        if ('ref' in layers[i]) {
-            layers[i] = deref(layers[i], map[layers[i].ref]);
-        }
-    }
-
-    return layers;
+  return layers;
 }

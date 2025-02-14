@@ -10,5 +10,5 @@ let id = 1;
  * @private
  */
 module.exports = function uniqueId() {
-    return id++;
+  return id++;
 };

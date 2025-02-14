@@ -9,7 +9,6 @@ const { normalizePropertyExpression } = require('../style-spec/expression');
 const { register } = require('../util/web_worker_transfer');
 const EvaluationParameters = require('./evaluation_parameters');
 
-
 /**
  * Implements a number of classes that define state and behavior for paint and layout properties, most
  * importantly their respective evaluation chains:
@@ -66,24 +65,25 @@ const EvaluationParameters = require('./evaluation_parameters');
  *  @private
  */
 class PropertyValue {
+  constructor(property, value) {
+    this.property = property;
+    this.value = value;
+    this.expression = normalizePropertyExpression(
+      value === undefined ? property.specification.default : value,
+      property.specification
+    );
+  }
 
-    constructor(property, value) {
-        this.property = property;
-        this.value = value;
-        this.expression = normalizePropertyExpression(value === undefined ? property.specification.default : value, property.specification);
-    }
+  isDataDriven() {
+    return this.expression.kind === 'source' || this.expression.kind === 'composite';
+  }
 
-    isDataDriven() {
-        return this.expression.kind === 'source' || this.expression.kind === 'composite';
-    }
-
-    possiblyEvaluate(parameters) {
-        return this.property.possiblyEvaluate(this, parameters);
-    }
+  possiblyEvaluate(parameters) {
+    return this.property.possiblyEvaluate(this, parameters);
+  }
 }
 
 // ------- Transitionable -------
-
 
 /**
  * Paint properties are _transitionable_: they can change in a fluid manner, interpolating or cross-fading between
@@ -98,21 +98,24 @@ class PropertyValue {
  * @private
  */
 class TransitionablePropertyValue {
+  constructor(property) {
+    this.property = property;
+    this.value = new PropertyValue(property, undefined);
+  }
 
-    constructor(property) {
-        this.property = property;
-        this.value = new PropertyValue(property, undefined);
-    }
+  transitioned(parameters, prior) {
+    return new TransitioningPropertyValue(
+      this.property,
+      this.value,
+      prior, // eslint-disable-line no-use-before-define
+      Object.assign({}, parameters.transition, this.transition),
+      parameters.now
+    );
+  }
 
-    transitioned(parameters,
-                 prior) {
-        return new TransitioningPropertyValue(this.property, this.value, prior, // eslint-disable-line no-use-before-define
-            Object.assign({}, parameters.transition, this.transition), parameters.now);
-    }
-
-    untransitioned() {
-        return new TransitioningPropertyValue(this.property, this.value, null, {}, 0); // eslint-disable-line no-use-before-define
-    }
+  untransitioned() {
+    return new TransitioningPropertyValue(this.property, this.value, null, {}, 0); // eslint-disable-line no-use-before-define
+  }
 }
 
 /**
@@ -130,67 +133,69 @@ class TransitionablePropertyValue {
  * @private
  */
 class Transitionable {
+  constructor(properties) {
+    this._properties = properties;
+    this._values = Object.create(properties.defaultTransitionablePropertyValues);
+  }
 
-    constructor(properties) {
-        this._properties = properties;
-        this._values = (Object.create(properties.defaultTransitionablePropertyValues));
+  getValue(name) {
+    return clone(this._values[name].value.value);
+  }
+
+  setValue(name, value) {
+    if (!this._values.hasOwnProperty(name)) {
+      this._values[name] = new TransitionablePropertyValue(this._values[name].property);
     }
+    // Note that we do not _remove_ an own property in the case where a value is being reset
+    // to the default: the transition might still be non-default.
+    this._values[name].value = new PropertyValue(
+      this._values[name].property,
+      value === null ? undefined : clone(value)
+    );
+  }
 
-    getValue(name) {
-        return clone(this._values[name].value.value);
+  getTransition(name) {
+    return clone(this._values[name].transition);
+  }
+
+  setTransition(name, value) {
+    if (!this._values.hasOwnProperty(name)) {
+      this._values[name] = new TransitionablePropertyValue(this._values[name].property);
     }
+    this._values[name].transition = clone(value) || undefined;
+  }
 
-    setValue(name, value) {
-        if (!this._values.hasOwnProperty(name)) {
-            this._values[name] = new TransitionablePropertyValue(this._values[name].property);
-        }
-        // Note that we do not _remove_ an own property in the case where a value is being reset
-        // to the default: the transition might still be non-default.
-        this._values[name].value = new PropertyValue(this._values[name].property, value === null ? undefined : clone(value));
+  serialize() {
+    const result = {};
+    for (const property of Object.keys(this._values)) {
+      const value = this.getValue(property);
+      if (value !== undefined) {
+        result[property] = value;
+      }
+
+      const transition = this.getTransition(property);
+      if (transition !== undefined) {
+        result[`${property}-transition`] = transition;
+      }
     }
+    return result;
+  }
 
-    getTransition(name) {
-        return clone(this._values[name].transition);
+  transitioned(parameters, prior) {
+    const result = new Transitioning(this._properties); // eslint-disable-line no-use-before-define
+    for (const property of Object.keys(this._values)) {
+      result._values[property] = this._values[property].transitioned(parameters, prior._values[property]);
     }
+    return result;
+  }
 
-    setTransition(name, value) {
-        if (!this._values.hasOwnProperty(name)) {
-            this._values[name] = new TransitionablePropertyValue(this._values[name].property);
-        }
-        this._values[name].transition = clone(value) || undefined;
+  untransitioned() {
+    const result = new Transitioning(this._properties); // eslint-disable-line no-use-before-define
+    for (const property of Object.keys(this._values)) {
+      result._values[property] = this._values[property].untransitioned();
     }
-
-    serialize() {
-        const result = {};
-        for (const property of Object.keys(this._values)) {
-            const value = this.getValue(property);
-            if (value !== undefined) {
-                result[property] = value;
-            }
-
-            const transition = this.getTransition(property);
-            if (transition !== undefined) {
-                result[`${property}-transition`] = transition;
-            }
-        }
-        return result;
-    }
-
-    transitioned(parameters, prior) {
-        const result = new Transitioning(this._properties); // eslint-disable-line no-use-before-define
-        for (const property of Object.keys(this._values)) {
-            result._values[property] = this._values[property].transitioned(parameters, prior._values[property]);
-        }
-        return result;
-    }
-
-    untransitioned() {
-        const result = new Transitioning(this._properties); // eslint-disable-line no-use-before-define
-        for (const property of Object.keys(this._values)) {
-            result._values[property] = this._values[property].untransitioned();
-        }
-        return result;
-    }
+    return result;
+  }
 }
 
 // ------- Transitioning -------
@@ -205,47 +210,42 @@ class Transitionable {
  * @private
  */
 class TransitioningPropertyValue {
-
-    constructor(property,
-                value,
-                prior,
-                transition,
-                now) {
-        this.property = property;
-        this.value = value;
-        this.begin = now + transition.delay || 0;
-        this.end = this.begin + transition.duration || 0;
-        if (property.specification.transition && (transition.delay || transition.duration)) {
-            this.prior = prior;
-        }
+  constructor(property, value, prior, transition, now) {
+    this.property = property;
+    this.value = value;
+    this.begin = now + transition.delay || 0;
+    this.end = this.begin + transition.duration || 0;
+    if (property.specification.transition && (transition.delay || transition.duration)) {
+      this.prior = prior;
     }
+  }
 
-    possiblyEvaluate(parameters) {
-        const now = parameters.now || 0;
-        const finalValue = this.value.possiblyEvaluate(parameters);
-        const prior = this.prior;
-        if (!prior) {
-            // No prior value.
-            return finalValue;
-        } else if (now > this.end) {
-            // Transition from prior value is now complete.
-            this.prior = null;
-            return finalValue;
-        } else if (this.value.isDataDriven()) {
-            // Transitions to data-driven properties are not supported.
-            // We snap immediately to the data-driven value so that, when we perform layout,
-            // we see the data-driven function and can use it to populate vertex buffers.
-            this.prior = null;
-            return finalValue;
-        } else if (now < this.begin) {
-            // Transition hasn't started yet.
-            return prior.possiblyEvaluate(parameters);
-        } else {
-            // Interpolate between recursively-calculated prior value and final.
-            const t = (now - this.begin) / (this.end - this.begin);
-            return this.property.interpolate(prior.possiblyEvaluate(parameters), finalValue, easeCubicInOut(t));
-        }
+  possiblyEvaluate(parameters) {
+    const now = parameters.now || 0;
+    const finalValue = this.value.possiblyEvaluate(parameters);
+    const prior = this.prior;
+    if (!prior) {
+      // No prior value.
+      return finalValue;
+    } else if (now > this.end) {
+      // Transition from prior value is now complete.
+      this.prior = null;
+      return finalValue;
+    } else if (this.value.isDataDriven()) {
+      // Transitions to data-driven properties are not supported.
+      // We snap immediately to the data-driven value so that, when we perform layout,
+      // we see the data-driven function and can use it to populate vertex buffers.
+      this.prior = null;
+      return finalValue;
+    } else if (now < this.begin) {
+      // Transition hasn't started yet.
+      return prior.possiblyEvaluate(parameters);
+    } else {
+      // Interpolate between recursively-calculated prior value and final.
+      const t = (now - this.begin) / (this.end - this.begin);
+      return this.property.interpolate(prior.possiblyEvaluate(parameters), finalValue, easeCubicInOut(t));
     }
+  }
 }
 
 /**
@@ -263,28 +263,27 @@ class TransitioningPropertyValue {
  * @private
  */
 class Transitioning {
+  constructor(properties) {
+    this._properties = properties;
+    this._values = Object.create(properties.defaultTransitioningPropertyValues);
+  }
 
-    constructor(properties) {
-        this._properties = properties;
-        this._values = (Object.create(properties.defaultTransitioningPropertyValues));
+  possiblyEvaluate(parameters) {
+    const result = new PossiblyEvaluated(this._properties); // eslint-disable-line no-use-before-define
+    for (const property of Object.keys(this._values)) {
+      result._values[property] = this._values[property].possiblyEvaluate(parameters);
     }
+    return result;
+  }
 
-    possiblyEvaluate(parameters) {
-        const result = new PossiblyEvaluated(this._properties); // eslint-disable-line no-use-before-define
-        for (const property of Object.keys(this._values)) {
-            result._values[property] = this._values[property].possiblyEvaluate(parameters);
-        }
-        return result;
+  hasTransition() {
+    for (const property of Object.keys(this._values)) {
+      if (this._values[property].prior) {
+        return true;
+      }
     }
-
-    hasTransition() {
-        for (const property of Object.keys(this._values)) {
-            if (this._values[property].prior) {
-                return true;
-            }
-        }
-        return false;
-    }
+    return false;
+  }
 }
 
 // ------- Layout -------
@@ -308,38 +307,37 @@ class Transitioning {
  * @private
  */
 class Layout {
+  constructor(properties) {
+    this._properties = properties;
+    this._values = Object.create(properties.defaultPropertyValues);
+  }
 
-    constructor(properties) {
-        this._properties = properties;
-        this._values = (Object.create(properties.defaultPropertyValues));
-    }
+  getValue(name) {
+    return clone(this._values[name].value);
+  }
 
-    getValue(name) {
-        return clone(this._values[name].value);
-    }
+  setValue(name, value) {
+    this._values[name] = new PropertyValue(this._values[name].property, value === null ? undefined : clone(value));
+  }
 
-    setValue(name, value) {
-        this._values[name] = new PropertyValue(this._values[name].property, value === null ? undefined : clone(value));
+  serialize() {
+    const result = {};
+    for (const property of Object.keys(this._values)) {
+      const value = this.getValue(property);
+      if (value !== undefined) {
+        result[property] = value;
+      }
     }
+    return result;
+  }
 
-    serialize() {
-        const result = {};
-        for (const property of Object.keys(this._values)) {
-            const value = this.getValue(property);
-            if (value !== undefined) {
-                result[property] = value;
-            }
-        }
-        return result;
+  possiblyEvaluate(parameters) {
+    const result = new PossiblyEvaluated(this._properties); // eslint-disable-line no-use-before-define
+    for (const property of Object.keys(this._values)) {
+      result._values[property] = this._values[property].possiblyEvaluate(parameters);
     }
-
-    possiblyEvaluate(parameters) {
-        const result = new PossiblyEvaluated(this._properties); // eslint-disable-line no-use-before-define
-        for (const property of Object.keys(this._values)) {
-            result._values[property] = this._values[property].possiblyEvaluate(parameters);
-        }
-        return result;
-    }
+    return result;
+  }
 }
 
 // ------- PossiblyEvaluated -------
@@ -375,28 +373,27 @@ class Layout {
  * @private
  */
 class PossiblyEvaluatedPropertyValue {
+  constructor(property, value, globals) {
+    this.property = property;
+    this.value = value;
+    this.globals = globals;
+  }
 
-    constructor(property, value, globals) {
-        this.property = property;
-        this.value = value;
-        this.globals = globals;
-    }
+  isConstant() {
+    return this.value.kind === 'constant';
+  }
 
-    isConstant() {
-        return this.value.kind === 'constant';
+  constantOr(value) {
+    if (this.value.kind === 'constant') {
+      return this.value.value;
+    } else {
+      return value;
     }
+  }
 
-    constantOr(value) {
-        if (this.value.kind === 'constant') {
-            return this.value.value;
-        } else {
-            return value;
-        }
-    }
-
-    evaluate(feature, featureState) {
-        return this.property.evaluate(this.value, this.globals, feature, featureState);
-    }
+  evaluate(feature, featureState) {
+    return this.property.evaluate(this.value, this.globals, feature, featureState);
+  }
 }
 
 /**
@@ -423,15 +420,14 @@ class PossiblyEvaluatedPropertyValue {
  * @private
  */
 class PossiblyEvaluated {
+  constructor(properties) {
+    this._properties = properties;
+    this._values = Object.create(properties.defaultPossiblyEvaluatedValues);
+  }
 
-    constructor(properties) {
-        this._properties = properties;
-        this._values = (Object.create(properties.defaultPossiblyEvaluatedValues));
-    }
-
-    get(name) {
-        return this._values[name];
-    }
+  get(name) {
+    return this._values[name];
+  }
 }
 
 /**
@@ -442,24 +438,23 @@ class PossiblyEvaluated {
  * @private
  */
 class DataConstantProperty {
+  constructor(specification) {
+    this.specification = specification;
+  }
 
-    constructor(specification) {
-        this.specification = specification;
-    }
+  possiblyEvaluate(value, parameters) {
+    assert(!value.isDataDriven());
+    return value.expression.evaluate(parameters);
+  }
 
-    possiblyEvaluate(value, parameters) {
-        assert(!value.isDataDriven());
-        return value.expression.evaluate(parameters);
+  interpolate(a, b, t) {
+    const interp = interpolate[this.specification.type];
+    if (interp) {
+      return interp(a, b, t);
+    } else {
+      return a;
     }
-
-    interpolate(a, b, t) {
-        const interp = (interpolate)[this.specification.type];
-        if (interp) {
-            return interp(a, b, t);
-        } else {
-            return a;
-        }
-    }
+  }
 }
 
 /**
@@ -470,53 +465,58 @@ class DataConstantProperty {
  * @private
  */
 class DataDrivenProperty {
+  constructor(specification) {
+    this.specification = specification;
+  }
 
-    constructor(specification) {
-        this.specification = specification;
+  possiblyEvaluate(value, parameters) {
+    if (value.expression.kind === 'constant' || value.expression.kind === 'camera') {
+      return new PossiblyEvaluatedPropertyValue(
+        this,
+        { kind: 'constant', value: value.expression.evaluate(parameters) },
+        parameters
+      );
+    } else {
+      return new PossiblyEvaluatedPropertyValue(this, value.expression, parameters);
+    }
+  }
+
+  interpolate(a, b, t) {
+    // If either possibly-evaluated value is non-constant, give up: we aren't able to interpolate data-driven values.
+    if (a.value.kind !== 'constant' || b.value.kind !== 'constant') {
+      return a;
     }
 
-    possiblyEvaluate(value, parameters) {
-        if (value.expression.kind === 'constant' || value.expression.kind === 'camera') {
-            return new PossiblyEvaluatedPropertyValue(this, {kind: 'constant', value: value.expression.evaluate(parameters)}, parameters);
-        } else {
-            return new PossiblyEvaluatedPropertyValue(this, value.expression, parameters);
-        }
+    // Special case hack solely for fill-outline-color. The undefined value is subsequently handled in
+    // FillStyleLayer#recalculate, which sets fill-outline-color to the fill-color value if the former
+    // is a PossiblyEvaluatedPropertyValue containing a constant undefined value. In addition to the
+    // return value here, the other source of a PossiblyEvaluatedPropertyValue containing a constant
+    // undefined value is the "default value" for fill-outline-color held in
+    // `Properties#defaultPossiblyEvaluatedValues`, which serves as the prototype of
+    // `PossiblyEvaluated#_values`.
+    if (a.value.value === undefined || b.value.value === undefined) {
+      return new PossiblyEvaluatedPropertyValue(this, { kind: 'constant', value: undefined }, a.globals);
     }
 
-    interpolate(a,
-                b,
-                t) {
-        // If either possibly-evaluated value is non-constant, give up: we aren't able to interpolate data-driven values.
-        if (a.value.kind !== 'constant' || b.value.kind !== 'constant') {
-            return a;
-        }
-
-        // Special case hack solely for fill-outline-color. The undefined value is subsequently handled in
-        // FillStyleLayer#recalculate, which sets fill-outline-color to the fill-color value if the former
-        // is a PossiblyEvaluatedPropertyValue containing a constant undefined value. In addition to the
-        // return value here, the other source of a PossiblyEvaluatedPropertyValue containing a constant
-        // undefined value is the "default value" for fill-outline-color held in
-        // `Properties#defaultPossiblyEvaluatedValues`, which serves as the prototype of
-        // `PossiblyEvaluated#_values`.
-        if (a.value.value === undefined || b.value.value === undefined) {
-            return new PossiblyEvaluatedPropertyValue(this, {kind: 'constant', value: (undefined)}, a.globals);
-        }
-
-        const interp = (interpolate)[this.specification.type];
-        if (interp) {
-            return new PossiblyEvaluatedPropertyValue(this, {kind: 'constant', value: interp(a.value.value, b.value.value, t)}, a.globals);
-        } else {
-            return a;
-        }
+    const interp = interpolate[this.specification.type];
+    if (interp) {
+      return new PossiblyEvaluatedPropertyValue(
+        this,
+        { kind: 'constant', value: interp(a.value.value, b.value.value, t) },
+        a.globals
+      );
+    } else {
+      return a;
     }
+  }
 
-    evaluate(value, globals, feature, featureState) {
-        if (value.kind === 'constant') {
-            return value.value;
-        } else {
-            return value.evaluate(globals, feature, featureState);
-        }
+  evaluate(value, globals, feature, featureState) {
+    if (value.kind === 'constant') {
+      return value.value;
+    } else {
+      return value.evaluate(globals, feature, featureState);
     }
+  }
 }
 
 /**
@@ -526,39 +526,39 @@ class DataDrivenProperty {
  * @private
  */
 class CrossFadedProperty {
+  constructor(specification) {
+    this.specification = specification;
+  }
 
-    constructor(specification) {
-        this.specification = specification;
+  possiblyEvaluate(value, parameters) {
+    if (value.value === undefined) {
+      return undefined;
+    } else if (value.expression.kind === 'constant') {
+      const constant = value.expression.evaluate(parameters);
+      return this._calculate(constant, constant, constant, parameters);
+    } else {
+      assert(!value.isDataDriven());
+      return this._calculate(
+        value.expression.evaluate(new EvaluationParameters(Math.floor(parameters.zoom - 1.0), parameters)),
+        value.expression.evaluate(new EvaluationParameters(Math.floor(parameters.zoom), parameters)),
+        value.expression.evaluate(new EvaluationParameters(Math.floor(parameters.zoom + 1.0), parameters)),
+        parameters
+      );
     }
+  }
 
-    possiblyEvaluate(value, parameters) {
-        if (value.value === undefined) {
-            return undefined;
-        } else if (value.expression.kind === 'constant') {
-            const constant = value.expression.evaluate(parameters);
-            return this._calculate(constant, constant, constant, parameters);
-        } else {
-            assert(!value.isDataDriven());
-            return this._calculate(
-                value.expression.evaluate(new EvaluationParameters(Math.floor(parameters.zoom - 1.0), parameters)),
-                value.expression.evaluate(new EvaluationParameters(Math.floor(parameters.zoom), parameters)),
-                value.expression.evaluate(new EvaluationParameters(Math.floor(parameters.zoom + 1.0), parameters)),
-                parameters);
-        }
-    }
+  _calculate(min, mid, max, parameters) {
+    const z = parameters.zoom;
+    const fraction = z - Math.floor(z);
+    const t = parameters.crossFadingFactor();
+    return z > parameters.zoomHistory.lastIntegerZoom
+      ? { from: min, to: mid, fromScale: 2, toScale: 1, t: fraction + (1 - fraction) * t }
+      : { from: max, to: mid, fromScale: 0.5, toScale: 1, t: 1 - (1 - t) * fraction };
+  }
 
-    _calculate(min, mid, max, parameters) {
-        const z = parameters.zoom;
-        const fraction = z - Math.floor(z);
-        const t = parameters.crossFadingFactor();
-        return z > parameters.zoomHistory.lastIntegerZoom ?
-            { from: min, to: mid, fromScale: 2, toScale: 1, t: fraction + (1 - fraction) * t } :
-            { from: max, to: mid, fromScale: 0.5, toScale: 1, t: 1 - (1 - t) * fraction };
-    }
-
-    interpolate(a) {
-        return a;
-    }
+  interpolate(a) {
+    return a;
+  }
 }
 
 /**
@@ -570,16 +570,17 @@ class CrossFadedProperty {
  */
 
 class ColorRampProperty {
+  constructor(specification) {
+    this.specification = specification;
+  }
 
-    constructor(specification) {
-        this.specification = specification;
-    }
+  possiblyEvaluate(value, parameters) {
+    return !!value.expression.evaluate(parameters);
+  }
 
-    possiblyEvaluate(value, parameters) {
-        return !!value.expression.evaluate(parameters);
-    }
-
-    interpolate() { return false; }
+  interpolate() {
+    return false;
+  }
 }
 
 /**
@@ -594,26 +595,22 @@ class ColorRampProperty {
  * @private
  */
 class Properties {
+  constructor(properties) {
+    this.properties = properties;
+    this.defaultPropertyValues = {};
+    this.defaultTransitionablePropertyValues = {};
+    this.defaultTransitioningPropertyValues = {};
+    this.defaultPossiblyEvaluatedValues = {};
 
-    constructor(properties) {
-        this.properties = properties;
-        this.defaultPropertyValues = ({});
-        this.defaultTransitionablePropertyValues = ({});
-        this.defaultTransitioningPropertyValues = ({});
-        this.defaultPossiblyEvaluatedValues = ({});
-
-        for (const property in properties) {
-            const prop = properties[property];
-            const defaultPropertyValue = this.defaultPropertyValues[property] =
-                new PropertyValue(prop, undefined);
-            const defaultTransitionablePropertyValue = this.defaultTransitionablePropertyValues[property] =
-                new TransitionablePropertyValue(prop);
-            this.defaultTransitioningPropertyValues[property] =
-                defaultTransitionablePropertyValue.untransitioned();
-            this.defaultPossiblyEvaluatedValues[property] =
-                defaultPropertyValue.possiblyEvaluate(({}));
-        }
+    for (const property in properties) {
+      const prop = properties[property];
+      const defaultPropertyValue = (this.defaultPropertyValues[property] = new PropertyValue(prop, undefined));
+      const defaultTransitionablePropertyValue = (this.defaultTransitionablePropertyValues[property] =
+        new TransitionablePropertyValue(prop));
+      this.defaultTransitioningPropertyValues[property] = defaultTransitionablePropertyValue.untransitioned();
+      this.defaultPossiblyEvaluatedValues[property] = defaultPropertyValue.possiblyEvaluate({});
     }
+  }
 }
 
 register('DataDrivenProperty', DataDrivenProperty);
@@ -622,15 +619,15 @@ register('CrossFadedProperty', CrossFadedProperty);
 register('ColorRampProperty', ColorRampProperty);
 
 module.exports = {
-    PropertyValue,
-    Transitionable,
-    Transitioning,
-    Layout,
-    PossiblyEvaluatedPropertyValue,
-    PossiblyEvaluated,
-    DataConstantProperty,
-    DataDrivenProperty,
-    CrossFadedProperty,
-    ColorRampProperty,
-    Properties
+  PropertyValue,
+  Transitionable,
+  Transitioning,
+  Layout,
+  PossiblyEvaluatedPropertyValue,
+  PossiblyEvaluated,
+  DataConstantProperty,
+  DataDrivenProperty,
+  CrossFadedProperty,
+  ColorRampProperty,
+  Properties
 };

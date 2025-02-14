@@ -10,56 +10,56 @@ const evented = new Evented();
 
 let _completionCallback;
 
-function registerForPluginAvailability(
-    callback
-) {
-    if (pluginURL) {
-        callback({ pluginURL: pluginURL, completionCallback: _completionCallback});
-    } else {
-        evented.once('pluginAvailable', callback);
-    }
-    return callback;
+function registerForPluginAvailability(callback) {
+  if (pluginURL) {
+    callback({ pluginURL: pluginURL, completionCallback: _completionCallback });
+  } else {
+    evented.once('pluginAvailable', callback);
+  }
+  return callback;
 }
 
 function clearRTLTextPlugin() {
-    pluginRequested = false;
-    pluginURL = null;
+  pluginRequested = false;
+  pluginURL = null;
 }
 
 function setRTLTextPlugin(url, callback) {
-    if (pluginRequested) {
-        throw new Error('setRTLTextPlugin cannot be called multiple times.');
+  if (pluginRequested) {
+    throw new Error('setRTLTextPlugin cannot be called multiple times.');
+  }
+  pluginRequested = true;
+  pluginURL = url;
+  _completionCallback = error => {
+    if (error) {
+      // Clear loaded state to allow retries
+      clearRTLTextPlugin();
+      if (callback) {
+        callback(error);
+      }
+    } else {
+      // Called once for each worker
+      foregroundLoadComplete = true;
     }
-    pluginRequested = true;
-    pluginURL = url;
-    _completionCallback = (error) => {
-        if (error) {
-            // Clear loaded state to allow retries
-            clearRTLTextPlugin();
-            if (callback) {
-                callback(error);
-            }
-        } else {
-            // Called once for each worker
-            foregroundLoadComplete = true;
-        }
-    };
-    evented.fire(new Event('pluginAvailable', { pluginURL: pluginURL, completionCallback: _completionCallback }));
+  };
+  evented.fire(new Event('pluginAvailable', { pluginURL: pluginURL, completionCallback: _completionCallback }));
 }
 
 const plugin = {
-    applyArabicShaping: null,
-    processBidirectionalText: null,
-    isLoaded: function() {
-        return foregroundLoadComplete ||       // Foreground: loaded if the completion callback returned successfully
-            plugin.applyArabicShaping != null; // Background: loaded if the plugin functions have been compiled
-    }
+  applyArabicShaping: null,
+  processBidirectionalText: null,
+  isLoaded: function () {
+    return (
+      foregroundLoadComplete || // Foreground: loaded if the completion callback returned successfully
+      plugin.applyArabicShaping != null
+    ); // Background: loaded if the plugin functions have been compiled
+  }
 };
 
 module.exports = {
-    registerForPluginAvailability,
-    clearRTLTextPlugin,
-    setRTLTextPlugin,
-    plugin,
-    evented
+  registerForPluginAvailability,
+  clearRTLTextPlugin,
+  setRTLTextPlugin,
+  plugin,
+  evented
 };
