@@ -66,7 +66,7 @@ module.exports = async function (directory, implementation, options, run) {
   });
 
   if (options.shuffle) {
-    console.log(colors.white(`* shuffle seed: `) + colors.bold(`${options.seed}`));
+    console.log(colors.white('* shuffle seed: ') + colors.bold(`${options.seed}`));
     sequence = shuffler.shuffle(sequence, options.seed);
   }
 

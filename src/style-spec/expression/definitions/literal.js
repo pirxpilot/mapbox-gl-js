@@ -13,7 +13,7 @@ class Literal {
     if (args.length !== 2)
       return context.error(`'literal' expression requires exactly one argument, but found ${args.length - 1} instead.`);
 
-    if (!isValue(args[1])) return context.error(`invalid value`);
+    if (!isValue(args[1])) return context.error('invalid value');
 
     const value = args[1];
     let type = typeOf(value);

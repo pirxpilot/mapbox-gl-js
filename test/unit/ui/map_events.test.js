@@ -33,7 +33,7 @@ test('Map#off removes a non-delegated event listener', t => {
   t.ok(spy.notCalled);
 });
 
-test(`Map#on mousedown can have default behavior prevented and still fire subsequent click event`, t => {
+test('Map#on mousedown can have default behavior prevented and still fire subsequent click event', t => {
   const map = createMap();
 
   map.on('mousedown', e => e.preventDefault());
@@ -62,7 +62,7 @@ test(`Map#on mousedown doesn't fire subsequent click event if mousepos changes`,
   map.remove();
 });
 
-test(`Map#on mousedown fires subsequent click event if mouse position changes less than click tolerance`, t => {
+test('Map#on mousedown fires subsequent click event if mouse position changes less than click tolerance', t => {
   const map = createMap(t, { clickTolerance: 4 });
 
   map.on('mousedown', e => e.preventDefault());
@@ -77,7 +77,7 @@ test(`Map#on mousedown fires subsequent click event if mouse position changes le
   map.remove();
 });
 
-test(`Map#on mousedown does not fire subsequent click event if mouse position changes more than click tolerance`, t => {
+test('Map#on mousedown does not fire subsequent click event if mouse position changes more than click tolerance', t => {
   const map = createMap(t, { clickTolerance: 4 });
 
   map.on('mousedown', e => e.preventDefault());

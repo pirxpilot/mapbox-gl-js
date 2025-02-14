@@ -630,7 +630,7 @@ class Style extends Evented {
     }
     const sourceType = sourceCache.getSource().type;
     if (sourceType === 'vector' && !sourceLayer) {
-      this.fire(new ErrorEvent(new Error(`The sourceLayer parameter must be provided for vector source types.`)));
+      this.fire(new ErrorEvent(new Error('The sourceLayer parameter must be provided for vector source types.')));
       return;
     }
 
@@ -649,7 +649,7 @@ class Style extends Evented {
     }
     const sourceType = sourceCache.getSource().type;
     if (sourceType === 'vector' && !sourceLayer) {
-      this.fire(new ErrorEvent(new Error(`The sourceLayer parameter must be provided for vector source types.`)));
+      this.fire(new ErrorEvent(new Error('The sourceLayer parameter must be provided for vector source types.')));
       return;
     }
 

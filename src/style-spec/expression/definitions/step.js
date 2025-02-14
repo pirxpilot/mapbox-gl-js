@@ -25,7 +25,7 @@ class Step {
     }
 
     if ((args.length - 1) % 2 !== 0) {
-      return context.error(`Expected an even number of arguments.`);
+      return context.error('Expected an even number of arguments.');
     }
 
     input = context.parse(input, 1, NumberType);

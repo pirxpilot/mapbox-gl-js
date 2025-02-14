@@ -173,7 +173,7 @@ class Map extends Camera {
     options = Object.assign({}, defaultOptions, options);
 
     if (options.minZoom != null && options.maxZoom != null && options.minZoom > options.maxZoom) {
-      throw new Error(`maxZoom must be greater than minZoom`);
+      throw new Error('maxZoom must be greater than minZoom');
     }
 
     const transform = new Transform(options.minZoom, options.maxZoom, options.renderWorldCopies);
@@ -442,7 +442,7 @@ class Map extends Camera {
       if (this.getZoom() > maxZoom) this.setZoom(maxZoom);
 
       return this;
-    } else throw new Error(`maxZoom must be greater than the current minZoom`);
+    } else throw new Error('maxZoom must be greater than the current minZoom');
   }
 
   /**

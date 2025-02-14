@@ -62,7 +62,7 @@ class WorkerTile {
       if (sourceLayer.version === 1) {
         warn.once(
           `Vector tile source "${this.source}" layer "${sourceLayerId}" ` +
-            `does not use vector tile spec v2 and therefore may have some rendering errors.`
+            'does not use vector tile spec v2 and therefore may have some rendering errors.'
         );
       }
 

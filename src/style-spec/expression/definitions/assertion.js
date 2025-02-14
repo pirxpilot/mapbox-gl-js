@@ -20,7 +20,7 @@ class Assertion {
   }
 
   static parse(args, context) {
-    if (args.length < 2) return context.error(`Expected at least one argument.`);
+    if (args.length < 2) return context.error('Expected at least one argument.');
 
     const name = args[0];
     assert(types[name], name);

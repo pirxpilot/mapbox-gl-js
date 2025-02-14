@@ -38,14 +38,14 @@ class Interpolate {
     let [, interpolation, input, ...rest] = args;
 
     if (!Array.isArray(interpolation) || interpolation.length === 0) {
-      return context.error(`Expected an interpolation type expression.`, 1);
+      return context.error('Expected an interpolation type expression.', 1);
     }
 
     if (interpolation[0] === 'linear') {
       interpolation = { name: 'linear' };
     } else if (interpolation[0] === 'exponential') {
       const base = interpolation[1];
-      if (typeof base !== 'number') return context.error(`Exponential interpolation requires a numeric base.`, 1, 1);
+      if (typeof base !== 'number') return context.error('Exponential interpolation requires a numeric base.', 1, 1);
       interpolation = {
         name: 'exponential',
         base
@@ -72,7 +72,7 @@ class Interpolate {
     }
 
     if ((args.length - 1) % 2 !== 0) {
-      return context.error(`Expected an even number of arguments.`);
+      return context.error('Expected an even number of arguments.');
     }
 
     input = context.parse(input, 2, NumberType);

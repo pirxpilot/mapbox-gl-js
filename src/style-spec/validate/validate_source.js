@@ -78,7 +78,7 @@ module.exports = function validateSource(options) {
         new ValidationError(
           key,
           null,
-          `Please use runtime APIs to add canvas sources, rather than including them in stylesheets.`,
+          'Please use runtime APIs to add canvas sources, rather than including them in stylesheets.',
           'source.canvas'
         )
       );
