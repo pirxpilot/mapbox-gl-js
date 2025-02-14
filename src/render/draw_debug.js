@@ -45,7 +45,7 @@ function drawDebugTile(painter, sourceCache, coord) {
   );
 
   const tileRawData = sourceCache.getTileByID(coord.key).latestRawTileData;
-  const tileByteLength = (tileRawData && tileRawData.byteLength) || 0;
+  const tileByteLength = tileRawData?.byteLength || 0;
   const tileSizeKb = Math.floor(tileByteLength / 1024);
   const vertices = createTextVertices(`${coord.toString()} ${tileSizeKb}kb`, 50, 200, 5);
   const debugTextArray = new PosArray();

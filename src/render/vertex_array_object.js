@@ -60,7 +60,7 @@ class VertexArrayObject {
         dynamicVertexBuffer.bind();
       }
 
-      if (indexBuffer && indexBuffer.dynamicDraw) {
+      if (indexBuffer?.dynamicDraw) {
         indexBuffer.bind();
       }
 

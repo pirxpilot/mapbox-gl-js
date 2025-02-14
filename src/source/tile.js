@@ -222,7 +222,7 @@ class Tile {
 
     if (!layer) return;
 
-    const filter = featureFilter(params && params.filter);
+    const filter = featureFilter(params?.filter);
     const { z, x, y } = this.tileID.canonical;
     const coord = { z, x, y };
 
@@ -376,7 +376,7 @@ class Tile {
       if (!sourceLayer || !sourceLayerStates || Object.keys(sourceLayerStates).length === 0) continue;
 
       bucket.update(sourceLayerStates, sourceLayer);
-      if (painter && painter.style) {
+      if (painter?.style) {
         this.queryPadding = Math.max(this.queryPadding, painter.style.getLayer(bucket.layerIds[0]).queryRadius(bucket));
       }
     }

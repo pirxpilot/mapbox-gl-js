@@ -115,7 +115,7 @@ class VectorTileSource extends Evented {
         return callback(err);
       }
 
-      if (data && data.resourceTiming) tile.resourceTiming = data.resourceTiming;
+      if (data?.resourceTiming) tile.resourceTiming = data.resourceTiming;
 
       if (this.map._refreshExpiredTiles) tile.setExpiryData(data);
       tile.loadVectorData(data, this.map.painter);

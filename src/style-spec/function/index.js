@@ -129,7 +129,7 @@ function createFunction(parameters, propertySpec) {
     return {
       kind: 'source',
       evaluate(_, feature) {
-        const value = feature && feature.properties ? feature.properties[parameters.property] : undefined;
+        const value = feature?.properties ? feature.properties[parameters.property] : undefined;
         if (value === undefined) {
           return coalesce(parameters.default, propertySpec.default);
         }

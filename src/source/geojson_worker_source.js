@@ -173,7 +173,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
     const loaded = this.loaded,
       uid = params.uid;
 
-    if (loaded && loaded[uid]) {
+    if (loaded?.[uid]) {
       return super.reloadTile(params, callback);
     } else {
       return this.loadTile(params, callback);

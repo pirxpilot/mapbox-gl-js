@@ -13,7 +13,7 @@ module.exports = function (options, callback) {
           return callback('expected resources');
         }
         const { resources } = resourceSets[0];
-        if (!(resources && resources.length)) {
+        if (!resources?.length) {
           return callback('expected resources');
         }
         const { imageUrl, imageUrlSubdomains } = resources[0];

@@ -63,7 +63,7 @@ module.exports = function validateLayer(options) {
     if (!layer.source) {
       errors.push(new ValidationError(key, layer, 'missing required property "source"'));
     } else {
-      const source = style.sources && style.sources[layer.source];
+      const source = style.sources?.[layer.source];
       const sourceType = source && unbundle(source.type);
       if (!source) {
         errors.push(new ValidationError(key, layer.source, `source "${layer.source}" not found`));

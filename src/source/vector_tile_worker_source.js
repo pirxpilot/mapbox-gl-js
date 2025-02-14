@@ -84,7 +84,7 @@ class VectorTileWorkerSource {
     const loaded = this.loaded,
       uid = params.uid,
       vtSource = this;
-    if (loaded && loaded[uid]) {
+    if (loaded?.[uid]) {
       const workerTile = loaded[uid];
       workerTile.showCollisionBoxes = params.showCollisionBoxes;
 
@@ -124,7 +124,7 @@ class VectorTileWorkerSource {
   removeTile(params, callback) {
     const loaded = this.loaded,
       uid = params.uid;
-    if (loaded && loaded[uid]) {
+    if (loaded?.[uid]) {
       delete loaded[uid];
     }
     callback();

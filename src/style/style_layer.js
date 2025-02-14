@@ -119,8 +119,8 @@ class StyleLayer extends Evented {
       minzoom: this.minzoom,
       maxzoom: this.maxzoom,
       filter: this.filter,
-      layout: this._unevaluatedLayout && this._unevaluatedLayout.serialize(),
-      paint: this._transitionablePaint && this._transitionablePaint.serialize()
+      layout: this._unevaluatedLayout?.serialize(),
+      paint: this._transitionablePaint?.serialize()
     };
 
     if (this.visibility === 'none') {

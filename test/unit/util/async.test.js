@@ -43,7 +43,7 @@ test('async', async t => {
         }, data);
       },
       (err, results) => {
-        t.equal(err && err.message, 'hi');
+        t.equal(err?.message, 'hi');
         t.deepEqual(results, [4, 0, 1, 2]);
         done();
       }

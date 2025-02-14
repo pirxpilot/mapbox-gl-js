@@ -151,7 +151,7 @@ module.exports = function () {
   return {
     localizeURLs: async function (style) {
       await localizeStyleURLs(style);
-      if (style.metadata && style.metadata.test && style.metadata.test.operations) {
+      if (style.metadata?.test?.operations) {
         style.metadata.test.operations.forEach(op => {
           if (op[0] === 'addSource') {
             localizeSourceURLs(op[2]);

@@ -61,7 +61,6 @@
         "noThisInStatic": "off",
         "noUselessThisAlias":"off",
         "useArrowFunction": "off",
-        "useOptionalChain": "off",
         "useLiteralKeys": "off"
       },
       "style": {

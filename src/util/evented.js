@@ -9,7 +9,7 @@ function _addEventListener(type, listener, listenerList) {
 }
 
 function _removeEventListener(type, listener, listenerList) {
-  if (listenerList && listenerList[type]) {
+  if (listenerList?.[type]) {
     const index = listenerList[type].indexOf(listener);
     if (index !== -1) {
       listenerList[type].splice(index, 1);
@@ -96,13 +96,12 @@ class Evented {
       event.target = this;
 
       // make sure adding or removing listeners inside other listeners won't cause an infinite loop
-      const listeners = this._listeners && this._listeners[type] ? this._listeners[type].slice() : [];
+      const listeners = this._listeners?.[type] ? this._listeners[type].slice() : [];
       for (const listener of listeners) {
         listener.call(this, event);
       }
 
-      const oneTimeListeners =
-        this._oneTimeListeners && this._oneTimeListeners[type] ? this._oneTimeListeners[type].slice() : [];
+      const oneTimeListeners = this._oneTimeListeners?.[type] ? this._oneTimeListeners[type].slice() : [];
       for (const listener of oneTimeListeners) {
         _removeEventListener(type, listener, this._oneTimeListeners);
         listener.call(this, event);
@@ -135,9 +134,9 @@ class Evented {
    */
   listens(type) {
     return (
-      (this._listeners && this._listeners[type] && this._listeners[type].length > 0) ||
-      (this._oneTimeListeners && this._oneTimeListeners[type] && this._oneTimeListeners[type].length > 0) ||
-      (this._eventedParent && this._eventedParent.listens(type))
+      (this._listeners?.[type] && this._listeners[type].length > 0) ||
+      (this._oneTimeListeners?.[type] && this._oneTimeListeners[type].length > 0) ||
+      this._eventedParent?.listens(type)
     );
   }
 

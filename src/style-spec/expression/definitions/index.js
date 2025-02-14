@@ -392,7 +392,7 @@ CompoundExpression.register(expressions, {
     [StringType],
     // At parse time this will always return true, so we need to exclude this expression with isGlobalPropertyConstant
     (ctx, [s]) => {
-      const isSupportedScript = ctx.globals && ctx.globals.isSupportedScript;
+      const isSupportedScript = ctx.globals?.isSupportedScript;
       if (isSupportedScript) {
         return isSupportedScript(s.evaluate(ctx));
       }

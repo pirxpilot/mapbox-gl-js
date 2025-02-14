@@ -128,7 +128,7 @@ class SourceExpressionBinder {
   }
 
   upload(context) {
-    if (this.paintVertexArray && this.paintVertexArray.arrayBuffer) {
+    if (this.paintVertexArray?.arrayBuffer) {
       this.paintVertexBuffer = context.createVertexBuffer(
         this.paintVertexArray,
         this.paintVertexAttributes,
@@ -221,7 +221,7 @@ class CompositeExpressionBinder {
   }
 
   upload(context) {
-    if (this.paintVertexArray && this.paintVertexArray.arrayBuffer) {
+    if (this.paintVertexArray?.arrayBuffer) {
       this.paintVertexBuffer = context.createVertexBuffer(
         this.paintVertexArray,
         this.paintVertexAttributes,

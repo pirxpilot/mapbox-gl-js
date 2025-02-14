@@ -182,14 +182,13 @@ class GeoJSONSource extends Evented {
           `${this.type}.loadData`,
           options,
           (err, result) => {
-            if (this._removed || (result && result.abandoned)) {
+            if (this._removed || result?.abandoned) {
               return;
             }
 
             this._loaded = true;
 
-            if (result && result.resourceTiming && result.resourceTiming[this.id])
-              this._resourceTiming = result.resourceTiming[this.id].slice(0);
+            if (result?.resourceTiming?.[this.id]) this._resourceTiming = result.resourceTiming[this.id].slice(0);
             // Any `loadData` calls that piled up while we were processing
             // this one will get coalesced into a single call when this
             // 'coalesce' message is processed.

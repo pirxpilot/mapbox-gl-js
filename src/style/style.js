@@ -174,7 +174,7 @@ class Style extends Evented {
   }
 
   hasTransitions() {
-    if (this.light && this.light.hasTransition()) {
+    if (this.light?.hasTransition()) {
       return true;
     }
 
@@ -372,7 +372,7 @@ class Style extends Evented {
    * @returns {Object} source
    */
   getSource(id) {
-    return this.sourceCaches[id] && this.sourceCaches[id].getSource();
+    return this.sourceCaches[id]?.getSource();
   }
 
   /**
@@ -657,7 +657,7 @@ class Style extends Evented {
   }
 
   getTransition() {
-    return Object.assign({ duration: 300, delay: 0 }, this.stylesheet && this.stylesheet.transition);
+    return Object.assign({ duration: 300, delay: 0 }, this.stylesheet?.transition);
   }
 
   serialize() {
@@ -708,7 +708,7 @@ class Style extends Evented {
 
   queryRenderedFeatures(queryGeometry, params, transform) {
     const includedSources = {};
-    if (params && params.layers) {
+    if (params?.layers) {
       if (!Array.isArray(params.layers)) {
         this.fire(new ErrorEvent(new Error('parameters.layers must be an Array.')));
         return [];

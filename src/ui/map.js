@@ -778,7 +778,7 @@ class Map extends Camera {
    * @returns {boolean} A Boolean indicating whether the source is loaded.
    */
   isSourceLoaded(id) {
-    const source = this.style && this.style.sourceCaches[id];
+    const source = this.style?.sourceCaches[id];
     if (source === undefined) {
       this.fire(new ErrorEvent(new Error(`There is no source with ID '${id}'`)));
       return;
@@ -794,7 +794,7 @@ class Map extends Camera {
    */
 
   areTilesLoaded() {
-    const sources = this.style && this.style.sourceCaches;
+    const sources = this.style?.sourceCaches;
     for (const id in sources) {
       const source = sources[id];
       const tiles = source._tiles;
@@ -1349,14 +1349,12 @@ class Map extends Camera {
       this.style._updateSources(this.transform);
     }
 
-    this._placementDirty =
-      this.style &&
-      this.style._updatePlacement(
-        this.painter.transform,
-        this.showCollisionBoxes,
-        this._fadeDuration,
-        this._crossSourceCollisions
-      );
+    this._placementDirty = this.style?._updatePlacement(
+      this.painter.transform,
+      this.showCollisionBoxes,
+      this._fadeDuration,
+      this._crossSourceCollisions
+    );
 
     // Actually draw
     this.painter.render(this.style, {

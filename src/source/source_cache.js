@@ -68,13 +68,13 @@ class SourceCache extends Evented {
   onAdd(map) {
     this.map = map;
     this._maxTileCacheSize = map ? map._maxTileCacheSize : null;
-    if (this._source && this._source.onAdd) {
+    if (this._source?.onAdd) {
       this._source.onAdd(map);
     }
   }
 
   onRemove(map) {
-    if (this._source && this._source.onRemove) {
+    if (this._source?.onRemove) {
       this._source.onRemove(map);
     }
   }
@@ -171,11 +171,11 @@ class SourceCache extends Evented {
   }
 
   _isIdRenderable(id) {
-    return this._tiles[id] && this._tiles[id].hasData() && !this._coveredTiles[id] && !this._tiles[id].holdingForFade();
+    return this._tiles[id]?.hasData() && !this._coveredTiles[id] && !this._tiles[id].holdingForFade();
   }
 
   _isIdRenderableForSymbols(id) {
-    return this._tiles[id] && this._tiles[id].hasData() && !this._coveredTiles[id];
+    return this._tiles[id]?.hasData() && !this._coveredTiles[id];
   }
 
   reload() {
@@ -238,7 +238,7 @@ class SourceCache extends Evented {
     const renderables = this.getRenderableIds();
     for (let i = 0; i < renderables.length; i++) {
       const borderId = renderables[i];
-      if (tile.neighboringTiles && tile.neighboringTiles[borderId]) {
+      if (tile.neighboringTiles?.[borderId]) {
         const borderTile = this.getTileByID(borderId);
         fillBorder(tile, borderTile);
         fillBorder(borderTile, tile);
@@ -266,7 +266,7 @@ class SourceCache extends Evented {
       }
       if (!borderTile.dem || !tile.dem) return;
       tile.dem.backfillBorder(borderTile.dem, dx, dy);
-      if (tile.neighboringTiles && tile.neighboringTiles[borderId]) tile.neighboringTiles[borderId].backfilled = true;
+      if (tile.neighboringTiles?.[borderId]) tile.neighboringTiles[borderId].backfilled = true;
     }
   }
   /**
@@ -309,7 +309,7 @@ class SourceCache extends Evented {
 
         tile = this._tiles[parentID.key];
 
-        if (tile && tile.hasData()) {
+        if (tile?.hasData()) {
           topmostLoadedID = parentID;
         }
       }
@@ -337,7 +337,7 @@ class SourceCache extends Evented {
       if (!parent) return;
       const id = String(parent.key);
       const tile = this._tiles[id];
-      if (tile && tile.hasData()) {
+      if (tile?.hasData()) {
         return tile;
       }
       if (this._cache.has(parent)) {
