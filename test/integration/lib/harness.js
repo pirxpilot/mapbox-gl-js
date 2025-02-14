@@ -5,19 +5,19 @@ const colors = require('chalk');
 const template = require('lodash.template');
 const shuffler = require('shuffle-seed');
 
-module.exports = function (directory, implementation, options, run) {
+module.exports = async function (directory, implementation, options, run) {
     const q = queue(1);
-    const server = require('./server')();
+    const loader = require('./loader')();
 
     const tests = options.tests || [];
     const ignores = options.ignores || {};
 
-    let sequence = fs.globSync(`**/${options.fixtureFilename || 'style.json'}`, {cwd: directory})
-        .map(fixture => {
+    let sequence = (await Promise.all(fs.globSync(`**/${options.fixtureFilename || 'style.json'}`, {cwd: directory})
+        .map(async fixture => {
             const id = path.dirname(fixture);
             const style = require(path.join(directory, fixture));
 
-            server.localizeURLs(style);
+            await loader.localizeURLs(style);
 
             style.metadata = style.metadata || {};
             const test = style.metadata.test = Object.assign({
@@ -39,7 +39,7 @@ module.exports = function (directory, implementation, options, run) {
             }
 
             return style;
-        })
+        })))
         .filter(style => {
             const test = style.metadata.test;
 
@@ -64,8 +64,6 @@ module.exports = function (directory, implementation, options, run) {
         console.log(colors.white(`* shuffle seed: `) + colors.bold(`${options.seed}`));
         sequence = shuffler.shuffle(sequence, options.seed);
     }
-
-    q.defer(server.listen);
 
     sequence.forEach(style => {
         q.defer((callback) => {
@@ -109,8 +107,6 @@ module.exports = function (directory, implementation, options, run) {
             }
         });
     });
-
-    q.defer(server.close);
 
     q.awaitAll((err, results) => {
         if (err) {

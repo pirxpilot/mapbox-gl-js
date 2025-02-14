@@ -14,7 +14,6 @@
     "mapbox-gl-styles": "2.0.2",
     "pixelmatch": "^4.0.2",
     "pngjs": "^7.0.0",
-    "shuffle-seed": "^1.1.6",
-    "st": "~3"
+    "shuffle-seed": "^1.1.6"
   }
 }
