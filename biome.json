@@ -101,7 +101,6 @@
               "useConst": "off"
             },
             "suspicious": {
-              "noDoubleEquals": "off",
               "noSelfCompare": "off"
             }
           }

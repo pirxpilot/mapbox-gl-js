@@ -58,7 +58,7 @@ module.exports = function () {
       source.urls = source.urls.map(localizeURL);
     }
 
-    if (source.data && typeof source.data == 'string') {
+    if (source.data && typeof source.data === 'string') {
       source.data = localizeURL(source.data);
       source.data = loadJSON(source.data);
     }
