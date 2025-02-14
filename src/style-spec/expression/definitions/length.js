@@ -5,51 +5,52 @@ const { NumberType, toString } = require('../types');
 const { typeOf } = require('../values');
 const RuntimeError = require('../runtime_error');
 
-
 class Length {
+  constructor(input) {
+    this.type = NumberType;
+    this.input = input;
+  }
 
-    constructor(input) {
-        this.type = NumberType;
-        this.input = input;
+  static parse(args, context) {
+    if (args.length !== 2) return context.error(`Expected 1 argument, but found ${args.length - 1} instead.`);
+
+    const input = context.parse(args[1], 1);
+    if (!input) return null;
+
+    if (input.type.kind !== 'array' && input.type.kind !== 'string' && input.type.kind !== 'value')
+      return context.error(`Expected argument of type string or array, but found ${toString(input.type)} instead.`);
+
+    return new Length(input);
+  }
+
+  evaluate(ctx) {
+    const input = this.input.evaluate(ctx);
+    if (typeof input === 'string') {
+      return input.length;
+    } else if (Array.isArray(input)) {
+      return input.length;
+    } else {
+      throw new RuntimeError(
+        `Expected value to be of type string or array, but found ${toString(typeOf(input))} instead.`
+      );
     }
+  }
 
-    static parse(args, context) {
-        if (args.length !== 2)
-            return context.error(`Expected 1 argument, but found ${args.length - 1} instead.`);
+  eachChild(fn) {
+    fn(this.input);
+  }
 
-        const input = context.parse(args[1], 1);
-        if (!input) return null;
+  possibleOutputs() {
+    return [undefined];
+  }
 
-        if (input.type.kind !== 'array' && input.type.kind !== 'string' && input.type.kind !== 'value')
-            return context.error(`Expected argument of type string or array, but found ${toString(input.type)} instead.`);
-
-        return new Length(input);
-    }
-
-    evaluate(ctx) {
-        const input = this.input.evaluate(ctx);
-        if (typeof input === 'string') {
-            return input.length;
-        } else if (Array.isArray(input)) {
-            return input.length;
-        } else {
-            throw new RuntimeError(`Expected value to be of type string or array, but found ${toString(typeOf(input))} instead.`);
-        }
-    }
-
-    eachChild(fn) {
-        fn(this.input);
-    }
-
-    possibleOutputs() {
-        return [undefined];
-    }
-
-    serialize() {
-        const serialized = ["length"];
-        this.eachChild(child => { serialized.push(child.serialize()); });
-        return serialized;
-    }
+  serialize() {
+    const serialized = ['length'];
+    this.eachChild(child => {
+      serialized.push(child.serialize());
+    });
+    return serialized;
+  }
 }
 
 module.exports = Length;

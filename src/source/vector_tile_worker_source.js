@@ -5,19 +5,19 @@ const Protobuf = require('@mapwhit/pbf');
 const WorkerTile = require('./worker_tile');
 
 function loadVectorTile(params, callback) {
-    if (!params.response) {
-        return callback(new Error('no tile data'));
-    }
-    const { data, cacheControl, expires } = params.response;
-    if (!data) {
-        return callback();
-    }
-    callback(null, {
-        vectorTile: new vt.VectorTile(new Protobuf(data)),
-        rawData: data,
-        cacheControl,
-        expires
-    });
+  if (!params.response) {
+    return callback(new Error('no tile data'));
+  }
+  const { data, cacheControl, expires } = params.response;
+  if (!data) {
+    return callback();
+  }
+  callback(null, {
+    vectorTile: new vt.VectorTile(new Protobuf(data)),
+    rawData: data,
+    cacheControl,
+    expires
+  });
 }
 
 /**
@@ -30,111 +30,110 @@ function loadVectorTile(params, callback) {
  * @private
  */
 class VectorTileWorkerSource {
+  /**
+   * @param [loadVectorData] Optional method for custom loading of a VectorTile
+   * object based on parameters passed from the main-thread Source. See
+   * {@link VectorTileWorkerSource#loadTile}. The default implementation simply
+   * loads the pbf at `params.url`.
+   */
+  constructor(actor, layerIndex, loadVectorData) {
+    this.actor = actor;
+    this.layerIndex = layerIndex;
+    this.loadVectorData = loadVectorData || loadVectorTile.bind(this);
+    this.loaded = {};
+    this.strategies = {};
+    this.lang = false;
+  }
 
-    /**
-     * @param [loadVectorData] Optional method for custom loading of a VectorTile
-     * object based on parameters passed from the main-thread Source. See
-     * {@link VectorTileWorkerSource#loadTile}. The default implementation simply
-     * loads the pbf at `params.url`.
-     */
-    constructor(actor, layerIndex, loadVectorData) {
-        this.actor = actor;
-        this.layerIndex = layerIndex;
-        this.loadVectorData = loadVectorData || loadVectorTile.bind(this);
-        this.loaded = {};
-        this.strategies = {};
-        this.lang = false;
-    }
+  /**
+   * Implements {@link WorkerSource#loadTile}. Delegates to
+   * {@link VectorTileWorkerSource#loadVectorData} (which by default expects
+   * a `params.url` property) for fetching and producing a VectorTile object.
+   */
+  loadTile(params, callback) {
+    const uid = params.uid;
 
-    /**
-     * Implements {@link WorkerSource#loadTile}. Delegates to
-     * {@link VectorTileWorkerSource#loadVectorData} (which by default expects
-     * a `params.url` property) for fetching and producing a VectorTile object.
-     */
-    loadTile(params, callback) {
-        const uid = params.uid;
+    const workerTile = new WorkerTile(params);
+    this.loadVectorData(params, (err, response) => {
+      if (err || !response) {
+        return callback(err);
+      }
 
-        const workerTile = new WorkerTile(params);
-        this.loadVectorData(params, (err, response) => {
-            if (err || !response) {
-                return callback(err);
-            }
+      const rawTileData = response.rawData;
+      const cacheControl = {};
+      if (response.expires) cacheControl.expires = response.expires;
+      if (response.cacheControl) cacheControl.cacheControl = response.cacheControl;
 
-            const rawTileData = response.rawData;
-            const cacheControl = {};
-            if (response.expires) cacheControl.expires = response.expires;
-            if (response.cacheControl) cacheControl.cacheControl = response.cacheControl;
+      workerTile.vectorTile = response.vectorTile;
+      workerTile.parse(response.vectorTile, this.layerIndex, this.actor, this.lang, (err, result) => {
+        if (err || !result) return callback(err);
 
-            workerTile.vectorTile = response.vectorTile;
-            workerTile.parse(response.vectorTile, this.layerIndex, this.actor, this.lang, (err, result) => {
-                if (err || !result) return callback(err);
+        // Transferring a copy of rawTileData because the worker needs to retain its copy.
+        callback(null, Object.assign({ rawTileData: rawTileData.slice(0) }, result, cacheControl));
+      });
 
-                // Transferring a copy of rawTileData because the worker needs to retain its copy.
-                callback(null, Object.assign({rawTileData: rawTileData.slice(0)}, result, cacheControl));
-            });
+      this.loaded = this.loaded || {};
+      this.loaded[uid] = workerTile;
+    });
+  }
 
-            this.loaded = this.loaded || {};
-            this.loaded[uid] = workerTile;
-        });
-    }
+  /**
+   * Implements {@link WorkerSource#reloadTile}.
+   */
+  reloadTile(params, callback) {
+    const loaded = this.loaded,
+      uid = params.uid,
+      vtSource = this;
+    if (loaded && loaded[uid]) {
+      const workerTile = loaded[uid];
+      workerTile.showCollisionBoxes = params.showCollisionBoxes;
 
-    /**
-     * Implements {@link WorkerSource#reloadTile}.
-     */
-    reloadTile(params, callback) {
-        const loaded = this.loaded,
-            uid = params.uid,
-            vtSource = this;
-        if (loaded && loaded[uid]) {
-            const workerTile = loaded[uid];
-            workerTile.showCollisionBoxes = params.showCollisionBoxes;
-
-            const done = (err, data) => {
-                const reloadCallback = workerTile.reloadCallback;
-                if (reloadCallback) {
-                    delete workerTile.reloadCallback;
-                    workerTile.parse(workerTile.vectorTile, vtSource.layerIndex, vtSource.actor, this.lang, reloadCallback);
-                }
-                callback(err, data);
-            };
-
-            if (workerTile.status === 'parsing') {
-                workerTile.reloadCallback = done;
-            } else if (workerTile.status === 'done') {
-                workerTile.parse(workerTile.vectorTile, this.layerIndex, this.actor, this.lang, done);
-            }
+      const done = (err, data) => {
+        const reloadCallback = workerTile.reloadCallback;
+        if (reloadCallback) {
+          delete workerTile.reloadCallback;
+          workerTile.parse(workerTile.vectorTile, vtSource.layerIndex, vtSource.actor, this.lang, reloadCallback);
         }
-    }
+        callback(err, data);
+      };
 
-    /**
-     * Implements {@link WorkerSource#abortTile}.
-     *
-     * @param params
-     * @param params.uid The UID for this tile.
-     */
-    abortTile(params, callback) {
-        callback();
+      if (workerTile.status === 'parsing') {
+        workerTile.reloadCallback = done;
+      } else if (workerTile.status === 'done') {
+        workerTile.parse(workerTile.vectorTile, this.layerIndex, this.actor, this.lang, done);
+      }
     }
+  }
 
-    /**
-     * Implements {@link WorkerSource#removeTile}.
-     *
-     * @param params
-     * @param params.uid The UID for this tile.
-     */
-    removeTile(params, callback) {
-        const loaded = this.loaded,
-            uid = params.uid;
-        if (loaded && loaded[uid]) {
-            delete loaded[uid];
-        }
-        callback();
-    }
+  /**
+   * Implements {@link WorkerSource#abortTile}.
+   *
+   * @param params
+   * @param params.uid The UID for this tile.
+   */
+  abortTile(params, callback) {
+    callback();
+  }
 
-    updateConfig({ strategy, lang }) {
-        this.strategies = strategy;
-        this.lang = lang;
+  /**
+   * Implements {@link WorkerSource#removeTile}.
+   *
+   * @param params
+   * @param params.uid The UID for this tile.
+   */
+  removeTile(params, callback) {
+    const loaded = this.loaded,
+      uid = params.uid;
+    if (loaded && loaded[uid]) {
+      delete loaded[uid];
     }
+    callback();
+  }
+
+  updateConfig({ strategy, lang }) {
+    this.strategies = strategy;
+    this.lang = lang;
+  }
 }
 
 module.exports = VectorTileWorkerSource;

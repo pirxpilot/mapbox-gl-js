@@ -1,10 +1,10 @@
 'use strict';
 
 module.exports = (function () {
-    try {
-        new Function('');
-        return true;
-    } catch (e) {
-        return false;
-    }
+  try {
+    new Function('');
+    return true;
+  } catch (e) {
+    return false;
+  }
 })();

@@ -2,7 +2,6 @@
 
 const EXTENT = require('../data/extent');
 
-
 /**
  * Converts a pixel value at a the given zoom level to tile units.
  *
@@ -15,6 +14,6 @@ const EXTENT = require('../data/extent');
  * @returns value in tile units
  * @private
  */
-module.exports = function(tile, pixelValue, z) {
-    return pixelValue * (EXTENT / (tile.tileSize * Math.pow(2, z - tile.tileID.overscaledZ)));
+module.exports = function (tile, pixelValue, z) {
+  return pixelValue * (EXTENT / (tile.tileSize * Math.pow(2, z - tile.tileID.overscaledZ)));
 };

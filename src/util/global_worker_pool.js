@@ -9,9 +9,9 @@ let globalWorkerPool;
  * to be shared across each Map
  * @private
  */
-module.exports = function getGlobalWorkerPool () {
-    if (!globalWorkerPool) {
-        globalWorkerPool = workerPool();
-    }
-    return globalWorkerPool;
+module.exports = function getGlobalWorkerPool() {
+  if (!globalWorkerPool) {
+    globalWorkerPool = workerPool();
+  }
+  return globalWorkerPool;
 };

@@ -1,31 +1,31 @@
 'use strict';
 
 module.exports = {
-    version: require('../package.json').version,
-    setRTLTextPlugin: require('./source/rtl_text_plugin').setRTLTextPlugin,
-    Map: require('./ui/map'),
-    Style: require('./style/style'),
-    LngLat: require('./geo/lng_lat'),
-    LngLatBounds: require('./geo/lng_lat_bounds'),
-    Point: require('@mapbox/point-geometry'),
-    Evented: require('./util/evented').Evented,
-    config: require('./util/config'),
+  version: require('../package.json').version,
+  setRTLTextPlugin: require('./source/rtl_text_plugin').setRTLTextPlugin,
+  Map: require('./ui/map'),
+  Style: require('./style/style'),
+  LngLat: require('./geo/lng_lat'),
+  LngLatBounds: require('./geo/lng_lat_bounds'),
+  Point: require('@mapbox/point-geometry'),
+  Evented: require('./util/evented').Evented,
+  config: require('./util/config'),
 
-    get workerCount() {
-        return this.config.WORKER_COUNT;
-    },
+  get workerCount() {
+    return this.config.WORKER_COUNT;
+  },
 
-    set workerCount(count) {
-        this.config.WORKER_COUNT = count;
-    },
+  set workerCount(count) {
+    this.config.WORKER_COUNT = count;
+  },
 
-    get workerUrl() {
-        return this.config.WORKER_URL;
-    },
+  get workerUrl() {
+    return this.config.WORKER_URL;
+  },
 
-    set workerUrl(url) {
-        this.config.WORKER_URL = url;
-    }
+  set workerUrl(url) {
+    this.config.WORKER_URL = url;
+  }
 };
 
 /**

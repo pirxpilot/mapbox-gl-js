@@ -1,19 +1,19 @@
 'use strict';
 
 function supportsPropertyExpression(spec) {
-    return spec['property-type'] === 'data-driven' || spec['property-type'] === 'cross-faded-data-driven';
+  return spec['property-type'] === 'data-driven' || spec['property-type'] === 'cross-faded-data-driven';
 }
 
 function supportsZoomExpression(spec) {
-    return !!spec.expression && spec.expression.parameters.indexOf('zoom') > -1;
+  return !!spec.expression && spec.expression.parameters.indexOf('zoom') > -1;
 }
 
 function supportsInterpolation(spec) {
-    return !!spec.expression && spec.expression.interpolated;
+  return !!spec.expression && spec.expression.interpolated;
 }
 
 module.exports = {
-    supportsPropertyExpression,
-    supportsZoomExpression,
-    supportsInterpolation
+  supportsPropertyExpression,
+  supportsZoomExpression,
+  supportsInterpolation
 };

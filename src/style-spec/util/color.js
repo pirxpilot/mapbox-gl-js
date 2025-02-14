@@ -14,69 +14,57 @@ const { parseCSSColor } = require('csscolorparser');
  * @private
  */
 class Color {
+  constructor(r, g, b, a = 1) {
+    this.r = r;
+    this.g = g;
+    this.b = b;
+    this.a = a;
+  }
 
-    constructor(r, g, b, a = 1) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
+  /**
+   * Parses valid CSS color strings and returns a `Color` instance.
+   * @returns A `Color` instance, or `undefined` if the input is not a valid color string.
+   */
+  static parse(input) {
+    if (!input) {
+      return undefined;
     }
 
-
-    /**
-     * Parses valid CSS color strings and returns a `Color` instance.
-     * @returns A `Color` instance, or `undefined` if the input is not a valid color string.
-     */
-    static parse(input) {
-        if (!input) {
-            return undefined;
-        }
-
-        if (input instanceof Color) {
-            return input;
-        }
-
-        if (typeof input !== 'string') {
-            return undefined;
-        }
-
-        const rgba = parseCSSColor(input);
-        if (!rgba) {
-            return undefined;
-        }
-
-        return new Color(
-            rgba[0] / 255 * rgba[3],
-            rgba[1] / 255 * rgba[3],
-            rgba[2] / 255 * rgba[3],
-            rgba[3]
-        );
+    if (input instanceof Color) {
+      return input;
     }
 
-    /**
-     * Returns an RGBA string representing the color value.
-     *
-     * @returns An RGBA string.
-     * @example
-     * var purple = new Color.parse('purple');
-     * purple.toString; // = "rgba(128,0,128,1)"
-     * var translucentGreen = new Color.parse('rgba(26, 207, 26, .73)');
-     * translucentGreen.toString(); // = "rgba(26,207,26,0.73)"
-     */
-    toString() {
-        const [r, g, b, a] = this.toArray();
-        return `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${a})`;
+    if (typeof input !== 'string') {
+      return undefined;
     }
 
-    toArray() {
-        const {r, g, b, a} = this;
-        return a === 0 ? [0, 0, 0, 0] : [
-            r * 255 / a,
-            g * 255 / a,
-            b * 255 / a,
-            a
-        ];
+    const rgba = parseCSSColor(input);
+    if (!rgba) {
+      return undefined;
     }
+
+    return new Color((rgba[0] / 255) * rgba[3], (rgba[1] / 255) * rgba[3], (rgba[2] / 255) * rgba[3], rgba[3]);
+  }
+
+  /**
+   * Returns an RGBA string representing the color value.
+   *
+   * @returns An RGBA string.
+   * @example
+   * var purple = new Color.parse('purple');
+   * purple.toString; // = "rgba(128,0,128,1)"
+   * var translucentGreen = new Color.parse('rgba(26, 207, 26, .73)');
+   * translucentGreen.toString(); // = "rgba(26,207,26,0.73)"
+   */
+  toString() {
+    const [r, g, b, a] = this.toArray();
+    return `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${a})`;
+  }
+
+  toArray() {
+    const { r, g, b, a } = this;
+    return a === 0 ? [0, 0, 0, 0] : [(r * 255) / a, (g * 255) / a, (b * 255) / a, a];
+  }
 }
 
 Color.black = new Color(0, 0, 0, 1);

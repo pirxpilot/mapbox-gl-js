@@ -11,18 +11,17 @@ const background = require('./style_layer/background_style_layer');
 const raster = require('./style_layer/raster_style_layer');
 
 const subclasses = {
-    circle,
-    heatmap,
-    hillshade,
-    fill,
-    'fill-extrusion': fillExtrusion,
-    line,
-    symbol,
-    background,
-    raster
+  circle,
+  heatmap,
+  hillshade,
+  fill,
+  'fill-extrusion': fillExtrusion,
+  line,
+  symbol,
+  background,
+  raster
 };
 
 module.exports = function createStyleLayer(layer) {
-    return new subclasses[layer.type](layer);
+  return new subclasses[layer.type](layer);
 };
-

@@ -1,165 +1,172 @@
 'use strict';
 
-const {getTileBBox} = require('@mapbox/whoots-js');
+const { getTileBBox } = require('@mapbox/whoots-js');
 
 const assert = require('assert');
 const { register } = require('../util/web_worker_transfer');
 const Coordinate = require('../geo/coordinate');
 
 class CanonicalTileID {
+  constructor(z, x, y) {
+    assert(z >= 0 && z <= 25);
+    assert(x >= 0 && x < Math.pow(2, z));
+    assert(y >= 0 && y < Math.pow(2, z));
+    this.z = z;
+    this.x = x;
+    this.y = y;
+    this.key = calculateKey(0, z, x, y);
+  }
 
-    constructor(z, x, y) {
-        assert(z >= 0 && z <= 25);
-        assert(x >= 0 && x < Math.pow(2, z));
-        assert(y >= 0 && y < Math.pow(2, z));
-        this.z = z;
-        this.x = x;
-        this.y = y;
-        this.key = calculateKey(0, z, x, y);
+  equals(id) {
+    return this.z === id.z && this.x === id.x && this.y === id.y;
+  }
+
+  // given a list of urls, choose a url template and return a tile URL
+  url(urls, scheme) {
+    if (!urls) {
+      return;
     }
+    const bbox = getTileBBox(this.x, this.y, this.z);
+    const quadkey = getQuadkey(this.z, this.x, this.y);
 
-    equals(id) {
-        return this.z === id.z && this.x === id.x && this.y === id.y;
-    }
-
-    // given a list of urls, choose a url template and return a tile URL
-    url(urls, scheme) {
-        if (!urls) {
-            return;
-        }
-        const bbox = getTileBBox(this.x, this.y, this.z);
-        const quadkey = getQuadkey(this.z, this.x, this.y);
-
-        return urls[(this.x + this.y) % urls.length]
-            .replace('{prefix}', (this.x % 16).toString(16) + (this.y % 16).toString(16))
-            .replace('{z}', String(this.z))
-            .replace('{x}', String(this.x))
-            .replace('{y}', String(scheme === 'tms' ? (Math.pow(2, this.z) - this.y - 1) : this.y))
-            .replace('{quadkey}', quadkey)
-            .replace('{bbox-epsg-3857}', bbox);
-    }
+    return urls[(this.x + this.y) % urls.length]
+      .replace('{prefix}', (this.x % 16).toString(16) + (this.y % 16).toString(16))
+      .replace('{z}', String(this.z))
+      .replace('{x}', String(this.x))
+      .replace('{y}', String(scheme === 'tms' ? Math.pow(2, this.z) - this.y - 1 : this.y))
+      .replace('{quadkey}', quadkey)
+      .replace('{bbox-epsg-3857}', bbox);
+  }
 }
 
 class UnwrappedTileID {
-
-    constructor(wrap, canonical) {
-        this.wrap = wrap;
-        this.canonical = canonical;
-        this.key = calculateKey(wrap, canonical.z, canonical.x, canonical.y);
-    }
+  constructor(wrap, canonical) {
+    this.wrap = wrap;
+    this.canonical = canonical;
+    this.key = calculateKey(wrap, canonical.z, canonical.x, canonical.y);
+  }
 }
 
 class OverscaledTileID {
+  constructor(overscaledZ, wrap, z, x, y) {
+    assert(overscaledZ >= z);
+    this.overscaledZ = overscaledZ;
+    this.wrap = wrap;
+    this.canonical = new CanonicalTileID(z, +x, +y);
+    this.key = calculateKey(wrap, overscaledZ, x, y);
+  }
 
-    constructor(overscaledZ, wrap, z, x, y) {
-        assert(overscaledZ >= z);
-        this.overscaledZ = overscaledZ;
-        this.wrap = wrap;
-        this.canonical = new CanonicalTileID(z, +x, +y);
-        this.key = calculateKey(wrap, overscaledZ, x, y);
+  equals(id) {
+    return this.overscaledZ === id.overscaledZ && this.wrap === id.wrap && this.canonical.equals(id.canonical);
+  }
+
+  scaledTo(targetZ) {
+    assert(targetZ <= this.overscaledZ);
+    const zDifference = this.canonical.z - targetZ;
+    if (targetZ > this.canonical.z) {
+      return new OverscaledTileID(targetZ, this.wrap, this.canonical.z, this.canonical.x, this.canonical.y);
+    } else {
+      return new OverscaledTileID(
+        targetZ,
+        this.wrap,
+        targetZ,
+        this.canonical.x >> zDifference,
+        this.canonical.y >> zDifference
+      );
+    }
+  }
+
+  isChildOf(parent) {
+    const zDifference = this.canonical.z - parent.canonical.z;
+    // We're first testing for z == 0, to avoid a 32 bit shift, which is undefined.
+    return (
+      parent.overscaledZ === 0 ||
+      (parent.overscaledZ < this.overscaledZ &&
+        parent.canonical.x === this.canonical.x >> zDifference &&
+        parent.canonical.y === this.canonical.y >> zDifference)
+    );
+  }
+
+  children(sourceMaxZoom) {
+    if (this.overscaledZ >= sourceMaxZoom) {
+      // return a single tile coord representing a an overscaled tile
+      return [
+        new OverscaledTileID(this.overscaledZ + 1, this.wrap, this.canonical.z, this.canonical.x, this.canonical.y)
+      ];
     }
 
-    equals(id) {
-        return this.overscaledZ === id.overscaledZ && this.wrap === id.wrap && this.canonical.equals(id.canonical);
-    }
+    const z = this.canonical.z + 1;
+    const x = this.canonical.x * 2;
+    const y = this.canonical.y * 2;
+    return [
+      new OverscaledTileID(z, this.wrap, z, x, y),
+      new OverscaledTileID(z, this.wrap, z, x + 1, y),
+      new OverscaledTileID(z, this.wrap, z, x, y + 1),
+      new OverscaledTileID(z, this.wrap, z, x + 1, y + 1)
+    ];
+  }
 
-    scaledTo(targetZ) {
-        assert(targetZ <= this.overscaledZ);
-        const zDifference = this.canonical.z - targetZ;
-        if (targetZ > this.canonical.z) {
-            return new OverscaledTileID(targetZ, this.wrap, this.canonical.z, this.canonical.x, this.canonical.y);
-        } else {
-            return new OverscaledTileID(targetZ, this.wrap, targetZ, this.canonical.x >> zDifference, this.canonical.y >> zDifference);
-        }
-    }
+  isLessThan(rhs) {
+    if (this.wrap < rhs.wrap) return true;
+    if (this.wrap > rhs.wrap) return false;
 
-    isChildOf(parent) {
-        const zDifference = this.canonical.z - parent.canonical.z;
-        // We're first testing for z == 0, to avoid a 32 bit shift, which is undefined.
-        return parent.overscaledZ === 0 || (
-            parent.overscaledZ < this.overscaledZ &&
-                parent.canonical.x === (this.canonical.x >> zDifference) &&
-                parent.canonical.y === (this.canonical.y >> zDifference));
-    }
+    if (this.overscaledZ < rhs.overscaledZ) return true;
+    if (this.overscaledZ > rhs.overscaledZ) return false;
 
-    children(sourceMaxZoom) {
-        if (this.overscaledZ >= sourceMaxZoom) {
-            // return a single tile coord representing a an overscaled tile
-            return [new OverscaledTileID(this.overscaledZ + 1, this.wrap, this.canonical.z, this.canonical.x, this.canonical.y)];
-        }
+    if (this.canonical.x < rhs.canonical.x) return true;
+    if (this.canonical.x > rhs.canonical.x) return false;
 
-        const z = this.canonical.z + 1;
-        const x = this.canonical.x * 2;
-        const y = this.canonical.y * 2;
-        return [
-            new OverscaledTileID(z, this.wrap, z, x, y),
-            new OverscaledTileID(z, this.wrap, z, x + 1, y),
-            new OverscaledTileID(z, this.wrap, z, x, y + 1),
-            new OverscaledTileID(z, this.wrap, z, x + 1, y + 1)
-        ];
-    }
+    if (this.canonical.y < rhs.canonical.y) return true;
+    return false;
+  }
 
-    isLessThan(rhs) {
-        if (this.wrap < rhs.wrap) return true;
-        if (this.wrap > rhs.wrap) return false;
+  wrapped() {
+    return new OverscaledTileID(this.overscaledZ, 0, this.canonical.z, this.canonical.x, this.canonical.y);
+  }
 
-        if (this.overscaledZ < rhs.overscaledZ) return true;
-        if (this.overscaledZ > rhs.overscaledZ) return false;
+  unwrapTo(wrap) {
+    return new OverscaledTileID(this.overscaledZ, wrap, this.canonical.z, this.canonical.x, this.canonical.y);
+  }
 
-        if (this.canonical.x < rhs.canonical.x) return true;
-        if (this.canonical.x > rhs.canonical.x) return false;
+  overscaleFactor() {
+    return Math.pow(2, this.overscaledZ - this.canonical.z);
+  }
 
-        if (this.canonical.y < rhs.canonical.y) return true;
-        return false;
-    }
+  toUnwrapped() {
+    return new UnwrappedTileID(this.wrap, this.canonical);
+  }
 
-    wrapped() {
-        return new OverscaledTileID(this.overscaledZ, 0, this.canonical.z, this.canonical.x, this.canonical.y);
-    }
+  toString() {
+    return `${this.overscaledZ}/${this.canonical.x}/${this.canonical.y}`;
+  }
 
-    unwrapTo(wrap) {
-        return new OverscaledTileID(this.overscaledZ, wrap, this.canonical.z, this.canonical.x, this.canonical.y);
-    }
-
-    overscaleFactor() {
-        return Math.pow(2, this.overscaledZ - this.canonical.z);
-    }
-
-    toUnwrapped() {
-        return new UnwrappedTileID(this.wrap, this.canonical);
-    }
-
-    toString() {
-        return `${this.overscaledZ}/${this.canonical.x}/${this.canonical.y}`;
-    }
-
-    toCoordinate() {
-        return new Coordinate(this.canonical.x + Math.pow(2, this.wrap), this.canonical.y, this.canonical.z);
-    }
+  toCoordinate() {
+    return new Coordinate(this.canonical.x + Math.pow(2, this.wrap), this.canonical.y, this.canonical.z);
+  }
 }
 
 function calculateKey(wrap, z, x, y) {
-    wrap *= 2;
-    if (wrap < 0) wrap = wrap * -1 - 1;
-    const dim = 1 << z;
-    return ((dim * dim * wrap + dim * y + x) * 32) + z;
+  wrap *= 2;
+  if (wrap < 0) wrap = wrap * -1 - 1;
+  const dim = 1 << z;
+  return (dim * dim * wrap + dim * y + x) * 32 + z;
 }
 
-
 function getQuadkey(z, x, y) {
-    let quadkey = '', mask;
-    for (let i = z; i > 0; i--) {
-        mask = 1 << (i - 1);
-        quadkey += ((x & mask ? 1 : 0) + (y & mask ? 2 : 0));
-    }
-    return quadkey;
+  let quadkey = '',
+    mask;
+  for (let i = z; i > 0; i--) {
+    mask = 1 << (i - 1);
+    quadkey += (x & mask ? 1 : 0) + (y & mask ? 2 : 0);
+  }
+  return quadkey;
 }
 
 register('CanonicalTileID', CanonicalTileID);
-register('OverscaledTileID', OverscaledTileID, {omit: ['posMatrix']});
+register('OverscaledTileID', OverscaledTileID, { omit: ['posMatrix'] });
 
 module.exports = {
-    CanonicalTileID,
-    UnwrappedTileID,
-    OverscaledTileID
+  CanonicalTileID,
+  UnwrappedTileID,
+  OverscaledTileID
 };

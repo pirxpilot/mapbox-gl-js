@@ -5,7 +5,6 @@ const { unbundle, deepUnbundle } = require('../util/unbundle_jsonlint');
 const { isExpression } = require('../expression');
 const { isFunction } = require('../function');
 
-
 // Main recursive validation function. Tracks:
 //
 // - key: string representing location of validation in style tree. Used only
@@ -17,42 +16,43 @@ const { isFunction } = require('../function');
 // - styleSpec: current full spec being evaluated.
 
 module.exports = function validate(options) {
-    const validateFunction = require('./validate_function');
-    const validateExpression = require('./validate_expression');
-    const validateObject = require('./validate_object');
-    const VALIDATORS = {
-        '*': function() { return []; },
-        'array': require('./validate_array'),
-        'boolean': require('./validate_boolean'),
-        'number': require('./validate_number'),
-        'color': require('./validate_color'),
-        'constants': require('./validate_constants'),
-        'enum': require('./validate_enum'),
-        'filter': require('./validate_filter'),
-        'function': validateFunction,
-        'layer': require('./validate_layer'),
-        'object': validateObject,
-        'source': require('./validate_source'),
-        'light': require('./validate_light'),
-        'string': require('./validate_string')
-    };
+  const validateFunction = require('./validate_function');
+  const validateExpression = require('./validate_expression');
+  const validateObject = require('./validate_object');
+  const VALIDATORS = {
+    '*': function () {
+      return [];
+    },
+    array: require('./validate_array'),
+    boolean: require('./validate_boolean'),
+    number: require('./validate_number'),
+    color: require('./validate_color'),
+    constants: require('./validate_constants'),
+    enum: require('./validate_enum'),
+    filter: require('./validate_filter'),
+    function: validateFunction,
+    layer: require('./validate_layer'),
+    object: validateObject,
+    source: require('./validate_source'),
+    light: require('./validate_light'),
+    string: require('./validate_string')
+  };
 
-    const value = options.value;
-    const valueSpec = options.valueSpec;
-    const styleSpec = options.styleSpec;
+  const value = options.value;
+  const valueSpec = options.valueSpec;
+  const styleSpec = options.styleSpec;
 
-    if (valueSpec.expression && isFunction(unbundle(value))) {
-        return validateFunction(options);
-
-    } else if (valueSpec.expression && isExpression(deepUnbundle(value))) {
-        return validateExpression(options);
-
-    } else if (valueSpec.type && VALIDATORS[valueSpec.type]) {
-        return VALIDATORS[valueSpec.type](options);
-
-    } else {
-        return validateObject(extend({}, options, {
-            valueSpec: valueSpec.type ? styleSpec[valueSpec.type] : valueSpec
-        }));
-    }
+  if (valueSpec.expression && isFunction(unbundle(value))) {
+    return validateFunction(options);
+  } else if (valueSpec.expression && isExpression(deepUnbundle(value))) {
+    return validateExpression(options);
+  } else if (valueSpec.type && VALIDATORS[valueSpec.type]) {
+    return VALIDATORS[valueSpec.type](options);
+  } else {
+    return validateObject(
+      extend({}, options, {
+        valueSpec: valueSpec.type ? styleSpec[valueSpec.type] : valueSpec
+      })
+    );
+  }
 };

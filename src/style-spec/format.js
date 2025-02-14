@@ -4,18 +4,17 @@ const reference = require('./reference/latest.js');
 const sortObject = require('sort-object');
 
 function sameOrderAs(reference) {
-    const keyOrder = {};
+  const keyOrder = {};
 
-    Object.keys(reference).forEach((k, i) => {
-        keyOrder[k] = i + 1;
-    });
+  Object.keys(reference).forEach((k, i) => {
+    keyOrder[k] = i + 1;
+  });
 
-    return {
-        sort: function (a, b) {
-            return (keyOrder[a] || Infinity) -
-                   (keyOrder[b] || Infinity);
-        }
-    };
+  return {
+    sort: function (a, b) {
+      return (keyOrder[a] || Infinity) - (keyOrder[b] || Infinity);
+    }
+  };
 }
 
 /**
@@ -40,16 +39,16 @@ function sameOrderAs(reference) {
  * fs.writeFileSync('./dest.min.json', format(style, 0));
  */
 function format(style, space) {
-    if (space === undefined) space = 2;
-    style = sortObject(style, sameOrderAs(reference.$root));
+  if (space === undefined) space = 2;
+  style = sortObject(style, sameOrderAs(reference.$root));
 
-    if (style.layers) {
-        style.layers = style.layers.map((layer) => {
-            return sortObject(layer, sameOrderAs(reference.layer));
-        });
-    }
+  if (style.layers) {
+    style.layers = style.layers.map(layer => {
+      return sortObject(layer, sameOrderAs(reference.layer));
+    });
+  }
 
-    return JSON.stringify(style, null, space);
+  return JSON.stringify(style, null, space);
 }
 
 module.exports = format;

@@ -9,15 +9,15 @@
 const warnOnceHistory = {};
 
 function once(message) {
-    if (!warnOnceHistory[message]) {
-        console.warn(message);
-        warnOnceHistory[message] = true;
-    }
+  if (!warnOnceHistory[message]) {
+    console.warn(message);
+    warnOnceHistory[message] = true;
+  }
 }
 
 function noop() {}
 
 // console isn't defined in some WebWorkers, see #2558
 module.exports = {
-    once: typeof console !== "undefined" ? once : noop
+  once: typeof console !== 'undefined' ? once : noop
 };

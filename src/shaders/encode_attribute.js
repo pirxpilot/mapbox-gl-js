@@ -10,12 +10,12 @@ const { clamp } = require('../util/util');
  * @private
  */
 function pack(a, b) {
-    // coerce a and b to 8-bit ints
-    a = clamp(Math.floor(a), 0, 255);
-    b = clamp(Math.floor(b), 0, 255);
-    return 256 * a + b;
+  // coerce a and b to 8-bit ints
+  a = clamp(Math.floor(a), 0, 255);
+  b = clamp(Math.floor(b), 0, 255);
+  return 256 * a + b;
 }
 
 module.exports = {
-    packUint8ToFloat: pack
+  packUint8ToFloat: pack
 };

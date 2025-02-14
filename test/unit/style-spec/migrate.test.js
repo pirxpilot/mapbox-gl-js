@@ -10,34 +10,34 @@ const spec = require('../../../src/style-spec/style-spec');
 
 const UPDATE = !!process.env.UPDATE;
 
-t('does not migrate from version 5', async (t) => {
-    t.throws(() => {
-        migrate({version: 5, layers: []});
-    }, new Error('cannot migrate from', 5));
-    t.end();
+t('does not migrate from version 5', async t => {
+  t.throws(() => {
+    migrate({ version: 5, layers: [] });
+  }, new Error('cannot migrate from', 5));
+  t.end();
 });
 
-t('does not migrate from version 6', async (t) => {
-    t.throws(() => {
-        migrate({version: 6, layers: []});
-    }, new Error('cannot migrate from', 6));
-    t.end();
+t('does not migrate from version 6', async t => {
+  t.throws(() => {
+    migrate({ version: 6, layers: [] });
+  }, new Error('cannot migrate from', 6));
+  t.end();
 });
 
-t('migrates to latest version from version 7', async (t) => {
-    t.deepEqual(migrate({version: 7, layers: []}).version, spec.latest.$version);
-    t.end();
+t('migrates to latest version from version 7', async t => {
+  t.deepEqual(migrate({ version: 7, layers: [] }).version, spec.latest.$version);
+  t.end();
 });
 
-fs.globSync(`${__dirname}/fixture/v7-migrate/*.input.json`).forEach((file) => {
-    t(path.basename(file), async (t) => {
-        const outputfile = file.replace('.input', '.output');
-        const style = JSON.parse(fs.readFileSync(file));
-        const result = migrate(style);
-        t.deepEqual(validate.parsed(result, v8), []);
-        if (UPDATE) fs.writeFileSync(outputfile, JSON.stringify(result, null, 2));
-        const expect = JSON.parse(fs.readFileSync(outputfile));
-        t.deepEqual(result, expect);
-        t.end();
-    });
+fs.globSync(`${__dirname}/fixture/v7-migrate/*.input.json`).forEach(file => {
+  t(path.basename(file), async t => {
+    const outputfile = file.replace('.input', '.output');
+    const style = JSON.parse(fs.readFileSync(file));
+    const result = migrate(style);
+    t.deepEqual(validate.parsed(result, v8), []);
+    if (UPDATE) fs.writeFileSync(outputfile, JSON.stringify(result, null, 2));
+    const expect = JSON.parse(fs.readFileSync(outputfile));
+    t.deepEqual(result, expect);
+    t.end();
+  });
 });

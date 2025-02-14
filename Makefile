@@ -81,9 +81,13 @@ dist/$(PROJECT)-worker.js: $(SRC) | dependencies distdir
 		$(ESBUILD_OPTIONS) \
 		--outfile=$@
 
-lint: dependencies
-	$(NODE_BIN)/biome lint
+lint: | build/node_modules
+	$(NODE_BIN)/biome ci
 .PHONY: lint
+
+format: | build/node_modules
+	$(NODE_BIN)/biome format --write
+.PHONY: format
 
 test: test-unit
 

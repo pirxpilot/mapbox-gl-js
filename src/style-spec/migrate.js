@@ -15,17 +15,17 @@ const migrateToV8 = require('./migrate/v8');
  * var style = fs.readFileSync('./style.json', 'utf8');
  * fs.writeFileSync('./style.json', JSON.stringify(migrate(style)));
  */
-module.exports = function(style) {
-    let migrated = false;
+module.exports = function (style) {
+  let migrated = false;
 
-    if (style.version === 7 || style.version === 8) {
-        style = migrateToV8(style);
-        migrated = true;
-    }
+  if (style.version === 7 || style.version === 8) {
+    style = migrateToV8(style);
+    migrated = true;
+  }
 
-    if (!migrated) {
-        throw new Error('cannot migrate from', style.version);
-    }
+  if (!migrated) {
+    throw new Error('cannot migrate from', style.version);
+  }
 
-    return style;
+  return style;
 };

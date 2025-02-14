@@ -1,51 +1,48 @@
 'use strict';
 
 module.exports = function (style) {
-    const styleIDs = [];
-    const sourceIDs = [];
-    const compositedSourceLayers = [];
+  const styleIDs = [];
+  const sourceIDs = [];
+  const compositedSourceLayers = [];
 
-    for (const id in style.sources) {
-        const source = style.sources[id];
+  for (const id in style.sources) {
+    const source = style.sources[id];
 
-        if (source.type !== "vector")
-            continue;
+    if (source.type !== 'vector') continue;
 
-        const match = /^mapbox:\/\/(.*)/.exec(source.url);
-        if (!match)
-            continue;
+    const match = /^mapbox:\/\/(.*)/.exec(source.url);
+    if (!match) continue;
 
-        styleIDs.push(id);
-        sourceIDs.push(match[1]);
-    }
+    styleIDs.push(id);
+    sourceIDs.push(match[1]);
+  }
 
-    if (styleIDs.length < 2)
-        return style;
+  if (styleIDs.length < 2) return style;
 
-    styleIDs.forEach((id) => {
-        delete style.sources[id];
-    });
+  styleIDs.forEach(id => {
+    delete style.sources[id];
+  });
 
-    const compositeID = sourceIDs.join(",");
+  const compositeID = sourceIDs.join(',');
 
-    style.sources[compositeID] = {
-        "type": "vector",
-        "url": `mapbox://${compositeID}`
-    };
+  style.sources[compositeID] = {
+    type: 'vector',
+    url: `mapbox://${compositeID}`
+  };
 
-    style.layers.forEach((layer) => {
-        if (styleIDs.indexOf(layer.source) >= 0) {
-            layer.source = compositeID;
+  style.layers.forEach(layer => {
+    if (styleIDs.indexOf(layer.source) >= 0) {
+      layer.source = compositeID;
 
-            if ('source-layer' in layer) {
-                if (compositedSourceLayers.indexOf(layer['source-layer']) >= 0) {
-                    throw new Error('Conflicting source layer names');
-                } else {
-                    compositedSourceLayers.push(layer['source-layer']);
-                }
-            }
+      if ('source-layer' in layer) {
+        if (compositedSourceLayers.indexOf(layer['source-layer']) >= 0) {
+          throw new Error('Conflicting source layer names');
+        } else {
+          compositedSourceLayers.push(layer['source-layer']);
         }
-    });
+      }
+    }
+  });
 
-    return style;
+  return style;
 };

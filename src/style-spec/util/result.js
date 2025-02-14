@@ -8,14 +8,14 @@
  */
 
 function success(value) {
-    return { result: 'success', value };
+  return { result: 'success', value };
 }
 
 function error(value) {
-    return { result: 'error', value };
+  return { result: 'error', value };
 }
 
 module.exports = {
-    success,
-    error
+  success,
+  error
 };

@@ -4,44 +4,38 @@
 
 const assert = require('assert');
 
-
 const viewTypes = {
-    'Int8': Int8Array,
-    'Uint8': Uint8Array,
-    'Int16': Int16Array,
-    'Uint16': Uint16Array,
-    'Int32': Int32Array,
-    'Uint32': Uint32Array,
-    'Float32': Float32Array
+  Int8: Int8Array,
+  Uint8: Uint8Array,
+  Int16: Int16Array,
+  Uint16: Uint16Array,
+  Int32: Int32Array,
+  Uint32: Uint32Array,
+  Float32: Float32Array
 };
-
 
 /**
  * @private
  */
 class Struct {
+  // The following properties are defined on the prototype of sub classes.
 
-    // The following properties are defined on the prototype of sub classes.
-
-    /**
-     * @param {StructArray} structArray The StructArray the struct is stored in
-     * @param {number} index The index of the struct in the StructArray.
-     * @private
-     */
-    constructor(structArray, index) {
-        (this)._structArray = structArray;
-        this._pos1 = index * this.size;
-        this._pos2 = this._pos1 / 2;
-        this._pos4 = this._pos1 / 4;
-        this._pos8 = this._pos1 / 8;
-    }
+  /**
+   * @param {StructArray} structArray The StructArray the struct is stored in
+   * @param {number} index The index of the struct in the StructArray.
+   * @private
+   */
+  constructor(structArray, index) {
+    this._structArray = structArray;
+    this._pos1 = index * this.size;
+    this._pos2 = this._pos1 / 2;
+    this._pos4 = this._pos1 / 4;
+    this._pos8 = this._pos1 / 8;
+  }
 }
 
 const DEFAULT_CAPACITY = 128;
 const RESIZE_MULTIPLIER = 5;
-
-
-
 
 /**
  * `StructArray` provides an abstraction over `ArrayBuffer` and `TypedArray`
@@ -65,97 +59,96 @@ const RESIZE_MULTIPLIER = 5;
  * @private
  */
 class StructArray {
+  // The following properties are defined on the prototype.
 
-    // The following properties are defined on the prototype.
+  constructor() {
+    this.isTransferred = false;
+    this.capacity = -1;
+    this.resize(0);
+  }
 
-    constructor() {
-        this.isTransferred = false;
-        this.capacity = -1;
-        this.resize(0);
+  /**
+   * Serialize a StructArray instance.  Serializes both the raw data and the
+   * metadata needed to reconstruct the StructArray base class during
+   * deserialization.
+   */
+  static serialize(array, transferables) {
+    assert(!array.isTransferred);
+
+    array._trim();
+
+    if (transferables) {
+      array.isTransferred = true;
+      transferables.push(array.arrayBuffer);
     }
 
-    /**
-     * Serialize a StructArray instance.  Serializes both the raw data and the
-     * metadata needed to reconstruct the StructArray base class during
-     * deserialization.
-     */
-    static serialize(array, transferables) {
-        assert(!array.isTransferred);
+    return {
+      length: array.length,
+      arrayBuffer: array.arrayBuffer
+    };
+  }
 
-        array._trim();
+  static deserialize(input) {
+    const structArray = Object.create(this.prototype);
+    structArray.arrayBuffer = input.arrayBuffer;
+    structArray.length = input.length;
+    structArray.capacity = input.arrayBuffer.byteLength / structArray.bytesPerElement;
+    structArray._refreshViews();
+    return structArray;
+  }
 
-        if (transferables) {
-            array.isTransferred = true;
-            transferables.push(array.arrayBuffer);
-        }
-
-        return {
-            length: array.length,
-            arrayBuffer: array.arrayBuffer,
-        };
+  /**
+   * Resize the array to discard unused capacity.
+   */
+  _trim() {
+    if (this.length !== this.capacity) {
+      this.capacity = this.length;
+      this.arrayBuffer = this.arrayBuffer.slice(0, this.length * this.bytesPerElement);
+      this._refreshViews();
     }
+  }
 
-    static deserialize(input) {
-        const structArray = Object.create(this.prototype);
-        structArray.arrayBuffer = input.arrayBuffer;
-        structArray.length = input.length;
-        structArray.capacity = input.arrayBuffer.byteLength / structArray.bytesPerElement;
-        structArray._refreshViews();
-        return structArray;
+  /**
+   * Resets the the length of the array to 0 without de-allocating capcacity.
+   */
+  clear() {
+    this.length = 0;
+  }
+
+  /**
+   * Resize the array.
+   * If `n` is greater than the current length then additional elements with undefined values are added.
+   * If `n` is less than the current length then the array will be reduced to the first `n` elements.
+   * @param {number} n The new size of the array.
+   */
+  resize(n) {
+    assert(!this.isTransferred);
+    this.reserve(n);
+    this.length = n;
+  }
+
+  /**
+   * Indicate a planned increase in size, so that any necessary allocation may
+   * be done once, ahead of time.
+   * @param {number} n The expected size of the array.
+   */
+  reserve(n) {
+    if (n > this.capacity) {
+      this.capacity = Math.max(n, Math.floor(this.capacity * RESIZE_MULTIPLIER), DEFAULT_CAPACITY);
+      this.arrayBuffer = new ArrayBuffer(this.capacity * this.bytesPerElement);
+
+      const oldUint8Array = this.uint8;
+      this._refreshViews();
+      if (oldUint8Array) this.uint8.set(oldUint8Array);
     }
+  }
 
-    /**
-     * Resize the array to discard unused capacity.
-     */
-    _trim() {
-        if (this.length !== this.capacity) {
-            this.capacity = this.length;
-            this.arrayBuffer = this.arrayBuffer.slice(0, this.length * this.bytesPerElement);
-            this._refreshViews();
-        }
-    }
-
-    /**
-     * Resets the the length of the array to 0 without de-allocating capcacity.
-     */
-    clear() {
-        this.length = 0;
-    }
-
-    /**
-     * Resize the array.
-     * If `n` is greater than the current length then additional elements with undefined values are added.
-     * If `n` is less than the current length then the array will be reduced to the first `n` elements.
-     * @param {number} n The new size of the array.
-     */
-    resize(n) {
-        assert(!this.isTransferred);
-        this.reserve(n);
-        this.length = n;
-    }
-
-    /**
-     * Indicate a planned increase in size, so that any necessary allocation may
-     * be done once, ahead of time.
-     * @param {number} n The expected size of the array.
-     */
-    reserve(n) {
-        if (n > this.capacity) {
-            this.capacity = Math.max(n, Math.floor(this.capacity * RESIZE_MULTIPLIER), DEFAULT_CAPACITY);
-            this.arrayBuffer = new ArrayBuffer(this.capacity * this.bytesPerElement);
-
-            const oldUint8Array = this.uint8;
-            this._refreshViews();
-            if (oldUint8Array) this.uint8.set(oldUint8Array);
-        }
-    }
-
-    /**
-     * Create TypedArray views for the current ArrayBuffer.
-     */
-    _refreshViews() {
-        throw new Error('_refreshViews() must be implemented by each concrete StructArray layout');
-    }
+  /**
+   * Create TypedArray views for the current ArrayBuffer.
+   */
+  _refreshViews() {
+    throw new Error('_refreshViews() must be implemented by each concrete StructArray layout');
+  }
 }
 
 /**
@@ -166,45 +159,41 @@ class StructArray {
  *
  * @private
  */
-function createLayout(
-    members,
-    alignment = 1
-) {
+function createLayout(members, alignment = 1) {
+  let offset = 0;
+  let maxSize = 0;
+  const layoutMembers = members.map(member => {
+    assert(member.name.length);
+    const typeSize = sizeOf(member.type);
+    const memberOffset = (offset = align(offset, Math.max(alignment, typeSize)));
+    const components = member.components || 1;
 
-    let offset = 0;
-    let maxSize = 0;
-    const layoutMembers = members.map((member) => {
-        assert(member.name.length);
-        const typeSize = sizeOf(member.type);
-        const memberOffset = offset = align(offset, Math.max(alignment, typeSize));
-        const components = member.components || 1;
-
-        maxSize = Math.max(maxSize, typeSize);
-        offset += typeSize * components;
-
-        return {
-            name: member.name,
-            type: member.type,
-            components: components,
-            offset: memberOffset,
-        };
-    });
-
-    const size = align(offset, Math.max(maxSize, alignment));
+    maxSize = Math.max(maxSize, typeSize);
+    offset += typeSize * components;
 
     return {
-        members: layoutMembers,
-        size,
-        alignment
+      name: member.name,
+      type: member.type,
+      components: components,
+      offset: memberOffset
     };
+  });
+
+  const size = align(offset, Math.max(maxSize, alignment));
+
+  return {
+    members: layoutMembers,
+    size,
+    alignment
+  };
 }
 
 function sizeOf(type) {
-    return viewTypes[type].BYTES_PER_ELEMENT;
+  return viewTypes[type].BYTES_PER_ELEMENT;
 }
 
 function align(offset, size) {
-    return Math.ceil(offset / size) * size;
+  return Math.ceil(offset / size) * size;
 }
 
 module.exports = { StructArray, Struct, viewTypes, createLayout };
