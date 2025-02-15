@@ -1,5 +1,3 @@
-'use strict';
-
 const Anchor = require('./anchor');
 
 const getAnchors = require('./get_anchors');
@@ -176,19 +174,19 @@ function addFeature(bucket, feature, shapedTextOrientations, shapedIcon, glyphPo
   const textOffset = layout.get('text-offset').evaluate(feature, {});
   const iconOffset = layout.get('icon-offset').evaluate(feature, {});
 
-  const glyphSize = 24,
-    fontScale = layoutTextSize / glyphSize,
-    textBoxScale = bucket.tilePixelRatio * fontScale,
-    textMaxBoxScale = (bucket.tilePixelRatio * textMaxSize) / glyphSize,
-    iconBoxScale = bucket.tilePixelRatio * layoutIconSize,
-    symbolMinDistance = bucket.tilePixelRatio * layout.get('symbol-spacing'),
-    textPadding = layout.get('text-padding') * bucket.tilePixelRatio,
-    iconPadding = layout.get('icon-padding') * bucket.tilePixelRatio,
-    textMaxAngle = (layout.get('text-max-angle') / 180) * Math.PI,
-    textAlongLine = layout.get('text-rotation-alignment') === 'map' && layout.get('symbol-placement') === 'line',
-    iconAlongLine = layout.get('icon-rotation-alignment') === 'map' && layout.get('symbol-placement') === 'line',
-    symbolPlacement = layout.get('symbol-placement'),
-    textRepeatDistance = symbolMinDistance / 2;
+  const glyphSize = 24;
+  const fontScale = layoutTextSize / glyphSize;
+  const textBoxScale = bucket.tilePixelRatio * fontScale;
+  const textMaxBoxScale = (bucket.tilePixelRatio * textMaxSize) / glyphSize;
+  const iconBoxScale = bucket.tilePixelRatio * layoutIconSize;
+  const symbolMinDistance = bucket.tilePixelRatio * layout.get('symbol-spacing');
+  const textPadding = layout.get('text-padding') * bucket.tilePixelRatio;
+  const iconPadding = layout.get('icon-padding') * bucket.tilePixelRatio;
+  const textMaxAngle = (layout.get('text-max-angle') / 180) * Math.PI;
+  const textAlongLine = layout.get('text-rotation-alignment') === 'map' && layout.get('symbol-placement') === 'line';
+  const iconAlongLine = layout.get('icon-rotation-alignment') === 'map' && layout.get('symbol-placement') === 'line';
+  const symbolPlacement = layout.get('symbol-placement');
+  const textRepeatDistance = symbolMinDistance / 2;
 
   const addSymbolAtAnchor = (line, anchor) => {
     if (anchor.x < 0 || anchor.x >= EXTENT || anchor.y < 0 || anchor.y >= EXTENT) {
@@ -343,7 +341,8 @@ function addSymbol(
 ) {
   const lineArray = bucket.addToLineVertexArray(anchor, line);
 
-  let textCollisionFeature, iconCollisionFeature;
+  let textCollisionFeature;
+  let iconCollisionFeature;
 
   let numIconVertices = 0;
   let numGlyphVertices = 0;

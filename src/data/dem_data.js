@@ -1,4 +1,3 @@
-'use strict';
 const { RGBAImage } = require('../util/image');
 
 const warn = require('../util/warn');
@@ -18,8 +17,10 @@ class DEMData {
   constructor(uid, data, encoding) {
     this.uid = uid;
     if (data.height !== data.width) throw new RangeError('DEM tiles must be square');
-    if (encoding && encoding !== 'mapbox' && encoding !== 'terrarium')
-      return warn.once(`"${encoding}" is not a valid encoding type. Valid types include "mapbox" and "terrarium".`);
+    if (encoding && encoding !== 'mapbox' && encoding !== 'terrarium') {
+      warn.once(`"${encoding}" is not a valid encoding type. Valid types include "mapbox" and "terrarium".`);
+      return;
+    }
     const dim = (this.dim = data.height);
     this.stride = this.dim + 2;
     this.data = new Int32Array(this.stride * this.stride);
@@ -87,10 +88,10 @@ class DEMData {
   backfillBorder(borderTile, dx, dy) {
     if (this.dim !== borderTile.dim) throw new Error('dem dimension mismatch');
 
-    let xMin = dx * this.dim,
-      xMax = dx * this.dim + this.dim,
-      yMin = dy * this.dim,
-      yMax = dy * this.dim + this.dim;
+    let xMin = dx * this.dim;
+    let xMax = dx * this.dim + this.dim;
+    let yMin = dy * this.dim;
+    let yMax = dy * this.dim + this.dim;
 
     switch (dx) {
       case -1:

@@ -1,8 +1,6 @@
-'use strict';
-
-const panStep = 100,
-  bearingStep = 15,
-  pitchStep = 10;
+const panStep = 100;
+const bearingStep = 15;
+const pitchStep = 10;
 
 /**
  * The `KeyboardHandler` allows the user to zoom, rotate, and pan the map using

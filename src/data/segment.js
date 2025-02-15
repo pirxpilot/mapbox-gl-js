@@ -1,5 +1,3 @@
-'use strict';
-
 const warn = require('../util/warn');
 
 const { register } = require('../util/web_worker_transfer');
@@ -58,7 +56,7 @@ class SegmentVector {
  * @private
  * @readonly
  */
-SegmentVector.MAX_VERTEX_ARRAY_LENGTH = Math.pow(2, 16) - 1;
+SegmentVector.MAX_VERTEX_ARRAY_LENGTH = 2 ** 16 - 1;
 
 register('SegmentVector', SegmentVector);
 

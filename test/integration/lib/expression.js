@@ -1,5 +1,3 @@
-'use strict';
-
 const path = require('path');
 const harness = require('./harness');
 const diff = require('diff');
@@ -30,7 +28,7 @@ function stripPrecision(x) {
       return x;
     }
 
-    const multiplier = Math.pow(10, Math.max(0, decimalSigFigs - Math.ceil(Math.log10(Math.abs(x)))));
+    const multiplier = 10 ** Math.max(0, decimalSigFigs - Math.ceil(Math.log10(Math.abs(x))));
 
     // We strip precision twice in a row here to avoid cases where
     // stripping an already stripped number will modify its value
@@ -38,17 +36,18 @@ function stripPrecision(x) {
     // eg `Math.floor(8.16598 * 100000) / 100000` -> 8.16597
     const firstStrip = Math.floor(x * multiplier) / multiplier;
     return Math.floor(firstStrip * multiplier) / multiplier;
-  } else if (typeof x !== 'object') {
-    return x;
-  } else if (Array.isArray(x)) {
-    return x.map(stripPrecision);
-  } else {
-    const stripped = {};
-    for (const key of Object.keys(x)) {
-      stripped[key] = stripPrecision(x[key]);
-    }
-    return stripped;
   }
+  if (typeof x !== 'object') {
+    return x;
+  }
+  if (Array.isArray(x)) {
+    return x.map(stripPrecision);
+  }
+  const stripped = {};
+  for (const key of Object.keys(x)) {
+    stripped[key] = stripPrecision(x[key]);
+  }
+  return stripped;
 }
 
 function deepEqual(a, b) {

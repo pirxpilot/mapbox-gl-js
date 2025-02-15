@@ -1,5 +1,3 @@
-'use strict';
-
 /*
  * Polyfill for Object.values. Not fully spec compliant, but we don't
  * need it to be.
@@ -148,11 +146,11 @@ function deepEqual(a, b) {
 function clone(input) {
   if (Array.isArray(input)) {
     return input.map(clone);
-  } else if (typeof input === 'object' && input) {
-    return mapObject(input, clone);
-  } else {
-    return input;
   }
+  if (typeof input === 'object' && input) {
+    return mapObject(input, clone);
+  }
+  return input;
 }
 
 /**

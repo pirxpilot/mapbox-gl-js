@@ -1,5 +1,3 @@
-'use strict';
-
 const { NumberType, toString } = require('../types');
 
 const { typeOf } = require('../values');
@@ -27,13 +25,13 @@ class Length {
     const input = this.input.evaluate(ctx);
     if (typeof input === 'string') {
       return input.length;
-    } else if (Array.isArray(input)) {
-      return input.length;
-    } else {
-      throw new RuntimeError(
-        `Expected value to be of type string or array, but found ${toString(typeOf(input))} instead.`
-      );
     }
+    if (Array.isArray(input)) {
+      return input.length;
+    }
+    throw new RuntimeError(
+      `Expected value to be of type string or array, but found ${toString(typeOf(input))} instead.`
+    );
   }
 
   eachChild(fn) {

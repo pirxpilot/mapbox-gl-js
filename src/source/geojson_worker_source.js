@@ -1,5 +1,3 @@
-'use strict';
-
 const rewind = require('@mapwhit/geojson-rewind');
 const GeoJSONWrapper = require('./geojson_wrapper');
 const vtpbf = require('@mapwhit/vt-pbf');
@@ -110,24 +108,24 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
     this.loadGeoJSON(params, (err, data) => {
       if (err || !data) {
         return callback(err);
-      } else if (typeof data !== 'object') {
-        return callback(new Error('Input data is not a valid GeoJSON object.'));
-      } else {
-        rewind(data, true);
-
-        try {
-          this._geoJSONIndex = params.cluster
-            ? supercluster(params.superclusterOptions).load(data.features)
-            : geojsonvt(data, params.geojsonVtOptions);
-        } catch (err) {
-          return callback(err);
-        }
-
-        this.loaded = {};
-
-        const result = {};
-        callback(null, result);
       }
+      if (typeof data !== 'object') {
+        return callback(new Error('Input data is not a valid GeoJSON object.'));
+      }
+      rewind(data, true);
+
+      try {
+        this._geoJSONIndex = params.cluster
+          ? supercluster(params.superclusterOptions).load(data.features)
+          : geojsonvt(data, params.geojsonVtOptions);
+      } catch (err) {
+        return callback(err);
+      }
+
+      this.loaded = {};
+
+      const result = {};
+      callback(null, result);
     });
   }
 
@@ -170,14 +168,13 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
    * @param params.uid The UID for this tile.
    */
   reloadTile(params, callback) {
-    const loaded = this.loaded,
-      uid = params.uid;
+    const loaded = this.loaded;
+    const uid = params.uid;
 
-    if (loaded && loaded[uid]) {
+    if (loaded?.[uid]) {
       return super.reloadTile(params, callback);
-    } else {
-      return this.loadTile(params, callback);
     }
+    return this.loadTile(params, callback);
   }
 
   /**

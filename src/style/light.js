@@ -1,5 +1,3 @@
-'use strict';
-
 const styleSpec = require('../style-spec/reference/latest');
 
 const { sphericalToCartesian } = require('../util/util');

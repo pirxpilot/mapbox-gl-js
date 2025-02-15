@@ -1,5 +1,3 @@
-'use strict';
-
 const { RGBAImage } = require('./image');
 
 /**

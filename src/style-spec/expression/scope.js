@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Tracks `let` bindings during expression parsing.
  * @private

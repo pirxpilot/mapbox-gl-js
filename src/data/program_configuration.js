@@ -1,5 +1,3 @@
-'use strict';
-
 const { packUint8ToFloat } = require('../shaders/encode_attribute');
 const { supportsPropertyExpression } = require('../style-spec/util/properties');
 const { register } = require('../util/web_worker_transfer');
@@ -43,7 +41,7 @@ class ConstantBinder {
     this.name = name;
     this.uniformName = `u_${this.name}`;
     this.type = type;
-    this.maxValue = -Infinity;
+    this.maxValue = Number.NEGATIVE_INFINITY;
   }
 
   defines() {
@@ -70,7 +68,7 @@ class SourceExpressionBinder {
     this.name = name;
     this.type = type;
     this.uniformName = `a_${name}`;
-    this.maxValue = -Infinity;
+    this.maxValue = Number.NEGATIVE_INFINITY;
     const PaintVertexArray = type === 'color' ? StructArrayLayout2f8 : StructArrayLayout1f4;
     this.paintVertexAttributes = [
       {
@@ -128,7 +126,7 @@ class SourceExpressionBinder {
   }
 
   upload(context) {
-    if (this.paintVertexArray && this.paintVertexArray.arrayBuffer) {
+    if (this.paintVertexArray?.arrayBuffer) {
       this.paintVertexBuffer = context.createVertexBuffer(
         this.paintVertexArray,
         this.paintVertexAttributes,
@@ -160,7 +158,7 @@ class CompositeExpressionBinder {
     this.type = type;
     this.useIntegerZoom = useIntegerZoom;
     this.zoom = zoom;
-    this.maxValue = -Infinity;
+    this.maxValue = Number.NEGATIVE_INFINITY;
     const PaintVertexArray = type === 'color' ? StructArrayLayout4f16 : StructArrayLayout2f8;
     this.paintVertexAttributes = [
       {
@@ -221,7 +219,7 @@ class CompositeExpressionBinder {
   }
 
   upload(context) {
-    if (this.paintVertexArray && this.paintVertexArray.arrayBuffer) {
+    if (this.paintVertexArray?.arrayBuffer) {
       this.paintVertexBuffer = context.createVertexBuffer(
         this.paintVertexArray,
         this.paintVertexAttributes,
@@ -239,9 +237,8 @@ class CompositeExpressionBinder {
   interpolationFactor(currentZoom) {
     if (this.useIntegerZoom) {
       return this.expression.interpolationFactor(Math.floor(currentZoom), this.zoom, this.zoom + 1);
-    } else {
-      return this.expression.interpolationFactor(currentZoom, this.zoom, this.zoom + 1);
     }
+    return this.expression.interpolationFactor(currentZoom, this.zoom, this.zoom + 1);
   }
 
   setUniforms(context, uniform, globals) {

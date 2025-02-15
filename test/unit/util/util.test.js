@@ -1,5 +1,3 @@
-'use strict';
-
 const { test } = require('mapbox-gl-js-test');
 
 const Coordinate = require('../../../src/geo/coordinate');

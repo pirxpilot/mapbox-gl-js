@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = function (style) {
   const styleIDs = [];
   const sourceIDs = [];
@@ -37,9 +35,8 @@ module.exports = function (style) {
       if ('source-layer' in layer) {
         if (compositedSourceLayers.indexOf(layer['source-layer']) >= 0) {
           throw new Error('Conflicting source layer names');
-        } else {
-          compositedSourceLayers.push(layer['source-layer']);
         }
+        compositedSourceLayers.push(layer['source-layer']);
       }
     }
   });

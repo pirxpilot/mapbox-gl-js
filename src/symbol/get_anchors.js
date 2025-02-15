@@ -1,5 +1,3 @@
-'use strict';
-
 const interpolate = require('../util/interpolate');
 
 const Anchor = require('../symbol/anchor');
@@ -69,24 +67,24 @@ function resample(
     lineLength += line[k].dist(line[k + 1]);
   }
 
-  let distance = 0,
-    markedDistance = offset - spacing;
+  let distance = 0;
+  let markedDistance = offset - spacing;
 
   let anchors = [];
 
   for (let i = 0; i < line.length - 1; i++) {
-    const a = line[i],
-      b = line[i + 1];
+    const a = line[i];
+    const b = line[i + 1];
 
-    const segmentDist = a.dist(b),
-      angle = b.angleTo(a);
+    const segmentDist = a.dist(b);
+    const angle = b.angleTo(a);
 
     while (markedDistance + spacing < distance + segmentDist) {
       markedDistance += spacing;
 
-      const t = (markedDistance - distance) / segmentDist,
-        x = interpolate(a.x, b.x, t),
-        y = interpolate(a.y, b.y, t);
+      const t = (markedDistance - distance) / segmentDist;
+      const x = interpolate(a.x, b.x, t);
+      const y = interpolate(a.y, b.y, t);
 
       // Check that the point is within the tile boundaries and that
       // the label would fit before the beginning and end of the line

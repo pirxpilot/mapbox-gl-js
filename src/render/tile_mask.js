@@ -1,5 +1,3 @@
-'use strict';
-
 const { OverscaledTileID, CanonicalTileID } = require('../source/tile_id');
 
 // Updates the TileMasks for all renderable tiles. A TileMask describes all regions
@@ -86,9 +84,10 @@ function computeTileMasks(rootTile, ref, childArray, lowerBound, mask) {
     // The current tile is masked out, so we don't need to add them to the mask set.
     if (ref.key === childTile.tileID.key) {
       return;
-    } else if (childTile.tileID.isChildOf(ref)) {
+    }
+    if (childTile.tileID.isChildOf(ref)) {
       // There's at least one child tile that is masked out, so recursively descend
-      const children = ref.children(Infinity);
+      const children = ref.children(Number.POSITIVE_INFINITY);
       for (let j = 0; j < children.length; j++) {
         const child = children[j];
         computeTileMasks(rootTile, child, childArray.slice(i), lowerBound, mask);

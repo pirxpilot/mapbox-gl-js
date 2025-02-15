@@ -107,7 +107,9 @@ test('camera', async t => {
     });
 
     await t.test('emits move events, preserving eventData', t => {
-      let started, moved, ended;
+      let started;
+      let moved;
+      let ended;
       const eventData = { data: 'ok' };
 
       camera
@@ -129,7 +131,9 @@ test('camera', async t => {
     });
 
     await t.test('emits zoom events, preserving eventData', t => {
-      let started, zoomed, ended;
+      let started;
+      let zoomed;
+      let ended;
       const eventData = { data: 'ok' };
 
       camera
@@ -151,7 +155,9 @@ test('camera', async t => {
     });
 
     await t.test('emits rotate events, preserving eventData', t => {
-      let started, rotated, ended;
+      let started;
+      let rotated;
+      let ended;
       const eventData = { data: 'ok' };
 
       camera
@@ -173,7 +179,9 @@ test('camera', async t => {
     });
 
     await t.test('emits pitch events, preserving eventData', t => {
-      let started, pitched, ended;
+      let started;
+      let pitched;
+      let ended;
       const eventData = { data: 'ok' };
 
       camera
@@ -227,7 +235,9 @@ test('camera', async t => {
     });
 
     await t.test('emits move events, preserving eventData', t => {
-      let started, moved, ended;
+      let started;
+      let moved;
+      let ended;
       const eventData = { data: 'ok' };
 
       camera
@@ -269,7 +279,12 @@ test('camera', async t => {
     });
 
     await t.test('emits move and zoom events, preserving eventData', t => {
-      let movestarted, moved, moveended, zoomstarted, zoomed, zoomended;
+      let movestarted;
+      let moved;
+      let moveended;
+      let zoomstarted;
+      let zoomed;
+      let zoomended;
       const eventData = { data: 'ok' };
 
       camera
@@ -323,7 +338,12 @@ test('camera', async t => {
     });
 
     await t.test('emits move and rotate events, preserving eventData', t => {
-      let movestarted, moved, moveended, rotatestarted, rotated, rotateended;
+      let movestarted;
+      let moved;
+      let moveended;
+      let rotatestarted;
+      let rotated;
+      let rotateended;
       const eventData = { data: 'ok' };
 
       camera
@@ -384,7 +404,8 @@ test('camera', async t => {
 
     await t.test('emits move events, preserving eventData', t => {
       const camera = createCamera();
-      let started, moved;
+      let started;
+      let moved;
       const eventData = { data: 'ok' };
 
       camera
@@ -459,7 +480,8 @@ test('camera', async t => {
 
     await t.test('emits move events, preserving eventData', t => {
       const camera = createCamera();
-      let started, moved;
+      let started;
+      let moved;
       const eventData = { data: 'ok' };
 
       camera
@@ -532,7 +554,10 @@ test('camera', async t => {
 
     await t.test('emits move and zoom events, preserving eventData', { skip: true }, t => {
       const camera = createCamera();
-      let movestarted, moved, zoomstarted, zoomed;
+      let movestarted;
+      let moved;
+      let zoomstarted;
+      let zoomed;
       const eventData = { data: 'ok' };
 
       t.plan(6);
@@ -622,7 +647,10 @@ test('camera', async t => {
 
     await t.test('emits move and rotate events, preserving eventData', { skip: true }, t => {
       const camera = createCamera();
-      let movestarted, moved, rotatestarted, rotated;
+      let movestarted;
+      let moved;
+      let rotatestarted;
+      let rotated;
       const eventData = { data: 'ok' };
 
       t.plan(6);
@@ -795,7 +823,14 @@ test('camera', async t => {
 
     await t.test('emits move, zoom, rotate, and pitch events, preserving eventData', { skip: true }, t => {
       const camera = createCamera();
-      let movestarted, moved, zoomstarted, zoomed, rotatestarted, rotated, pitchstarted, pitched;
+      let movestarted;
+      let moved;
+      let zoomstarted;
+      let zoomed;
+      let rotatestarted;
+      let rotated;
+      let pitchstarted;
+      let pitched;
       const eventData = { data: 'ok' };
 
       t.plan(18);
@@ -1145,7 +1180,14 @@ test('camera', async t => {
       t.plan(18);
 
       const camera = createCamera();
-      let movestarted, moved, zoomstarted, zoomed, rotatestarted, rotated, pitchstarted, pitched;
+      let movestarted;
+      let moved;
+      let zoomstarted;
+      let zoomed;
+      let rotatestarted;
+      let rotated;
+      let pitchstarted;
+      let pitched;
       const eventData = { data: 'ok' };
 
       camera
@@ -1220,17 +1262,17 @@ test('camera', async t => {
       //As I type this, the code path for guiding super-short flights is (and will probably remain) different.
       //As such; it deserves a separate test case. This test case flies the map from A to A.
       const camera = createCamera({ center: [100, 0] });
-      let movestarted,
-        moved,
-        zoomstarted,
-        zoomed,
-        zoomended,
-        rotatestarted,
-        rotated,
-        rotateended,
-        pitchstarted,
-        pitched,
-        pitchended;
+      let movestarted;
+      let moved;
+      let zoomstarted;
+      let zoomed;
+      let zoomended;
+      let rotatestarted;
+      let rotated;
+      let rotateended;
+      let pitchstarted;
+      let pitched;
+      let pitchended;
       const eventData = { data: 'ok' };
 
       camera
@@ -1688,7 +1730,9 @@ test('camera', async t => {
     });
 
     await t.test('resets duration to 0 if it exceeds maxDuration', t => {
-      let startTime, endTime, timeDiff;
+      let startTime;
+      let endTime;
+      let timeDiff;
       const camera = createCamera({ center: [37.63454, 55.75868], zoom: 18 });
 
       camera

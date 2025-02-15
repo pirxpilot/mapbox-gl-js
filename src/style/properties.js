@@ -1,5 +1,3 @@
-'use strict';
-
 const assert = require('assert');
 
 const { clone } = require('../util/object');
@@ -227,24 +225,26 @@ class TransitioningPropertyValue {
     if (!prior) {
       // No prior value.
       return finalValue;
-    } else if (now > this.end) {
+    }
+    if (now > this.end) {
       // Transition from prior value is now complete.
       this.prior = null;
       return finalValue;
-    } else if (this.value.isDataDriven()) {
+    }
+    if (this.value.isDataDriven()) {
       // Transitions to data-driven properties are not supported.
       // We snap immediately to the data-driven value so that, when we perform layout,
       // we see the data-driven function and can use it to populate vertex buffers.
       this.prior = null;
       return finalValue;
-    } else if (now < this.begin) {
+    }
+    if (now < this.begin) {
       // Transition hasn't started yet.
       return prior.possiblyEvaluate(parameters);
-    } else {
-      // Interpolate between recursively-calculated prior value and final.
-      const t = (now - this.begin) / (this.end - this.begin);
-      return this.property.interpolate(prior.possiblyEvaluate(parameters), finalValue, easeCubicInOut(t));
     }
+    // Interpolate between recursively-calculated prior value and final.
+    const t = (now - this.begin) / (this.end - this.begin);
+    return this.property.interpolate(prior.possiblyEvaluate(parameters), finalValue, easeCubicInOut(t));
   }
 }
 
@@ -386,9 +386,8 @@ class PossiblyEvaluatedPropertyValue {
   constantOr(value) {
     if (this.value.kind === 'constant') {
       return this.value.value;
-    } else {
-      return value;
     }
+    return value;
   }
 
   evaluate(feature, featureState) {
@@ -451,9 +450,8 @@ class DataConstantProperty {
     const interp = interpolate[this.specification.type];
     if (interp) {
       return interp(a, b, t);
-    } else {
-      return a;
     }
+    return a;
   }
 }
 
@@ -476,9 +474,8 @@ class DataDrivenProperty {
         { kind: 'constant', value: value.expression.evaluate(parameters) },
         parameters
       );
-    } else {
-      return new PossiblyEvaluatedPropertyValue(this, value.expression, parameters);
     }
+    return new PossiblyEvaluatedPropertyValue(this, value.expression, parameters);
   }
 
   interpolate(a, b, t) {
@@ -505,17 +502,15 @@ class DataDrivenProperty {
         { kind: 'constant', value: interp(a.value.value, b.value.value, t) },
         a.globals
       );
-    } else {
-      return a;
     }
+    return a;
   }
 
   evaluate(value, globals, feature, featureState) {
     if (value.kind === 'constant') {
       return value.value;
-    } else {
-      return value.evaluate(globals, feature, featureState);
     }
+    return value.evaluate(globals, feature, featureState);
   }
 }
 
@@ -533,18 +528,18 @@ class CrossFadedProperty {
   possiblyEvaluate(value, parameters) {
     if (value.value === undefined) {
       return undefined;
-    } else if (value.expression.kind === 'constant') {
+    }
+    if (value.expression.kind === 'constant') {
       const constant = value.expression.evaluate(parameters);
       return this._calculate(constant, constant, constant, parameters);
-    } else {
-      assert(!value.isDataDriven());
-      return this._calculate(
-        value.expression.evaluate(new EvaluationParameters(Math.floor(parameters.zoom - 1.0), parameters)),
-        value.expression.evaluate(new EvaluationParameters(Math.floor(parameters.zoom), parameters)),
-        value.expression.evaluate(new EvaluationParameters(Math.floor(parameters.zoom + 1.0), parameters)),
-        parameters
-      );
     }
+    assert(!value.isDataDriven());
+    return this._calculate(
+      value.expression.evaluate(new EvaluationParameters(Math.floor(parameters.zoom - 1.0), parameters)),
+      value.expression.evaluate(new EvaluationParameters(Math.floor(parameters.zoom), parameters)),
+      value.expression.evaluate(new EvaluationParameters(Math.floor(parameters.zoom + 1.0), parameters)),
+      parameters
+    );
   }
 
   _calculate(min, mid, max, parameters) {

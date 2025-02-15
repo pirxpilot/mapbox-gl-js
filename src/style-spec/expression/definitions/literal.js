@@ -1,5 +1,3 @@
-'use strict';
-
 const assert = require('assert');
 const { isValue, typeOf, Color } = require('../values');
 
@@ -13,7 +11,7 @@ class Literal {
     if (args.length !== 2)
       return context.error(`'literal' expression requires exactly one argument, but found ${args.length - 1} instead.`);
 
-    if (!isValue(args[1])) return context.error(`invalid value`);
+    if (!isValue(args[1])) return context.error('invalid value');
 
     const value = args[1];
     let type = typeOf(value);
@@ -46,20 +44,20 @@ class Literal {
   serialize() {
     if (this.type.kind === 'array' || this.type.kind === 'object') {
       return ['literal', this.value];
-    } else if (this.value instanceof Color) {
+    }
+    if (this.value instanceof Color) {
       // Constant-folding can generate Literal expressions that you
       // couldn't actually generate with a "literal" expression,
       // so we have to implement an equivalent serialization here
       return ['rgba'].concat(this.value.toArray());
-    } else {
-      assert(
-        this.value === null ||
-          typeof this.value === 'string' ||
-          typeof this.value === 'number' ||
-          typeof this.value === 'boolean'
-      );
-      return this.value;
     }
+    assert(
+      this.value === null ||
+        typeof this.value === 'string' ||
+        typeof this.value === 'number' ||
+        typeof this.value === 'boolean'
+    );
+    return this.value;
   }
 }
 

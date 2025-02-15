@@ -1,5 +1,3 @@
-'use strict';
-
 const Color = require('../style-spec/util/color');
 const DepthMode = require('../gl/depth_mode');
 const {
@@ -59,7 +57,11 @@ function drawFillTiles(painter, sourceCache, layer, coords, depthMode, colorMode
   const image = layer.paint.get('fill-pattern');
   if (painter.isPatternMissing(image)) return;
 
-  let drawMode, programName, uniformValues, indexBuffer, segments;
+  let drawMode;
+  let programName;
+  let uniformValues;
+  let indexBuffer;
+  let segments;
 
   if (!isOutline) {
     programName = image ? 'fillPattern' : 'fill';

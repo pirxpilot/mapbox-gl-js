@@ -1,5 +1,3 @@
-'use strict';
-
 const { create: createSource } = require('./source');
 const Tile = require('./tile');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
@@ -68,13 +66,13 @@ class SourceCache extends Evented {
   onAdd(map) {
     this.map = map;
     this._maxTileCacheSize = map ? map._maxTileCacheSize : null;
-    if (this._source && this._source.onAdd) {
+    if (this._source?.onAdd) {
       this._source.onAdd(map);
     }
   }
 
   onRemove(map) {
-    if (this._source && this._source.onRemove) {
+    if (this._source?.onRemove) {
       this._source.onRemove(map);
     }
   }
@@ -171,11 +169,11 @@ class SourceCache extends Evented {
   }
 
   _isIdRenderable(id) {
-    return this._tiles[id] && this._tiles[id].hasData() && !this._coveredTiles[id] && !this._tiles[id].holdingForFade();
+    return this._tiles[id]?.hasData() && !this._coveredTiles[id] && !this._tiles[id].holdingForFade();
   }
 
   _isIdRenderableForSymbols(id) {
-    return this._tiles[id] && this._tiles[id].hasData() && !this._coveredTiles[id];
+    return this._tiles[id]?.hasData() && !this._coveredTiles[id];
   }
 
   reload() {
@@ -238,7 +236,7 @@ class SourceCache extends Evented {
     const renderables = this.getRenderableIds();
     for (let i = 0; i < renderables.length; i++) {
       const borderId = renderables[i];
-      if (tile.neighboringTiles && tile.neighboringTiles[borderId]) {
+      if (tile.neighboringTiles?.[borderId]) {
         const borderTile = this.getTileByID(borderId);
         fillBorder(tile, borderTile);
         fillBorder(borderTile, tile);
@@ -249,7 +247,7 @@ class SourceCache extends Evented {
       tile.needsHillshadePrepare = true;
       let dx = borderTile.tileID.canonical.x - tile.tileID.canonical.x;
       const dy = borderTile.tileID.canonical.y - tile.tileID.canonical.y;
-      const dim = Math.pow(2, tile.tileID.canonical.z);
+      const dim = 2 ** tile.tileID.canonical.z;
       const borderId = borderTile.tileID.key;
       if (dx === 0 && dy === 0) return;
 
@@ -266,7 +264,7 @@ class SourceCache extends Evented {
       }
       if (!borderTile.dem || !tile.dem) return;
       tile.dem.backfillBorder(borderTile.dem, dx, dy);
-      if (tile.neighboringTiles && tile.neighboringTiles[borderId]) tile.neighboringTiles[borderId].backfilled = true;
+      if (tile.neighboringTiles?.[borderId]) tile.neighboringTiles[borderId].backfilled = true;
     }
   }
   /**
@@ -309,7 +307,7 @@ class SourceCache extends Evented {
 
         tile = this._tiles[parentID.key];
 
-        if (tile && tile.hasData()) {
+        if (tile?.hasData()) {
           topmostLoadedID = parentID;
         }
       }
@@ -337,7 +335,7 @@ class SourceCache extends Evented {
       if (!parent) return;
       const id = String(parent.key);
       const tile = this._tiles[id];
-      if (tile && tile.hasData()) {
+      if (tile?.hasData()) {
         return tile;
       }
       if (this._cache.has(parent)) {
@@ -707,10 +705,10 @@ class SourceCache extends Evented {
     const tileResults = [];
     const ids = this.getIds();
 
-    let minX = Infinity;
-    let minY = Infinity;
-    let maxX = -Infinity;
-    let maxY = -Infinity;
+    let minX = Number.POSITIVE_INFINITY;
+    let minY = Number.POSITIVE_INFINITY;
+    let maxX = Number.NEGATIVE_INFINITY;
+    let maxY = Number.NEGATIVE_INFINITY;
     const z = queryGeometry[0].zoom;
 
     for (let k = 0; k < queryGeometry.length; k++) {
@@ -728,7 +726,7 @@ class SourceCache extends Evented {
         continue;
       }
       const tileID = tile.tileID;
-      const scale = Math.pow(2, this.transform.zoom - tile.tileID.overscaledZ);
+      const scale = 2 ** (this.transform.zoom - tile.tileID.overscaledZ);
       const queryPadding = (maxPitchScaleFactor * tile.queryPadding * EXTENT) / tile.tileSize / scale;
 
       const tileSpaceBounds = [
@@ -813,7 +811,7 @@ SourceCache.maxUnderzooming = 3;
 function coordinateToTilePoint(tileID, coord) {
   const zoomedCoord = coord.zoomTo(tileID.canonical.z);
   return new Point(
-    (zoomedCoord.column - (tileID.canonical.x + tileID.wrap * Math.pow(2, tileID.canonical.z))) * EXTENT,
+    (zoomedCoord.column - (tileID.canonical.x + tileID.wrap * 2 ** tileID.canonical.z)) * EXTENT,
     (zoomedCoord.row - tileID.canonical.y) * EXTENT
   );
 }

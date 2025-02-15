@@ -1,5 +1,3 @@
-'use strict';
-
 class ZoomHistory {
   constructor() {
     this.first = true;

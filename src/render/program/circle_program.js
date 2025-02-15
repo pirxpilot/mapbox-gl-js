@@ -1,5 +1,3 @@
-'use strict';
-
 const { Uniform1i, Uniform1f, Uniform2f, UniformMatrix4f } = require('../uniform_binding');
 const pixelsToTileUnits = require('../../source/pixels_to_tile_units');
 
@@ -14,7 +12,8 @@ const circleUniforms = (context, locations) => ({
 const circleUniformValues = (painter, coord, tile, layer) => {
   const transform = painter.transform;
 
-  let pitchWithMap, extrudeScale;
+  let pitchWithMap;
+  let extrudeScale;
   if (layer.paint.get('circle-pitch-alignment') === 'map') {
     const pixelRatio = pixelsToTileUnits(tile, 1, transform.zoom);
     pitchWithMap = true;

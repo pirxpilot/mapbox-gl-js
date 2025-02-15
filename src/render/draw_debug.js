@@ -1,5 +1,3 @@
-'use strict';
-
 const { mat4 } = require('@mapbox/gl-matrix');
 const EXTENT = require('../data/extent');
 const { PosArray } = require('../data/array_types');
@@ -45,7 +43,7 @@ function drawDebugTile(painter, sourceCache, coord) {
   );
 
   const tileRawData = sourceCache.getTileByID(coord.key).latestRawTileData;
-  const tileByteLength = (tileRawData && tileRawData.byteLength) || 0;
+  const tileByteLength = tileRawData?.byteLength || 0;
   const tileSizeKb = Math.floor(tileByteLength / 1024);
   const vertices = createTextVertices(`${coord.toString()} ${tileSizeKb}kb`, 50, 200, 5);
   const debugTextArray = new PosArray();
@@ -61,7 +59,7 @@ function drawDebugTile(painter, sourceCache, coord) {
   // Draw the halo with multiple 1px lines instead of one wider line because
   // the gl spec doesn't guarantee support for lines with width > 1.
   const tileSize = sourceCache.getTile(coord).tileSize;
-  const onePixel = EXTENT / (Math.pow(2, painter.transform.zoom - coord.overscaledZ) * tileSize);
+  const onePixel = EXTENT / (2 ** (painter.transform.zoom - coord.overscaledZ) * tileSize);
   const translations = [
     [-1, -1],
     [-1, 1],
@@ -394,7 +392,14 @@ function createTextVertices(text, left, baseline, scale) {
   scale = scale || 1;
 
   const strokes = [];
-  let i, len, j, len2, glyph, x, y, prev;
+  let i;
+  let len;
+  let j;
+  let len2;
+  let glyph;
+  let x;
+  let y;
+  let prev;
 
   for (i = 0, len = text.length; i < len; i++) {
     glyph = simplexFont[text[i]];

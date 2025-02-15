@@ -1,5 +1,3 @@
-'use strict';
-
 const { test } = require('mapbox-gl-js-test');
 const { StructArrayLayout3i6, FeatureIndexArray } = require('../../../src/data/array_types');
 

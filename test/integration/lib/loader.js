@@ -1,5 +1,3 @@
-'use strict';
-
 const path = require('path');
 const colors = require('chalk');
 const { readFileSync } = require('fs');
@@ -58,7 +56,7 @@ module.exports = function () {
       source.urls = source.urls.map(localizeURL);
     }
 
-    if (source.data && typeof source.data == 'string') {
+    if (source.data && typeof source.data === 'string') {
       source.data = localizeURL(source.data);
       source.data = loadJSON(source.data);
     }
@@ -151,7 +149,7 @@ module.exports = function () {
   return {
     localizeURLs: async function (style) {
       await localizeStyleURLs(style);
-      if (style.metadata && style.metadata.test && style.metadata.test.operations) {
+      if (style.metadata?.test?.operations) {
         style.metadata.test.operations.forEach(op => {
           if (op[0] === 'addSource') {
             localizeSourceURLs(op[2]);

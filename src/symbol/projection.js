@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 const { mat4, vec4 } = require('@mapbox/gl-matrix');
@@ -565,17 +563,17 @@ function placeGlyphAlongLine(
 }
 
 const hiddenGlyphAttributes = new Float32Array([
-  -Infinity,
-  -Infinity,
+  Number.NEGATIVE_INFINITY,
+  Number.NEGATIVE_INFINITY,
   0,
-  -Infinity,
-  -Infinity,
+  Number.NEGATIVE_INFINITY,
+  Number.NEGATIVE_INFINITY,
   0,
-  -Infinity,
-  -Infinity,
+  Number.NEGATIVE_INFINITY,
+  Number.NEGATIVE_INFINITY,
   0,
-  -Infinity,
-  -Infinity,
+  Number.NEGATIVE_INFINITY,
+  Number.NEGATIVE_INFINITY,
   0
 ]);
 
@@ -594,8 +592,8 @@ function hideGlyphs(num, dynamicLayoutVertexArray) {
 // For line label layout, we're not using z output and our w input is always 1
 // This custom matrix transformation ignores those components to make projection faster
 function xyTransformMat4(out, a, m) {
-  const x = a[0],
-    y = a[1];
+  const x = a[0];
+  const y = a[1];
   out[0] = m[0] * x + m[4] * y + m[12];
   out[1] = m[1] * x + m[5] * y + m[13];
   out[3] = m[3] * x + m[7] * y + m[15];

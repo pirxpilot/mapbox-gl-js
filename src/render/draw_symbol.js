@@ -1,5 +1,3 @@
-'use strict';
-
 const drawCollisionDebug = require('./draw_collision_debug');
 
 const pixelsToTileUnits = require('../source/pixels_to_tile_units');
@@ -162,9 +160,9 @@ function drawLayerSymbols(
       );
     }
 
-    const matrix = painter.translatePosMatrix(coord.posMatrix, tile, translate, translateAnchor),
-      uLabelPlaneMatrix = alongLine ? identityMat4 : labelPlaneMatrix,
-      uglCoordMatrix = painter.translatePosMatrix(glCoordMatrix, tile, translate, translateAnchor, true);
+    const matrix = painter.translatePosMatrix(coord.posMatrix, tile, translate, translateAnchor);
+    const uLabelPlaneMatrix = alongLine ? identityMat4 : labelPlaneMatrix;
+    const uglCoordMatrix = painter.translatePosMatrix(glCoordMatrix, tile, translate, translateAnchor, true);
 
     let uniformValues;
     if (isSDF) {

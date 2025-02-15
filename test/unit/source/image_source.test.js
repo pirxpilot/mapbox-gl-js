@@ -66,7 +66,7 @@ test('ImageSource', async t => {
     const source = createSource({ url: new ArrayBuffer(0) });
     source.on('data', e => {
       if (e.dataType === 'source' && e.sourceDataType === 'content') {
-        t.ok(typeof source.tileID == 'object');
+        t.equal(typeof source.tileID, 'object');
         t.end();
       }
     });

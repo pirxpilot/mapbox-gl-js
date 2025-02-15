@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * A coordinate is a column, row, zoom combination, often used
  * as the data component of a tile.
@@ -62,7 +60,7 @@ class Coordinate {
   }
 
   _zoomTo(zoom) {
-    const scale = Math.pow(2, zoom - this.zoom);
+    const scale = 2 ** (zoom - this.zoom);
     this.column *= scale;
     this.row *= scale;
     this.zoom = zoom;

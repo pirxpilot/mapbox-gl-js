@@ -1,5 +1,3 @@
-'use strict';
-
 const { LineLayoutArray } = require('../array_types');
 
 const { members: layoutAttributes } = require('./line_attributes');
@@ -44,7 +42,7 @@ const LINE_DISTANCE_BUFFER_BITS = 15;
 const LINE_DISTANCE_SCALE = 1 / 2;
 
 // The maximum line distance, in tile units, that fits in the buffer.
-const MAX_LINE_DISTANCE = Math.pow(2, LINE_DISTANCE_BUFFER_BITS - 1) / LINE_DISTANCE_SCALE;
+const MAX_LINE_DISTANCE = 2 ** (LINE_DISTANCE_BUFFER_BITS - 1) / LINE_DISTANCE_SCALE;
 
 function addLineVertex(layoutVertexBuffer, point, extrude, round, up, dir, linesofar) {
   layoutVertexBuffer.emplaceBack(
@@ -180,8 +178,8 @@ class LineBucket {
 
     this.distance = 0;
 
-    const beginCap = cap,
-      endCap = isPolygon ? 'butt' : cap;
+    const beginCap = cap;
+    const endCap = isPolygon ? 'butt' : cap;
     let startOfLine = true;
     let currentVertex;
     let prevVertex;
@@ -247,7 +245,7 @@ class LineBucket {
       // Find the cosine of the angle between the next and join normals
       // using dot product. The inverse of that is the miter length.
       const cosHalfAngle = joinNormal.x * nextNormal.x + joinNormal.y * nextNormal.y;
-      const miterLength = cosHalfAngle !== 0 ? 1 / cosHalfAngle : Infinity;
+      const miterLength = cosHalfAngle !== 0 ? 1 / cosHalfAngle : Number.POSITIVE_INFINITY;
 
       const isSharpCorner = cosHalfAngle < COS_HALF_SHARP_CORNER && prevVertex && nextVertex;
 
@@ -579,7 +577,8 @@ function scaleDistance(tileDistance, stats) {
  * @private
  */
 function calculateFullDistance(vertices, first, len) {
-  let currentVertex, nextVertex;
+  let currentVertex;
+  let nextVertex;
   let total = 0;
   for (let i = first; i < len - 1; i++) {
     currentVertex = vertices[i];

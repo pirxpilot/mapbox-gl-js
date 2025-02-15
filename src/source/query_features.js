@@ -1,5 +1,3 @@
-'use strict';
-
 const assert = require('assert');
 
 module.exports = {
@@ -83,11 +81,10 @@ function queryRenderedSymbols(styleLayers, sourceCaches, queryGeometry, params, 
           assert(sortedA >= 0);
           assert(sortedB >= 0);
           return sortedB - sortedA;
-        } else {
-          // Bucket hasn't been re-sorted based on angle, so use the
-          // reverse of the order the features appeared in the data.
-          return b.featureIndex - a.featureIndex;
         }
+        // Bucket hasn't been re-sorted based on angle, so use the
+        // reverse of the order the features appeared in the data.
+        return b.featureIndex - a.featureIndex;
       });
       for (const symbolFeature of layerSymbols) {
         resultFeatures.push(symbolFeature.feature);

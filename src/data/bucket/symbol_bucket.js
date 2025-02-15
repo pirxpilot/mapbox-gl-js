@@ -1,5 +1,3 @@
-'use strict';
-
 const {
   symbolLayoutAttributes,
   collisionVertexAttributes,
@@ -388,11 +386,11 @@ class SymbolBucket {
     const vertexStartIndex = segment.vertexLength;
 
     for (const symbol of quads) {
-      const tl = symbol.tl,
-        tr = symbol.tr,
-        bl = symbol.bl,
-        br = symbol.br,
-        tex = symbol.tex;
+      const tl = symbol.tl;
+      const tr = symbol.tr;
+      const bl = symbol.bl;
+      const br = symbol.br;
+      const tex = symbol.tex;
 
       const index = segment.vertexLength;
 
@@ -568,20 +566,19 @@ class SymbolBucket {
         };
         collisionArrays.textFeatureIndex = box.featureIndex;
         break; // Only one box allowed per instance
-      } else {
-        if (!collisionArrays.textCircles) {
-          collisionArrays.textCircles = [];
-          collisionArrays.textFeatureIndex = box.featureIndex;
-        }
-        const used = 1; // May be updated at collision detection time
-        collisionArrays.textCircles.push(
-          box.anchorPointX,
-          box.anchorPointY,
-          box.radius,
-          box.signedDistanceFromAnchor,
-          used
-        );
       }
+      if (!collisionArrays.textCircles) {
+        collisionArrays.textCircles = [];
+        collisionArrays.textFeatureIndex = box.featureIndex;
+      }
+      const used = 1; // May be updated at collision detection time
+      collisionArrays.textCircles.push(
+        box.anchorPointX,
+        box.anchorPointY,
+        box.radius,
+        box.signedDistanceFromAnchor,
+        used
+      );
     }
     for (let k = iconStartIndex; k < iconEndIndex; k++) {
       // An icon can only have one box now, so this indexing is a bit vestigial...
@@ -638,8 +635,8 @@ class SymbolBucket {
       symbolInstanceIndexes.push(i);
     }
 
-    const sin = Math.sin(angle),
-      cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const cos = Math.cos(angle);
 
     symbolInstanceIndexes.sort((aIndex, bIndex) => {
       const a = this.symbolInstances[aIndex];

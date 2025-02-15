@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 /**
@@ -158,16 +156,14 @@ class CollisionFeature {
           // there isn't enough room for the label after the beginning of the line
           // checkMaxAngle should have already caught this
           return;
-        } else {
-          // The line doesn't extend far enough back for all of our padding,
-          // but we got far enough to show the label under most conditions.
-          index = 0;
-          break;
         }
-      } else {
-        anchorDistance -= line[index].dist(p);
-        p = line[index];
+        // The line doesn't extend far enough back for all of our padding,
+        // but we got far enough to show the label under most conditions.
+        index = 0;
+        break;
       }
+      anchorDistance -= line[index].dist(p);
+      p = line[index];
     } while (anchorDistance > paddingStartDistance);
 
     let segmentLength = line[index].dist(line[index + 1]);

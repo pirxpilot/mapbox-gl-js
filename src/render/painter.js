@@ -1,5 +1,3 @@
-'use strict';
-
 const browser = require('../util/browser');
 
 const { mat4 } = require('@mapbox/gl-matrix');
@@ -63,7 +61,7 @@ class Painter {
     // Within each layer there are multiple distinct z-planes that can be drawn to.
     // This is implemented using the WebGL depth buffer.
     this.numSublayers = SourceCache.maxUnderzooming + SourceCache.maxOverzooming + 1;
-    this.depthEpsilon = 1 / Math.pow(2, 16);
+    this.depthEpsilon = 1 / 2 ** 16;
 
     this.depthRboNeedsClear = true;
 
@@ -228,11 +226,11 @@ class Painter {
       const a = 1 / numOverdrawSteps;
 
       return new ColorMode([gl.CONSTANT_COLOR, gl.ONE], new Color(a, a, a, 0), [true, true, true, true]);
-    } else if (this.renderPass === 'opaque') {
-      return ColorMode.unblended;
-    } else {
-      return ColorMode.alphaBlended;
     }
+    if (this.renderPass === 'opaque') {
+      return ColorMode.unblended;
+    }
+    return ColorMode.alphaBlended;
   }
 
   depthModeForSublayer(n, mask, func) {

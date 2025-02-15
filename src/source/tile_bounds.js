@@ -1,5 +1,3 @@
-'use strict';
-
 const LngLatBounds = require('../geo/lng_lat_bounds');
 
 const { clamp } = require('../util/util');
@@ -29,13 +27,13 @@ class TileBounds {
   }
 
   lngX(lng, zoom) {
-    return (lng + 180) * (Math.pow(2, zoom) / 360);
+    return (lng + 180) * (2 ** zoom / 360);
   }
 
   latY(lat, zoom) {
     const f = clamp(Math.sin((Math.PI / 180) * lat), -0.9999, 0.9999);
-    const scale = Math.pow(2, zoom) / (2 * Math.PI);
-    return Math.pow(2, zoom - 1) + 0.5 * Math.log((1 + f) / (1 - f)) * -scale;
+    const scale = 2 ** zoom / (2 * Math.PI);
+    return 2 ** (zoom - 1) + 0.5 * Math.log((1 + f) / (1 - f)) * -scale;
   }
 }
 

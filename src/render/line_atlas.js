@@ -1,5 +1,3 @@
-'use strict';
-
 const warn = require('../util/warn');
 
 /**

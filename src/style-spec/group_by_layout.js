@@ -1,5 +1,3 @@
-'use strict';
-
 const refProperties = require('./util/ref_properties');
 
 function stringify(obj) {

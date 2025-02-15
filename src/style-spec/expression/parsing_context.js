@@ -1,5 +1,3 @@
-'use strict';
-
 const Scope = require('./scope');
 
 const { checkSubtype } = require('./types');
@@ -121,13 +119,14 @@ class ParsingContext {
       }
 
       return this.error(`Unknown expression "${op}". If you wanted a literal array, use ["literal", [...]].`, 0);
-    } else if (typeof expr === 'undefined') {
-      return this.error(`'undefined' value invalid. Use null instead.`);
-    } else if (typeof expr === 'object') {
-      return this.error(`Bare objects invalid. Use ["literal", {...}] instead.`);
-    } else {
-      return this.error(`Expected an array, but found ${typeof expr} instead.`);
     }
+    if (typeof expr === 'undefined') {
+      return this.error(`'undefined' value invalid. Use null instead.`);
+    }
+    if (typeof expr === 'object') {
+      return this.error(`Bare objects invalid. Use ["literal", {...}] instead.`);
+    }
+    return this.error(`Expected an array, but found ${typeof expr} instead.`);
   }
 
   /**
@@ -174,9 +173,11 @@ function isConstant(expression) {
 
   if (expression instanceof Var) {
     return isConstant(expression.boundExpression);
-  } else if (expression instanceof CompoundExpression && expression.name === 'error') {
+  }
+  if (expression instanceof CompoundExpression && expression.name === 'error') {
     return false;
-  } else if (expression instanceof CollatorExpression) {
+  }
+  if (expression instanceof CollatorExpression) {
     // Although the results of a Collator expression with fixed arguments
     // generally shouldn't change between executions, we can't serialize them
     // as constant expressions because results change based on environment.

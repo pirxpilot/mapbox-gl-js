@@ -157,18 +157,18 @@ test('loadData', async t => {
     const worker = createWorker();
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {
       t.equal(err, null);
-      t.notOk(result && result.abandoned);
+      t.notOk(result?.abandoned);
       worker.coalesce({ source: 'source1' });
     });
 
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {
       t.equal(err, null);
-      t.ok(result && result.abandoned);
+      t.ok(result?.abandoned);
     });
 
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {
       t.equal(err, null);
-      t.notOk(result && result.abandoned);
+      t.notOk(result?.abandoned);
       t.end();
     });
   });
@@ -182,13 +182,13 @@ test('loadData', async t => {
     const worker = createWorker();
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {
       t.equal(err, null);
-      t.notOk(result && result.abandoned);
+      t.notOk(result?.abandoned);
       t.end();
     });
 
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {
       t.equal(err, null);
-      t.ok(result && result.abandoned);
+      t.ok(result?.abandoned);
     });
 
     worker.removeSource({ source: 'source1' }, err => {

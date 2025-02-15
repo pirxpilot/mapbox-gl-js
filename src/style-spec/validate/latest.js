@@ -1,5 +1,3 @@
-'use strict';
-
 const validateStyle = require('../validate_style.min');
 
 /*

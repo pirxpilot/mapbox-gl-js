@@ -1,5 +1,3 @@
-'use strict';
-
 const assert = require('assert');
 
 const { BooleanType } = require('../types');
@@ -13,7 +11,7 @@ class Case {
 
   static parse(args, context) {
     if (args.length < 4) return context.error(`Expected at least 3 arguments, but found only ${args.length - 1}.`);
-    if (args.length % 2 !== 0) return context.error(`Expected an odd number of arguments.`);
+    if (args.length % 2 !== 0) return context.error('Expected an odd number of arguments.');
 
     let outputType;
     if (context.expectedType && context.expectedType.kind !== 'value') {

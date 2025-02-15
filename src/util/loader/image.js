@@ -1,5 +1,3 @@
-'use strict';
-
 const window = require('../window');
 
 module.exports = image;

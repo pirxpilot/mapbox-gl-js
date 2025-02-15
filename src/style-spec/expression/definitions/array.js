@@ -1,5 +1,3 @@
-'use strict';
-
 const { toString, array, ValueType, StringType, NumberType, BooleanType, checkSubtype } = require('../types');
 
 const { typeOf } = require('../values');

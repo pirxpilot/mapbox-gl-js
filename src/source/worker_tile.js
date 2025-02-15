@@ -1,5 +1,3 @@
-'use strict';
-
 const FeatureIndex = require('../data/feature_index');
 
 const { performSymbolLayout } = require('../symbol/symbol_layout');
@@ -62,7 +60,7 @@ class WorkerTile {
       if (sourceLayer.version === 1) {
         warn.once(
           `Vector tile source "${this.source}" layer "${sourceLayerId}" ` +
-            `does not use vector tile spec v2 and therefore may have some rendering errors.`
+            'does not use vector tile spec v2 and therefore may have some rendering errors.'
         );
       }
 
@@ -134,7 +132,8 @@ class WorkerTile {
     function maybePrepare() {
       if (error) {
         return callback(error);
-      } else if (glyphMap && imageMap) {
+      }
+      if (glyphMap && imageMap) {
         const glyphAtlas = new GlyphAtlas(glyphMap);
         const imageAtlas = new ImageAtlas(imageMap);
 

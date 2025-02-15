@@ -1,5 +1,3 @@
-'use strict';
-
 const assert = require('assert');
 
 const { ObjectType, ValueType, StringType, NumberType, BooleanType, checkSubtype, toString } = require('../types');
@@ -20,7 +18,7 @@ class Assertion {
   }
 
   static parse(args, context) {
-    if (args.length < 2) return context.error(`Expected at least one argument.`);
+    if (args.length < 2) return context.error('Expected at least one argument.');
 
     const name = args[0];
     assert(types[name], name);
@@ -43,7 +41,8 @@ class Assertion {
       const error = checkSubtype(this.type, typeOf(value));
       if (!error) {
         return value;
-      } else if (i === this.args.length - 1) {
+      }
+      if (i === this.args.length - 1) {
         throw new RuntimeError(
           `Expected value to be of type ${toString(this.type)}, but found ${toString(typeOf(value))} instead.`
         );

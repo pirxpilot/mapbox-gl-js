@@ -1,5 +1,3 @@
-'use strict';
-
 const v8 = require('./reference/v8.json');
 const latest = require('./reference/latest');
 const format = require('./format');

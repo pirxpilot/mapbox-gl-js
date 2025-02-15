@@ -1,5 +1,3 @@
-'use strict';
-
 const NullType = { kind: 'null' };
 const NumberType = { kind: 'number' };
 const StringType = { kind: 'string' };
@@ -26,9 +24,8 @@ function toString(type) {
       : type.itemType.kind === 'value'
         ? 'array'
         : `array<${itemType}>`;
-  } else {
-    return type.kind;
   }
+  return type.kind;
 }
 
 const valueMemberTypes = [NullType, NumberType, StringType, BooleanType, ColorType, ObjectType, array(ValueType)];
@@ -42,7 +39,8 @@ function checkSubtype(expected, t) {
   if (t.kind === 'error') {
     // Error is a subtype of every type
     return null;
-  } else if (expected.kind === 'array') {
+  }
+  if (expected.kind === 'array') {
     if (
       t.kind === 'array' &&
       !checkSubtype(expected.itemType, t.itemType) &&

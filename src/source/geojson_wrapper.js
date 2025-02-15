@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 const mvt = require('@mapbox/vector-tile');
@@ -24,7 +22,7 @@ class FeatureWrapper {
     // allowing non-integer values here results in a non-compliant PBF
     // that causes an exception when it is parsed with vector-tile-js
     if ('id' in feature && !isNaN(feature.id)) {
-      this.id = parseInt(feature.id, 10);
+      this.id = Number.parseInt(feature.id, 10);
     }
   }
 
@@ -35,17 +33,16 @@ class FeatureWrapper {
         geometry.push([new Point(point[0], point[1])]);
       }
       return geometry;
-    } else {
-      const geometry = [];
-      for (const ring of this._feature.geometry) {
-        const newRing = [];
-        for (const point of ring) {
-          newRing.push(new Point(point[0], point[1]));
-        }
-        geometry.push(newRing);
-      }
-      return geometry;
     }
+    const geometry = [];
+    for (const ring of this._feature.geometry) {
+      const newRing = [];
+      for (const point of ring) {
+        newRing.push(new Point(point[0], point[1]));
+      }
+      geometry.push(newRing);
+    }
+    return geometry;
   }
 
   toGeoJSON(x, y, z) {

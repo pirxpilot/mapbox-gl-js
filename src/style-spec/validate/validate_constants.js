@@ -1,5 +1,3 @@
-'use strict';
-
 const ValidationError = require('../error/validation_error');
 
 module.exports = function validateConstants(options) {
@@ -8,7 +6,6 @@ module.exports = function validateConstants(options) {
 
   if (constants) {
     return [new ValidationError(key, constants, 'constants have been deprecated as of v8')];
-  } else {
-    return [];
   }
+  return [];
 };

@@ -1,5 +1,3 @@
-'use strict';
-
 const { charHasUprightVerticalOrientation, charAllowsIdeographicBreaking } = require('../util/script_detection');
 const verticalizePunctuation = require('../util/verticalize_punctuation');
 const { plugin: rtlTextPlugin } = require('../source/rtl_text_plugin');
@@ -121,14 +119,13 @@ function determineAverageLineWidth(logicalInput, spacing, maxWidth, glyphs) {
 }
 
 function calculateBadness(lineWidth, targetWidth, penalty, isLastBreak) {
-  const raggedness = Math.pow(lineWidth - targetWidth, 2);
+  const raggedness = (lineWidth - targetWidth) ** 2;
   if (isLastBreak) {
     // Favor finals lines shorter than average over longer than average
     if (lineWidth < targetWidth) {
       return raggedness / 2;
-    } else {
-      return raggedness * 2;
     }
+    return raggedness * 2;
   }
 
   return raggedness + Math.abs(penalty) * penalty;
@@ -221,8 +218,8 @@ function determineLineBreaks(logicalInput, spacing, maxWidth, glyphs) {
 }
 
 function getAnchorAlignment(anchor) {
-  let horizontalAlign = 0.5,
-    verticalAlign = 0.5;
+  let horizontalAlign = 0.5;
+  let verticalAlign = 0.5;
 
   switch (anchor) {
     case 'right':

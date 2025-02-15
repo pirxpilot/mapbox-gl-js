@@ -1,5 +1,3 @@
-'use strict';
-
 const CollisionIndex = require('./collision_index');
 
 const EXTENT = require('../data/extent');
@@ -78,9 +76,8 @@ class CollisionGroups {
         };
       }
       return this.collisionGroups[sourceID];
-    } else {
-      return { ID: 0, predicate: null };
     }
+    return { ID: 0, predicate: null };
   }
 }
 
@@ -105,7 +102,7 @@ class Placement {
 
     const layout = symbolBucket.layers[0].layout;
 
-    const scale = Math.pow(2, this.transform.zoom - tile.tileID.overscaledZ);
+    const scale = 2 ** (this.transform.zoom - tile.tileID.overscaledZ);
     const textPixelRatio = tile.tileSize / EXTENT;
 
     const posMatrix = this.transform.calculatePosMatrix(tile.tileID.toUnwrapped());
@@ -532,17 +529,18 @@ function updateCollisionVertices(collisionVertexArray, placed, notUsed) {
 // So we pack the opacity into a uint8, and then repeat it four times
 // to make a single uint32 that we can upload for each glyph in the
 // label.
-const shift25 = Math.pow(2, 25);
-const shift24 = Math.pow(2, 24);
-const shift17 = Math.pow(2, 17);
-const shift16 = Math.pow(2, 16);
-const shift9 = Math.pow(2, 9);
-const shift8 = Math.pow(2, 8);
-const shift1 = Math.pow(2, 1);
+const shift25 = 2 ** 25;
+const shift24 = 2 ** 24;
+const shift17 = 2 ** 17;
+const shift16 = 2 ** 16;
+const shift9 = 2 ** 9;
+const shift8 = 2 ** 8;
+const shift1 = 2 ** 1;
 function packOpacity(opacityState) {
   if (opacityState.opacity === 0 && !opacityState.placed) {
     return 0;
-  } else if (opacityState.opacity === 1 && opacityState.placed) {
+  }
+  if (opacityState.opacity === 1 && opacityState.placed) {
     return 4294967295;
   }
   const targetBit = opacityState.placed ? 1 : 0;

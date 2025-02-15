@@ -1,5 +1,3 @@
-'use strict';
-
 const { Color } = require('./values');
 
 const geometryTypes = ['Unknown', 'Point', 'LineString', 'Polygon'];
@@ -22,7 +20,7 @@ class EvaluationContext {
   }
 
   properties() {
-    return (this.feature && this.feature.properties) || {};
+    return this.feature?.properties || {};
   }
 
   parseColor(input) {

@@ -1,5 +1,3 @@
-'use strict';
-
 const Color = require('../style-spec/util/color');
 
 class Uniform {

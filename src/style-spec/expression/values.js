@@ -1,5 +1,3 @@
-'use strict';
-
 const assert = require('assert');
 
 const Color = require('../util/color');
@@ -44,49 +42,61 @@ function validateRGBA(r, g, b, a) {
 function isValue(mixed) {
   if (mixed === null) {
     return true;
-  } else if (typeof mixed === 'string') {
+  }
+  if (typeof mixed === 'string') {
     return true;
-  } else if (typeof mixed === 'boolean') {
+  }
+  if (typeof mixed === 'boolean') {
     return true;
-  } else if (typeof mixed === 'number') {
+  }
+  if (typeof mixed === 'number') {
     return true;
-  } else if (mixed instanceof Color) {
+  }
+  if (mixed instanceof Color) {
     return true;
-  } else if (mixed instanceof Collator) {
+  }
+  if (mixed instanceof Collator) {
     return true;
-  } else if (Array.isArray(mixed)) {
+  }
+  if (Array.isArray(mixed)) {
     for (const item of mixed) {
       if (!isValue(item)) {
         return false;
       }
     }
     return true;
-  } else if (typeof mixed === 'object') {
+  }
+  if (typeof mixed === 'object') {
     for (const key in mixed) {
       if (!isValue(mixed[key])) {
         return false;
       }
     }
     return true;
-  } else {
-    return false;
   }
+  return false;
 }
 
 function typeOf(value) {
   if (value === null) {
     return NullType;
-  } else if (typeof value === 'string') {
+  }
+  if (typeof value === 'string') {
     return StringType;
-  } else if (typeof value === 'boolean') {
+  }
+  if (typeof value === 'boolean') {
     return BooleanType;
-  } else if (typeof value === 'number') {
+  }
+  if (typeof value === 'number') {
     return NumberType;
-  } else if (value instanceof Color) {
+  }
+  if (value instanceof Color) {
     return ColorType;
-  } else if (value instanceof Collator) {
+  }
+  if (value instanceof Collator) {
     return CollatorType;
-  } else if (Array.isArray(value)) {
+  }
+  if (Array.isArray(value)) {
     const length = value.length;
     let itemType;
 
@@ -95,7 +105,6 @@ function typeOf(value) {
       if (!itemType) {
         itemType = t;
       } else if (itemType === t) {
-        continue;
       } else {
         itemType = ValueType;
         break;
@@ -103,10 +112,9 @@ function typeOf(value) {
     }
 
     return array(itemType || ValueType, length);
-  } else {
-    assert(typeof value === 'object');
-    return ObjectType;
   }
+  assert(typeof value === 'object');
+  return ObjectType;
 }
 
 module.exports = {

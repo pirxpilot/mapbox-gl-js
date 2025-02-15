@@ -1,5 +1,3 @@
-'use strict';
-
 const window = require('../window');
 const config = require('../config');
 

@@ -1,5 +1,3 @@
-'use strict';
-
 const { UniformMatrix4f } = require('../uniform_binding');
 
 const clippingMaskUniforms = (context, locations) => ({

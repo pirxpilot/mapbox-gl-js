@@ -1,4 +1,3 @@
-'use strict';
 const Color = require('../style-spec/util/color');
 
 const ZERO = 0x0000;

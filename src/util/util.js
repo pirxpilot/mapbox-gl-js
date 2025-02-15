@@ -1,5 +1,3 @@
-'use strict';
-
 const UnitBezier = require('@mapbox/unitbezier');
 
 const Coordinate = require('../geo/coordinate');
@@ -19,8 +17,8 @@ const Coordinate = require('../geo/coordinate');
 function easeCubicInOut(t) {
   if (t <= 0) return 0;
   if (t >= 1) return 1;
-  const t2 = t * t,
-    t3 = t2 * t;
+  const t2 = t * t;
+  const t3 = t2 * t;
   return 4 * (t < 0.5 ? t3 : 3 * (t - t2) + t3 - 0.75);
 }
 
@@ -84,10 +82,10 @@ function wrap(n, min, max) {
  * @private
  */
 function getCoordinatesCenter(coords) {
-  let minX = Infinity;
-  let minY = Infinity;
-  let maxX = -Infinity;
-  let maxY = -Infinity;
+  let minX = Number.POSITIVE_INFINITY;
+  let minY = Number.POSITIVE_INFINITY;
+  let maxX = Number.NEGATIVE_INFINITY;
+  let maxY = Number.NEGATIVE_INFINITY;
 
   for (let i = 0; i < coords.length; i++) {
     minX = Math.min(minX, coords[i].column);

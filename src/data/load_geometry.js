@@ -1,5 +1,3 @@
-'use strict';
-
 const warn = require('../util/warn');
 
 const EXTENT = require('./extent');
@@ -10,8 +8,8 @@ const EXTENT = require('./extent');
 // number of bits used to represent the coordinate.
 function createBounds(bits) {
   return {
-    min: -1 * Math.pow(2, bits - 1),
-    max: Math.pow(2, bits - 1) - 1
+    min: -1 * 2 ** (bits - 1),
+    max: 2 ** (bits - 1) - 1
   };
 }
 

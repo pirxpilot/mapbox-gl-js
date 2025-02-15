@@ -1,5 +1,3 @@
-'use strict';
-
 const test = require('mapbox-gl-js-test').test;
 const async = require('../../../src/util/async');
 
@@ -43,7 +41,7 @@ test('async', async t => {
         }, data);
       },
       (err, results) => {
-        t.equal(err && err.message, 'hi');
+        t.equal(err?.message, 'hi');
         t.deepEqual(results, [4, 0, 1, 2]);
         done();
       }

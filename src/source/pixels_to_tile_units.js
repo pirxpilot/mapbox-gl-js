@@ -1,5 +1,3 @@
-'use strict';
-
 const EXTENT = require('../data/extent');
 
 /**
@@ -15,5 +13,5 @@ const EXTENT = require('../data/extent');
  * @private
  */
 module.exports = function (tile, pixelValue, z) {
-  return pixelValue * (EXTENT / (tile.tileSize * Math.pow(2, z - tile.tileID.overscaledZ)));
+  return pixelValue * (EXTENT / (tile.tileSize * 2 ** (z - tile.tileID.overscaledZ)));
 };

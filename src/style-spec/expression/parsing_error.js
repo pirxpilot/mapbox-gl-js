@@ -1,5 +1,3 @@
-'use strict';
-
 class ParsingError extends Error {
   constructor(key, message) {
     super(message);

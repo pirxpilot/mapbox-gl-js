@@ -1,5 +1,3 @@
-'use strict';
-
 /*
  * Call an asynchronous function on an array of arguments,
  * calling `callback` with the completed results of all calls.

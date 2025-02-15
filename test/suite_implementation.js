@@ -113,7 +113,7 @@ module.exports = function (style, options, _callback) {
   });
 
   function applyOperations(map, operations, callback) {
-    const operation = operations && operations[0];
+    const operation = operations?.[0];
     if (!operations || operations.length === 0) {
       callback();
     } else if (operation[0] === 'wait') {

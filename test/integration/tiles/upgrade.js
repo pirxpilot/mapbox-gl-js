@@ -1,5 +1,3 @@
-'use strict';
-
 const mapnik = require('mapnik');
 const fs = require('fs');
 const queue = require('d3-queue').queue;

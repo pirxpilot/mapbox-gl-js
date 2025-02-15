@@ -103,7 +103,7 @@ test('classifyRings + maxRings', async t => {
         { x: 10, y: 10 }
       ]
     ];
-    if (options && options.reverse) {
+    if (options?.reverse) {
       geometry[0].reverse();
       geometry[1].reverse();
       geometry[2].reverse();

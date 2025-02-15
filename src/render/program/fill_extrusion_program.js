@@ -1,5 +1,3 @@
-'use strict';
-
 const { patternUniformValues } = require('./pattern');
 const { Uniform1i, Uniform1f, Uniform2f, Uniform3f, UniformMatrix4f } = require('../uniform_binding');
 
@@ -63,7 +61,7 @@ const fillExtrusionUniformValues = (matrix, painter) => {
 
 const fillExtrusionPatternUniformValues = (matrix, painter, coord, image, tile) => {
   return Object.assign(fillExtrusionUniformValues(matrix, painter), patternUniformValues(image, painter, tile), {
-    u_height_factor: -Math.pow(2, coord.overscaledZ) / tile.tileSize / 8
+    u_height_factor: -(2 ** coord.overscaledZ) / tile.tileSize / 8
   });
 };
 

@@ -1,5 +1,3 @@
-'use strict';
-
 const { FillLayoutArray } = require('../array_types');
 
 const { members: layoutAttributes } = require('./fill_attributes');

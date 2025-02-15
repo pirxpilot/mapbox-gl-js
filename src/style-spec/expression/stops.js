@@ -1,5 +1,3 @@
-'use strict';
-
 const RuntimeError = require('./runtime_error');
 
 /**
@@ -11,7 +9,8 @@ function findStopLessThanOrEqualTo(stops, input) {
   let lowerIndex = 0;
   let upperIndex = n - 1;
   let currentIndex = 0;
-  let currentValue, upperValue;
+  let currentValue;
+  let upperValue;
 
   while (lowerIndex <= upperIndex) {
     currentIndex = Math.floor((lowerIndex + upperIndex) / 2);
@@ -20,7 +19,8 @@ function findStopLessThanOrEqualTo(stops, input) {
     if (input === currentValue || (input > currentValue && input < upperValue)) {
       // Search complete
       return currentIndex;
-    } else if (currentValue < input) {
+    }
+    if (currentValue < input) {
       lowerIndex = currentIndex + 1;
     } else if (currentValue > input) {
       upperIndex = currentIndex - 1;

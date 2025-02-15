@@ -1,5 +1,3 @@
-'use strict';
-
 const assert = require('assert');
 
 const { typeOf } = require('../values');
@@ -19,7 +17,7 @@ class Match {
 
   static parse(args, context) {
     if (args.length < 5) return context.error(`Expected at least 4 arguments, but found only ${args.length - 1}.`);
-    if (args.length % 2 !== 1) return context.error(`Expected an even number of arguments.`);
+    if (args.length % 2 !== 1) return context.error('Expected an even number of arguments.');
 
     let inputType;
     let outputType;
@@ -43,12 +41,15 @@ class Match {
 
       for (const label of labels) {
         if (typeof label !== 'number' && typeof label !== 'string') {
-          return labelContext.error(`Branch labels must be numbers or strings.`);
-        } else if (typeof label === 'number' && Math.abs(label) > Number.MAX_SAFE_INTEGER) {
+          return labelContext.error('Branch labels must be numbers or strings.');
+        }
+        if (typeof label === 'number' && Math.abs(label) > Number.MAX_SAFE_INTEGER) {
           return labelContext.error(`Branch labels must be integers no larger than ${Number.MAX_SAFE_INTEGER}.`);
-        } else if (typeof label === 'number' && Math.floor(label) !== label) {
-          return labelContext.error(`Numeric branch labels must be integer values.`);
-        } else if (!inputType) {
+        }
+        if (typeof label === 'number' && Math.floor(label) !== label) {
+          return labelContext.error('Numeric branch labels must be integer values.');
+        }
+        if (!inputType) {
           inputType = typeOf(label);
         } else if (labelContext.checkSubtype(inputType, typeOf(label))) {
           return null;

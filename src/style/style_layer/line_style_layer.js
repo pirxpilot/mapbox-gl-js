@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 const StyleLayer = require('../style_layer');
@@ -98,9 +96,8 @@ module.exports = LineStyleLayer;
 function getLineWidth(lineWidth, lineGapWidth) {
   if (lineGapWidth > 0) {
     return lineGapWidth + 2 * lineWidth;
-  } else {
-    return lineWidth;
   }
+  return lineWidth;
 }
 
 function offsetLine(rings, offset) {

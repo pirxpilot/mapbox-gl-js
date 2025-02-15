@@ -1,5 +1,3 @@
-'use strict';
-
 const { parseCSSColor } = require('csscolorparser');
 
 /**

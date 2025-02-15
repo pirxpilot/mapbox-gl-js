@@ -1,5 +1,3 @@
-'use strict';
-
 const { test } = require('mapbox-gl-js-test');
 const Color = require('../../../src/style-spec/util/color');
 
@@ -14,8 +12,8 @@ test('Color.parse', async t => {
 
 test('Color#toString', async t => {
   const purple = Color.parse('purple');
-  t.equal(purple && purple.toString(), 'rgba(128,0,128,1)');
+  t.equal(purple?.toString(), 'rgba(128,0,128,1)');
   const translucentGreen = Color.parse('rgba(26, 207, 26, .73)');
-  t.equal(translucentGreen && translucentGreen.toString(), 'rgba(26,207,26,0.73)');
+  t.equal(translucentGreen?.toString(), 'rgba(26,207,26,0.73)');
   t.end();
 });

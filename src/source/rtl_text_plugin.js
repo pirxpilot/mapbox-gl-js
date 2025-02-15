@@ -1,5 +1,3 @@
-'use strict';
-
 const { Event, Evented } = require('../util/evented');
 
 let pluginRequested = false;

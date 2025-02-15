@@ -1,5 +1,3 @@
-'use strict';
-
 const browser = require('../util/browser');
 const { RGBAImage } = require('../util/image');
 const loadImage = require('../util/loader/image');

@@ -1,5 +1,3 @@
-'use strict';
-
 const DOM = require('../../util/dom');
 
 const browser = require('../../util/browser');

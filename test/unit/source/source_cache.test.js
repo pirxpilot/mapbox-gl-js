@@ -115,8 +115,8 @@ test('SourceCache#addTile', async t => {
 
   await t.test('uses cached tile', async t => {
     const tileID = new OverscaledTileID(0, 0, 0, 0, 0);
-    let load = 0,
-      add = 0;
+    let load = 0;
+    let add = 0;
 
     const sourceCache = createSourceCache({
       loadTile: function (tile, callback) {
@@ -213,8 +213,8 @@ test('SourceCache#addTile', async t => {
 
   await t.test('does not reuse wrapped tile', async t => {
     const tileID = new OverscaledTileID(0, 0, 0, 0, 0);
-    let load = 0,
-      add = 0;
+    let load = 0;
+    let add = 0;
 
     const sourceCache = createSourceCache({
       loadTile: function (tile, callback) {
@@ -275,8 +275,8 @@ test('SourceCache#removeTile', async t => {
 
   await t.test('aborts and unloads unfinished tile', async t => {
     const tileID = new OverscaledTileID(0, 0, 0, 0, 0);
-    let abort = 0,
-      unload = 0;
+    let abort = 0;
+    let unload = 0;
 
     const sourceCache = createSourceCache({
       abortTile: function (tile) {
@@ -579,7 +579,7 @@ test('SourceCache#update', async t => {
 
     const sourceCache = createSourceCache({
       loadTile: function (tile, callback) {
-        tile.timeAdded = Infinity;
+        tile.timeAdded = Number.POSITIVE_INFINITY;
         tile.state = 'loaded';
         tile.registerFadeDuration(100);
         callback();
@@ -615,7 +615,7 @@ test('SourceCache#update', async t => {
 
     const sourceCache = createSourceCache({
       loadTile: function (tile, callback) {
-        tile.timeAdded = Infinity;
+        tile.timeAdded = Number.POSITIVE_INFINITY;
         tile.state = 'loaded';
         tile.registerFadeDuration(100);
         callback();
@@ -1255,8 +1255,8 @@ test('SourceCache#_updateRetainedTiles', async t => {
 test('SourceCache#clearTiles', async t => {
   await t.test('unloads tiles', async t => {
     const coord = new OverscaledTileID(0, 0, 0, 0, 0);
-    let abort = 0,
-      unload = 0;
+    let abort = 0;
+    let unload = 0;
 
     const sourceCache = createSourceCache({
       abortTile: function (tile) {

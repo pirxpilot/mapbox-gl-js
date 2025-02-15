@@ -1,5 +1,3 @@
-'use strict';
-
 const DOM = require('../../util/dom');
 
 const { bezier } = require('../../util/util');
@@ -9,10 +7,10 @@ const assert = require('assert');
 const makeFrame = require('./frame');
 const makeInertia = require('./inertia');
 
-const inertiaLinearity = 0.25,
-  inertiaEasing = bezier(0, 0, inertiaLinearity, 1),
-  inertiaMaxSpeed = 180, // deg/s
-  inertiaDeceleration = 720; // deg/s^2
+const inertiaLinearity = 0.25;
+const inertiaEasing = bezier(0, 0, inertiaLinearity, 1);
+const inertiaMaxSpeed = 180; // deg/s
+const inertiaDeceleration = 720; // deg/s^2
 
 /**
  * The `DragRotateHandler` allows the user to rotate the map by clicking and
@@ -222,9 +220,9 @@ function dragRotateHandler(map, { element, button = 'right', bearingSnap = 0, pi
     const mapBearing = map.getBearing();
     let bearing = map._normalizeBearing(mapBearing, previousBearing);
 
-    const flingDiff = last.value - first.value,
-      sign = flingDiff < 0 ? -1 : 1,
-      flingDuration = (last.time - first.time) / 1000;
+    const flingDiff = last.value - first.value;
+    const sign = flingDiff < 0 ? -1 : 1;
+    const flingDuration = (last.time - first.time) / 1000;
 
     if (flingDiff === 0 || flingDuration === 0) {
       return { empty: true };

@@ -1,5 +1,3 @@
-'use strict';
-
 const window = require('../util/window');
 const { HTMLImageElement, HTMLCanvasElement, HTMLVideoElement, ImageData } = window;
 
@@ -17,7 +15,7 @@ class Texture {
     const { context } = this;
     const { gl } = context;
 
-    this.useMipmap = Boolean(options && options.useMipmap);
+    this.useMipmap = Boolean(options?.useMipmap);
     gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
     if (resize) {

@@ -1,5 +1,3 @@
-'use strict';
-
 const { toString, ValueType, BooleanType, CollatorType } = require('../types');
 
 function isComparableType(type) {
@@ -30,7 +28,7 @@ function makeComparison(op, negate) {
     }
 
     static parse(args, context) {
-      if (args.length !== 3 && args.length !== 4) return context.error(`Expected two or three arguments.`);
+      if (args.length !== 3 && args.length !== 4) return context.error('Expected two or three arguments.');
 
       const lhs = context.parse(args[1], 1, ValueType);
       if (!lhs) return null;
@@ -50,7 +48,7 @@ function makeComparison(op, negate) {
       let collator = null;
       if (args.length === 4) {
         if (lhs.type.kind !== 'string' && rhs.type.kind !== 'string') {
-          return context.error(`Cannot use collator to compare non-string types.`);
+          return context.error('Cannot use collator to compare non-string types.');
         }
         collator = context.parse(args[3], 3, CollatorType);
         if (!collator) return null;

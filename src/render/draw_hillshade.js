@@ -1,5 +1,3 @@
-'use strict';
-
 const Texture = require('./texture');
 const StencilMode = require('../gl/stencil_mode');
 const DepthMode = require('../gl/depth_mode');
@@ -21,7 +19,6 @@ function drawHillshade(painter, sourceCache, layer, tileIDs) {
     const tile = sourceCache.getTile(tileID);
     if (tile.needsHillshadePrepare && painter.renderPass === 'offscreen') {
       prepareHillshade(painter, tile, layer, sourceMaxZoom, depthMode, stencilMode, colorMode);
-      continue;
     } else if (painter.renderPass === 'translucent') {
       renderHillshade(painter, tile, layer, depthMode, stencilMode, colorMode);
     }
@@ -87,7 +84,7 @@ function prepareHillshade(painter, tile, layer, sourceMaxZoom, depthMode, stenci
   // base 10 - 0, 1, 6, 236 (this order is reversed in the resulting array via the overflow.
   // first 8 bits represent 236, so the r component of the texture pixel will be 236 etc.)
   // base 2 - 0000 0000, 0000 0001, 0000 0110, 1110 1100
-  if (tile.dem && tile.dem.data) {
+  if (tile.dem?.data) {
     const tileSize = tile.dem.dim;
     const textureStride = tile.dem.stride;
 

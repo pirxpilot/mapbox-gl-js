@@ -1,5 +1,3 @@
-'use strict';
-
 const StyleLayer = require('../style_layer');
 
 const SymbolBucket = require('../../data/bucket/symbol_bucket');

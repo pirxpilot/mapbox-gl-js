@@ -1,5 +1,3 @@
-'use strict';
-
 const { toString } = require('./types');
 
 const assert = require('assert');
@@ -113,9 +111,8 @@ class CompoundExpression {
 function stringifySignature(signature) {
   if (Array.isArray(signature)) {
     return `(${signature.map(toString).join(', ')})`;
-  } else {
-    return `(${toString(signature.type)}...)`;
   }
+  return `(${toString(signature.type)}...)`;
 }
 
 module.exports = CompoundExpression;

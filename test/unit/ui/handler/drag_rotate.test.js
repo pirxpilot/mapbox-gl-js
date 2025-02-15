@@ -645,7 +645,7 @@ test('DragRotateHandler does not begin a drag if preventDefault is called on the
   });
 });
 
-test(`DragRotateHandler can be disabled after mousedown (#2419)`, async t => {
+test('DragRotateHandler can be disabled after mousedown (#2419)', async t => {
   const map = createMap();
 
   const rotatestart = t.spy();

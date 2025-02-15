@@ -1,5 +1,3 @@
-'use strict';
-
 const CircleBucket = require('./circle_bucket');
 
 const { register } = require('../../util/web_worker_transfer');

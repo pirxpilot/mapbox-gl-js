@@ -1,5 +1,3 @@
-'use strict';
-
 const { NumberType } = require('../types');
 
 const { findStopLessThanOrEqualTo } = require('../stops');
@@ -25,7 +23,7 @@ class Step {
     }
 
     if ((args.length - 1) % 2 !== 0) {
-      return context.error(`Expected an even number of arguments.`);
+      return context.error('Expected an even number of arguments.');
     }
 
     input = context.parse(input, 1, NumberType);
@@ -38,7 +36,7 @@ class Step {
       outputType = context.expectedType;
     }
 
-    rest.unshift(-Infinity);
+    rest.unshift(Number.NEGATIVE_INFINITY);
 
     for (let i = 0; i < rest.length; i += 2) {
       const label = rest[i];

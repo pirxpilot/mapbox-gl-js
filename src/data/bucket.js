@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * The `Bucket` interface is the single point of knowledge about turning vector
  * tiles into WebGL buffers.

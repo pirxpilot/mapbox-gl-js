@@ -1,5 +1,3 @@
-'use strict';
-
 const ValidationError = require('../error/validation_error');
 const getType = require('../util/get_type');
 const validate = require('./validate');
@@ -15,7 +13,8 @@ module.exports = function validateLight(options) {
   const rootType = getType(light);
   if (light === undefined) {
     return errors;
-  } else if (rootType !== 'object') {
+  }
+  if (rootType !== 'object') {
     errors = errors.concat([new ValidationError('light', light, `object expected, ${rootType} found`)]);
     return errors;
   }

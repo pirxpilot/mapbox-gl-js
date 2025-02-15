@@ -1,5 +1,3 @@
-'use strict';
-
 const { register } = require('../util/web_worker_transfer');
 
 class OpacityState {

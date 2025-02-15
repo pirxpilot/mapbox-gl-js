@@ -1,5 +1,3 @@
-'use strict';
-
 const { charHasRotatedVerticalOrientation } = require('./script_detection');
 
 const verticalizedCharacterMap = {

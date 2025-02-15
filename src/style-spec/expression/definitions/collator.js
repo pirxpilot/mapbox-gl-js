@@ -1,5 +1,3 @@
-'use strict';
-
 const { StringType, BooleanType, CollatorType } = require('../types');
 
 class Collator {
@@ -34,11 +32,11 @@ class CollatorExpression {
   }
 
   static parse(args, context) {
-    if (args.length !== 2) return context.error(`Expected one argument.`);
+    if (args.length !== 2) return context.error('Expected one argument.');
 
     const options = args[1];
     if (typeof options !== 'object' || Array.isArray(options))
-      return context.error(`Collator options argument must be an object.`);
+      return context.error('Collator options argument must be an object.');
 
     const caseSensitive = context.parse(
       options['case-sensitive'] === undefined ? false : options['case-sensitive'],

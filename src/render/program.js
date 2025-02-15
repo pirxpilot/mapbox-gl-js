@@ -1,5 +1,3 @@
-'use strict';
-
 const browser = require('../util/browser');
 
 const shaders = require('../shaders');

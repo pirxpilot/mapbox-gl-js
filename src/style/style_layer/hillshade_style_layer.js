@@ -1,5 +1,3 @@
-'use strict';
-
 const StyleLayer = require('../style_layer');
 
 const properties = require('./hillshade_style_layer_properties');

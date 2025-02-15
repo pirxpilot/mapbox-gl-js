@@ -1,5 +1,3 @@
-'use strict';
-
 const { CircleLayoutArray } = require('../array_types');
 
 const { members: layoutAttributes } = require('./circle_attributes');

@@ -51,29 +51,21 @@
     "rules": {
       "recommended": true,
       "correctness": {
-        "noConstructorReturn": "off",
         "noNodejsModules": "off",
-        "noUndeclaredVariables": "error",
-        "noUnnecessaryContinue": "off"
+        "noUndeclaredVariables": "error"
       },
       "complexity": {
         "noForEach": "off",
         "noThisInStatic": "off",
         "noUselessThisAlias":"off",
         "useArrowFunction": "off",
-        "useOptionalChain": "off",
         "useLiteralKeys": "off"
       },
       "style": {
         "noArguments": "off",
         "noParameterAssign": "off",
-        "noUnusedTemplateLiteral": "off",
-        "noUselessElse": "off",
         "useDefaultParameterLast": "off",
-        "useExponentiationOperator": "off",
         "useNodejsImportProtocol": "off",
-        "useNumberNamespace": "off",
-        "useSingleVarDeclarator": "off",
         "useTemplate": "off"
       },
       "performance": {
@@ -83,31 +75,11 @@
         "noAssignInExpressions": "off",
         "noControlCharactersInRegex": "off",
         "noFallthroughSwitchClause": "off",
-        "noGlobalIsFinite": "off",
         "noGlobalIsNan": "off",
         "noPrototypeBuiltins": "off",
         "noShadowRestrictedNames": "off",
-        "noRedundantUseStrict": "off",
         "useValidTypeof": "off"
       }
     }
-  },
-  "overrides": [
-    {
-      "include": [
-        "test"
-      ],
-        "linter": {
-          "rules": {
-            "style": {
-              "useConst": "off"
-            },
-            "suspicious": {
-              "noDoubleEquals": "off",
-              "noSelfCompare": "off"
-            }
-          }
-      }
-    }
-  ]
+  }
 }

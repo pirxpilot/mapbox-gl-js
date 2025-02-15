@@ -1,5 +1,3 @@
-'use strict';
-
 const cacheControl = require('../util/cache_control');
 const { deepEqual } = require('../util/object');
 const uniqueId = require('../util/unique_id');
@@ -222,7 +220,7 @@ class Tile {
 
     if (!layer) return;
 
-    const filter = featureFilter(params && params.filter);
+    const filter = featureFilter(params?.filter);
     const { z, x, y } = this.tileID.canonical;
     const coord = { z, x, y };
 
@@ -353,10 +351,9 @@ class Tile {
     if (this.expirationTime) {
       if (this.expiredRequestCount) {
         return 1000 * (1 << Math.min(this.expiredRequestCount - 1, 31));
-      } else {
-        // Max value for `setTimeout` implementations is a 32 bit integer; cap this accordingly
-        return Math.min(this.expirationTime - new Date().getTime(), Math.pow(2, 31) - 1);
       }
+      // Max value for `setTimeout` implementations is a 32 bit integer; cap this accordingly
+      return Math.min(this.expirationTime - new Date().getTime(), 2 ** 31 - 1);
     }
   }
 
@@ -376,7 +373,7 @@ class Tile {
       if (!sourceLayer || !sourceLayerStates || Object.keys(sourceLayerStates).length === 0) continue;
 
       bucket.update(sourceLayerStates, sourceLayer);
-      if (painter && painter.style) {
+      if (painter?.style) {
         this.queryPadding = Math.max(this.queryPadding, painter.style.getLayer(bucket.layerIds[0]).queryRadius(bucket));
       }
     }

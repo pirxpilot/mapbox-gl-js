@@ -1,5 +1,3 @@
-'use strict';
-
 const ZoomHistory = require('./zoom_history');
 const { isStringInSupportedScript } = require('../util/script_detection');
 const { plugin: rtlTextPlugin } = require('../source/rtl_text_plugin');
@@ -29,9 +27,8 @@ class EvaluationParameters {
   crossFadingFactor() {
     if (this.fadeDuration === 0) {
       return 1;
-    } else {
-      return Math.min((this.now - this.zoomHistory.lastIntegerZoomTime) / this.fadeDuration, 1);
     }
+    return Math.min((this.now - this.zoomHistory.lastIntegerZoomTime) / this.fadeDuration, 1);
   }
 }
 

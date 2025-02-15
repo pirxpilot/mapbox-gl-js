@@ -1,5 +1,3 @@
-'use strict';
-
 const ValidationError = require('../error/validation_error');
 const { unbundle } = require('../util/unbundle_jsonlint');
 const validateObject = require('./validate_object');
@@ -78,7 +76,7 @@ module.exports = function validateSource(options) {
         new ValidationError(
           key,
           null,
-          `Please use runtime APIs to add canvas sources, rather than including them in stylesheets.`,
+          'Please use runtime APIs to add canvas sources, rather than including them in stylesheets.',
           'source.canvas'
         )
       );

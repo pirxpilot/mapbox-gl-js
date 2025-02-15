@@ -1,5 +1,3 @@
-'use strict';
-
 const DEMData = require('../data/dem_data');
 
 class RasterDEMTileWorkerSource {
@@ -17,9 +15,9 @@ class RasterDEMTileWorkerSource {
   }
 
   removeTile(params) {
-    const loaded = this.loaded,
-      uid = params.uid;
-    if (loaded && loaded[uid]) {
+    const loaded = this.loaded;
+    const uid = params.uid;
+    if (loaded?.[uid]) {
       delete loaded[uid];
     }
   }

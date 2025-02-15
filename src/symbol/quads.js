@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 const { GLYPH_PBF_BORDER } = require('../style/parse_glyph_pbf');
@@ -35,28 +33,32 @@ function getIconQuads(anchor, shapedIcon, layer, alongLine, shapedText, feature)
   const left = shapedIcon.left - border / image.pixelRatio;
   const bottom = shapedIcon.bottom + border / image.pixelRatio;
   const right = shapedIcon.right + border / image.pixelRatio;
-  let tl, tr, br, bl;
+  let tl;
+  let tr;
+  let br;
+  let bl;
 
   // text-fit mode
   if (layout.get('icon-text-fit') !== 'none' && shapedText) {
-    const iconWidth = right - left,
-      iconHeight = bottom - top,
-      size = layout.get('text-size').evaluate(feature, {}) / 24,
-      textLeft = shapedText.left * size,
-      textRight = shapedText.right * size,
-      textTop = shapedText.top * size,
-      textBottom = shapedText.bottom * size,
-      textWidth = textRight - textLeft,
-      textHeight = textBottom - textTop,
-      padT = layout.get('icon-text-fit-padding')[0],
-      padR = layout.get('icon-text-fit-padding')[1],
-      padB = layout.get('icon-text-fit-padding')[2],
-      padL = layout.get('icon-text-fit-padding')[3],
-      offsetY = layout.get('icon-text-fit') === 'width' ? (textHeight - iconHeight) * 0.5 : 0,
-      offsetX = layout.get('icon-text-fit') === 'height' ? (textWidth - iconWidth) * 0.5 : 0,
-      width = layout.get('icon-text-fit') === 'width' || layout.get('icon-text-fit') === 'both' ? textWidth : iconWidth,
-      height =
-        layout.get('icon-text-fit') === 'height' || layout.get('icon-text-fit') === 'both' ? textHeight : iconHeight;
+    const iconWidth = right - left;
+    const iconHeight = bottom - top;
+    const size = layout.get('text-size').evaluate(feature, {}) / 24;
+    const textLeft = shapedText.left * size;
+    const textRight = shapedText.right * size;
+    const textTop = shapedText.top * size;
+    const textBottom = shapedText.bottom * size;
+    const textWidth = textRight - textLeft;
+    const textHeight = textBottom - textTop;
+    const padT = layout.get('icon-text-fit-padding')[0];
+    const padR = layout.get('icon-text-fit-padding')[1];
+    const padB = layout.get('icon-text-fit-padding')[2];
+    const padL = layout.get('icon-text-fit-padding')[3];
+    const offsetY = layout.get('icon-text-fit') === 'width' ? (textHeight - iconHeight) * 0.5 : 0;
+    const offsetX = layout.get('icon-text-fit') === 'height' ? (textWidth - iconWidth) * 0.5 : 0;
+    const width =
+      layout.get('icon-text-fit') === 'width' || layout.get('icon-text-fit') === 'both' ? textWidth : iconWidth;
+    const height =
+      layout.get('icon-text-fit') === 'height' || layout.get('icon-text-fit') === 'both' ? textHeight : iconHeight;
     tl = new Point(textLeft + offsetX - padL, textTop + offsetY - padT);
     tr = new Point(textLeft + offsetX + padR + width, textTop + offsetY - padT);
     br = new Point(textLeft + offsetX + padR + width, textTop + offsetY + padB + height);
@@ -72,9 +74,9 @@ function getIconQuads(anchor, shapedIcon, layer, alongLine, shapedText, feature)
   const angle = (layer.layout.get('icon-rotate').evaluate(feature, {}) * Math.PI) / 180;
 
   if (angle) {
-    const sin = Math.sin(angle),
-      cos = Math.cos(angle),
-      matrix = [cos, -sin, sin, cos];
+    const sin = Math.sin(angle);
+    const cos = Math.cos(angle);
+    const matrix = [cos, -sin, sin, cos];
 
     tl._matMult(matrix);
     tr._matMult(matrix);
@@ -149,9 +151,9 @@ function getGlyphQuads(anchor, shaping, layer, alongLine, feature, positions) {
     }
 
     if (textRotate) {
-      const sin = Math.sin(textRotate),
-        cos = Math.cos(textRotate),
-        matrix = [cos, -sin, sin, cos];
+      const sin = Math.sin(textRotate);
+      const cos = Math.cos(textRotate);
+      const matrix = [cos, -sin, sin, cos];
 
       tl._matMult(matrix);
       tr._matMult(matrix);

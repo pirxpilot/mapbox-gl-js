@@ -1,5 +1,3 @@
-'use strict';
-
 const extend = require('../util/extend');
 const { unbundle, deepUnbundle } = require('../util/unbundle_jsonlint');
 const { isExpression } = require('../expression');
@@ -44,15 +42,16 @@ module.exports = function validate(options) {
 
   if (valueSpec.expression && isFunction(unbundle(value))) {
     return validateFunction(options);
-  } else if (valueSpec.expression && isExpression(deepUnbundle(value))) {
-    return validateExpression(options);
-  } else if (valueSpec.type && VALIDATORS[valueSpec.type]) {
-    return VALIDATORS[valueSpec.type](options);
-  } else {
-    return validateObject(
-      extend({}, options, {
-        valueSpec: valueSpec.type ? styleSpec[valueSpec.type] : valueSpec
-      })
-    );
   }
+  if (valueSpec.expression && isExpression(deepUnbundle(value))) {
+    return validateExpression(options);
+  }
+  if (valueSpec.type && VALIDATORS[valueSpec.type]) {
+    return VALIDATORS[valueSpec.type](options);
+  }
+  return validateObject(
+    extend({}, options, {
+      valueSpec: valueSpec.type ? styleSpec[valueSpec.type] : valueSpec
+    })
+  );
 };

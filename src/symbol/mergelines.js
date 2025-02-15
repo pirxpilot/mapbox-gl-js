@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = function (features) {
   const leftIndex = {};
   const rightIndex = {};
@@ -46,8 +44,8 @@ module.exports = function (features) {
       continue;
     }
 
-    const leftKey = getKey(text, geom),
-      rightKey = getKey(text, geom, true);
+    const leftKey = getKey(text, geom);
+    const rightKey = getKey(text, geom, true);
 
     if (leftKey in rightIndex && rightKey in leftIndex && rightIndex[leftKey] !== leftIndex[rightKey]) {
       // found lines with the same text adjacent to both ends of the current line, merge all three

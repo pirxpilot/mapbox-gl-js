@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 const intersectionTests = require('../util/intersection_tests');
@@ -145,8 +143,8 @@ class CollisionIndex {
     // equivalent to pixel_to_tile_units
     const pixelsToTileUnits = 1 / (textPixelRatio * scale);
 
-    let firstTileDistance = 0,
-      lastTileDistance = 0;
+    let firstTileDistance = 0;
+    let lastTileDistance = 0;
     if (firstAndLastGlyph) {
       firstTileDistance = this.approximateTileDistance(
         firstAndLastGlyph.first.tileDistance,
@@ -229,11 +227,10 @@ class CollisionIndex {
               circles: [],
               offscreen: false
             };
-          } else {
-            // Don't early exit if we're showing the debug circles because we still want to calculate
-            // which circles are in use
-            collisionDetected = true;
           }
+          // Don't early exit if we're showing the debug circles because we still want to calculate
+          // which circles are in use
+          collisionDetected = true;
         }
       }
     }
@@ -257,10 +254,10 @@ class CollisionIndex {
     }
 
     const query = [];
-    let minX = Infinity;
-    let minY = Infinity;
-    let maxX = -Infinity;
-    let maxY = -Infinity;
+    let minX = Number.POSITIVE_INFINITY;
+    let minY = Number.POSITIVE_INFINITY;
+    let maxX = Number.NEGATIVE_INFINITY;
+    let maxY = Number.NEGATIVE_INFINITY;
     for (const point of viewportQueryGeometry) {
       const gridPoint = new Point(point.x + viewportPadding, point.y + viewportPadding);
       minX = Math.min(minX, gridPoint.x);

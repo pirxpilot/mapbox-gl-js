@@ -521,7 +521,7 @@ test('DragPanHandler does not begin a drag if preventDefault is called on the to
   });
 });
 
-test(`DragPanHandler can be disabled after mousedown (#2419)`, async t => {
+test('DragPanHandler can be disabled after mousedown (#2419)', async t => {
   const map = createMap();
 
   const dragstart = t.spy();

@@ -1,5 +1,3 @@
-'use strict';
-
 const Point = require('@mapbox/point-geometry');
 
 const window = require('./window');
@@ -100,8 +98,8 @@ DOM.mousePos = function (el, e) {
 };
 
 DOM.touchPos = function (el, e) {
-  const rect = el.getBoundingClientRect(),
-    points = [];
+  const rect = el.getBoundingClientRect();
+  const points = [];
   const touches = e.type === 'touchend' ? e.changedTouches : e.touches;
   for (let i = 0; i < touches.length; i++) {
     points.push(

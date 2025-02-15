@@ -1,5 +1,3 @@
-'use strict';
-
 const UnitBezier = require('@mapbox/unitbezier');
 
 const interpolate = require('../../util/interpolate');
@@ -38,14 +36,14 @@ class Interpolate {
     let [, interpolation, input, ...rest] = args;
 
     if (!Array.isArray(interpolation) || interpolation.length === 0) {
-      return context.error(`Expected an interpolation type expression.`, 1);
+      return context.error('Expected an interpolation type expression.', 1);
     }
 
     if (interpolation[0] === 'linear') {
       interpolation = { name: 'linear' };
     } else if (interpolation[0] === 'exponential') {
       const base = interpolation[1];
-      if (typeof base !== 'number') return context.error(`Exponential interpolation requires a numeric base.`, 1, 1);
+      if (typeof base !== 'number') return context.error('Exponential interpolation requires a numeric base.', 1, 1);
       interpolation = {
         name: 'exponential',
         base
@@ -72,7 +70,7 @@ class Interpolate {
     }
 
     if ((args.length - 1) % 2 !== 0) {
-      return context.error(`Expected an even number of arguments.`);
+      return context.error('Expected an even number of arguments.');
     }
 
     input = context.parse(input, 2, NumberType);
@@ -227,11 +225,11 @@ function exponentialInterpolation(input, base, lowerValue, upperValue) {
 
   if (difference === 0) {
     return 0;
-  } else if (base === 1) {
-    return progress / difference;
-  } else {
-    return (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
   }
+  if (base === 1) {
+    return progress / difference;
+  }
+  return (base ** progress - 1) / (base ** difference - 1);
 }
 
 module.exports = Interpolate;

@@ -1,5 +1,3 @@
-'use strict';
-
 const DOM = require('../../util/dom');
 const { bezier } = require('../../util/util');
 const window = require('../../util/window');

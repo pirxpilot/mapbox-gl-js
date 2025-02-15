@@ -1,5 +1,3 @@
-'use strict';
-
 const LngLat = require('./lng_lat');
 
 /**
@@ -24,7 +22,8 @@ class LngLatBounds {
   constructor(sw, ne) {
     if (!sw) {
       return;
-    } else if (ne) {
+    }
+    if (ne) {
       this.setSouthWest(sw).setNorthEast(ne);
     } else if (sw.length === 4) {
       this.setSouthWest([sw[0], sw[1]]).setNorthEast([sw[2], sw[3]]);
@@ -62,9 +61,10 @@ class LngLatBounds {
    * @returns {LngLatBounds} `this`
    */
   extend(obj) {
-    const sw = this._sw,
-      ne = this._ne;
-    let sw2, ne2;
+    const sw = this._sw;
+    const ne = this._ne;
+    let sw2;
+    let ne2;
 
     if (obj instanceof LngLat) {
       sw2 = obj;
@@ -78,9 +78,8 @@ class LngLatBounds {
       if (Array.isArray(obj)) {
         if (obj.every(Array.isArray)) {
           return this.extend(LngLatBounds.convert(obj));
-        } else {
-          return this.extend(LngLat.convert(obj));
         }
+        return this.extend(LngLat.convert(obj));
       }
       return this;
     }

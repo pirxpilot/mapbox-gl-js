@@ -1,5 +1,3 @@
-'use strict';
-
 const Reference = require('../reference/v8.json');
 const URL = require('url');
 
@@ -48,9 +46,8 @@ function eachPaint(layer, callback) {
 function resolveConstant(style, value) {
   if (typeof value === 'string' && value[0] === '@') {
     return resolveConstant(style, style.constants[value]);
-  } else {
-    return value;
   }
+  return value;
 }
 
 function eachProperty(style, options, callback) {
@@ -178,17 +175,18 @@ module.exports = function (style) {
 
     if (inputParsed.protocol !== 'mapbox:') {
       return input;
-    } else if (inputParsed.hostname === 'fontstack') {
+    }
+    if (inputParsed.hostname === 'fontstack') {
       assert(decodeURI(inputParsed.pathname) === '/{fontstack}/{range}.pbf');
       return 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf';
-    } else if (inputParsed.hostname === 'fonts') {
+    }
+    if (inputParsed.hostname === 'fonts') {
       assert(inputPathnameParts[1] === 'v1');
       assert(decodeURI(inputPathnameParts[3]) === '{fontstack}');
       assert(decodeURI(inputPathnameParts[4]) === '{range}.pbf');
       return `mapbox://fonts/${inputPathnameParts[2]}/{fontstack}/{range}.pbf`;
-    } else {
-      assert(false);
     }
+    assert(false);
 
     function assert(predicate) {
       if (!predicate) {
@@ -211,16 +209,17 @@ module.exports = function (style) {
     if (Array.isArray(font)) {
       // Assume it's a previously migrated font-array.
       return font;
-    } else if (typeof font === 'string') {
+    }
+    if (typeof font === 'string') {
       return splitAndTrim(font);
-    } else if (typeof font === 'object') {
+    }
+    if (typeof font === 'object') {
       font.stops.forEach(stop => {
         stop[1] = splitAndTrim(stop[1]);
       });
       return font;
-    } else {
-      throw new Error('unexpected font value');
     }
+    throw new Error('unexpected font value');
   }
 
   eachLayer(style, layer => {

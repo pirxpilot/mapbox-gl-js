@@ -1,5 +1,3 @@
-'use strict';
-
 const { getTileBBox } = require('@mapbox/whoots-js');
 
 const assert = require('assert');
@@ -9,8 +7,8 @@ const Coordinate = require('../geo/coordinate');
 class CanonicalTileID {
   constructor(z, x, y) {
     assert(z >= 0 && z <= 25);
-    assert(x >= 0 && x < Math.pow(2, z));
-    assert(y >= 0 && y < Math.pow(2, z));
+    assert(x >= 0 && x < 2 ** z);
+    assert(y >= 0 && y < 2 ** z);
     this.z = z;
     this.x = x;
     this.y = y;
@@ -33,7 +31,7 @@ class CanonicalTileID {
       .replace('{prefix}', (this.x % 16).toString(16) + (this.y % 16).toString(16))
       .replace('{z}', String(this.z))
       .replace('{x}', String(this.x))
-      .replace('{y}', String(scheme === 'tms' ? Math.pow(2, this.z) - this.y - 1 : this.y))
+      .replace('{y}', String(scheme === 'tms' ? 2 ** this.z - this.y - 1 : this.y))
       .replace('{quadkey}', quadkey)
       .replace('{bbox-epsg-3857}', bbox);
   }
@@ -65,15 +63,14 @@ class OverscaledTileID {
     const zDifference = this.canonical.z - targetZ;
     if (targetZ > this.canonical.z) {
       return new OverscaledTileID(targetZ, this.wrap, this.canonical.z, this.canonical.x, this.canonical.y);
-    } else {
-      return new OverscaledTileID(
-        targetZ,
-        this.wrap,
-        targetZ,
-        this.canonical.x >> zDifference,
-        this.canonical.y >> zDifference
-      );
     }
+    return new OverscaledTileID(
+      targetZ,
+      this.wrap,
+      targetZ,
+      this.canonical.x >> zDifference,
+      this.canonical.y >> zDifference
+    );
   }
 
   isChildOf(parent) {
@@ -129,7 +126,7 @@ class OverscaledTileID {
   }
 
   overscaleFactor() {
-    return Math.pow(2, this.overscaledZ - this.canonical.z);
+    return 2 ** (this.overscaledZ - this.canonical.z);
   }
 
   toUnwrapped() {
@@ -141,7 +138,7 @@ class OverscaledTileID {
   }
 
   toCoordinate() {
-    return new Coordinate(this.canonical.x + Math.pow(2, this.wrap), this.canonical.y, this.canonical.z);
+    return new Coordinate(this.canonical.x + 2 ** this.wrap, this.canonical.y, this.canonical.z);
   }
 }
 
@@ -153,8 +150,8 @@ function calculateKey(wrap, z, x, y) {
 }
 
 function getQuadkey(z, x, y) {
-  let quadkey = '',
-    mask;
+  let quadkey = '';
+  let mask;
   for (let i = z; i > 0; i--) {
     mask = 1 << (i - 1);
     quadkey += (x & mask ? 1 : 0) + (y & mask ? 2 : 0);

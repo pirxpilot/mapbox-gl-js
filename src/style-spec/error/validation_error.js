@@ -1,11 +1,9 @@
-'use strict';
-
 module.exports = class ValidationError {
   constructor(key, value, message, identifier) {
     this.message = (key ? `${key}: ` : '') + message;
     if (identifier) this.identifier = identifier;
 
-    if (value !== null && value !== undefined && value.__line__) {
+    if (value?.__line__) {
       this.line = value.__line__;
     }
   }

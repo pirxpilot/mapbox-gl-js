@@ -1,5 +1,3 @@
-'use strict';
-
 const config = require('../util/config');
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 const { pick } = require('../util/object');
@@ -115,7 +113,7 @@ class VectorTileSource extends Evented {
         return callback(err);
       }
 
-      if (data && data.resourceTiming) tile.resourceTiming = data.resourceTiming;
+      if (data?.resourceTiming) tile.resourceTiming = data.resourceTiming;
 
       if (this.map._refreshExpiredTiles) tile.setExpiryData(data);
       tile.loadVectorData(data, this.map.painter);

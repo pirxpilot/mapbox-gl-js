@@ -1,5 +1,3 @@
-'use strict';
-
 const DepthMode = require('../gl/depth_mode');
 const StencilMode = require('../gl/stencil_mode');
 const { collisionUniformValues } = require('./program/collision_program');

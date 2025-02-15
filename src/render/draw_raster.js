@@ -1,5 +1,3 @@
-'use strict';
-
 const { clamp } = require('../util/util');
 
 const ImageSource = require('../source/image_source');
@@ -37,10 +35,11 @@ function drawRaster(painter, sourceCache, layer, coords) {
 
     tile.registerFadeDuration(layer.paint.get('raster-fade-duration'));
 
-    const parentTile = sourceCache.findLoadedParent(coord, 0),
-      fade = getFadeValues(tile, parentTile, sourceCache, layer, painter.transform);
+    const parentTile = sourceCache.findLoadedParent(coord, 0);
+    const fade = getFadeValues(tile, parentTile, sourceCache, layer, painter.transform);
 
-    let parentScaleBy, parentTL;
+    let parentScaleBy;
+    let parentTL;
 
     const textureFilter = layer.paint.get('raster-resampling') === 'nearest' ? gl.NEAREST : gl.LINEAR;
 
@@ -51,7 +50,7 @@ function drawRaster(painter, sourceCache, layer, coords) {
 
     if (parentTile) {
       parentTile.texture.bind(textureFilter, gl.CLAMP_TO_EDGE, gl.LINEAR_MIPMAP_NEAREST);
-      parentScaleBy = Math.pow(2, parentTile.tileID.overscaledZ - tile.tileID.overscaledZ);
+      parentScaleBy = 2 ** (parentTile.tileID.overscaledZ - tile.tileID.overscaledZ);
       parentTL = [(tile.tileID.canonical.x * parentScaleBy) % 1, (tile.tileID.canonical.y * parentScaleBy) % 1];
     } else {
       tile.texture.bind(textureFilter, gl.CLAMP_TO_EDGE, gl.LINEAR_MIPMAP_NEAREST);
@@ -135,16 +134,14 @@ function getFadeValues(tile, parentTile, sourceCache, layer, transform) {
         opacity: 1,
         mix: 1 - childOpacity
       };
-    } else {
-      return {
-        opacity: childOpacity,
-        mix: 0
-      };
     }
-  } else {
     return {
-      opacity: 1,
+      opacity: childOpacity,
       mix: 0
     };
   }
+  return {
+    opacity: 1,
+    mix: 0
+  };
 }

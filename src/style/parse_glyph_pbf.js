@@ -1,5 +1,3 @@
-'use strict';
-
 const { AlphaImage } = require('../util/image');
 
 const Protobuf = require('@mapwhit/pbf');

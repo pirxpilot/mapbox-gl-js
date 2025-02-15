@@ -1,5 +1,3 @@
-'use strict';
-
 const { bindAll } = require('../util/object');
 const warn = require('../util/warn');
 
@@ -173,7 +171,7 @@ class Map extends Camera {
     options = Object.assign({}, defaultOptions, options);
 
     if (options.minZoom != null && options.maxZoom != null && options.minZoom > options.maxZoom) {
-      throw new Error(`maxZoom must be greater than minZoom`);
+      throw new Error('maxZoom must be greater than minZoom');
     }
 
     const transform = new Transform(options.minZoom, options.maxZoom, options.renderWorldCopies);
@@ -198,9 +196,8 @@ class Map extends Camera {
       const container = window.document.getElementById(options.container);
       if (!container) {
         throw new Error(`Container '${options.container}' not found.`);
-      } else {
-        this._container = container;
       }
+      this._container = container;
     } else if (options.container instanceof HTMLElement) {
       this._container = options.container;
     } else {
@@ -359,9 +356,8 @@ class Map extends Camera {
         [this.transform.lngRange[0], this.transform.latRange[0]],
         [this.transform.lngRange[1], this.transform.latRange[1]]
       );
-    } else {
-      return null;
     }
+    return null;
   }
 
   /**
@@ -411,7 +407,8 @@ class Map extends Camera {
       if (this.getZoom() < minZoom) this.setZoom(minZoom);
 
       return this;
-    } else throw new Error(`minZoom must be between ${defaultMinZoom} and the current maxZoom, inclusive`);
+    }
+    throw new Error(`minZoom must be between ${defaultMinZoom} and the current maxZoom, inclusive`);
   }
 
   /**
@@ -442,7 +439,8 @@ class Map extends Camera {
       if (this.getZoom() > maxZoom) this.setZoom(maxZoom);
 
       return this;
-    } else throw new Error(`maxZoom must be greater than the current minZoom`);
+    }
+    throw new Error('maxZoom must be greater than the current minZoom');
   }
 
   /**
@@ -719,9 +717,8 @@ class Map extends Camera {
     if (!style) {
       delete this.style;
       return this;
-    } else {
-      this.style = new Style(this, options || {});
     }
+    this.style = new Style(this, options || {});
 
     this.style.setEventedParent(this, { style: this.style });
 
@@ -778,7 +775,7 @@ class Map extends Camera {
    * @returns {boolean} A Boolean indicating whether the source is loaded.
    */
   isSourceLoaded(id) {
-    const source = this.style && this.style.sourceCaches[id];
+    const source = this.style?.sourceCaches[id];
     if (source === undefined) {
       this.fire(new ErrorEvent(new Error(`There is no source with ID '${id}'`)));
       return;
@@ -794,7 +791,7 @@ class Map extends Camera {
    */
 
   areTilesLoaded() {
-    const sources = this.style && this.style.sourceCaches;
+    const sources = this.style?.sourceCaches;
     for (const id in sources) {
       const source = sources[id];
       const tiles = source._tiles;
@@ -1349,14 +1346,12 @@ class Map extends Camera {
       this.style._updateSources(this.transform);
     }
 
-    this._placementDirty =
-      this.style &&
-      this.style._updatePlacement(
-        this.painter.transform,
-        this.showCollisionBoxes,
-        this._fadeDuration,
-        this._crossSourceCollisions
-      );
+    this._placementDirty = this.style?._updatePlacement(
+      this.painter.transform,
+      this.showCollisionBoxes,
+      this._fadeDuration,
+      this._crossSourceCollisions
+    );
 
     // Actually draw
     this.painter.render(this.style, {

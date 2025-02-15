@@ -1,5 +1,3 @@
-'use strict';
-
 const ValidationError = require('../error/validation_error');
 const getType = require('../util/get_type');
 const validate = require('./validate');
@@ -185,7 +183,11 @@ module.exports = function validateFunction(options) {
       return [new ValidationError(options.key, reportValue, message)];
     }
 
-    if (functionType === 'categorical' && type === 'number' && (!isFinite(value) || Math.floor(value) !== value)) {
+    if (
+      functionType === 'categorical' &&
+      type === 'number' &&
+      (!Number.isFinite(value) || Math.floor(value) !== value)
+    ) {
       return [new ValidationError(options.key, reportValue, `integer expected, found ${value}`)];
     }
 
@@ -196,15 +198,13 @@ module.exports = function validateFunction(options) {
       value < previousStopDomainValue
     ) {
       return [new ValidationError(options.key, reportValue, 'stop domain values must appear in ascending order')];
-    } else {
-      previousStopDomainValue = value;
     }
+    previousStopDomainValue = value;
 
     if (functionType === 'categorical' && value in stopDomainValues) {
       return [new ValidationError(options.key, reportValue, 'stop domain values must be unique')];
-    } else {
-      stopDomainValues[value] = true;
     }
+    stopDomainValues[value] = true;
 
     return [];
   }

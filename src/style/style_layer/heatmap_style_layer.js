@@ -1,5 +1,3 @@
-'use strict';
-
 const StyleLayer = require('../style_layer');
 
 const HeatmapBucket = require('../../data/bucket/heatmap_bucket');

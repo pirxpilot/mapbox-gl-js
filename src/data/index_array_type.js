@@ -1,5 +1,3 @@
-'use strict';
-
 const { LineIndexArray, TriangleIndexArray, LineStripIndexArray } = require('./array_types');
 
 /**

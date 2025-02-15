@@ -1,5 +1,3 @@
-'use strict';
-
 const assert = require('assert');
 
 const DOM = require('../../util/dom');
@@ -9,10 +7,10 @@ const { Event } = require('../../util/evented');
 const makeFrame = require('./frame');
 const makeInertia = require('./inertia');
 
-const inertiaLinearity = 0.3,
-  inertiaEasing = bezier(0, 0, inertiaLinearity, 1),
-  inertiaMaxSpeed = 1400, // px/s
-  inertiaDeceleration = 2500; // px/s^2
+const inertiaLinearity = 0.3;
+const inertiaEasing = bezier(0, 0, inertiaLinearity, 1);
+const inertiaMaxSpeed = 1400; // px/s
+const inertiaDeceleration = 2500; // px/s^2
 
 /**
  * The `DragPanHandler` allows the user to pan the map by clicking and dragging

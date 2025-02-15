@@ -463,8 +463,8 @@ test('Map', async t => {
 
   await t.test('#resize', async t => {
     await t.test('sets width and height from container offsets', (t, done) => {
-      const map = createMap(),
-        container = map.getContainer();
+      const map = createMap();
+      const container = map.getContainer();
 
       Object.defineProperty(container, 'offsetWidth', { value: 250 });
       Object.defineProperty(container, 'offsetHeight', { value: 250 });
@@ -477,8 +477,8 @@ test('Map', async t => {
     });
 
     await t.test('fires movestart, move, resize, and moveend events', async t => {
-      const map = createMap(),
-        events = [];
+      const map = createMap();
+      const events = [];
 
       ['movestart', 'move', 'resize', 'moveend'].forEach(event => {
         map.on(event, e => {
@@ -534,8 +534,8 @@ test('Map', async t => {
 
   await t.test('#getBounds', async t => {
     const map = createMap({ zoom: 0 });
-    t.deepEqual(parseFloat(map.getBounds().getCenter().lng.toFixed(10)), 0, 'getBounds');
-    t.deepEqual(parseFloat(map.getBounds().getCenter().lat.toFixed(10)), 0, 'getBounds');
+    t.deepEqual(Number.parseFloat(map.getBounds().getCenter().lng.toFixed(10)), 0, 'getBounds');
+    t.deepEqual(Number.parseFloat(map.getBounds().getCenter().lat.toFixed(10)), 0, 'getBounds');
 
     t.deepEqual(
       toFixed(map.getBounds().toArray()),
@@ -566,7 +566,7 @@ test('Map', async t => {
 
     function normalizeFixed(num, n) {
       // workaround for "-0.0000000000" ≠ "0.0000000000"
-      return parseFloat(num.toFixed(n)).toFixed(n);
+      return Number.parseFloat(num.toFixed(n)).toFixed(n);
     }
   });
 
@@ -755,13 +755,13 @@ test('Map', async t => {
   await t.test('throw on maxZoom smaller than minZoom at init', async t => {
     t.throws(() => {
       createMap({ minZoom: 10, maxZoom: 5 });
-    }, new Error(`maxZoom must be greater than minZoom`));
+    }, new Error('maxZoom must be greater than minZoom'));
   });
 
   await t.test('throw on maxZoom smaller than minZoom at init with falsey maxZoom', async t => {
     t.throws(() => {
       createMap({ minZoom: 1, maxZoom: 0 });
-    }, new Error(`maxZoom must be greater than minZoom`));
+    }, new Error('maxZoom must be greater than minZoom'));
   });
 
   await t.test('#remove', async t => {
