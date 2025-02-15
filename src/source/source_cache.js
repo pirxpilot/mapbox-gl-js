@@ -247,7 +247,7 @@ class SourceCache extends Evented {
       tile.needsHillshadePrepare = true;
       let dx = borderTile.tileID.canonical.x - tile.tileID.canonical.x;
       const dy = borderTile.tileID.canonical.y - tile.tileID.canonical.y;
-      const dim = Math.pow(2, tile.tileID.canonical.z);
+      const dim = 2 ** tile.tileID.canonical.z;
       const borderId = borderTile.tileID.key;
       if (dx === 0 && dy === 0) return;
 
@@ -726,7 +726,7 @@ class SourceCache extends Evented {
         continue;
       }
       const tileID = tile.tileID;
-      const scale = Math.pow(2, this.transform.zoom - tile.tileID.overscaledZ);
+      const scale = 2 ** (this.transform.zoom - tile.tileID.overscaledZ);
       const queryPadding = (maxPitchScaleFactor * tile.queryPadding * EXTENT) / tile.tileSize / scale;
 
       const tileSpaceBounds = [
@@ -811,7 +811,7 @@ SourceCache.maxUnderzooming = 3;
 function coordinateToTilePoint(tileID, coord) {
   const zoomedCoord = coord.zoomTo(tileID.canonical.z);
   return new Point(
-    (zoomedCoord.column - (tileID.canonical.x + tileID.wrap * Math.pow(2, tileID.canonical.z))) * EXTENT,
+    (zoomedCoord.column - (tileID.canonical.x + tileID.wrap * 2 ** tileID.canonical.z)) * EXTENT,
     (zoomedCoord.row - tileID.canonical.y) * EXTENT
   );
 }

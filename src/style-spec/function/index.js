@@ -288,5 +288,5 @@ function interpolationFactor(input, base, lowerValue, upperValue) {
   if (base === 1) {
     return progress / difference;
   }
-  return (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
+  return (base ** progress - 1) / (base ** difference - 1);
 }

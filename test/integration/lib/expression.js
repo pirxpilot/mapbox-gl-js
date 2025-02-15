@@ -28,7 +28,7 @@ function stripPrecision(x) {
       return x;
     }
 
-    const multiplier = Math.pow(10, Math.max(0, decimalSigFigs - Math.ceil(Math.log10(Math.abs(x)))));
+    const multiplier = 10 ** Math.max(0, decimalSigFigs - Math.ceil(Math.log10(Math.abs(x))));
 
     // We strip precision twice in a row here to avoid cases where
     // stripping an already stripped number will modify its value

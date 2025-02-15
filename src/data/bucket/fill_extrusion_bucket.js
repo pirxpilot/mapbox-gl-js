@@ -13,7 +13,7 @@ const EARCUT_MAX_RINGS = 500;
 const { register } = require('../../util/web_worker_transfer');
 const EvaluationParameters = require('../../style/evaluation_parameters');
 
-const FACTOR = Math.pow(2, 13);
+const FACTOR = 2 ** 13;
 
 function addVertex(vertexArray, x, y, nx, ny, nz, t, e) {
   vertexArray.emplaceBack(

@@ -50,7 +50,7 @@ function drawRaster(painter, sourceCache, layer, coords) {
 
     if (parentTile) {
       parentTile.texture.bind(textureFilter, gl.CLAMP_TO_EDGE, gl.LINEAR_MIPMAP_NEAREST);
-      parentScaleBy = Math.pow(2, parentTile.tileID.overscaledZ - tile.tileID.overscaledZ);
+      parentScaleBy = 2 ** (parentTile.tileID.overscaledZ - tile.tileID.overscaledZ);
       parentTL = [(tile.tileID.canonical.x * parentScaleBy) % 1, (tile.tileID.canonical.y * parentScaleBy) % 1];
     } else {
       tile.texture.bind(textureFilter, gl.CLAMP_TO_EDGE, gl.LINEAR_MIPMAP_NEAREST);

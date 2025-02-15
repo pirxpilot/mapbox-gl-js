@@ -119,7 +119,7 @@ function determineAverageLineWidth(logicalInput, spacing, maxWidth, glyphs) {
 }
 
 function calculateBadness(lineWidth, targetWidth, penalty, isLastBreak) {
-  const raggedness = Math.pow(lineWidth - targetWidth, 2);
+  const raggedness = (lineWidth - targetWidth) ** 2;
   if (isLastBreak) {
     // Favor finals lines shorter than average over longer than average
     if (lineWidth < targetWidth) {

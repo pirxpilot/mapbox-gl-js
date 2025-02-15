@@ -205,7 +205,7 @@ CompoundExpression.register(expressions, {
   ln2: [NumberType, [], () => Math.LN2],
   pi: [NumberType, [], () => Math.PI],
   e: [NumberType, [], () => Math.E],
-  '^': [NumberType, [NumberType, NumberType], (ctx, [b, e]) => Math.pow(b.evaluate(ctx), e.evaluate(ctx))],
+  '^': [NumberType, [NumberType, NumberType], (ctx, [b, e]) => b.evaluate(ctx) ** e.evaluate(ctx)],
   sqrt: [NumberType, [NumberType], (ctx, [x]) => Math.sqrt(x.evaluate(ctx))],
   log10: [NumberType, [NumberType], (ctx, [n]) => Math.log10(n.evaluate(ctx))],
   ln: [NumberType, [NumberType], (ctx, [n]) => Math.log(n.evaluate(ctx))],

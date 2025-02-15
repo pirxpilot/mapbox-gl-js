@@ -11,7 +11,7 @@ const collisionUniforms = (context, locations) => ({
 
 const collisionUniformValues = (matrix, transform, tile) => {
   const pixelRatio = pixelsToTileUnits(tile, 1, transform.zoom);
-  const scale = Math.pow(2, transform.zoom - tile.tileID.overscaledZ);
+  const scale = 2 ** (transform.zoom - tile.tileID.overscaledZ);
   const overscaleFactor = tile.tileID.overscaleFactor();
   return {
     u_matrix: matrix,

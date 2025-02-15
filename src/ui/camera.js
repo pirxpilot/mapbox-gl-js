@@ -595,7 +595,7 @@ class Camera extends Evented {
         } else {
           const scale = tr.zoomScale(tr.zoom - startZoom);
           const base = zoom > startZoom ? Math.min(2, finalScale) : Math.max(0.5, finalScale);
-          const speedup = Math.pow(base, 1 - k);
+          const speedup = base ** (1 - k);
           const newCenter = tr.unproject(from.add(delta.mult(k * speedup)).mult(scale));
           tr.setLocationAtPoint(tr.renderWorldCopies ? newCenter.wrap() : newCenter, pointAtOffset);
         }

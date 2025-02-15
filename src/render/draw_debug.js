@@ -59,7 +59,7 @@ function drawDebugTile(painter, sourceCache, coord) {
   // Draw the halo with multiple 1px lines instead of one wider line because
   // the gl spec doesn't guarantee support for lines with width > 1.
   const tileSize = sourceCache.getTile(coord).tileSize;
-  const onePixel = EXTENT / (Math.pow(2, painter.transform.zoom - coord.overscaledZ) * tileSize);
+  const onePixel = EXTENT / (2 ** (painter.transform.zoom - coord.overscaledZ) * tileSize);
   const translations = [
     [-1, -1],
     [-1, 1],

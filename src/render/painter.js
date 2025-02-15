@@ -61,7 +61,7 @@ class Painter {
     // Within each layer there are multiple distinct z-planes that can be drawn to.
     // This is implemented using the WebGL depth buffer.
     this.numSublayers = SourceCache.maxUnderzooming + SourceCache.maxOverzooming + 1;
-    this.depthEpsilon = 1 / Math.pow(2, 16);
+    this.depthEpsilon = 1 / 2 ** 16;
 
     this.depthRboNeedsClear = true;
 

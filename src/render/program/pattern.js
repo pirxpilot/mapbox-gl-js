@@ -7,8 +7,8 @@ function patternUniformValues(image, painter, tile) {
   assert(imagePosA && imagePosB);
   const { width, height } = painter.imageManager.getPixelSize();
 
-  const numTiles = Math.pow(2, tile.tileID.overscaledZ);
-  const tileSizeAtNearestZoom = (tile.tileSize * Math.pow(2, painter.transform.tileZoom)) / numTiles;
+  const numTiles = 2 ** tile.tileID.overscaledZ;
+  const tileSizeAtNearestZoom = (tile.tileSize * 2 ** painter.transform.tileZoom) / numTiles;
 
   const pixelX = tileSizeAtNearestZoom * (tile.tileID.canonical.x + tile.tileID.wrap * numTiles);
   const pixelY = tileSizeAtNearestZoom * tile.tileID.canonical.y;

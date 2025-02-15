@@ -45,7 +45,7 @@ class TileLayerIndex {
   //     more tolerant of small differences between tiles.
   getScaledCoordinates(symbolInstance, childTileID) {
     const zDifference = childTileID.canonical.z - this.tileID.canonical.z;
-    const scale = roundingFactor / Math.pow(2, zDifference);
+    const scale = roundingFactor / 2 ** zDifference;
     const anchor = symbolInstance.anchor;
     return {
       x: Math.floor((childTileID.canonical.x * EXTENT + anchor.x) * scale),
@@ -55,9 +55,7 @@ class TileLayerIndex {
 
   findMatches(symbolInstances, newTileID, zoomCrossTileIDs) {
     const tolerance =
-      this.tileID.canonical.z < newTileID.canonical.z
-        ? 1
-        : Math.pow(2, this.tileID.canonical.z - newTileID.canonical.z);
+      this.tileID.canonical.z < newTileID.canonical.z ? 1 : 2 ** (this.tileID.canonical.z - newTileID.canonical.z);
 
     for (const symbolInstance of symbolInstances) {
       if (symbolInstance.crossTileID) {

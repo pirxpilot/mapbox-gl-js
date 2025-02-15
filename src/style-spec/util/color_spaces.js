@@ -15,7 +15,7 @@ const rad2deg = 180 / Math.PI;
 
 // Utilities
 function xyz2lab(t) {
-  return t > t3 ? Math.pow(t, 1 / 3) : t / t2 + t0;
+  return t > t3 ? t ** (1 / 3) : t / t2 + t0;
 }
 
 function lab2xyz(t) {
@@ -23,12 +23,12 @@ function lab2xyz(t) {
 }
 
 function xyz2rgb(x) {
-  return 255 * (x <= 0.0031308 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055);
+  return 255 * (x <= 0.0031308 ? 12.92 * x : 1.055 * x ** (1 / 2.4) - 0.055);
 }
 
 function rgb2xyz(x) {
   x /= 255;
-  return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+  return x <= 0.04045 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
 }
 
 // LAB

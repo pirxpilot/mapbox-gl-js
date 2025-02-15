@@ -236,7 +236,7 @@ class Transform {
   }
 
   zoomScale(zoom) {
-    return Math.pow(2, zoom);
+    return 2 ** zoom;
   }
   scaleZoom(scale) {
     return Math.log(scale) / Math.LN2;
@@ -392,7 +392,7 @@ class Transform {
 
     const canonical = unwrappedTileID.canonical;
     const scale = this.worldSize / this.zoomScale(canonical.z);
-    const unwrappedX = canonical.x + Math.pow(2, canonical.z) * unwrappedTileID.wrap;
+    const unwrappedX = canonical.x + 2 ** canonical.z * unwrappedTileID.wrap;
 
     const posMatrix = mat4.identity(new Float64Array(16));
     mat4.translate(posMatrix, posMatrix, [unwrappedX * scale, canonical.y * scale, 0]);

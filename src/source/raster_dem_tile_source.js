@@ -84,7 +84,7 @@ class RasterDEMTileSource extends RasterTileSource {
 
   _getNeighboringTiles(tileID) {
     const canonical = tileID.canonical;
-    const dim = Math.pow(2, canonical.z);
+    const dim = 2 ** canonical.z;
 
     const px = (canonical.x - 1 + dim) % dim;
     const pxw = canonical.x === 0 ? tileID.wrap - 1 : tileID.wrap;
