@@ -1,18 +1,25 @@
-const window = require('./window');
+// TODO move code that assumes that `window` may not be set to relevant tests
 
-const now = window.performance?.now ? window.performance.now.bind(window.performance) : Date.now.bind(Date);
+const now =
+  typeof window === 'object' && window.performance?.now
+    ? window.performance.now.bind(window.performance)
+    : Date.now.bind(Date);
 
 const raf =
-  window.requestAnimationFrame ||
-  window.mozRequestAnimationFrame ||
-  window.webkitRequestAnimationFrame ||
-  window.msRequestAnimationFrame;
+  typeof window === 'object'
+    ? window.requestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.msRequestAnimationFrame
+    : fn => setTimeout(fn, 0);
 
 const cancel =
-  window.cancelAnimationFrame ||
-  window.mozCancelAnimationFrame ||
-  window.webkitCancelAnimationFrame ||
-  window.msCancelAnimationFrame;
+  typeof window === 'object'
+    ? window.cancelAnimationFrame ||
+      window.mozCancelAnimationFrame ||
+      window.webkitCancelAnimationFrame ||
+      window.msCancelAnimationFrame
+    : id => clearTimeout(id);
 
 /**
  * @private
@@ -44,9 +51,10 @@ const exported = {
     return context.getImageData(0, 0, img.width, img.height);
   },
 
-  hardwareConcurrency: window.navigator.hardwareConcurrency || 4,
+  hardwareConcurrency: typeof window === 'object' ? window.navigator.hardwareConcurrency : 4,
+
   get devicePixelRatio() {
-    return window.devicePixelRatio;
+    return typeof window === 'object' ? window.devicePixelRatio : 1;
   }
 };
 
