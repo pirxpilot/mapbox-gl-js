@@ -1,5 +1,5 @@
 PROJECT=mapbox-gl
-NODE_BIN=./build/node_modules/.bin
+NODE_BIN=./meta/node_modules/.bin
 
 all: check build
 .PHONY: all
@@ -27,7 +27,7 @@ build/min/package.json: package.json | $$(@D)/.dir
 
 GLSL = $(wildcard src/shaders/*.glsl)
 
-build/min/src/shaders/%.glsl.txt: src/shaders/%.glsl  | $$(@D)/.dir build/node_modules
+build/min/src/shaders/%.glsl.txt: src/shaders/%.glsl  | $$(@D)/.dir meta/node_modules
 	$(NODE_BIN)/webpack-glsl-minify \
 	    --preserveUniforms=true \
 	    --preserveDefines=true \
@@ -64,7 +64,7 @@ dist: build
 distdir:
 	mkdir -p dist
 
-DEPENDENCIES = build/node_modules $(CURDIR)/node_modules src/style-spec/node_modules
+DEPENDENCIES = meta/node_modules $(CURDIR)/node_modules src/style-spec/node_modules
 
 dependencies: | $(DEPENDENCIES)
 
@@ -81,11 +81,11 @@ dist/$(PROJECT)-worker.js: $(SRC) | dependencies distdir
 		$(ESBUILD_OPTIONS) \
 		--outfile=$@
 
-lint: | build/node_modules
+lint: | meta/node_modules
 	$(NODE_BIN)/biome ci
 .PHONY: lint
 
-format: | build/node_modules
+format: | meta/node_modules
 	$(NODE_BIN)/biome format --write
 .PHONY: format
 
@@ -94,7 +94,7 @@ test: test-unit
 test-integration: test-render test-query test-expression
 .NOTPARALLEL: test-render test-query test-expression
 
-test-unit test-render test-query: export NODE_PATH = build/node_modules
+test-unit test-render test-query: export NODE_PATH = meta/node_modules
 
 test-unit: dependencies
 	node --test test/unit/**/*.test.js
