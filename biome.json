@@ -51,7 +51,6 @@
     "rules": {
       "recommended": true,
       "correctness": {
-        "noConstructorReturn": "off",
         "noNodejsModules": "off",
         "noUndeclaredVariables": "error"
       },
