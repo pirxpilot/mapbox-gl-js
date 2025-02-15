@@ -1,3 +1,5 @@
+// This file is generated. Edit the template at meta/bin/generate-struct-arrays.js.ejs and instead.
+
 const assert = require('assert');
 const { Struct, StructArray } = require('../util/struct_array');
 const { register } = require('../util/web_worker_transfer');
@@ -654,6 +656,12 @@ class StructArrayLayout1ui2 extends StructArray {
     this.uint16[o2 + 0] = v0;
     return i;
   }
+
+  emplace(i, v0) {
+    const o2 = i * 1;
+    this.uint16[o2 + 0] = v0;
+    return i;
+  }
 }
 
 StructArrayLayout1ui2.prototype.bytesPerElement = 2;
@@ -1076,9 +1084,9 @@ module.exports = {
   LineIndexArray: StructArrayLayout2ui4,
   LineStripIndexArray: StructArrayLayout1ui2,
 
+  CollisionBoxArray,
   FeatureIndexArray,
   GlyphOffsetArray,
-  SymbolLineVertexArray,
   PlacedSymbolArray,
-  CollisionBoxArray
+  SymbolLineVertexArray
 };

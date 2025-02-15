@@ -123,3 +123,8 @@ clean-test:
 	# | xargs -t rm -r
 
 .PHONY: clean clean-test distclean
+
+generate-struct-arrays:
+	node meta/bin/generate-struct-arrays.js
+
+.PHONY: generate-struct-arrays

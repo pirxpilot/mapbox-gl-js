@@ -9,6 +9,7 @@
   "files": {
     "ignoreUnknown": true,
     "include": [
+      "meta",
       "src",
       "test"
     ],
