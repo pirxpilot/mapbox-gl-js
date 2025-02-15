@@ -1,8 +1,8 @@
-/* eslint-disable */
+// This file is generated. Edit layer-properties.js.ejs, then run `make generate-style-code`.
 
 const styleSpec = require('../../style-spec/reference/latest');
 
-const { Properties, DataConstantProperty, CrossFadedProperty } = require('../properties');
+const { Properties, CrossFadedProperty, DataConstantProperty } = require('../properties');
 
 const paint = new Properties({
   'background-color': new DataConstantProperty(styleSpec['paint_background']['background-color']),

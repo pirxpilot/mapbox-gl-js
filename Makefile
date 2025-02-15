@@ -128,3 +128,8 @@ generate-struct-arrays:
 	node meta/bin/generate-struct-arrays.js
 
 .PHONY: generate-struct-arrays
+
+generate-style-code:
+	node meta/bin/generate-style-code.js
+
+.PHONY: generate-style-code
