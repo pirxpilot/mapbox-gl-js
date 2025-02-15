@@ -1,4 +1,4 @@
-const { test: t } = require('mapbox-gl-js-test');
+const { test: t } = require('../../../util/mapbox-gl-js-test');
 const migrate = require('../../../../src/style-spec/migrate/v8');
 
 t('split text-font', async t => {

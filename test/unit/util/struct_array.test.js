@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const { StructArrayLayout3i6, FeatureIndexArray } = require('../../../src/data/array_types');
 
 test('StructArray', async t => {

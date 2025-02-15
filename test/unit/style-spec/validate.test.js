@@ -1,5 +1,5 @@
 const { globSync, readFileSync, writeFileSync } = require('node:fs');
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const path = require('path');
 const validate = require('../../../src/style-spec/validate_style');
 

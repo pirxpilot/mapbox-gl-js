@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const assert = require('assert');
 const Style = require('../../../src/style/style');
 const config = require('../../../src/util/config');

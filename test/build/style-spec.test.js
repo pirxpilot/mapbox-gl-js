@@ -1,7 +1,7 @@
 
 /* eslint-disable import/no-commonjs */
 
-const test = require('mapbox-gl-js-test').test;
+const test = require('../util/mapbox-gl-js-test.js').test;
 const fs = require('fs');
 const path = require('path');
 const isBuiltin = require('is-builtin-module');

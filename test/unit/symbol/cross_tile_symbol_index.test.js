@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const Anchor = require('../../../src/symbol/anchor');
 const CrossTileSymbolIndex = require('../../../src/symbol/cross_tile_symbol_index');
 const { OverscaledTileID } = require('../../../src/source/tile_id');

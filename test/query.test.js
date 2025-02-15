@@ -1,4 +1,4 @@
-require('mapbox-gl-js-test/glsl-loader');
+require('./util/mapbox-gl-js-test/glsl-loader');
 
 const querySuite = require('./integration').query;
 const suiteImplementation = require('./suite_implementation');

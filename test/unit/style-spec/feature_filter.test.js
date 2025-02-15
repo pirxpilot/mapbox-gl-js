@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const filter = require('../../../src/style-spec/feature_filter');
 
 test('filter', async t => {

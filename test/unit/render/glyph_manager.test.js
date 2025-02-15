@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const parseGlyphPBF = require('../../../src/style/parse_glyph_pbf');
 const GlyphManager = require('../../../src/render/glyph_manager');
 const fs = require('fs');

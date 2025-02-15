@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 
 /* eslint-disable import/namespace */
 const spec = require('../../../src/style-spec/style-spec');

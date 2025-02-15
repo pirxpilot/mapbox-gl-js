@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const { register, serialize, deserialize } = require('../../../src/util/web_worker_transfer');
 
 test('round trip', async t => {

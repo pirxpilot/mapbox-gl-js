@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../../util/mapbox-gl-js-test');
 const colorSpaces = require('../../../../src/style-spec/util/color_spaces');
 const Color = require('../../../../src/style-spec/util/color');
 

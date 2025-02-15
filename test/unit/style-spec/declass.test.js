@@ -1,4 +1,4 @@
-const { test: t } = require('mapbox-gl-js-test');
+const { test: t } = require('../../util/mapbox-gl-js-test');
 const declass = require('../../../src/style-spec/declass');
 
 t('declass a style, one class', async t => {

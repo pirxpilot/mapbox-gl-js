@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const Wrapper = require('../../../src/source/geojson_wrapper');
 
 test('geojsonwrapper', async t => {

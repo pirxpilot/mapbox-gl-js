@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const LngLat = require('../../../src/geo/lng_lat');
 const LngLatBounds = require('../../../src/geo/lng_lat_bounds');
 

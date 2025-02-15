@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const composite = require('../../../src/style-spec/composite');
 
 test('composites Mapbox vector sources', async t => {
