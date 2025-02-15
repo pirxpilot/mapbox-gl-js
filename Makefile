@@ -8,7 +8,7 @@ find = $(foreach dir,$(1),$(foreach d,$(wildcard $(dir)/*),$(call find,$(d),$(2)
 
 SRC = $(call find, src, *.js)
 
-BUILD = dist/$(PROJECT).js dist/$(PROJECT)-worker.js
+BUILD = build/$(PROJECT).js build/$(PROJECT)-worker.js
 
 DEBUG_FLAG ?= true
 
@@ -61,22 +61,19 @@ dist: DEBUG_FLAG=false
 dist: build
 .PHONY: dist
 
-distdir:
-	mkdir -p dist
-
 DEPENDENCIES = meta/node_modules $(CURDIR)/node_modules src/style-spec/node_modules
 
 dependencies: | $(DEPENDENCIES)
 
 ESBUILD_OPTIONS = --define:global=globalThis --define:DEBUG=$(DEBUG_FLAG)
 
-dist/$(PROJECT).js: $(SRC) | dependencies distdir
+build/$(PROJECT).js: $(SRC) | dependencies
 	esbuild --bundle src/index.js \
 		$(ESBUILD_OPTIONS) \
 		--global-name=mapboxgl \
 		--outfile=$@
 
-dist/$(PROJECT)-worker.js: $(SRC) | dependencies distdir
+build/$(PROJECT)-worker.js: $(SRC) | dependencies
 	esbuild --bundle src/source/worker.js  \
 		$(ESBUILD_OPTIONS) \
 		--outfile=$@
@@ -116,7 +113,7 @@ distclean: clean
 	rm -fr $(DEPENDENCIES)
 
 clean:
-	rm -fr dist build/min
+	rm -fr build
 
 clean-test:
 	find test/integration/*-tests -mindepth 2 -type d -not -exec test -e "{}/style.json" \; -print
