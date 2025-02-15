@@ -42,11 +42,14 @@ class Match {
       for (const label of labels) {
         if (typeof label !== 'number' && typeof label !== 'string') {
           return labelContext.error('Branch labels must be numbers or strings.');
-        } else if (typeof label === 'number' && Math.abs(label) > Number.MAX_SAFE_INTEGER) {
+        }
+        if (typeof label === 'number' && Math.abs(label) > Number.MAX_SAFE_INTEGER) {
           return labelContext.error(`Branch labels must be integers no larger than ${Number.MAX_SAFE_INTEGER}.`);
-        } else if (typeof label === 'number' && Math.floor(label) !== label) {
+        }
+        if (typeof label === 'number' && Math.floor(label) !== label) {
           return labelContext.error('Numeric branch labels must be integer values.');
-        } else if (!inputType) {
+        }
+        if (!inputType) {
           inputType = typeOf(label);
         } else if (labelContext.checkSubtype(inputType, typeOf(label))) {
           return null;

@@ -19,7 +19,6 @@ function drawHillshade(painter, sourceCache, layer, tileIDs) {
     const tile = sourceCache.getTile(tileID);
     if (tile.needsHillshadePrepare && painter.renderPass === 'offscreen') {
       prepareHillshade(painter, tile, layer, sourceMaxZoom, depthMode, stencilMode, colorMode);
-      continue;
     } else if (painter.renderPass === 'translucent') {
       renderHillshade(painter, tile, layer, depthMode, stencilMode, colorMode);
     }

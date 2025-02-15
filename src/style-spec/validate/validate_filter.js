@@ -14,9 +14,8 @@ module.exports = function validateFilter(options) {
         valueSpec: { value: 'boolean' }
       })
     );
-  } else {
-    return validateNonExpressionFilter(options);
   }
+  return validateNonExpressionFilter(options);
 };
 
 function validateNonExpressionFilter(options) {

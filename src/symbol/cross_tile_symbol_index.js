@@ -136,14 +136,13 @@ class CrossTileSymbolLayerIndex {
     if (this.indexes[tileID.overscaledZ] && this.indexes[tileID.overscaledZ][tileID.key]) {
       if (this.indexes[tileID.overscaledZ][tileID.key].bucketInstanceId === bucket.bucketInstanceId) {
         return false;
-      } else {
-        // We're replacing this bucket with an updated version
-        // Remove the old bucket's "used crossTileIDs" now so that
-        // the new bucket can claim them.
-        // The old index entries themselves stick around until
-        // 'removeStaleBuckets' is called.
-        this.removeBucketCrossTileIDs(tileID.overscaledZ, this.indexes[tileID.overscaledZ][tileID.key]);
       }
+      // We're replacing this bucket with an updated version
+      // Remove the old bucket's "used crossTileIDs" now so that
+      // the new bucket can claim them.
+      // The old index entries themselves stick around until
+      // 'removeStaleBuckets' is called.
+      this.removeBucketCrossTileIDs(tileID.overscaledZ, this.indexes[tileID.overscaledZ][tileID.key]);
     }
 
     for (const symbolInstance of bucket.symbolInstances) {

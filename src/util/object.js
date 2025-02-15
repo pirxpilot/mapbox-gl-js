@@ -146,11 +146,11 @@ function deepEqual(a, b) {
 function clone(input) {
   if (Array.isArray(input)) {
     return input.map(clone);
-  } else if (typeof input === 'object' && input) {
-    return mapObject(input, clone);
-  } else {
-    return input;
   }
+  if (typeof input === 'object' && input) {
+    return mapObject(input, clone);
+  }
+  return input;
 }
 
 /**

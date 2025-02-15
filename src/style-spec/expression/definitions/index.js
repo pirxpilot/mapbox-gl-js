@@ -130,13 +130,14 @@ CompoundExpression.register(expressions, {
       const type = typeof v;
       if (v === null) {
         return '';
-      } else if (type === 'string' || type === 'number' || type === 'boolean') {
-        return String(v);
-      } else if (v instanceof Color) {
-        return v.toString();
-      } else {
-        return JSON.stringify(v);
       }
+      if (type === 'string' || type === 'number' || type === 'boolean') {
+        return String(v);
+      }
+      if (v instanceof Color) {
+        return v.toString();
+      }
+      return JSON.stringify(v);
     }
   ],
   'to-boolean': [BooleanType, [ValueType], (ctx, [v]) => Boolean(v.evaluate(ctx))],

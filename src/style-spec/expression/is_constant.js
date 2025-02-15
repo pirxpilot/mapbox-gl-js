@@ -4,13 +4,17 @@ function isFeatureConstant(e) {
   if (e instanceof CompoundExpression) {
     if (e.name === 'get' && e.args.length === 1) {
       return false;
-    } else if (e.name === 'feature-state') {
+    }
+    if (e.name === 'feature-state') {
       return false;
-    } else if (e.name === 'has' && e.args.length === 1) {
+    }
+    if (e.name === 'has' && e.args.length === 1) {
       return false;
-    } else if (e.name === 'properties' || e.name === 'geometry-type' || e.name === 'id') {
+    }
+    if (e.name === 'properties' || e.name === 'geometry-type' || e.name === 'id') {
       return false;
-    } else if (/^filter-/.test(e.name)) {
+    }
+    if (/^filter-/.test(e.name)) {
       return false;
     }
   }

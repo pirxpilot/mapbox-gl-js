@@ -226,11 +226,11 @@ class Painter {
       const a = 1 / numOverdrawSteps;
 
       return new ColorMode([gl.CONSTANT_COLOR, gl.ONE], new Color(a, a, a, 0), [true, true, true, true]);
-    } else if (this.renderPass === 'opaque') {
-      return ColorMode.unblended;
-    } else {
-      return ColorMode.alphaBlended;
     }
+    if (this.renderPass === 'opaque') {
+      return ColorMode.unblended;
+    }
+    return ColorMode.alphaBlended;
   }
 
   depthModeForSublayer(n, mask, func) {

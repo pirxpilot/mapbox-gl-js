@@ -566,20 +566,19 @@ class SymbolBucket {
         };
         collisionArrays.textFeatureIndex = box.featureIndex;
         break; // Only one box allowed per instance
-      } else {
-        if (!collisionArrays.textCircles) {
-          collisionArrays.textCircles = [];
-          collisionArrays.textFeatureIndex = box.featureIndex;
-        }
-        const used = 1; // May be updated at collision detection time
-        collisionArrays.textCircles.push(
-          box.anchorPointX,
-          box.anchorPointY,
-          box.radius,
-          box.signedDistanceFromAnchor,
-          used
-        );
       }
+      if (!collisionArrays.textCircles) {
+        collisionArrays.textCircles = [];
+        collisionArrays.textFeatureIndex = box.featureIndex;
+      }
+      const used = 1; // May be updated at collision detection time
+      collisionArrays.textCircles.push(
+        box.anchorPointX,
+        box.anchorPointY,
+        box.radius,
+        box.signedDistanceFromAnchor,
+        used
+      );
     }
     for (let k = iconStartIndex; k < iconEndIndex; k++) {
       // An icon can only have one box now, so this indexing is a bit vestigial...

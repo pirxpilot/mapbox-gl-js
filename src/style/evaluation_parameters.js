@@ -27,9 +27,8 @@ class EvaluationParameters {
   crossFadingFactor() {
     if (this.fadeDuration === 0) {
       return 1;
-    } else {
-      return Math.min((this.now - this.zoomHistory.lastIntegerZoomTime) / this.fadeDuration, 1);
     }
+    return Math.min((this.now - this.zoomHistory.lastIntegerZoomTime) / this.fadeDuration, 1);
   }
 }
 

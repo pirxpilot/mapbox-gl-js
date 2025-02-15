@@ -237,9 +237,8 @@ class CompositeExpressionBinder {
   interpolationFactor(currentZoom) {
     if (this.useIntegerZoom) {
       return this.expression.interpolationFactor(Math.floor(currentZoom), this.zoom, this.zoom + 1);
-    } else {
-      return this.expression.interpolationFactor(currentZoom, this.zoom, this.zoom + 1);
     }
+    return this.expression.interpolationFactor(currentZoom, this.zoom, this.zoom + 1);
   }
 
   setUniforms(context, uniform, globals) {

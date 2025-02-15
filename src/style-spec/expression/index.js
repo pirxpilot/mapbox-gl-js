@@ -138,9 +138,8 @@ class ZoomDependentExpression {
   interpolationFactor(input, lower, upper) {
     if (this._interpolationType) {
       return Interpolate.interpolationFactor(this._interpolationType, input, lower, upper);
-    } else {
-      return 0;
     }
+    return 0;
   }
 }
 
@@ -170,9 +169,11 @@ function createPropertyExpression(expression, propertySpec) {
         '"zoom" expression may only be used as input to a top-level "step" or "interpolate" expression.'
       )
     ]);
-  } else if (zoomCurve instanceof ParsingError) {
+  }
+  if (zoomCurve instanceof ParsingError) {
     return error([zoomCurve]);
-  } else if (zoomCurve instanceof Interpolate && !supportsInterpolation(propertySpec)) {
+  }
+  if (zoomCurve instanceof Interpolate && !supportsInterpolation(propertySpec)) {
     return error([new ParsingError('', '"interpolate" expressions cannot be used with this property')]);
   }
 
@@ -218,23 +219,23 @@ class StylePropertyFunction {
 function normalizePropertyExpression(value, specification) {
   if (isFunction(value)) {
     return new StylePropertyFunction(value, specification);
-  } else if (isExpression(value)) {
+  }
+  if (isExpression(value)) {
     const expression = createPropertyExpression(value, specification);
     if (expression.result === 'error') {
       // this should have been caught in validation
       throw new Error(expression.value.map(err => `${err.key}: ${err.message}`).join(', '));
     }
     return expression.value;
-  } else {
-    let constant = value;
-    if (typeof value === 'string' && specification.type === 'color') {
-      constant = Color.parse(value);
-    }
-    return {
-      kind: 'constant',
-      evaluate: () => constant
-    };
   }
+  let constant = value;
+  if (typeof value === 'string' && specification.type === 'color') {
+    constant = Color.parse(value);
+  }
+  return {
+    kind: 'constant',
+    evaluate: () => constant
+  };
 }
 
 // Zoom-dependent expressions may only use ["zoom"] as the input to a top-level "step" or "interpolate"
@@ -307,13 +308,14 @@ function getDefaultValue(spec) {
     // default color ramp, but createExpression expects a simple value to fall
     // back to in case of runtime errors
     return new Color(0, 0, 0, 0);
-  } else if (spec.type === 'color') {
-    return Color.parse(spec.default) || null;
-  } else if (spec.default === undefined) {
-    return null;
-  } else {
-    return spec.default;
   }
+  if (spec.type === 'color') {
+    return Color.parse(spec.default) || null;
+  }
+  if (spec.default === undefined) {
+    return null;
+  }
+  return spec.default;
 }
 
 module.exports = {

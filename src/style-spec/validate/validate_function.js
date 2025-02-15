@@ -194,15 +194,13 @@ module.exports = function validateFunction(options) {
       value < previousStopDomainValue
     ) {
       return [new ValidationError(options.key, reportValue, 'stop domain values must appear in ascending order')];
-    } else {
-      previousStopDomainValue = value;
     }
+    previousStopDomainValue = value;
 
     if (functionType === 'categorical' && value in stopDomainValues) {
       return [new ValidationError(options.key, reportValue, 'stop domain values must be unique')];
-    } else {
-      stopDomainValues[value] = true;
     }
+    stopDomainValues[value] = true;
 
     return [];
   }

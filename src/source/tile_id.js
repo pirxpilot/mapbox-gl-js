@@ -63,15 +63,14 @@ class OverscaledTileID {
     const zDifference = this.canonical.z - targetZ;
     if (targetZ > this.canonical.z) {
       return new OverscaledTileID(targetZ, this.wrap, this.canonical.z, this.canonical.x, this.canonical.y);
-    } else {
-      return new OverscaledTileID(
-        targetZ,
-        this.wrap,
-        targetZ,
-        this.canonical.x >> zDifference,
-        this.canonical.y >> zDifference
-      );
     }
+    return new OverscaledTileID(
+      targetZ,
+      this.wrap,
+      targetZ,
+      this.canonical.x >> zDifference,
+      this.canonical.y >> zDifference
+    );
   }
 
   isChildOf(parent) {

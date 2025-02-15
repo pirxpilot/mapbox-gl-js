@@ -64,17 +64,16 @@ class Coercion {
       throw new RuntimeError(
         error || `Could not parse color from value '${typeof input === 'string' ? input : JSON.stringify(input)}'`
       );
-    } else {
-      let value = null;
-      for (const arg of this.args) {
-        value = arg.evaluate(ctx);
-        if (value === null) continue;
-        const num = Number(value);
-        if (isNaN(num)) continue;
-        return num;
-      }
-      throw new RuntimeError(`Could not convert ${JSON.stringify(value)} to number.`);
     }
+    let value = null;
+    for (const arg of this.args) {
+      value = arg.evaluate(ctx);
+      if (value === null) continue;
+      const num = Number(value);
+      if (isNaN(num)) continue;
+      return num;
+    }
+    throw new RuntimeError(`Could not convert ${JSON.stringify(value)} to number.`);
   }
 
   eachChild(fn) {

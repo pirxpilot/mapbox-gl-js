@@ -76,9 +76,8 @@ class CollisionGroups {
         };
       }
       return this.collisionGroups[sourceID];
-    } else {
-      return { ID: 0, predicate: null };
     }
+    return { ID: 0, predicate: null };
   }
 }
 
@@ -540,7 +539,8 @@ const shift1 = Math.pow(2, 1);
 function packOpacity(opacityState) {
   if (opacityState.opacity === 0 && !opacityState.placed) {
     return 0;
-  } else if (opacityState.opacity === 1 && opacityState.placed) {
+  }
+  if (opacityState.opacity === 1 && opacityState.placed) {
     return 4294967295;
   }
   const targetBit = opacityState.placed ? 1 : 0;

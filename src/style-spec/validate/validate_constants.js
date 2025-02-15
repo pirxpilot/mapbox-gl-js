@@ -6,7 +6,6 @@ module.exports = function validateConstants(options) {
 
   if (constants) {
     return [new ValidationError(key, constants, 'constants have been deprecated as of v8')];
-  } else {
-    return [];
   }
+  return [];
 };

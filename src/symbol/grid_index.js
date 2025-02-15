@@ -101,14 +101,13 @@ class GridIndex {
         });
       }
       return predicate ? result.filter(predicate) : result;
-    } else {
-      const queryArgs = {
-        hitTest,
-        seenUids: { box: {}, circle: {} }
-      };
-      this._forEachCell(x1, y1, x2, y2, this._queryCell, result, queryArgs, predicate);
-      return hitTest ? result.length > 0 : result;
     }
+    const queryArgs = {
+      hitTest,
+      seenUids: { box: {}, circle: {} }
+    };
+    this._forEachCell(x1, y1, x2, y2, this._queryCell, result, queryArgs, predicate);
+    return hitTest ? result.length > 0 : result;
   }
 
   _queryCircle(x, y, radius, hitTest, predicate) {
@@ -166,15 +165,14 @@ class GridIndex {
             if (queryArgs.hitTest) {
               result.push(true);
               return true;
-            } else {
-              result.push({
-                key: this.boxKeys[boxUid],
-                x1: bboxes[offset],
-                y1: bboxes[offset + 1],
-                x2: bboxes[offset + 2],
-                y2: bboxes[offset + 3]
-              });
             }
+            result.push({
+              key: this.boxKeys[boxUid],
+              x1: bboxes[offset],
+              y1: bboxes[offset + 1],
+              x2: bboxes[offset + 2],
+              y2: bboxes[offset + 3]
+            });
           }
         }
       }
@@ -193,18 +191,17 @@ class GridIndex {
             if (queryArgs.hitTest) {
               result.push(true);
               return true;
-            } else {
-              const x = circles[offset];
-              const y = circles[offset + 1];
-              const radius = circles[offset + 2];
-              result.push({
-                key: this.circleKeys[circleUid],
-                x1: x - radius,
-                y1: y - radius,
-                x2: x + radius,
-                y2: y + radius
-              });
             }
+            const x = circles[offset];
+            const y = circles[offset + 1];
+            const radius = circles[offset + 2];
+            result.push({
+              key: this.circleKeys[circleUid],
+              x1: x - radius,
+              y1: y - radius,
+              x2: x + radius,
+              y2: y + radius
+            });
           }
         }
       }

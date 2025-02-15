@@ -110,7 +110,8 @@ function createFunction(parameters, propertySpec) {
         ).evaluate(zoom, properties);
       }
     };
-  } else if (zoomDependent) {
+  }
+  if (zoomDependent) {
     return {
       kind: 'camera',
       interpolationFactor:
@@ -123,18 +124,17 @@ function createFunction(parameters, propertySpec) {
       zoomStops: parameters.stops.map(s => s[0]),
       evaluate: ({ zoom }) => innerFun(parameters, propertySpec, zoom, hashedStops, categoricalKeyType)
     };
-  } else {
-    return {
-      kind: 'source',
-      evaluate(_, feature) {
-        const value = feature?.properties ? feature.properties[parameters.property] : undefined;
-        if (value === undefined) {
-          return coalesce(parameters.default, propertySpec.default);
-        }
-        return innerFun(parameters, propertySpec, value, hashedStops, categoricalKeyType);
-      }
-    };
   }
+  return {
+    kind: 'source',
+    evaluate(_, feature) {
+      const value = feature?.properties ? feature.properties[parameters.property] : undefined;
+      if (value === undefined) {
+        return coalesce(parameters.default, propertySpec.default);
+      }
+      return innerFun(parameters, propertySpec, value, hashedStops, categoricalKeyType);
+    }
+  };
 }
 
 function coalesce(a, b, c) {
@@ -228,7 +228,8 @@ function findStopLessThanOrEqualTo(stops, input) {
     if (input === currentValue || (input > currentValue && input < upperValue)) {
       // Search complete
       return currentIndex;
-    } else if (currentValue < input) {
+    }
+    if (currentValue < input) {
       lowerIndex = currentIndex + 1;
     } else if (currentValue > input) {
       upperIndex = currentIndex - 1;
@@ -282,9 +283,9 @@ function interpolationFactor(input, base, lowerValue, upperValue) {
 
   if (difference === 0) {
     return 0;
-  } else if (base === 1) {
-    return progress / difference;
-  } else {
-    return (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
   }
+  if (base === 1) {
+    return progress / difference;
+  }
+  return (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
 }

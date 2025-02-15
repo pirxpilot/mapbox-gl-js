@@ -72,9 +72,8 @@ function createFilter(filter) {
   const compiled = createExpression(filter, filterSpec);
   if (compiled.result === 'error') {
     throw new Error(compiled.value.map(err => `${err.key}: ${err.message}`).join(', '));
-  } else {
-    return (globalProperties, feature) => compiled.value.evaluate(globalProperties, feature);
   }
+  return (globalProperties, feature) => compiled.value.evaluate(globalProperties, feature);
 }
 
 // Comparison function to sort numbers and strings
@@ -138,9 +137,8 @@ function convertInOp(property, values) {
     default:
       if (values.length > 200 && !values.some(v => typeof v !== typeof values[0])) {
         return ['filter-in-large', property, ['literal', values.sort(compare)]];
-      } else {
-        return ['filter-in-small', property, ['literal', values]];
       }
+      return ['filter-in-small', property, ['literal', values]];
   }
 }
 

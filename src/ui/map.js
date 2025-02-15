@@ -196,9 +196,8 @@ class Map extends Camera {
       const container = window.document.getElementById(options.container);
       if (!container) {
         throw new Error(`Container '${options.container}' not found.`);
-      } else {
-        this._container = container;
       }
+      this._container = container;
     } else if (options.container instanceof HTMLElement) {
       this._container = options.container;
     } else {
@@ -357,9 +356,8 @@ class Map extends Camera {
         [this.transform.lngRange[0], this.transform.latRange[0]],
         [this.transform.lngRange[1], this.transform.latRange[1]]
       );
-    } else {
-      return null;
     }
+    return null;
   }
 
   /**
@@ -409,7 +407,8 @@ class Map extends Camera {
       if (this.getZoom() < minZoom) this.setZoom(minZoom);
 
       return this;
-    } else throw new Error(`minZoom must be between ${defaultMinZoom} and the current maxZoom, inclusive`);
+    }
+    throw new Error(`minZoom must be between ${defaultMinZoom} and the current maxZoom, inclusive`);
   }
 
   /**
@@ -440,7 +439,8 @@ class Map extends Camera {
       if (this.getZoom() > maxZoom) this.setZoom(maxZoom);
 
       return this;
-    } else throw new Error('maxZoom must be greater than the current minZoom');
+    }
+    throw new Error('maxZoom must be greater than the current minZoom');
   }
 
   /**
@@ -717,9 +717,8 @@ class Map extends Camera {
     if (!style) {
       delete this.style;
       return this;
-    } else {
-      this.style = new Style(this, options || {});
     }
+    this.style = new Style(this, options || {});
 
     this.style.setEventedParent(this, { style: this.style });
 

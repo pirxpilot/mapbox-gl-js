@@ -123,13 +123,12 @@ varying ${precision} ${type} ${name};
 uniform ${precision} ${type} u_${name};
 #endif
 `;
-    } /* if (operation === 'initialize') */ else {
-      return `
+    }
+    return `
 #ifdef HAS_UNIFORM_u_${name}
     ${precision} ${type} ${name} = u_${name};
 #endif
 `;
-    }
   });
 
   program.vertexSource = program.vertexSource.replace(re, (match, operation, precision, type, name) => {
@@ -145,18 +144,17 @@ varying ${precision} ${type} ${name};
 uniform ${precision} ${type} u_${name};
 #endif
 `;
-      } /* if (operation === 'initialize') */ else {
-        return `
+      }
+      return `
 #ifndef HAS_UNIFORM_u_${name}
     ${name} = unpack_mix_${attrType}(a_${name}, a_${name}_t);
 #else
     ${precision} ${type} ${name} = u_${name};
 #endif
 `;
-      }
-    } else {
-      if (operation === 'define') {
-        return `
+    }
+    if (operation === 'define') {
+      return `
 #ifndef HAS_UNIFORM_u_${name}
 uniform lowp float a_${name}_t;
 attribute ${precision} ${attrType} a_${name};
@@ -164,16 +162,14 @@ attribute ${precision} ${attrType} a_${name};
 uniform ${precision} ${type} u_${name};
 #endif
 `;
-      } /* if (operation === 'initialize') */ else {
-        return `
+    }
+    return `
 #ifndef HAS_UNIFORM_u_${name}
     ${precision} ${type} ${name} = unpack_mix_${attrType}(a_${name}, a_${name}_t);
 #else
     ${precision} ${type} ${name} = u_${name};
 #endif
 `;
-      }
-    }
   });
 }
 

@@ -54,11 +54,14 @@ function convertIdentityFunction(parameters, propertySpec, defaultExpression) {
 
   if (propertySpec.type === 'color') {
     return parameters.default === undefined ? get : ['to-color', get, parameters.default];
-  } else if (propertySpec.type === 'array' && typeof propertySpec.length === 'number') {
+  }
+  if (propertySpec.type === 'array' && typeof propertySpec.length === 'number') {
     return ['array', propertySpec.value, propertySpec.length, get];
-  } else if (propertySpec.type === 'array') {
+  }
+  if (propertySpec.type === 'array') {
     return ['array', propertySpec.value, get];
-  } else if (propertySpec.type === 'enum') {
+  }
+  if (propertySpec.type === 'enum') {
     return [
       'let',
       'property_value',
@@ -71,20 +74,19 @@ function convertIdentityFunction(parameters, propertySpec, defaultExpression) {
         defaultExpression
       ]
     ];
-  } else {
-    return parameters.default === undefined ? get : [propertySpec.type, get, parameters.default];
   }
+  return parameters.default === undefined ? get : [propertySpec.type, get, parameters.default];
 }
 
 function convertValue(value, spec) {
   if (typeof value === 'undefined' || value === null) return null;
   if (spec.type === 'color') {
     return value;
-  } else if (spec.type === 'array') {
-    return ['literal', value];
-  } else {
-    return value;
   }
+  if (spec.type === 'array') {
+    return ['literal', value];
+  }
+  return value;
 }
 
 function convertZoomAndPropertyFunction(parameters, propertySpec, stops, defaultExpression) {
@@ -126,23 +128,22 @@ function convertZoomAndPropertyFunction(parameters, propertySpec, stops, default
     }
 
     return expression;
-  } else {
-    const expression = ['step', ['zoom']];
-
-    for (const z of zoomStops) {
-      const output = convertPropertyFunction(
-        featureFunctionParameters[z],
-        propertySpec,
-        featureFunctionStops[z],
-        defaultExpression
-      );
-      appendStopPair(expression, z, output, true);
-    }
-
-    fixupDegenerateStepCurve(expression);
-
-    return expression;
   }
+  const expression = ['step', ['zoom']];
+
+  for (const z of zoomStops) {
+    const output = convertPropertyFunction(
+      featureFunctionParameters[z],
+      propertySpec,
+      featureFunctionStops[z],
+      defaultExpression
+    );
+    appendStopPair(expression, z, output, true);
+  }
+
+  fixupDegenerateStepCurve(expression);
+
+  return expression;
 }
 
 function convertPropertyFunction(parameters, propertySpec, stops, defaultExpression) {
@@ -158,7 +159,8 @@ function convertPropertyFunction(parameters, propertySpec, stops, defaultExpress
     }
     expression.push(defaultExpression);
     return expression;
-  } else if (type === 'categorical') {
+  }
+  if (type === 'categorical') {
     expression = ['match', ['get', parameters.property]];
   } else if (type === 'interval') {
     expression = ['step', ['number', ['get', parameters.property]]];
@@ -230,10 +232,9 @@ function appendStopPair(curve, input, output, isStep) {
 function getFunctionType(parameters, propertySpec) {
   if (parameters.type) {
     return parameters.type;
-  } else {
-    assert(propertySpec.expression);
-    return propertySpec.expression.interpolated ? 'exponential' : 'interval';
   }
+  assert(propertySpec.expression);
+  return propertySpec.expression.interpolated ? 'exponential' : 'interval';
 }
 
 // "String with {name} token" => ["concat", "String with ", ["get", "name"], " token"]

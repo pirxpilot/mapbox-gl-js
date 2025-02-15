@@ -53,8 +53,7 @@
       "correctness": {
         "noConstructorReturn": "off",
         "noNodejsModules": "off",
-        "noUndeclaredVariables": "error",
-        "noUnnecessaryContinue": "off"
+        "noUndeclaredVariables": "error"
       },
       "complexity": {
         "noForEach": "off",
@@ -66,7 +65,6 @@
       "style": {
         "noArguments": "off",
         "noParameterAssign": "off",
-        "noUselessElse": "off",
         "useDefaultParameterLast": "off",
         "useExponentiationOperator": "off",
         "useNodejsImportProtocol": "off",

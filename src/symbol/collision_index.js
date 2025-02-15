@@ -227,11 +227,10 @@ class CollisionIndex {
               circles: [],
               offscreen: false
             };
-          } else {
-            // Don't early exit if we're showing the debug circles because we still want to calculate
-            // which circles are in use
-            collisionDetected = true;
           }
+          // Don't early exit if we're showing the debug circles because we still want to calculate
+          // which circles are in use
+          collisionDetected = true;
         }
       }
     }

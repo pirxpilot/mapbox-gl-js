@@ -124,9 +124,8 @@ function calculateBadness(lineWidth, targetWidth, penalty, isLastBreak) {
     // Favor finals lines shorter than average over longer than average
     if (lineWidth < targetWidth) {
       return raggedness / 2;
-    } else {
-      return raggedness * 2;
     }
+    return raggedness * 2;
   }
 
   return raggedness + Math.abs(penalty) * penalty;

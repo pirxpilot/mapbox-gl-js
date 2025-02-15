@@ -64,11 +64,11 @@ exports.run = function (implementation, options, query) {
           .map(hunk => {
             if (hunk.added) {
               return `+ ${hunk.value}`;
-            } else if (hunk.removed) {
-              return `- ${hunk.value}`;
-            } else {
-              return `  ${hunk.value}`;
             }
+            if (hunk.removed) {
+              return `- ${hunk.value}`;
+            }
+            return `  ${hunk.value}`;
           })
           .join('');
 

@@ -133,16 +133,14 @@ function getFadeValues(tile, parentTile, sourceCache, layer, transform) {
         opacity: 1,
         mix: 1 - childOpacity
       };
-    } else {
-      return {
-        opacity: childOpacity,
-        mix: 0
-      };
     }
-  } else {
     return {
-      opacity: 1,
+      opacity: childOpacity,
       mix: 0
     };
   }
+  return {
+    opacity: 1,
+    mix: 0
+  };
 }

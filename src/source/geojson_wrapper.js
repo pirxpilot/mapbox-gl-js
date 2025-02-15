@@ -33,17 +33,16 @@ class FeatureWrapper {
         geometry.push([new Point(point[0], point[1])]);
       }
       return geometry;
-    } else {
-      const geometry = [];
-      for (const ring of this._feature.geometry) {
-        const newRing = [];
-        for (const point of ring) {
-          newRing.push(new Point(point[0], point[1]));
-        }
-        geometry.push(newRing);
-      }
-      return geometry;
     }
+    const geometry = [];
+    for (const ring of this._feature.geometry) {
+      const newRing = [];
+      for (const point of ring) {
+        newRing.push(new Point(point[0], point[1]));
+      }
+      geometry.push(newRing);
+    }
+    return geometry;
   }
 
   toGeoJSON(x, y, z) {

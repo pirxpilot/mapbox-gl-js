@@ -10,10 +10,9 @@ function getMaximumPaintValue(property, layer, bucket) {
   const value = layer.paint.get(property).value;
   if (value.kind === 'constant') {
     return value.value;
-  } else {
-    const binders = bucket.programConfigurations.get(layer.id).binders;
-    return binders[property].maxValue;
   }
+  const binders = bucket.programConfigurations.get(layer.id).binders;
+  return binders[property].maxValue;
 }
 
 function translateDistance(translate) {

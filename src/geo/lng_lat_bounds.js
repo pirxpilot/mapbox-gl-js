@@ -22,7 +22,8 @@ class LngLatBounds {
   constructor(sw, ne) {
     if (!sw) {
       return;
-    } else if (ne) {
+    }
+    if (ne) {
       this.setSouthWest(sw).setNorthEast(ne);
     } else if (sw.length === 4) {
       this.setSouthWest([sw[0], sw[1]]).setNorthEast([sw[2], sw[3]]);
@@ -76,9 +77,8 @@ class LngLatBounds {
       if (Array.isArray(obj)) {
         if (obj.every(Array.isArray)) {
           return this.extend(LngLatBounds.convert(obj));
-        } else {
-          return this.extend(LngLat.convert(obj));
         }
+        return this.extend(LngLat.convert(obj));
       }
       return this;
     }

@@ -63,22 +63,20 @@ class StyleLayer extends Evented {
   getPaintProperty(name) {
     if (name.endsWith(TRANSITION_SUFFIX)) {
       return this._transitionablePaint.getTransition(name.slice(0, -TRANSITION_SUFFIX.length));
-    } else {
-      return this._transitionablePaint.getValue(name);
     }
+    return this._transitionablePaint.getValue(name);
   }
 
   setPaintProperty(name, value) {
     if (name.endsWith(TRANSITION_SUFFIX)) {
       this._transitionablePaint.setTransition(name.slice(0, -TRANSITION_SUFFIX.length), value || undefined);
       return false;
-    } else {
-      const wasDataDriven = this._transitionablePaint._values[name].value.isDataDriven();
-      this._transitionablePaint.setValue(name, value);
-      const isDataDriven = this._transitionablePaint._values[name].value.isDataDriven();
-      this._handleSpecialPaintPropertyUpdate(name);
-      return isDataDriven || wasDataDriven;
     }
+    const wasDataDriven = this._transitionablePaint._values[name].value.isDataDriven();
+    this._transitionablePaint.setValue(name, value);
+    const isDataDriven = this._transitionablePaint._values[name].value.isDataDriven();
+    this._handleSpecialPaintPropertyUpdate(name);
+    return isDataDriven || wasDataDriven;
   }
 
   _handleSpecialPaintPropertyUpdate() {

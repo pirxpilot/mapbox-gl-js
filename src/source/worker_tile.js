@@ -132,7 +132,8 @@ class WorkerTile {
     function maybePrepare() {
       if (error) {
         return callback(error);
-      } else if (glyphMap && imageMap) {
+      }
+      if (glyphMap && imageMap) {
         const glyphAtlas = new GlyphAtlas(glyphMap);
         const imageAtlas = new ImageAtlas(imageMap);
 

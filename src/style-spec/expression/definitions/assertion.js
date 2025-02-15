@@ -41,7 +41,8 @@ class Assertion {
       const error = checkSubtype(this.type, typeOf(value));
       if (!error) {
         return value;
-      } else if (i === this.args.length - 1) {
+      }
+      if (i === this.args.length - 1) {
         throw new RuntimeError(
           `Expected value to be of type ${toString(this.type)}, but found ${toString(typeOf(value))} instead.`
         );

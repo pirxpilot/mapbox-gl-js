@@ -18,7 +18,8 @@ function findStopLessThanOrEqualTo(stops, input) {
     if (input === currentValue || (input > currentValue && input < upperValue)) {
       // Search complete
       return currentIndex;
-    } else if (currentValue < input) {
+    }
+    if (currentValue < input) {
       lowerIndex = currentIndex + 1;
     } else if (currentValue > input) {
       upperIndex = currentIndex - 1;
