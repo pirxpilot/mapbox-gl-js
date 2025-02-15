@@ -11,4 +11,4 @@ jobs:
       - run: nohup Xvfb &
           echo "DISPLAY=:0" >> $GITHUB_ENV
       - run: yarn install
-      - run: make check
+      - run: make check test-integration
