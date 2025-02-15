@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const { CanonicalTileID, OverscaledTileID } = require('../../../src/source/tile_id');
 
 test('CanonicalTileID', async t => {

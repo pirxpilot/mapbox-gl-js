@@ -1,13 +1,13 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const window = require('../../../src/util/window');
 const Map = require('../../../src/ui/map');
 const LngLat = require('../../../src/geo/lng_lat');
 const Tile = require('../../../src/source/tile');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
 const { Event, ErrorEvent } = require('../../../src/util/evented');
-const simulate = require('mapbox-gl-js-test/simulate_interaction');
+const simulate = require('../../util/mapbox-gl-js-test/simulate_interaction');
 
-const fixed = require('mapbox-gl-js-test/fixed');
+const fixed = require('../../util/mapbox-gl-js-test/fixed');
 const fixedNum = fixed.Num;
 const fixedLngLat = fixed.LngLat;
 const fixedCoord = fixed.Coord;

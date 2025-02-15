@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test.js');
 const fs = require('fs');
 const path = require('path');
 const Protobuf = require('@mapwhit/pbf');

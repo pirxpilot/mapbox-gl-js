@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const tileCover = require('../../../src/util/tile_cover');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
 

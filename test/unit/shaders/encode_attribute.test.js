@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const { packUint8ToFloat } = require('../../../src/shaders/encode_attribute');
 
 test('packUint8ToFloat', async t => {

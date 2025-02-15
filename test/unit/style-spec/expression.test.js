@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const { createPropertyExpression } = require('../../../src/style-spec/expression');
 const definitions = require('../../../src/style-spec/expression/definitions');
 const v8 = require('../../../src/style-spec/reference/v8');

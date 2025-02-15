@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const { getIconQuads } = require('../../../src/symbol/quads');
 const Anchor = require('../../../src/symbol/anchor');
 const SymbolStyleLayer = require('../../../src/style/style_layer/symbol_style_layer');

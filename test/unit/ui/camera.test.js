@@ -1,9 +1,9 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const Camera = require('../../../src/ui/camera');
 const Transform = require('../../../src/geo/transform');
 const TaskQueue = require('../../../src/util/task_queue');
 const browser = require('../../../src/util/browser');
-const fixed = require('mapbox-gl-js-test/fixed');
+const fixed = require('../../util/mapbox-gl-js-test/fixed');
 const fixedLngLat = fixed.LngLat;
 const fixedNum = fixed.Num;
 

@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const { Uniform1i, Uniform1f, Uniform2f, Uniform3f, Uniform4f } = require('../../../src/render/uniform_binding');
 
 test('Uniform1i', t => {

@@ -1,8 +1,8 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../../util/mapbox-gl-js-test');
 const window = require('../../../../src/util/window');
 const Map = require('../../../../src/ui/map');
 const DOM = require('../../../../src/util/dom');
-const simulate = require('mapbox-gl-js-test/simulate_interaction');
+const simulate = require('../../../util/mapbox-gl-js-test/simulate_interaction');
 
 function createMap(options) {
   return new Map(Object.assign({ container: DOM.create('div', '', window.document.body) }, options));

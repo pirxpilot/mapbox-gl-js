@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const VectorTileWorkerSource = require('../../../src/source/vector_tile_worker_source');
 const StyleLayerIndex = require('../../../src/style/style_layer_index');
 

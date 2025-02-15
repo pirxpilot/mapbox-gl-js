@@ -1,4 +1,4 @@
-const test = require('mapbox-gl-js-test').test;
+const test = require('../../util/mapbox-gl-js-test').test;
 const async = require('../../../src/util/async');
 
 test('async', async t => {

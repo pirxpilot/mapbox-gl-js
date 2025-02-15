@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const WorkerTile = require('../../../src/source/worker_tile');
 const Wrapper = require('../../../src/source/geojson_wrapper');
 const { OverscaledTileID } = require('../../../src/source/tile_id');

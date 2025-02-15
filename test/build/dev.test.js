@@ -1,4 +1,4 @@
-const {test} = require('mapbox-gl-js-test');
+const {test} = require('../util/mapbox-gl-js-test');
 const fs = require('fs');
 
 test('dev build contains asserts', async (t) => {

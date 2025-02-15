@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const convertFunction = require('../../../src/style-spec/function/convert');
 
 test('convertFunction', async t => {

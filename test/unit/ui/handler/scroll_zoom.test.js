@@ -1,9 +1,9 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../../util/mapbox-gl-js-test');
 const browser = require('../../../../src/util/browser');
 const window = require('../../../../src/util/window');
 const Map = require('../../../../src/ui/map');
 const DOM = require('../../../../src/util/dom');
-const simulate = require('mapbox-gl-js-test/simulate_interaction');
+const simulate = require('../../../util/mapbox-gl-js-test/simulate_interaction');
 const sinon = require('sinon');
 
 function createMap(options) {

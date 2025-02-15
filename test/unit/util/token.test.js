@@ -1,4 +1,4 @@
-const { test } = require('mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const resolveTokens = require('../../../src/util/token');
 
 test('resolveToken', async t => {
