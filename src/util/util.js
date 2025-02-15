@@ -82,10 +82,10 @@ function wrap(n, min, max) {
  * @private
  */
 function getCoordinatesCenter(coords) {
-  let minX = Infinity;
-  let minY = Infinity;
-  let maxX = -Infinity;
-  let maxY = -Infinity;
+  let minX = Number.POSITIVE_INFINITY;
+  let minY = Number.POSITIVE_INFINITY;
+  let maxX = Number.NEGATIVE_INFINITY;
+  let maxY = Number.NEGATIVE_INFINITY;
 
   for (let i = 0; i < coords.length; i++) {
     minX = Math.min(minX, coords[i].column);

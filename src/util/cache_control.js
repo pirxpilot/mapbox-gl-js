@@ -20,7 +20,7 @@ exports.parse = function (cacheControl) {
   });
 
   if (header['max-age']) {
-    const maxAge = parseInt(header['max-age'], 10);
+    const maxAge = Number.parseInt(header['max-age'], 10);
     if (isNaN(maxAge)) delete header['max-age'];
     else header['max-age'] = maxAge;
   }

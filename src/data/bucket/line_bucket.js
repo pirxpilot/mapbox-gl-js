@@ -245,7 +245,7 @@ class LineBucket {
       // Find the cosine of the angle between the next and join normals
       // using dot product. The inverse of that is the miter length.
       const cosHalfAngle = joinNormal.x * nextNormal.x + joinNormal.y * nextNormal.y;
-      const miterLength = cosHalfAngle !== 0 ? 1 / cosHalfAngle : Infinity;
+      const miterLength = cosHalfAngle !== 0 ? 1 / cosHalfAngle : Number.POSITIVE_INFINITY;
 
       const isSharpCorner = cosHalfAngle < COS_HALF_SHARP_CORNER && prevVertex && nextVertex;
 

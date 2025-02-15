@@ -22,7 +22,7 @@ class FeatureWrapper {
     // allowing non-integer values here results in a non-compliant PBF
     // that causes an exception when it is parsed with vector-tile-js
     if ('id' in feature && !isNaN(feature.id)) {
-      this.id = parseInt(feature.id, 10);
+      this.id = Number.parseInt(feature.id, 10);
     }
   }
 

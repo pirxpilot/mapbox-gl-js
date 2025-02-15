@@ -68,7 +68,6 @@
         "useDefaultParameterLast": "off",
         "useExponentiationOperator": "off",
         "useNodejsImportProtocol": "off",
-        "useNumberNamespace": "off",
         "useSingleVarDeclarator": "off",
         "useTemplate": "off"
       },
@@ -79,7 +78,6 @@
         "noAssignInExpressions": "off",
         "noControlCharactersInRegex": "off",
         "noFallthroughSwitchClause": "off",
-        "noGlobalIsFinite": "off",
         "noGlobalIsNan": "off",
         "noPrototypeBuiltins": "off",
         "noShadowRestrictedNames": "off",

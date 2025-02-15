@@ -254,10 +254,10 @@ class CollisionIndex {
     }
 
     const query = [];
-    let minX = Infinity;
-    let minY = Infinity;
-    let maxX = -Infinity;
-    let maxY = -Infinity;
+    let minX = Number.POSITIVE_INFINITY;
+    let minY = Number.POSITIVE_INFINITY;
+    let maxX = Number.NEGATIVE_INFINITY;
+    let maxY = Number.NEGATIVE_INFINITY;
     for (const point of viewportQueryGeometry) {
       const gridPoint = new Point(point.x + viewportPadding, point.y + viewportPadding);
       minX = Math.min(minX, gridPoint.x);

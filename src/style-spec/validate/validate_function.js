@@ -183,7 +183,11 @@ module.exports = function validateFunction(options) {
       return [new ValidationError(options.key, reportValue, message)];
     }
 
-    if (functionType === 'categorical' && type === 'number' && (!isFinite(value) || Math.floor(value) !== value)) {
+    if (
+      functionType === 'categorical' &&
+      type === 'number' &&
+      (!Number.isFinite(value) || Math.floor(value) !== value)
+    ) {
       return [new ValidationError(options.key, reportValue, `integer expected, found ${value}`)];
     }
 

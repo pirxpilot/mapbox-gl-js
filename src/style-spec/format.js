@@ -10,7 +10,7 @@ function sameOrderAs(reference) {
 
   return {
     sort: function (a, b) {
-      return (keyOrder[a] || Infinity) - (keyOrder[b] || Infinity);
+      return (keyOrder[a] || Number.POSITIVE_INFINITY) - (keyOrder[b] || Number.POSITIVE_INFINITY);
     }
   };
 }

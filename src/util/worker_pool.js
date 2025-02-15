@@ -14,7 +14,7 @@ function workerPool(workerCount = config.WORKER_COUNT) {
 
   function acquire(mapId) {
     if (!workers) {
-      assert(typeof workerCount === 'number' && workerCount < Infinity);
+      assert(typeof workerCount === 'number' && workerCount < Number.POSITIVE_INFINITY);
 
       workers = new Array(workerCount);
       for (let i = 0; i < workerCount; i++) {

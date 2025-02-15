@@ -29,7 +29,12 @@ class FeatureIndex {
     for (let r = 0; r < geometry.length; r++) {
       const ring = geometry[r];
 
-      const bbox = [Infinity, Infinity, -Infinity, -Infinity];
+      const bbox = [
+        Number.POSITIVE_INFINITY,
+        Number.POSITIVE_INFINITY,
+        Number.NEGATIVE_INFINITY,
+        Number.NEGATIVE_INFINITY
+      ];
       for (let i = 0; i < ring.length; i++) {
         const p = ring[i];
         bbox[0] = Math.min(bbox[0], p.x);
@@ -65,10 +70,10 @@ class FeatureIndex {
     const queryGeometry = args.queryGeometry;
     const queryPadding = args.queryPadding * pixelsToTileUnits;
 
-    let minX = Infinity;
-    let minY = Infinity;
-    let maxX = -Infinity;
-    let maxY = -Infinity;
+    let minX = Number.POSITIVE_INFINITY;
+    let minY = Number.POSITIVE_INFINITY;
+    let maxX = Number.NEGATIVE_INFINITY;
+    let maxY = Number.NEGATIVE_INFINITY;
     for (let i = 0; i < queryGeometry.length; i++) {
       const ring = queryGeometry[i];
       for (let k = 0; k < ring.length; k++) {

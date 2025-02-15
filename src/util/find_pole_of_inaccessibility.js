@@ -15,10 +15,10 @@ const { distToSegmentSquared } = require('./intersection_tests');
  */
 module.exports = function (polygonRings, precision = 1, debug = false) {
   // find the bounding box of the outer ring
-  let minX = Infinity,
-    minY = Infinity,
-    maxX = -Infinity,
-    maxY = -Infinity;
+  let minX = Number.POSITIVE_INFINITY,
+    minY = Number.POSITIVE_INFINITY,
+    maxX = Number.NEGATIVE_INFINITY,
+    maxY = Number.NEGATIVE_INFINITY;
   const outerRing = polygonRings[0];
   for (let i = 0; i < outerRing.length; i++) {
     const p = outerRing[i];
@@ -93,7 +93,7 @@ function Cell(x, y, h, polygon) {
 // signed distance from point to polygon outline (negative if point is outside)
 function pointToPolygonDist(p, polygon) {
   let inside = false;
-  let minDistSq = Infinity;
+  let minDistSq = Number.POSITIVE_INFINITY;
 
   for (let k = 0; k < polygon.length; k++) {
     const ring = polygon[k];

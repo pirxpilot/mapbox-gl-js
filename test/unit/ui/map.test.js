@@ -534,8 +534,8 @@ test('Map', async t => {
 
   await t.test('#getBounds', async t => {
     const map = createMap({ zoom: 0 });
-    t.deepEqual(parseFloat(map.getBounds().getCenter().lng.toFixed(10)), 0, 'getBounds');
-    t.deepEqual(parseFloat(map.getBounds().getCenter().lat.toFixed(10)), 0, 'getBounds');
+    t.deepEqual(Number.parseFloat(map.getBounds().getCenter().lng.toFixed(10)), 0, 'getBounds');
+    t.deepEqual(Number.parseFloat(map.getBounds().getCenter().lat.toFixed(10)), 0, 'getBounds');
 
     t.deepEqual(
       toFixed(map.getBounds().toArray()),
@@ -566,7 +566,7 @@ test('Map', async t => {
 
     function normalizeFixed(num, n) {
       // workaround for "-0.0000000000" ≠ "0.0000000000"
-      return parseFloat(num.toFixed(n)).toFixed(n);
+      return Number.parseFloat(num.toFixed(n)).toFixed(n);
     }
   });
 

@@ -87,7 +87,7 @@ function computeTileMasks(rootTile, ref, childArray, lowerBound, mask) {
     }
     if (childTile.tileID.isChildOf(ref)) {
       // There's at least one child tile that is masked out, so recursively descend
-      const children = ref.children(Infinity);
+      const children = ref.children(Number.POSITIVE_INFINITY);
       for (let j = 0; j < children.length; j++) {
         const child = children[j];
         computeTileMasks(rootTile, child, childArray.slice(i), lowerBound, mask);

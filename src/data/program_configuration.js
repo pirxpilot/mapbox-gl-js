@@ -41,7 +41,7 @@ class ConstantBinder {
     this.name = name;
     this.uniformName = `u_${this.name}`;
     this.type = type;
-    this.maxValue = -Infinity;
+    this.maxValue = Number.NEGATIVE_INFINITY;
   }
 
   defines() {
@@ -68,7 +68,7 @@ class SourceExpressionBinder {
     this.name = name;
     this.type = type;
     this.uniformName = `a_${name}`;
-    this.maxValue = -Infinity;
+    this.maxValue = Number.NEGATIVE_INFINITY;
     const PaintVertexArray = type === 'color' ? StructArrayLayout2f8 : StructArrayLayout1f4;
     this.paintVertexAttributes = [
       {
@@ -158,7 +158,7 @@ class CompositeExpressionBinder {
     this.type = type;
     this.useIntegerZoom = useIntegerZoom;
     this.zoom = zoom;
-    this.maxValue = -Infinity;
+    this.maxValue = Number.NEGATIVE_INFINITY;
     const PaintVertexArray = type === 'color' ? StructArrayLayout4f16 : StructArrayLayout2f8;
     this.paintVertexAttributes = [
       {

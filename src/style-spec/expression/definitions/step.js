@@ -36,7 +36,7 @@ class Step {
       outputType = context.expectedType;
     }
 
-    rest.unshift(-Infinity);
+    rest.unshift(Number.NEGATIVE_INFINITY);
 
     for (let i = 0; i < rest.length; i += 2) {
       const label = rest[i];

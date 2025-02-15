@@ -579,7 +579,7 @@ test('SourceCache#update', async t => {
 
     const sourceCache = createSourceCache({
       loadTile: function (tile, callback) {
-        tile.timeAdded = Infinity;
+        tile.timeAdded = Number.POSITIVE_INFINITY;
         tile.state = 'loaded';
         tile.registerFadeDuration(100);
         callback();
@@ -615,7 +615,7 @@ test('SourceCache#update', async t => {
 
     const sourceCache = createSourceCache({
       loadTile: function (tile, callback) {
-        tile.timeAdded = Infinity;
+        tile.timeAdded = Number.POSITIVE_INFINITY;
         tile.state = 'loaded';
         tile.registerFadeDuration(100);
         callback();

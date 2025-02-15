@@ -32,7 +32,7 @@ test('GridIndex', async t => {
     );
     t.deepEqual(
       grid
-        .query(-Infinity, -Infinity, Infinity, Infinity)
+        .query(Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY)
         .map(x => x.key)
         .sort(),
       [0, 1, 2]

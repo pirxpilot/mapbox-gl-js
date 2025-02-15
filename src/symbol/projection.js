@@ -563,17 +563,17 @@ function placeGlyphAlongLine(
 }
 
 const hiddenGlyphAttributes = new Float32Array([
-  -Infinity,
-  -Infinity,
+  Number.NEGATIVE_INFINITY,
+  Number.NEGATIVE_INFINITY,
   0,
-  -Infinity,
-  -Infinity,
+  Number.NEGATIVE_INFINITY,
+  Number.NEGATIVE_INFINITY,
   0,
-  -Infinity,
-  -Infinity,
+  Number.NEGATIVE_INFINITY,
+  Number.NEGATIVE_INFINITY,
   0,
-  -Infinity,
-  -Infinity,
+  Number.NEGATIVE_INFINITY,
+  Number.NEGATIVE_INFINITY,
   0
 ]);
 

@@ -28,7 +28,7 @@ test('transform', async t => {
     t.equal(transform.maxZoom, 10);
     t.equal(transform.size.equals(new Point(500, 500)), true);
     t.equal(transform.centerPoint.equals(new Point(250, 250)), true);
-    t.equal(transform.scaleZoom(0), -Infinity);
+    t.equal(transform.scaleZoom(0), Number.NEGATIVE_INFINITY);
     t.equal(transform.scaleZoom(10), 3.3219280948873626);
     t.deepEqual(transform.point, new Point(262144, 262144));
     t.equal(transform.x, 262144);
