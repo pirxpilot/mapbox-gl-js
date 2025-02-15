@@ -86,10 +86,10 @@ class DEMData {
   backfillBorder(borderTile, dx, dy) {
     if (this.dim !== borderTile.dim) throw new Error('dem dimension mismatch');
 
-    let xMin = dx * this.dim,
-      xMax = dx * this.dim + this.dim,
-      yMin = dy * this.dim,
-      yMax = dy * this.dim + this.dim;
+    let xMin = dx * this.dim;
+    let xMax = dx * this.dim + this.dim;
+    let yMin = dy * this.dim;
+    let yMax = dy * this.dim + this.dim;
 
     switch (dx) {
       case -1:

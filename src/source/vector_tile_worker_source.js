@@ -79,9 +79,9 @@ class VectorTileWorkerSource {
    * Implements {@link WorkerSource#reloadTile}.
    */
   reloadTile(params, callback) {
-    const loaded = this.loaded,
-      uid = params.uid,
-      vtSource = this;
+    const loaded = this.loaded;
+    const uid = params.uid;
+    const vtSource = this;
     if (loaded?.[uid]) {
       const workerTile = loaded[uid];
       workerTile.showCollisionBoxes = params.showCollisionBoxes;
@@ -120,8 +120,8 @@ class VectorTileWorkerSource {
    * @param params.uid The UID for this tile.
    */
   removeTile(params, callback) {
-    const loaded = this.loaded,
-      uid = params.uid;
+    const loaded = this.loaded;
+    const uid = params.uid;
     if (loaded?.[uid]) {
       delete loaded[uid];
     }

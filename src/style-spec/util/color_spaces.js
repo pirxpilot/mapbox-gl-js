@@ -3,15 +3,15 @@ const Color = require('./color');
 const { number: interpolateNumber } = require('./interpolate');
 
 // Constants
-const Xn = 0.95047, // D65 standard referent
-  Yn = 1,
-  Zn = 1.08883,
-  t0 = 4 / 29,
-  t1 = 6 / 29,
-  t2 = 3 * t1 * t1,
-  t3 = t1 * t1 * t1,
-  deg2rad = Math.PI / 180,
-  rad2deg = 180 / Math.PI;
+const Xn = 0.95047; // D65 standard referent
+const Yn = 1;
+const Zn = 1.08883;
+const t0 = 4 / 29;
+const t1 = 6 / 29;
+const t2 = 3 * t1 * t1;
+const t3 = t1 * t1 * t1;
+const deg2rad = Math.PI / 180;
+const rad2deg = 180 / Math.PI;
 
 // Utilities
 function xyz2lab(t) {
@@ -33,12 +33,12 @@ function rgb2xyz(x) {
 
 // LAB
 function rgbToLab(rgbColor) {
-  const b = rgb2xyz(rgbColor.r),
-    a = rgb2xyz(rgbColor.g),
-    l = rgb2xyz(rgbColor.b),
-    x = xyz2lab((0.4124564 * b + 0.3575761 * a + 0.1804375 * l) / Xn),
-    y = xyz2lab((0.2126729 * b + 0.7151522 * a + 0.072175 * l) / Yn),
-    z = xyz2lab((0.0193339 * b + 0.119192 * a + 0.9503041 * l) / Zn);
+  const b = rgb2xyz(rgbColor.r);
+  const a = rgb2xyz(rgbColor.g);
+  const l = rgb2xyz(rgbColor.b);
+  const x = xyz2lab((0.4124564 * b + 0.3575761 * a + 0.1804375 * l) / Xn);
+  const y = xyz2lab((0.2126729 * b + 0.7151522 * a + 0.072175 * l) / Yn);
+  const z = xyz2lab((0.0193339 * b + 0.119192 * a + 0.9503041 * l) / Zn);
 
   return {
     l: 116 * y - 16,
@@ -49,9 +49,9 @@ function rgbToLab(rgbColor) {
 }
 
 function labToRgb(labColor) {
-  let y = (labColor.l + 16) / 116,
-    x = isNaN(labColor.a) ? y : y + labColor.a / 500,
-    z = isNaN(labColor.b) ? y : y - labColor.b / 200;
+  let y = (labColor.l + 16) / 116;
+  let x = isNaN(labColor.a) ? y : y + labColor.a / 500;
+  let z = isNaN(labColor.b) ? y : y - labColor.b / 200;
   y = Yn * lab2xyz(y);
   x = Xn * lab2xyz(x);
   z = Zn * lab2xyz(z);
@@ -85,9 +85,9 @@ function rgbToHcl(rgbColor) {
 }
 
 function hclToRgb(hclColor) {
-  const h = hclColor.h * deg2rad,
-    c = hclColor.c,
-    l = hclColor.l;
+  const h = hclColor.h * deg2rad;
+  const c = hclColor.c;
+  const l = hclColor.l;
   return labToRgb({
     l: l,
     a: Math.cos(h) * c,

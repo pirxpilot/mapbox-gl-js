@@ -9,7 +9,8 @@ function findStopLessThanOrEqualTo(stops, input) {
   let lowerIndex = 0;
   let upperIndex = n - 1;
   let currentIndex = 0;
-  let currentValue, upperValue;
+  let currentValue;
+  let upperValue;
 
   while (lowerIndex <= upperIndex) {
     currentIndex = Math.floor((lowerIndex + upperIndex) / 2);

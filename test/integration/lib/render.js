@@ -22,7 +22,8 @@ function compare(actualPath, expectedPaths, diffPath, callback) {
     // depending on platform, i.e. heatmaps use half-float textures for improved rendering where supported
 
     let minNumPixels = Number.POSITIVE_INFINITY;
-    let minDiff, minIndex;
+    let minDiff;
+    let minIndex;
 
     for (let i = 0; i < expectedImgs.length; i++) {
       const diff = new PNG({ width: actualImg.width, height: actualImg.height });

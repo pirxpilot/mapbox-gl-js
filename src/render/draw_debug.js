@@ -392,7 +392,14 @@ function createTextVertices(text, left, baseline, scale) {
   scale = scale || 1;
 
   const strokes = [];
-  let i, len, j, len2, glyph, x, y, prev;
+  let i;
+  let len;
+  let j;
+  let len2;
+  let glyph;
+  let x;
+  let y;
+  let prev;
 
   for (i = 0, len = text.length; i < len; i++) {
     glyph = simplexFont[text[i]];

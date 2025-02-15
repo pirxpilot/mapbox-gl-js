@@ -78,10 +78,10 @@ function boxZoomHandler(map) {
       fireEvent('boxzoomstart', e);
     }
 
-    const minX = Math.min(p0.x, p1.x),
-      maxX = Math.max(p0.x, p1.x),
-      minY = Math.min(p0.y, p1.y),
-      maxY = Math.max(p0.y, p1.y);
+    const minX = Math.min(p0.x, p1.x);
+    const maxX = Math.max(p0.x, p1.x);
+    const minY = Math.min(p0.y, p1.y);
+    const maxY = Math.max(p0.y, p1.y);
 
     box.style.transform = `translate(${minX}px,${minY}px)`;
     box.style.width = `${maxX - minX}px`;

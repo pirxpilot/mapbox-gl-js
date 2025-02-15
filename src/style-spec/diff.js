@@ -208,7 +208,13 @@ function diffLayers(before, after, commands) {
   // layers that have been added do not need to be diffed
   const clean = Object.create(null);
 
-  let i, d, layerId, beforeLayer, afterLayer, insertBeforeLayerId, prop;
+  let i;
+  let d;
+  let layerId;
+  let beforeLayer;
+  let afterLayer;
+  let insertBeforeLayerId;
+  let prop;
 
   // remove layers
   for (i = 0, d = 0; i < beforeOrder.length; i++) {

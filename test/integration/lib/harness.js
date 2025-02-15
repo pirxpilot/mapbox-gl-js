@@ -129,11 +129,11 @@ module.exports = async function (directory, implementation, options, run) {
       process.exit(0);
     }
 
-    let passedCount = 0,
-      ignoreCount = 0,
-      ignorePassCount = 0,
-      failedCount = 0,
-      erroredCount = 0;
+    let passedCount = 0;
+    let ignoreCount = 0;
+    let ignorePassCount = 0;
+    let failedCount = 0;
+    let erroredCount = 0;
 
     tests.forEach(test => {
       if (test.ignored && !test.ok) {

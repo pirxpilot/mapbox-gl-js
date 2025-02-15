@@ -18,9 +18,9 @@ function draw(painter, source, layer, coords) {
   if (painter.renderPass === 'offscreen') {
     drawToExtrusionFramebuffer(painter, layer);
 
-    const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, [0, 1]),
-      stencilMode = StencilMode.disabled,
-      colorMode = painter.colorModeForRenderPass();
+    const depthMode = new DepthMode(painter.context.gl.LEQUAL, DepthMode.ReadWrite, [0, 1]);
+    const stencilMode = StencilMode.disabled;
+    const colorMode = painter.colorModeForRenderPass();
 
     drawExtrusionTiles(painter, source, layer, coords, depthMode, stencilMode, colorMode);
   } else if (painter.renderPass === 'translucent') {

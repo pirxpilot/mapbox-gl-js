@@ -35,10 +35,11 @@ function drawRaster(painter, sourceCache, layer, coords) {
 
     tile.registerFadeDuration(layer.paint.get('raster-fade-duration'));
 
-    const parentTile = sourceCache.findLoadedParent(coord, 0),
-      fade = getFadeValues(tile, parentTile, sourceCache, layer, painter.transform);
+    const parentTile = sourceCache.findLoadedParent(coord, 0);
+    const fade = getFadeValues(tile, parentTile, sourceCache, layer, painter.transform);
 
-    let parentScaleBy, parentTL;
+    let parentScaleBy;
+    let parentTL;
 
     const textureFilter = layer.paint.get('raster-resampling') === 'nearest' ? gl.NEAREST : gl.LINEAR;
 

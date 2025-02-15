@@ -15,10 +15,10 @@ const { distToSegmentSquared } = require('./intersection_tests');
  */
 module.exports = function (polygonRings, precision = 1, debug = false) {
   // find the bounding box of the outer ring
-  let minX = Number.POSITIVE_INFINITY,
-    minY = Number.POSITIVE_INFINITY,
-    maxX = Number.NEGATIVE_INFINITY,
-    maxY = Number.NEGATIVE_INFINITY;
+  let minX = Number.POSITIVE_INFINITY;
+  let minY = Number.POSITIVE_INFINITY;
+  let maxX = Number.NEGATIVE_INFINITY;
+  let maxY = Number.NEGATIVE_INFINITY;
   const outerRing = polygonRings[0];
   for (let i = 0; i < outerRing.length; i++) {
     const p = outerRing[i];

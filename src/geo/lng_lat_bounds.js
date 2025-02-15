@@ -61,9 +61,10 @@ class LngLatBounds {
    * @returns {LngLatBounds} `this`
    */
   extend(obj) {
-    const sw = this._sw,
-      ne = this._ne;
-    let sw2, ne2;
+    const sw = this._sw;
+    const ne = this._ne;
+    let sw2;
+    let ne2;
 
     if (obj instanceof LngLat) {
       sw2 = obj;

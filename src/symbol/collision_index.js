@@ -143,8 +143,8 @@ class CollisionIndex {
     // equivalent to pixel_to_tile_units
     const pixelsToTileUnits = 1 / (textPixelRatio * scale);
 
-    let firstTileDistance = 0,
-      lastTileDistance = 0;
+    let firstTileDistance = 0;
+    let lastTileDistance = 0;
     if (firstAndLastGlyph) {
       firstTileDistance = this.approximateTileDistance(
         firstAndLastGlyph.first.tileDistance,

@@ -150,8 +150,8 @@ function calculateKey(wrap, z, x, y) {
 }
 
 function getQuadkey(z, x, y) {
-  let quadkey = '',
-    mask;
+  let quadkey = '';
+  let mask;
   for (let i = z; i > 0; i--) {
     mask = 1 << (i - 1);
     quadkey += (x & mask ? 1 : 0) + (y & mask ? 2 : 0);

@@ -10,7 +10,10 @@ function tileCover(z, bounds, actualZ, renderWorldCopies) {
   const t = {};
 
   function scanLine(x0, x1, y) {
-    let x, w, wx, coord;
+    let x;
+    let w;
+    let wx;
+    let coord;
     if (y >= 0 && y <= tiles) {
       for (x = x0; x < x1; x++) {
         w = Math.floor(x / tiles);
@@ -82,9 +85,9 @@ function scanSpans(e0, e1, ymin, ymax, scanLine) {
 }
 
 function scanTriangle(a, b, c, ymin, ymax, scanLine) {
-  let ab = edge(a, b),
-    bc = edge(b, c),
-    ca = edge(c, a);
+  let ab = edge(a, b);
+  let bc = edge(b, c);
+  let ca = edge(c, a);
 
   let t;
 

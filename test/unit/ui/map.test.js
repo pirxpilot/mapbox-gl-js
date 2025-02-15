@@ -463,8 +463,8 @@ test('Map', async t => {
 
   await t.test('#resize', async t => {
     await t.test('sets width and height from container offsets', (t, done) => {
-      const map = createMap(),
-        container = map.getContainer();
+      const map = createMap();
+      const container = map.getContainer();
 
       Object.defineProperty(container, 'offsetWidth', { value: 250 });
       Object.defineProperty(container, 'offsetHeight', { value: 250 });
@@ -477,8 +477,8 @@ test('Map', async t => {
     });
 
     await t.test('fires movestart, move, resize, and moveend events', async t => {
-      const map = createMap(),
-        events = [];
+      const map = createMap();
+      const events = [];
 
       ['movestart', 'move', 'resize', 'moveend'].forEach(event => {
         map.on(event, e => {

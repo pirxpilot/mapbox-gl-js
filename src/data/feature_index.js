@@ -63,9 +63,9 @@ class FeatureIndex {
   query(args, styleLayers, sourceFeatureState) {
     this.loadVTLayers();
 
-    const params = args.params || {},
-      pixelsToTileUnits = EXTENT / args.tileSize / args.scale,
-      filter = featureFilter(params.filter);
+    const params = args.params || {};
+    const pixelsToTileUnits = EXTENT / args.tileSize / args.scale;
+    const filter = featureFilter(params.filter);
 
     const queryGeometry = args.queryGeometry;
     const queryPadding = args.queryPadding * pixelsToTileUnits;

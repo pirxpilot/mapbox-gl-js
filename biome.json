@@ -68,7 +68,6 @@
         "useDefaultParameterLast": "off",
         "useExponentiationOperator": "off",
         "useNodejsImportProtocol": "off",
-        "useSingleVarDeclarator": "off",
         "useTemplate": "off"
       },
       "performance": {

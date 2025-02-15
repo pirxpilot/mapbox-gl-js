@@ -43,10 +43,10 @@ class MessageBus {
 }
 
 function WebWorker() {
-  const parentListeners = [],
-    workerListeners = [],
-    parentBus = new MessageBus(workerListeners, parentListeners),
-    workerBus = new MessageBus(parentListeners, workerListeners);
+  const parentListeners = [];
+  const workerListeners = [];
+  const parentBus = new MessageBus(workerListeners, parentListeners);
+  const workerBus = new MessageBus(parentListeners, workerListeners);
 
   parentBus.target = workerBus;
   workerBus.target = parentBus;

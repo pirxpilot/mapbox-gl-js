@@ -133,8 +133,8 @@ function pointIntersectsBufferedLine(p, line, radius) {
   for (let i = 1; i < line.length; i++) {
     // Find line segments that have a distance <= radius^2 to p
     // In that case, we treat the line as "containing point p".
-    const v = line[i - 1],
-      w = line[i];
+    const v = line[i - 1];
+    const w = line[i];
     if (distToSegmentSquared(p, v, w) < radiusSquared) return true;
   }
   return false;
@@ -152,10 +152,10 @@ function distToSegmentSquared(p, v, w) {
 
 // point in polygon ray casting algorithm
 function multiPolygonContainsPoint(rings, p) {
-  let c = false,
-    ring,
-    p1,
-    p2;
+  let c = false;
+  let ring;
+  let p1;
+  let p2;
 
   for (let k = 0; k < rings.length; k++) {
     ring = rings[k];

@@ -78,8 +78,8 @@ class LngLat {
    */
   toBounds(radius) {
     const earthCircumferenceInMetersAtEquator = 40075017;
-    const latAccuracy = (360 * radius) / earthCircumferenceInMetersAtEquator,
-      lngAccuracy = latAccuracy / Math.cos((Math.PI / 180) * this.lat);
+    const latAccuracy = (360 * radius) / earthCircumferenceInMetersAtEquator;
+    const lngAccuracy = latAccuracy / Math.cos((Math.PI / 180) * this.lat);
     const LngLatBounds = require('./lng_lat_bounds');
 
     return new LngLatBounds(

@@ -15,8 +15,8 @@ class RasterDEMTileWorkerSource {
   }
 
   removeTile(params) {
-    const loaded = this.loaded,
-      uid = params.uid;
+    const loaded = this.loaded;
+    const uid = params.uid;
     if (loaded?.[uid]) {
       delete loaded[uid];
     }

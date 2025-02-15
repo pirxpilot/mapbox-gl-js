@@ -412,9 +412,12 @@ class Transform {
     let maxY = 90;
     let minX = -180;
     let maxX = 180;
-    let sy, sx, x2, y2;
-    const size = this.size,
-      unmodified = this._unmodified;
+    let sy;
+    let sx;
+    let x2;
+    let y2;
+    const size = this.size;
+    const unmodified = this._unmodified;
 
     if (this.latRange) {
       const latRange = this.latRange;
@@ -442,16 +445,16 @@ class Transform {
     }
 
     if (this.latRange) {
-      const y = this.y,
-        h2 = size.y / 2;
+      const y = this.y;
+      const h2 = size.y / 2;
 
       if (y - h2 < minY) y2 = minY + h2;
       if (y + h2 > maxY) y2 = maxY - h2;
     }
 
     if (this.lngRange) {
-      const x = this.x,
-        w2 = size.x / 2;
+      const x = this.x;
+      const w2 = size.x / 2;
 
       if (x - w2 < minX) x2 = minX + w2;
       if (x + w2 > maxX) x2 = maxX - w2;
@@ -479,8 +482,8 @@ class Transform {
     const groundAngle = Math.PI / 2 + this._pitch;
     const topHalfSurfaceDistance =
       (Math.sin(halfFov) * this.cameraToCenterDistance) / Math.sin(Math.PI - groundAngle - halfFov);
-    const x = this.x,
-      y = this.y;
+    const x = this.x;
+    const y = this.y;
 
     // Calculate z distance of the farthest fragment that should be rendered.
     const furthestDistance = Math.cos(Math.PI / 2 - this._pitch) * topHalfSurfaceDistance + this.cameraToCenterDistance;
@@ -511,12 +514,12 @@ class Transform {
     // is an odd integer to preserve rendering to the pixel grid. We're rotating this shift based on the angle
     // of the transformation so that 0°, 90°, 180°, and 270° rasters are crisp, and adjust the shift so that
     // it is always <= 0.5 pixels.
-    const xShift = (this.width % 2) / 2,
-      yShift = (this.height % 2) / 2,
-      angleCos = Math.cos(this.angle),
-      angleSin = Math.sin(this.angle),
-      dx = x - Math.round(x) + angleCos * xShift + angleSin * yShift,
-      dy = y - Math.round(y) + angleCos * yShift + angleSin * xShift;
+    const xShift = (this.width % 2) / 2;
+    const yShift = (this.height % 2) / 2;
+    const angleCos = Math.cos(this.angle);
+    const angleSin = Math.sin(this.angle);
+    const dx = x - Math.round(x) + angleCos * xShift + angleSin * yShift;
+    const dy = y - Math.round(y) + angleCos * yShift + angleSin * xShift;
     const alignedM = new Float64Array(m);
     mat4.translate(alignedM, alignedM, [dx > 0.5 ? dx - 1 : dx, dy > 0.5 ? dy - 1 : dy, 0]);
     this.alignedProjMatrix = alignedM;

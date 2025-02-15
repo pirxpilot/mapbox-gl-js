@@ -386,11 +386,11 @@ class SymbolBucket {
     const vertexStartIndex = segment.vertexLength;
 
     for (const symbol of quads) {
-      const tl = symbol.tl,
-        tr = symbol.tr,
-        bl = symbol.bl,
-        br = symbol.br,
-        tex = symbol.tex;
+      const tl = symbol.tl;
+      const tr = symbol.tr;
+      const bl = symbol.bl;
+      const br = symbol.br;
+      const tex = symbol.tex;
 
       const index = segment.vertexLength;
 
@@ -635,8 +635,8 @@ class SymbolBucket {
       symbolInstanceIndexes.push(i);
     }
 
-    const sin = Math.sin(angle),
-      cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const cos = Math.cos(angle);
 
     symbolInstanceIndexes.sort((aIndex, bIndex) => {
       const a = this.symbolInstances[aIndex];

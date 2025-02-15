@@ -218,8 +218,8 @@ function determineLineBreaks(logicalInput, spacing, maxWidth, glyphs) {
 }
 
 function getAnchorAlignment(anchor) {
-  let horizontalAlign = 0.5,
-    verticalAlign = 0.5;
+  let horizontalAlign = 0.5;
+  let verticalAlign = 0.5;
 
   switch (anchor) {
     case 'right':

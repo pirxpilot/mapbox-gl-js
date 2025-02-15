@@ -408,20 +408,20 @@ class Camera extends Evented {
     // to the options `offset` object where it can alter the map's center in the subsequent calls to
     // `easeTo` and `flyTo`.
     const paddingOffset = [
-        (options.padding.left - options.padding.right) / 2,
-        (options.padding.top - options.padding.bottom) / 2
-      ],
-      lateralPadding = Math.min(options.padding.right, options.padding.left),
-      verticalPadding = Math.min(options.padding.top, options.padding.bottom);
+      (options.padding.left - options.padding.right) / 2,
+      (options.padding.top - options.padding.bottom) / 2
+    ];
+    const lateralPadding = Math.min(options.padding.right, options.padding.left);
+    const verticalPadding = Math.min(options.padding.top, options.padding.bottom);
     options.offset = [options.offset[0] + paddingOffset[0], options.offset[1] + paddingOffset[1]];
 
-    const offset = Point.convert(options.offset),
-      tr = this.transform,
-      nw = tr.project(bounds.getNorthWest()),
-      se = tr.project(bounds.getSouthEast()),
-      size = se.sub(nw),
-      scaleX = (tr.width - lateralPadding * 2 - Math.abs(offset.x) * 2) / size.x,
-      scaleY = (tr.height - verticalPadding * 2 - Math.abs(offset.y) * 2) / size.y;
+    const offset = Point.convert(options.offset);
+    const tr = this.transform;
+    const nw = tr.project(bounds.getNorthWest());
+    const se = tr.project(bounds.getSouthEast());
+    const size = se.sub(nw);
+    const scaleX = (tr.width - lateralPadding * 2 - Math.abs(offset.x) * 2) / size.x;
+    const scaleY = (tr.height - verticalPadding * 2 - Math.abs(offset.y) * 2) / size.y;
 
     if (scaleY < 0 || scaleX < 0) {
       warn.once('Map cannot fit within canvas with the given bounds, padding, and/or offset.');
@@ -463,9 +463,9 @@ class Camera extends Evented {
     this.stop();
 
     const tr = this.transform;
-    let zoomChanged = false,
-      bearingChanged = false,
-      pitchChanged = false;
+    let zoomChanged = false;
+    let bearingChanged = false;
+    let pitchChanged = false;
 
     if ('zoom' in options && tr.zoom !== +options.zoom) {
       zoomChanged = true;
@@ -545,13 +545,13 @@ class Camera extends Evented {
 
     if (options.animate === false) options.duration = 0;
 
-    const tr = this.transform,
-      startZoom = this.getZoom(),
-      startBearing = this.getBearing(),
-      startPitch = this.getPitch(),
-      zoom = 'zoom' in options ? +options.zoom : startZoom,
-      bearing = 'bearing' in options ? this._normalizeBearing(options.bearing, startBearing) : startBearing,
-      pitch = 'pitch' in options ? +options.pitch : startPitch;
+    const tr = this.transform;
+    const startZoom = this.getZoom();
+    const startBearing = this.getBearing();
+    const startPitch = this.getPitch();
+    const zoom = 'zoom' in options ? +options.zoom : startZoom;
+    const bearing = 'bearing' in options ? this._normalizeBearing(options.bearing, startBearing) : startBearing;
+    const pitch = 'pitch' in options ? +options.pitch : startPitch;
 
     const pointAtOffset = tr.centerPoint.add(Point.convert(options.offset));
     const locationAtOffset = tr.pointLocation(pointAtOffset);
@@ -562,7 +562,8 @@ class Camera extends Evented {
     const delta = tr.project(center).sub(from);
     const finalScale = tr.zoomScale(zoom - startZoom);
 
-    let around, aroundPoint;
+    let around;
+    let aroundPoint;
 
     if (options.around) {
       around = LngLat.convert(options.around);
@@ -741,10 +742,10 @@ class Camera extends Evented {
       options
     );
 
-    const tr = this.transform,
-      startZoom = this.getZoom(),
-      startBearing = this.getBearing(),
-      startPitch = this.getPitch();
+    const tr = this.transform;
+    const startZoom = this.getZoom();
+    const startBearing = this.getBearing();
+    const startPitch = this.getPitch();
 
     const zoom = 'zoom' in options ? clamp(+options.zoom, tr.minZoom, tr.maxZoom) : startZoom;
     const bearing = 'bearing' in options ? this._normalizeBearing(options.bearing, startBearing) : startBearing;
@@ -762,12 +763,12 @@ class Camera extends Evented {
     let rho = options.curve;
 
     // w₀: Initial visible span, measured in pixels at the initial scale.
-    const w0 = Math.max(tr.width, tr.height),
-      // w₁: Final visible span, measured in pixels with respect to the initial scale.
-      w1 = w0 / scale,
-      // Length of the flight path as projected onto the ground plane, measured in pixels from
-      // the world image origin at the initial scale.
-      u1 = delta.mag();
+    const w0 = Math.max(tr.width, tr.height);
+    // w₁: Final visible span, measured in pixels with respect to the initial scale.
+    const w1 = w0 / scale;
+    // Length of the flight path as projected onto the ground plane, measured in pixels from
+    // the world image origin at the initial scale.
+    const u1 = delta.mag();
 
     if ('minZoom' in options) {
       const minZoom = clamp(Math.min(options.minZoom, startZoom, zoom), tr.minZoom, tr.maxZoom);

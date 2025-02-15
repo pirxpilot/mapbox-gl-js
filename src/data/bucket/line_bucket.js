@@ -178,8 +178,8 @@ class LineBucket {
 
     this.distance = 0;
 
-    const beginCap = cap,
-      endCap = isPolygon ? 'butt' : cap;
+    const beginCap = cap;
+    const endCap = isPolygon ? 'butt' : cap;
     let startOfLine = true;
     let currentVertex;
     let prevVertex;
@@ -577,7 +577,8 @@ function scaleDistance(tileDistance, stats) {
  * @private
  */
 function calculateFullDistance(vertices, first, len) {
-  let currentVertex, nextVertex;
+  let currentVertex;
+  let nextVertex;
   let total = 0;
   for (let i = first; i < len - 1; i++) {
     currentVertex = vertices[i];
