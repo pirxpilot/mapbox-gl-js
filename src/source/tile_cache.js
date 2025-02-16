@@ -46,7 +46,7 @@ class TileCache {
    * @returns {TileCache} this cache
    * @private
    */
-  add(tileID, data, expiryTimeout) {
+  add(tileID, data) {
     const key = tileID.wrapped().key;
     if (this.data[key] === undefined) {
       this.data[key] = [];
@@ -56,12 +56,6 @@ class TileCache {
       value: data,
       timeout: undefined
     };
-
-    if (expiryTimeout !== undefined) {
-      dataWrapper.timeout = setTimeout(() => {
-        this.remove(tileID, dataWrapper);
-      }, expiryTimeout);
-    }
 
     this.data[key].push(dataWrapper);
     this.order.push(key);
@@ -138,7 +132,6 @@ class TileCache {
    * @param {OverscaledTileID} tileID the key for the pair to delete
    * @param {Tile} value If a value is provided, remove that exact version of the value.
    * @returns {TileCache} this cache
-   * @private
    */
   remove(tileID, value) {
     if (!this.has(tileID)) {

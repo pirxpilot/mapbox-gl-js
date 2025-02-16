@@ -52,8 +52,6 @@ class SourceCache extends Evented {
 
     this._tiles = {};
     this._cache = new TileCache(0, this._unloadTile.bind(this));
-    this._timers = {};
-    this._cacheTimers = {};
     this._maxTileCacheSize = null;
 
     this._isIdRenderable = this._isIdRenderable.bind(this);
@@ -220,8 +218,6 @@ class SourceCache extends Evented {
     }
 
     tile.timeAdded = browser.now();
-    if (previousState === 'expired') tile.refreshedUponExpiration = true;
-    this._setTileReloadTimer(id, tile);
     if (this.getSource().type === 'raster-dem' && tile.dem) this._backfillDEM(tile);
     this._state.initializeTileState(tile, this.map ? this.map.painter : null);
 
@@ -397,16 +393,6 @@ class SourceCache extends Evented {
         tiles[tile.tileID.key] = tile;
       }
       this._tiles = tiles;
-
-      // Reset tile reload timers
-      for (const id in this._timers) {
-        clearTimeout(this._timers[id]);
-        delete this._timers[id];
-      }
-      for (const id in this._tiles) {
-        const tile = this._tiles[id];
-        this._setTileReloadTimer(id, tile);
-      }
     }
   }
 
@@ -615,15 +601,9 @@ class SourceCache extends Evented {
 
     tile = this._cache.getAndRemove(tileID);
     if (tile) {
-      this._setTileReloadTimer(tileID.key, tile);
       // set the tileID because the cached tile could have had a different wrap value
       tile.tileID = tileID;
       this._state.initializeTileState(tile, this.map ? this.map.painter : null);
-      if (this._cacheTimers[tileID.key]) {
-        clearTimeout(this._cacheTimers[tileID.key]);
-        delete this._cacheTimers[tileID.key];
-        this._setTileReloadTimer(tileID.key, tile);
-      }
     }
 
     const cached = Boolean(tile);
@@ -642,21 +622,6 @@ class SourceCache extends Evented {
     return tile;
   }
 
-  _setTileReloadTimer(id, tile) {
-    if (id in this._timers) {
-      clearTimeout(this._timers[id]);
-      delete this._timers[id];
-    }
-
-    const expiryTimeout = tile.getExpiryTimeout();
-    if (expiryTimeout) {
-      this._timers[id] = setTimeout(() => {
-        this._reloadTile(id, 'expired');
-        delete this._timers[id];
-      }, expiryTimeout);
-    }
-  }
-
   /**
    * Remove a tile, given its id, from the pyramid
    * @private
@@ -667,15 +632,11 @@ class SourceCache extends Evented {
 
     tile.uses--;
     delete this._tiles[id];
-    if (this._timers[id]) {
-      clearTimeout(this._timers[id]);
-      delete this._timers[id];
-    }
 
     if (tile.uses > 0) return;
 
     if (tile.hasData()) {
-      this._cache.add(tile.tileID, tile, tile.getExpiryTimeout());
+      this._cache.add(tile.tileID, tile);
     } else {
       tile.aborted = true;
       this._abortTile(tile);

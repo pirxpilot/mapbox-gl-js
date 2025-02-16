@@ -59,22 +59,6 @@ test('TileCache - duplicate add', t => {
   t.assert.equal(cache.getAndRemove(idA), tileA2);
 });
 
-test('TileCache - expiry', (t, done) => {
-  const cache = new TileCache(10, removed => {
-    t.assert.ok(cache.has(idB));
-    t.assert.equal(removed, tileA2);
-    done();
-  });
-
-  cache.add(idB, tileB, 0);
-  cache.getAndRemove(idB);
-  // removing clears the expiry timeout
-  cache.add(idB);
-
-  cache.add(idA, tileA);
-  cache.add(idA, tileA2, 0); // expires immediately and `onRemove` is called.
-});
-
 test('TileCache - remove', t => {
   const cache = new TileCache(10, () => {});
 
