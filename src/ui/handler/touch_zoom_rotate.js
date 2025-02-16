@@ -229,8 +229,8 @@ function touchZoomRotateHandler(map) {
 
     movement = makeMovement(map, { rotationDisabled, aroundCenter }, e);
 
-    DOM.addEventListener(window.document, 'touchmove', onMove, { passive: false });
-    DOM.addEventListener(window.document, 'touchend', onEnd);
+    window.document.addEventListener('touchmove', onMove, { passive: false });
+    window.document.addEventListener('touchend', onEnd);
   }
 
   function onMove(e) {
@@ -242,8 +242,8 @@ function touchZoomRotateHandler(map) {
   }
 
   function onEnd(e) {
-    DOM.removeEventListener(window.document, 'touchmove', onMove, { passive: false });
-    DOM.removeEventListener(window.document, 'touchend', onEnd);
+    window.document.removeEventListener('touchmove', onMove, { passive: false });
+    window.document.removeEventListener('touchend', onEnd);
 
     movement.onEnd(e);
     movement = undefined;
