@@ -1,8 +1,8 @@
-/* eslint-disable */
+// This file is generated. Edit layer-properties.js.ejs, then run `make generate-style-code`.
 
 const styleSpec = require('../../style-spec/reference/latest');
 
-const { Properties, DataConstantProperty, DataDrivenProperty, CrossFadedProperty } = require('../properties');
+const { Properties, CrossFadedProperty, DataConstantProperty, DataDrivenProperty } = require('../properties');
 
 const paint = new Properties({
   'fill-extrusion-opacity': new DataConstantProperty(styleSpec['paint_fill-extrusion']['fill-extrusion-opacity']),

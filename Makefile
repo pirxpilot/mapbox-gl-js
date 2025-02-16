@@ -1,5 +1,5 @@
 PROJECT=mapbox-gl
-NODE_BIN=./build/node_modules/.bin
+NODE_BIN=./meta/node_modules/.bin
 
 all: check build
 .PHONY: all
@@ -8,7 +8,7 @@ find = $(foreach dir,$(1),$(foreach d,$(wildcard $(dir)/*),$(call find,$(d),$(2)
 
 SRC = $(call find, src, *.js)
 
-BUILD = dist/$(PROJECT).js dist/$(PROJECT)-worker.js
+BUILD = build/$(PROJECT).js build/$(PROJECT)-worker.js
 
 DEBUG_FLAG ?= true
 
@@ -27,7 +27,7 @@ build/min/package.json: package.json | $$(@D)/.dir
 
 GLSL = $(wildcard src/shaders/*.glsl)
 
-build/min/src/shaders/%.glsl.txt: src/shaders/%.glsl  | $$(@D)/.dir build/node_modules
+build/min/src/shaders/%.glsl.txt: src/shaders/%.glsl  | $$(@D)/.dir meta/node_modules
 	$(NODE_BIN)/webpack-glsl-minify \
 	    --preserveUniforms=true \
 	    --preserveDefines=true \
@@ -61,31 +61,28 @@ dist: DEBUG_FLAG=false
 dist: build
 .PHONY: dist
 
-distdir:
-	mkdir -p dist
-
-DEPENDENCIES = build/node_modules $(CURDIR)/node_modules src/style-spec/node_modules
+DEPENDENCIES = meta/node_modules $(CURDIR)/node_modules src/style-spec/node_modules
 
 dependencies: | $(DEPENDENCIES)
 
 ESBUILD_OPTIONS = --define:global=globalThis --define:DEBUG=$(DEBUG_FLAG)
 
-dist/$(PROJECT).js: $(SRC) | dependencies distdir
+build/$(PROJECT).js: $(SRC) | dependencies
 	esbuild --bundle src/index.js \
 		$(ESBUILD_OPTIONS) \
 		--global-name=mapboxgl \
 		--outfile=$@
 
-dist/$(PROJECT)-worker.js: $(SRC) | dependencies distdir
+build/$(PROJECT)-worker.js: $(SRC) | dependencies
 	esbuild --bundle src/source/worker.js  \
 		$(ESBUILD_OPTIONS) \
 		--outfile=$@
 
-lint: | build/node_modules
+lint: | meta/node_modules
 	$(NODE_BIN)/biome ci
 .PHONY: lint
 
-format: | build/node_modules
+format: | meta/node_modules
 	$(NODE_BIN)/biome format --write
 .PHONY: format
 
@@ -94,7 +91,7 @@ test: test-unit
 test-integration: test-render test-query test-expression
 .NOTPARALLEL: test-render test-query test-expression
 
-test-unit test-render test-query: export NODE_PATH = build/node_modules
+test-unit test-render test-query: export NODE_PATH = meta/node_modules
 
 test-unit: dependencies
 	node --test test/unit/**/*.test.js
@@ -116,10 +113,20 @@ distclean: clean
 	rm -fr $(DEPENDENCIES)
 
 clean:
-	rm -fr dist build/min
+	rm -fr build
 
 clean-test:
 	find test/integration/*-tests -mindepth 2 -type d -not -exec test -e "{}/style.json" \; -print
 	# | xargs -t rm -r
 
 .PHONY: clean clean-test distclean
+
+generate-struct-arrays:
+	node meta/bin/generate-struct-arrays.js
+
+.PHONY: generate-struct-arrays
+
+generate-style-code:
+	node meta/bin/generate-style-code.js
+
+.PHONY: generate-style-code

@@ -1,9 +1,14 @@
-/* eslint-disable */
+// This file is generated. Edit layer-properties.js.ejs, then run `make generate-style-code`.
 
 const styleSpec = require('../../style-spec/reference/latest');
 
-const { Properties, DataConstantProperty, DataDrivenProperty, CrossFadedProperty, ColorRampProperty } =
-  require('../properties');
+const {
+  Properties,
+  ColorRampProperty,
+  CrossFadedProperty,
+  DataConstantProperty,
+  DataDrivenProperty
+} = require('../properties');
 
 const layout = new Properties({
   'line-cap': new DataConstantProperty(styleSpec['layout_line']['line-cap']),
@@ -11,7 +16,6 @@ const layout = new Properties({
   'line-miter-limit': new DataConstantProperty(styleSpec['layout_line']['line-miter-limit']),
   'line-round-limit': new DataConstantProperty(styleSpec['layout_line']['line-round-limit'])
 });
-
 const paint = new Properties({
   'line-opacity': new DataDrivenProperty(styleSpec['paint_line']['line-opacity']),
   'line-color': new DataDrivenProperty(styleSpec['paint_line']['line-color']),

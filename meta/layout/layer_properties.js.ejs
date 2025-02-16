@@ -1,0 +1,34 @@
+<%
+  const {
+    type,
+    layoutProperties,
+    paintProperties,
+    klasses,
+    propertyValue
+  } = locals;
+-%>
+// This file is generated. Edit layer-properties.js.ejs, then run `make generate-style-code`.
+
+const styleSpec = require('../../style-spec/reference/latest');
+
+const {
+  Properties,
+<% for (const klass of klasses) { -%>
+  <%= klass %>,
+<% } -%>
+} = require('../properties');
+
+<% if (layoutProperties.length) { -%>
+const layout = new Properties({
+<% for (const property of layoutProperties) { -%>
+  '<%= property.name %>': <%- propertyValue(property, 'layout') %>,
+<% } -%>
+});
+<% } -%>
+const paint = new Properties({
+<% for (const property of paintProperties) { -%>
+  '<%= property.name %>': <%- propertyValue(property, 'paint') %>,
+<% } -%>
+});
+
+module.exports = { paint<% if (layoutProperties.length) { %>, layout<% } %> };

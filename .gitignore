@@ -1,8 +1,4 @@
-.eslintcache
-.nyc_output
-build/min
-coverage
-dist
+build
 node_modules
 npm-debug.log
 package-lock.json

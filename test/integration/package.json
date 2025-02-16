@@ -1,10 +1,5 @@
 {
-  "name": "@mapbox/mapbox-gl-test-suite",
-  "description": "Rendering tests for Mapbox GL",
-  "version": "0.0.0",
-  "license": "BSD",
-  "main": "index.js",
-  "dependencies": {
+  "devDependencies": {
     "@mapbox/mvt-fixtures": "^3.2.0",
     "chalk": "^2.3.0",
     "d3-queue": "^3.0.3",
@@ -15,5 +10,6 @@
     "pixelmatch": "^4.0.2",
     "pngjs": "^7.0.0",
     "shuffle-seed": "^1.1.6"
-  }
+  },
+  "license": "BSD-3-Clause"
 }

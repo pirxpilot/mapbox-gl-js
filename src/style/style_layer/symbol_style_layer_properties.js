@@ -1,4 +1,4 @@
-/* eslint-disable */
+// This file is generated. Edit layer-properties.js.ejs, then run `make generate-style-code`.
 
 const styleSpec = require('../../style-spec/reference/latest');
 
@@ -42,7 +42,6 @@ const layout = new Properties({
   'text-ignore-placement': new DataConstantProperty(styleSpec['layout_symbol']['text-ignore-placement']),
   'text-optional': new DataConstantProperty(styleSpec['layout_symbol']['text-optional'])
 });
-
 const paint = new Properties({
   'icon-opacity': new DataDrivenProperty(styleSpec['paint_symbol']['icon-opacity']),
   'icon-color': new DataDrivenProperty(styleSpec['paint_symbol']['icon-color']),

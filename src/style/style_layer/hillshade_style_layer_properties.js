@@ -1,4 +1,4 @@
-/* eslint-disable */
+// This file is generated. Edit layer-properties.js.ejs, then run `make generate-style-code`.
 
 const styleSpec = require('../../style-spec/reference/latest');
 
