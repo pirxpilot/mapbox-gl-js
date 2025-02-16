@@ -70,7 +70,6 @@ class Tile {
    * @param {Object} data
    * @param painter
    * @returns {undefined}
-   * @private
    */
   loadVectorData(data, painter, justReloaded) {
     if (this.hasData()) {
@@ -102,8 +101,8 @@ class Tile {
     this.buckets = deserializeBucket(data.buckets, painter.style);
 
     this.hasSymbolBuckets = false;
-    for (const id in this.buckets) {
-      const bucket = this.buckets[id];
+    const buckets = Object.values(this.buckets);
+    for (const bucket of buckets) {
       if (bucket instanceof SymbolBucket) {
         this.hasSymbolBuckets = true;
         if (justReloaded) {
@@ -115,8 +114,7 @@ class Tile {
     }
 
     this.queryPadding = 0;
-    for (const id in this.buckets) {
-      const bucket = this.buckets[id];
+    for (const bucket of buckets) {
       this.queryPadding = Math.max(this.queryPadding, painter.style.getLayer(bucket.layerIds[0]).queryRadius(bucket));
     }
 
@@ -134,18 +132,13 @@ class Tile {
    * @private
    */
   unloadVectorData() {
-    for (const id in this.buckets) {
-      this.buckets[id].destroy();
+    for (const bucket of Object.values(this.buckets)) {
+      bucket.destroy();
     }
     this.buckets = {};
 
-    if (this.iconAtlasTexture) {
-      this.iconAtlasTexture.destroy();
-    }
-    if (this.glyphAtlasTexture) {
-      this.glyphAtlasTexture.destroy();
-    }
-
+    this.iconAtlasTexture?.destroy();
+    this.glyphAtlasTexture?.destroy();
     this.latestFeatureIndex = null;
     this.state = 'unloaded';
   }
@@ -193,7 +186,7 @@ class Tile {
     maxPitchScaleFactor,
     posMatrix
   ) {
-    if (!this.latestFeatureIndex || !this.latestFeatureIndex.rawTileData) return {};
+    if (!this.latestFeatureIndex?.rawTileData) return {};
 
     return this.latestFeatureIndex.query(
       {
@@ -211,7 +204,7 @@ class Tile {
   }
 
   querySourceFeatures(result, params) {
-    if (!this.latestFeatureIndex || !this.latestFeatureIndex.rawTileData) return;
+    if (!this.latestFeatureIndex?.rawTileData) return;
 
     const vtLayers = this.latestFeatureIndex.loadVTLayers();
 
@@ -358,7 +351,7 @@ class Tile {
   }
 
   setFeatureState(states, painter) {
-    if (!this.latestFeatureIndex || !this.latestFeatureIndex.rawTileData || Object.keys(states).length === 0) {
+    if (!this.latestFeatureIndex?.rawTileData || Object.keys(states).length === 0) {
       return;
     }
 
