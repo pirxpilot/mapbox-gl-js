@@ -138,6 +138,8 @@ function boxZoomHandler(map) {
     return map.fire(new Event(type, { originalEvent: e }));
   }
 
+  DOM.initEnableDisableDrag();
+
   return {
     isEnabled,
     isActive,

@@ -277,6 +277,8 @@ function dragRotateHandler(map, { element, button = 'right', bearingSnap = 0, pi
     return map.fire(new Event(type, e ? { originalEvent: e } : {}));
   }
 
+  DOM.initEnableDisableDrag();
+
   return {
     isActive,
     isEnabled,
