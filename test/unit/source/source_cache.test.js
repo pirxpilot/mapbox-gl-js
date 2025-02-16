@@ -1444,7 +1444,7 @@ test('SourceCache#findLoadedParent', async t => {
 
     t.assert.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 3, 3), 0), undefined);
     t.assert.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 0, 0), 0), tile);
-    t.assert.equal(sourceCache._cache.order.length, 1);
+    t.assert.equal(sourceCache._cache.size, 1);
   });
 });
 

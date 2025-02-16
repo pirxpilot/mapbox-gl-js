@@ -1,11 +1,9 @@
 /**
- * A [least-recently-used cache](http://en.wikipedia.org/wiki/Cache_algorithms)
- * with hash lookup made possible by keeping a list of keys in parallel to
- * an array of dictionary of values
- *
- * @private
+ * A [fifo cache](http://en.wikipedia.org/wiki/Cache_algorithms)
  */
 class TileCache {
+  #data = new Map();
+
   /**
    * @param {number} max number of permitted values
    * @param {Function} onRemove callback called with items when they expire
@@ -13,26 +11,18 @@ class TileCache {
   constructor(max, onRemove) {
     this.max = max;
     this.onRemove = onRemove;
-    this.reset();
   }
 
   /**
    * Clear the cache
    *
    * @returns {TileCache} this cache
-   * @private
    */
   reset() {
-    for (const key in this.data) {
-      for (const removedData of this.data[key]) {
-        if (removedData.timeout) clearTimeout(removedData.timeout);
-        this.onRemove(removedData.value);
-      }
+    for (const items of this.#data.values()) {
+      items.forEach(data => this.onRemove(data));
     }
-
-    this.data = {};
-    this.order = [];
-
+    this.#data.clear();
     return this;
   }
 
@@ -44,25 +34,19 @@ class TileCache {
    * @param {*} data any value
    *
    * @returns {TileCache} this cache
-   * @private
    */
   add(tileID, data) {
-    const key = tileID.wrapped().key;
-    if (this.data[key] === undefined) {
-      this.data[key] = [];
-    }
-
-    const dataWrapper = {
-      value: data,
-      timeout: undefined
-    };
-
-    this.data[key].push(dataWrapper);
-    this.order.push(key);
-
-    if (this.order.length > this.max) {
-      const removedData = this._getAndRemoveByKey(this.order[0]);
-      if (removedData) this.onRemove(removedData);
+    const { key } = tileID.wrapped();
+    const items = this.#data.get(key);
+    if (items) {
+      items.push(data);
+    } else {
+      this.#data.set(key, [data]);
+      if (this.#data.size > this.max) {
+        const [[key, items]] = this.#data;
+        items.forEach(data => this.onRemove(data));
+        this.#data.delete(key);
+      }
     }
 
     return this;
@@ -73,10 +57,9 @@ class TileCache {
    *
    * @param {OverscaledTileID} tileID the key to be looked-up
    * @returns {boolean} whether the cache has this value
-   * @private
    */
   has(tileID) {
-    return tileID.wrapped().key in this.data;
+    return this.#data.has(tileID.wrapped().key);
   }
 
   /**
@@ -85,28 +68,24 @@ class TileCache {
    *
    * @param {OverscaledTileID} tileID the key to look up
    * @returns {*} the data, or null if it isn't found
-   * @private
    */
   getAndRemove(tileID) {
-    if (!this.has(tileID)) {
-      return null;
-    }
-    return this._getAndRemoveByKey(tileID.wrapped().key);
+    return this.#getAndRemoveByKey(tileID.wrapped().key);
   }
 
   /*
    * Get and remove the value with the specified key.
    */
-  _getAndRemoveByKey(key) {
-    const data = this.data[key].shift();
-    if (data.timeout) clearTimeout(data.timeout);
-
-    if (this.data[key].length === 0) {
-      delete this.data[key];
+  #getAndRemoveByKey(key) {
+    const items = this.#data.get(key);
+    if (!items) {
+      return null;
     }
-    this.order.splice(this.order.indexOf(key), 1);
-
-    return data.value;
+    const data = items.shift();
+    if (items.length === 0) {
+      this.#data.delete(key);
+    }
+    return data;
   }
 
   /**
@@ -115,15 +94,9 @@ class TileCache {
    *
    * @param {OverscaledTileID} tileID the key to look up
    * @returns {*} the data, or null if it isn't found
-   * @private
    */
   get(tileID) {
-    if (!this.has(tileID)) {
-      return null;
-    }
-
-    const data = this.data[tileID.wrapped().key][0];
-    return data.value;
+    return this.#data.get(tileID.wrapped().key)?.[0];
   }
 
   /**
@@ -134,20 +107,22 @@ class TileCache {
    * @returns {TileCache} this cache
    */
   remove(tileID, value) {
-    if (!this.has(tileID)) {
+    const key = tileID.wrapped().key;
+    const items = this.#data.get(key);
+    if (!items) {
       return this;
     }
-    const key = tileID.wrapped().key;
-
-    const dataIndex = value === undefined ? 0 : this.data[key].indexOf(value);
-    const data = this.data[key][dataIndex];
-    this.data[key].splice(dataIndex, 1);
-    if (data.timeout) clearTimeout(data.timeout);
-    if (this.data[key].length === 0) {
-      delete this.data[key];
+    if (items.length === 1) {
+      if (value === undefined || items[0] === value) {
+        this.onRemove(items[0]);
+        this.#data.delete(key);
+      }
+    } else {
+      const dataIndex = value === undefined ? 0 : items.indexOf(value);
+      const data = items[dataIndex];
+      items.splice(dataIndex, 1);
+      this.onRemove(data);
     }
-    this.onRemove(data.value);
-    this.order.splice(this.order.indexOf(key), 1);
 
     return this;
   }
@@ -157,17 +132,24 @@ class TileCache {
    *
    * @param {number} max the max size of the cache
    * @returns {TileCache} this cache
-   * @private
    */
   setMaxSize(max) {
-    this.max = max;
-
-    while (this.order.length > this.max) {
-      const removedData = this._getAndRemoveByKey(this.order[0]);
-      if (removedData) this.onRemove(removedData);
+    for (let overflow = this.#data.size - max; overflow > 0; overflow--) {
+      const [[key, items]] = this.#data;
+      items.forEach(data => this.onRemove(data));
+      this.#data.delete(key);
     }
 
+    this.max = max;
     return this;
+  }
+
+  get keys() {
+    return Array.from(this.#data.keys());
+  }
+
+  get size() {
+    return this.#data.size;
   }
 }
 

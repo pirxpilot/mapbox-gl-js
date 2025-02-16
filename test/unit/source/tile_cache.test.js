@@ -14,7 +14,7 @@ const tileD = { tileID: idD };
 
 function keysExpected(t, cache, ids) {
   t.assert.deepEqual(
-    cache.order,
+    cache.keys,
     ids.map(id => id.key),
     'keys'
   );
@@ -52,7 +52,7 @@ test('TileCache - duplicate add', t => {
   cache.add(idA, tileA);
   cache.add(idA, tileA2);
 
-  keysExpected(t, cache, [idA, idA]);
+  keysExpected(t, cache, [idA]);
   t.assert.ok(cache.has(idA));
   t.assert.equal(cache.getAndRemove(idA), tileA);
   t.assert.ok(cache.has(idA));

@@ -334,8 +334,9 @@ class SourceCache extends Evented {
       if (tile?.hasData()) {
         return tile;
       }
-      if (this._cache.has(parent)) {
-        return this._cache.get(parent);
+      const pp = this._cache.get(parent);
+      if (pp) {
+        return pp;
       }
     }
   }
