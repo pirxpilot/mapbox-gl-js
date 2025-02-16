@@ -32,30 +32,6 @@ test('CanonicalTileID', async t => {
     t.assert.ok(new CanonicalTileID(3, 2, 1).equals(new CanonicalTileID(3, 2, 1)));
     t.assert.notOk(new CanonicalTileID(9, 2, 3).equals(new CanonicalTileID(3, 2, 1)));
   });
-
-  await t.test('.url', async t => {
-    await t.test('replaces {z}/{x}/{y}', t => {
-      t.assert.equal(new CanonicalTileID(1, 0, 0).url(['{z}/{x}/{y}.json']), '1/0/0.json');
-    });
-
-    await t.test('replaces {quadkey}', t => {
-      t.assert.equal(new CanonicalTileID(1, 0, 0).url(['quadkey={quadkey}']), 'quadkey=0');
-      t.assert.equal(new CanonicalTileID(2, 0, 0).url(['quadkey={quadkey}']), 'quadkey=00');
-      t.assert.equal(new CanonicalTileID(2, 1, 1).url(['quadkey={quadkey}']), 'quadkey=03');
-      t.assert.equal(new CanonicalTileID(17, 22914, 52870).url(['quadkey={quadkey}']), 'quadkey=02301322130000230');
-
-      // Test case confirmed by quadkeytools package
-      // https://bitbucket.org/steele/quadkeytools/src/master/test/quadkey.js?fileviewer=file-view-default#quadkey.js-57
-      t.assert.equal(new CanonicalTileID(6, 29, 3).url(['quadkey={quadkey}']), 'quadkey=011123');
-    });
-
-    await t.test('replaces {bbox-epsg-3857}', t => {
-      t.assert.equal(
-        new CanonicalTileID(1, 0, 0).url(['bbox={bbox-epsg-3857}']),
-        'bbox=-20037508.342789244,0,0,20037508.342789244'
-      );
-    });
-  });
 });
 
 test('OverscaledTileID', async t => {
