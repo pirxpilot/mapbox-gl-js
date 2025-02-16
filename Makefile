@@ -88,8 +88,8 @@ format: | meta/node_modules
 
 test: test-unit
 
-test-integration: test-render test-query test-expression
-.NOTPARALLEL: test-render test-query test-expression
+test-integration: test-expression test-query test-render
+.NOTPARALLEL: test-expression test-query test-render
 
 test-unit test-render test-query: export NODE_PATH = meta/node_modules
 

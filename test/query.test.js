@@ -4,6 +4,8 @@ const querySuite = require('./integration').query;
 const suiteImplementation = require('./suite_implementation');
 const ignores = require('./ignores.json');
 
+globalThis.window ??= require('../src/util/window');
+
 let tests;
 
 if (process.argv[1] === __filename && process.argv.length > 2) {
