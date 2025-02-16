@@ -1,6 +1,5 @@
 const { Event, ErrorEvent, Evented } = require('../util/evented');
 
-const window = require('../util/window');
 const EXTENT = require('../data/extent');
 const browser = require('../util/browser');
 
@@ -262,12 +261,6 @@ class GeoJSONSource extends Evented {
   hasTransition() {
     return false;
   }
-}
-
-function resolveURL(url) {
-  const a = window.document.createElement('a');
-  a.href = url;
-  return a.href;
 }
 
 module.exports = GeoJSONSource;
