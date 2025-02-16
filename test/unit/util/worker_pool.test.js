@@ -1,7 +1,17 @@
 const { test } = require('../../util/mapbox-gl-js-test');
+const _window = require('../../util/window');
 const makeWorkerPool = require('../../../src/util/worker_pool');
 
 test('WorkerPool', async t => {
+  let globalWindow;
+  t.before(() => {
+    globalWindow = globalThis.window;
+    globalThis.window = _window;
+  });
+  t.after(() => {
+    globalThis.window = globalWindow;
+  });
+
   await t.test('#acquire', async t => {
     const pool = makeWorkerPool(4);
 

@@ -1,6 +1,7 @@
 const jsdom = require('jsdom');
 const canvas = require('canvas');
 const gl = require('gl');
+const WebWorker = require('./web_worker');
 
 const _window = create();
 
@@ -49,6 +50,8 @@ function create() {
     return false;
   };
   window.WebGLFramebuffer ??= Object;
+
+  window.Worker ??= WebWorker;
 
   globalThis.document ??= window.document;
 

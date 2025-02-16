@@ -1,7 +1,8 @@
 const { test } = require('../../util/mapbox-gl-js-test');
 const _window = require('../../util/window');
 const Actor = require('../../../src/util/actor');
-const WebWorker = require('../../../src/util/web_worker');
+
+const WebWorker = _window.Worker;
 
 test('Actor', async t => {
   let globalWindow;
