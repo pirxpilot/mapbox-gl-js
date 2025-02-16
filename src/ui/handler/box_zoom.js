@@ -1,7 +1,6 @@
 const DOM = require('../../util/dom');
 
 const LngLatBounds = require('../../geo/lng_lat_bounds');
-const window = require('../../util/window');
 const { Event } = require('../../util/evented');
 
 /**

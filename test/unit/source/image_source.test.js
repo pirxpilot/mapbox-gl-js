@@ -1,9 +1,9 @@
 const { test } = require('../../util/mapbox-gl-js-test');
+const _window = require('../../util/window');
 const ImageSource = require('../../../src/source/image_source');
 const { Evented } = require('../../../src/util/evented');
 const Transform = require('../../../src/geo/transform');
 const browser = require('../../../src/util/browser');
-const window = require('../../../src/util/window');
 
 function createSource(options) {
   options = Object.assign(
@@ -30,9 +30,12 @@ class StubMap extends Evented {
 }
 
 test('ImageSource', async t => {
+  let globalWindow;
   let respond;
-
   t.before(() => {
+    globalWindow = globalThis.window;
+    globalThis.window = _window;
+
     t.stub(window.URL, 'createObjectURL').returns('blob:');
     // stub Image so we can invoke 'onload'
     // https://github.com/jsdom/jsdom/commit/58a7028d0d5b6aacc5b435daee9fd8f9eacbb14c
@@ -42,6 +45,9 @@ test('ImageSource', async t => {
       img.onload();
     };
     t.stub(browser, 'getImageData').callsFake(() => new ArrayBuffer(1));
+  });
+  t.after(() => {
+    globalThis.window = globalWindow;
   });
 
   await t.test('constructor', async t => {

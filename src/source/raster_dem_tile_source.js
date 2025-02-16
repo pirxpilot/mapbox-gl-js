@@ -2,7 +2,6 @@ const browser = require('../util/browser');
 const loadImage = require('../util/loader/image');
 const { OverscaledTileID } = require('./tile_id');
 const RasterTileSource = require('./raster_tile_source');
-const window = require('../util/window');
 // ensure DEMData is registered for worker transfer on main thread:
 require('../data/dem_data');
 

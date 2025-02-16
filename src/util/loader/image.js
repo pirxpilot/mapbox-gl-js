@@ -1,5 +1,3 @@
-const window = require('../window');
-
 module.exports = image;
 
 function image(data, fn) {

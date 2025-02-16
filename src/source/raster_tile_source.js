@@ -4,7 +4,6 @@ const { Event, ErrorEvent, Evented } = require('../util/evented');
 const loadTileJSON = require('./load_tilejson');
 const TileBounds = require('./tile_bounds');
 const Texture = require('../render/texture');
-const window = require('../util/window');
 
 class RasterTileSource extends Evented {
   constructor(id, options, dispatcher, eventedParent) {

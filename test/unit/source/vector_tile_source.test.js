@@ -1,4 +1,5 @@
 const { test } = require('../../util/mapbox-gl-js-test');
+const _window = require('../../util/window');
 const VectorTileSource = require('../../../src/source/vector_tile_source');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
 const { Evented } = require('../../../src/util/evented');
@@ -30,6 +31,15 @@ function createSource(options) {
 }
 
 test('VectorTileSource', async t => {
+  let globalWindow;
+  t.before(() => {
+    globalWindow = globalThis.window;
+    globalThis.window = _window;
+  });
+  t.after(() => {
+    globalThis.window = globalWindow;
+  });
+
   await t.test('can be constructed from TileJSON', (t, done) => {
     const source = createSource({
       minzoom: 1,

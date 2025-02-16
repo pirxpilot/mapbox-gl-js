@@ -1,4 +1,5 @@
 const { test } = require('../../util/mapbox-gl-js-test');
+const _window = require('../../util/window');
 const RasterTileSource = require('../../../src/source/raster_tile_source');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
 
@@ -21,6 +22,15 @@ function createSource(options) {
 }
 
 test('RasterTileSource', async t => {
+  let globalWindow;
+  t.before(() => {
+    globalWindow = globalThis.window;
+    globalThis.window = _window;
+  });
+  t.after(() => {
+    globalThis.window = globalWindow;
+  });
+
   await t.test('respects TileJSON.bounds', t => {
     const source = createSource({
       minzoom: 0,

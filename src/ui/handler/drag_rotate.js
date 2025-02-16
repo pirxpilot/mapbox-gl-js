@@ -1,7 +1,6 @@
 const DOM = require('../../util/dom');
 
 const { bezier } = require('../../util/util');
-const window = require('../../util/window');
 const { Event } = require('../../util/evented');
 const assert = require('assert');
 const makeFrame = require('./frame');

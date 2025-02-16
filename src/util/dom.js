@@ -92,7 +92,9 @@ const suppressClick = function (e) {
 DOM.suppressClick = function () {
   window.addEventListener('click', suppressClick, true);
   window.setTimeout(() => {
-    window.removeEventListener('click', suppressClick, true);
+    if (typeof window === 'object' && window) {
+      window.removeEventListener('click', suppressClick, true);
+    }
   }, 0);
 };
 

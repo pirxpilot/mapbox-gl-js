@@ -1,5 +1,5 @@
 const { test } = require('../../../util/mapbox-gl-js-test');
-const window = require('../../../../src/util/window');
+const _window = require('../../../util/window');
 const Map = require('../../../../src/ui/map');
 const DOM = require('../../../../src/util/dom');
 const simulate = require('../../../util/mapbox-gl-js-test/simulate_interaction');
@@ -8,100 +8,108 @@ function createMap() {
   return new Map({ container: DOM.create('div', '', window.document.body) });
 }
 
-test('BoxZoomHandler fires boxzoomstart and boxzoomend events at appropriate times', async t => {
-  const map = createMap();
+test('BoxZoomHandler', async t => {
+  let globalWindow;
+  t.before(() => {
+    globalWindow = globalThis.window;
+    globalThis.window = _window;
+  });
+  t.after(() => {
+    globalThis.window = globalWindow;
+  });
 
-  const boxzoomstart = t.spy();
-  const boxzoomend = t.spy();
+  await t.test('BoxZoomHandler fires boxzoomstart and boxzoomend events at appropriate times', t => {
+    const map = createMap();
 
-  map.on('boxzoomstart', boxzoomstart);
-  map.on('boxzoomend', boxzoomend);
+    const boxzoomstart = t.spy();
+    const boxzoomend = t.spy();
 
-  simulate.mousedown(map.getCanvas(), { shiftKey: true, clientX: 0, clientY: 0 });
-  map._renderTaskQueue.run();
-  t.equal(boxzoomstart.callCount, 0);
-  t.equal(boxzoomend.callCount, 0);
+    map.on('boxzoomstart', boxzoomstart);
+    map.on('boxzoomend', boxzoomend);
 
-  simulate.mousemove(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
-  map._renderTaskQueue.run();
-  t.equal(boxzoomstart.callCount, 1);
-  t.equal(boxzoomend.callCount, 0);
+    simulate.mousedown(map.getCanvas(), { shiftKey: true, clientX: 0, clientY: 0 });
+    map._renderTaskQueue.run();
+    t.equal(boxzoomstart.callCount, 0);
+    t.equal(boxzoomend.callCount, 0);
 
-  simulate.mouseup(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
-  map._renderTaskQueue.run();
-  t.equal(boxzoomstart.callCount, 1);
-  t.equal(boxzoomend.callCount, 1);
+    simulate.mousemove(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
+    map._renderTaskQueue.run();
+    t.equal(boxzoomstart.callCount, 1);
+    t.equal(boxzoomend.callCount, 0);
 
-  map.remove();
-  t.end();
-});
+    simulate.mouseup(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
+    map._renderTaskQueue.run();
+    t.equal(boxzoomstart.callCount, 1);
+    t.equal(boxzoomend.callCount, 1);
 
-test('BoxZoomHandler avoids conflicts with DragPanHandler when disabled and reenabled (#2237)', async t => {
-  const map = createMap();
+    map.remove();
+  });
 
-  map.boxZoom.disable();
-  map.boxZoom.enable();
+  await t.test('BoxZoomHandler avoids conflicts with DragPanHandler when disabled and reenabled (#2237)', t => {
+    const map = createMap();
 
-  const boxzoomstart = t.spy();
-  const boxzoomend = t.spy();
+    map.boxZoom.disable();
+    map.boxZoom.enable();
 
-  map.on('boxzoomstart', boxzoomstart);
-  map.on('boxzoomend', boxzoomend);
+    const boxzoomstart = t.spy();
+    const boxzoomend = t.spy();
 
-  const dragstart = t.spy();
-  const drag = t.spy();
-  const dragend = t.spy();
+    map.on('boxzoomstart', boxzoomstart);
+    map.on('boxzoomend', boxzoomend);
 
-  map.on('dragstart', dragstart);
-  map.on('drag', drag);
-  map.on('dragend', dragend);
+    const dragstart = t.spy();
+    const drag = t.spy();
+    const dragend = t.spy();
 
-  simulate.mousedown(map.getCanvas(), { shiftKey: true, clientX: 0, clientY: 0 });
-  map._renderTaskQueue.run();
-  t.equal(boxzoomstart.callCount, 0);
-  t.equal(boxzoomend.callCount, 0);
+    map.on('dragstart', dragstart);
+    map.on('drag', drag);
+    map.on('dragend', dragend);
 
-  simulate.mousemove(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
-  map._renderTaskQueue.run();
-  t.equal(boxzoomstart.callCount, 1);
-  t.equal(boxzoomend.callCount, 0);
+    simulate.mousedown(map.getCanvas(), { shiftKey: true, clientX: 0, clientY: 0 });
+    map._renderTaskQueue.run();
+    t.equal(boxzoomstart.callCount, 0);
+    t.equal(boxzoomend.callCount, 0);
 
-  simulate.mouseup(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
-  map._renderTaskQueue.run();
-  t.equal(boxzoomstart.callCount, 1);
-  t.equal(boxzoomend.callCount, 1);
+    simulate.mousemove(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
+    map._renderTaskQueue.run();
+    t.equal(boxzoomstart.callCount, 1);
+    t.equal(boxzoomend.callCount, 0);
 
-  t.equal(dragstart.callCount, 0);
-  t.equal(drag.callCount, 0);
-  t.equal(dragend.callCount, 0);
+    simulate.mouseup(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
+    map._renderTaskQueue.run();
+    t.equal(boxzoomstart.callCount, 1);
+    t.equal(boxzoomend.callCount, 1);
 
-  map.remove();
-  t.end();
-});
+    t.equal(dragstart.callCount, 0);
+    t.equal(drag.callCount, 0);
+    t.equal(dragend.callCount, 0);
 
-test('BoxZoomHandler does not begin a box zoom if preventDefault is called on the mousedown event', async t => {
-  const map = createMap();
+    map.remove();
+  });
 
-  map.on('mousedown', e => e.preventDefault());
+  await t.test('BoxZoomHandler does not begin a box zoom if preventDefault is called on the mousedown event', t => {
+    const map = createMap();
 
-  const boxzoomstart = t.spy();
-  const boxzoomend = t.spy();
+    map.on('mousedown', e => e.preventDefault());
 
-  map.on('boxzoomstart', boxzoomstart);
-  map.on('boxzoomend', boxzoomend);
+    const boxzoomstart = t.spy();
+    const boxzoomend = t.spy();
 
-  simulate.mousedown(map.getCanvas(), { shiftKey: true, clientX: 0, clientY: 0 });
-  map._renderTaskQueue.run();
+    map.on('boxzoomstart', boxzoomstart);
+    map.on('boxzoomend', boxzoomend);
 
-  simulate.mousemove(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
-  map._renderTaskQueue.run();
+    simulate.mousedown(map.getCanvas(), { shiftKey: true, clientX: 0, clientY: 0 });
+    map._renderTaskQueue.run();
 
-  simulate.mouseup(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
-  map._renderTaskQueue.run();
+    simulate.mousemove(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
+    map._renderTaskQueue.run();
 
-  t.equal(boxzoomstart.callCount, 0);
-  t.equal(boxzoomend.callCount, 0);
+    simulate.mouseup(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
+    map._renderTaskQueue.run();
 
-  map.remove();
-  t.end();
+    t.equal(boxzoomstart.callCount, 0);
+    t.equal(boxzoomend.callCount, 0);
+
+    map.remove();
+  });
 });

@@ -1,4 +1,5 @@
 const { test } = require('../../util/mapbox-gl-js-test');
+const _window = require('../../util/window');
 const DEMData = require('../../../src/data/dem_data');
 const { RGBAImage } = require('../../../src/util/image');
 const { serialize, deserialize } = require('../../../src/util/web_worker_transfer');
@@ -12,16 +13,24 @@ function createMockImage(height, width) {
 }
 
 test('DEMData', async t => {
-  await t.test('constructor', async t => {
+  let globalWindow;
+  t.before(() => {
+    globalWindow = globalThis.window;
+    globalThis.window = _window;
+  });
+  t.after(() => {
+    globalThis.window = globalWindow;
+  });
+
+  await t.test('constructor', t => {
     const dem = new DEMData(0, { width: 4, height: 4, data: new Uint8ClampedArray(4 * 4 * 4) });
     t.equal(dem.uid, 0);
     t.equal(dem.dim, 4);
     t.equal(dem.stride, 6);
     t.true(dem.data instanceof Int32Array);
-    t.end();
   });
 
-  await t.test('setters and getters throw for invalid data coordinates', async t => {
+  await t.test('setters and getters throw for invalid data coordinates', t => {
     const dem = new DEMData(0, { width: 4, height: 4, data: new Uint8ClampedArray(4 * 4 * 4) });
 
     t.throws(
@@ -34,24 +43,30 @@ test('DEMData', async t => {
       { message: 'out of range source coordinates for DEM data' },
       'detects and throws on invalid input'
     );
-
-    t.end();
   });
 
-  await t.test('loadFromImage with invalid encoding', async t => {
+  await t.test('loadFromImage with invalid encoding', t => {
     t.stub(console, 'warn');
 
     const dem = new DEMData(0, { width: 4, height: 4, data: new Uint8ClampedArray(4 * 4 * 4) }, 'derp');
     t.equal(dem.uid, 0);
     t.ok(console.warn.calledOnce);
     t.ok(console.warn.getCall(0).calledWithMatch(/"derp" is not a valid encoding type/));
-    t.end();
   });
 
   t.end();
 });
 
 test('DEMData#backfillBorder', async t => {
+  let globalWindow;
+  t.before(() => {
+    globalWindow = globalThis.window;
+    globalThis.window = _window;
+  });
+  t.after(() => {
+    globalThis.window = globalWindow;
+  });
+
   const dem0 = new DEMData(0, createMockImage(4, 4));
   const dem1 = new DEMData(1, createMockImage(4, 4));
 
@@ -94,8 +109,6 @@ test('DEMData#backfillBorder', async t => {
     t.true(dem0.get(4, 4) === dem0.get(3, 3), '1, 1 corner initially equal to closest corner data');
     t.true(dem0.get(-1, -1) === dem0.get(0, 0), '-1, -1 corner initially equal to closest corner data');
     t.true(dem0.get(4, -1) === dem0.get(3, 0), '-1, 1 corner initially equal to closest corner data');
-
-    t.end();
   });
 
   await t.test('backfillBorder correctly populates borders with neighboring data', t => {
@@ -131,8 +144,6 @@ test('DEMData#backfillBorder', async t => {
 
     dem0.backfillBorder(dem1, 1, -1);
     t.true(dem0.get(4, -1) === dem1.get(0, 3), 'backfills neighbor -1, 1');
-
-    t.end();
   });
 
   await t.test('DEMData is correctly serialized', t => {
@@ -155,8 +166,6 @@ test('DEMData#backfillBorder', async t => {
     const transferrables = [];
     serialize(dem0, transferrables);
     t.deepEqual(new Int32Array(transferrables[0]), dem0.data, 'populates transferrables with correct data');
-
-    t.end();
   });
 
   await t.test('DEMData is correctly deserialized', t => {
@@ -166,8 +175,6 @@ test('DEMData#backfillBorder', async t => {
 
     const deserialized = deserialize(serialized);
     t.deepEqual(deserialized, dem0, 'deserializes serialized DEMData instance');
-
-    t.end();
   });
 
   t.end();

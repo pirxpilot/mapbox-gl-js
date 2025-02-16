@@ -10,8 +10,6 @@ const {
 } = require('../style-spec/expression');
 const CompoundExpression = require('../style-spec/expression/compound_expression');
 const expressions = require('../style-spec/expression/definitions');
-const window = require('./window');
-const { ImageData } = window;
 
 const registry = {};
 
@@ -111,7 +109,7 @@ function serialize(input, transferables) {
     return view;
   }
 
-  if (input instanceof ImageData) {
+  if (input instanceof window.ImageData) {
     if (transferables) {
       transferables.push(input.data.buffer);
     }
@@ -188,7 +186,7 @@ function deserialize(input) {
     input instanceof RegExp ||
     input instanceof ArrayBuffer ||
     ArrayBuffer.isView(input) ||
-    input instanceof ImageData
+    input instanceof window.ImageData
   ) {
     return input;
   }
