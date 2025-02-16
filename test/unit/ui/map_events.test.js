@@ -1,6 +1,6 @@
 const { test } = require('../../util/mapbox-gl-js-test');
+const _window = require('../../util/window');
 const Map = require('../../../src/ui/map');
-const window = require('../../../src/util/window');
 const simulate = require('../../util/mapbox-gl-js-test/simulate_interaction');
 
 function createMap() {
@@ -9,85 +9,96 @@ function createMap() {
   });
 }
 
-test('Map#on adds a non-delegated event listener', t => {
-  const map = createMap();
-  const spy = t.spy(function (e) {
-    t.equal(this, map);
-    t.equal(e.type, 'click');
+test('map events', async t => {
+  let globalWindow;
+  t.before(() => {
+    globalWindow = globalThis.window;
+    globalThis.window = _window;
+  });
+  t.after(() => {
+    globalThis.window = globalWindow;
   });
 
-  map.on('click', spy);
-  simulate.click(map.getCanvas());
+  await test('Map#on adds a non-delegated event listener', t => {
+    const map = createMap();
+    const spy = t.spy(function (e) {
+      t.equal(this, map);
+      t.equal(e.type, 'click');
+    });
 
-  t.ok(spy.calledOnce);
-});
+    map.on('click', spy);
+    simulate.click(map.getCanvas());
 
-test('Map#off removes a non-delegated event listener', t => {
-  const map = createMap();
-  const spy = t.spy();
+    t.ok(spy.calledOnce);
+  });
 
-  map.on('click', spy);
-  map.off('click', spy);
-  simulate.click(map.getCanvas());
+  await test('Map#off removes a non-delegated event listener', t => {
+    const map = createMap();
+    const spy = t.spy();
 
-  t.ok(spy.notCalled);
-});
+    map.on('click', spy);
+    map.off('click', spy);
+    simulate.click(map.getCanvas());
 
-test('Map#on mousedown can have default behavior prevented and still fire subsequent click event', t => {
-  const map = createMap();
+    t.ok(spy.notCalled);
+  });
 
-  map.on('mousedown', e => e.preventDefault());
+  await test('Map#on mousedown can have default behavior prevented and still fire subsequent click event', t => {
+    const map = createMap();
 
-  const click = t.spy();
-  map.on('click', click);
+    map.on('mousedown', e => e.preventDefault());
 
-  simulate.click(map.getCanvas());
-  t.ok(click.callCount, 1);
+    const click = t.spy();
+    map.on('click', click);
 
-  map.remove();
-});
+    simulate.click(map.getCanvas());
+    t.ok(click.callCount, 1);
 
-test(`Map#on mousedown doesn't fire subsequent click event if mousepos changes`, t => {
-  const map = createMap();
+    map.remove();
+  });
 
-  map.on('mousedown', e => e.preventDefault());
+  await test(`Map#on mousedown doesn't fire subsequent click event if mousepos changes`, t => {
+    const map = createMap();
 
-  const click = t.spy();
-  map.on('click', click);
-  const canvas = map.getCanvas();
+    map.on('mousedown', e => e.preventDefault());
 
-  simulate.drag(canvas, {}, { clientX: 100, clientY: 100 });
-  t.ok(click.notCalled);
+    const click = t.spy();
+    map.on('click', click);
+    const canvas = map.getCanvas();
 
-  map.remove();
-});
+    simulate.drag(canvas, {}, { clientX: 100, clientY: 100 });
+    t.ok(click.notCalled);
 
-test('Map#on mousedown fires subsequent click event if mouse position changes less than click tolerance', t => {
-  const map = createMap(t, { clickTolerance: 4 });
+    map.remove();
+  });
 
-  map.on('mousedown', e => e.preventDefault());
+  await test('Map#on mousedown fires subsequent click event if mouse position changes less than click tolerance', t => {
+    const map = createMap(t, { clickTolerance: 4 });
 
-  const click = t.spy();
-  map.on('click', click);
-  const canvas = map.getCanvas();
+    map.on('mousedown', e => e.preventDefault());
 
-  simulate.drag(canvas, { clientX: 100, clientY: 100 }, { clientX: 100, clientY: 103 });
-  t.ok(click.called);
+    const click = t.spy();
+    map.on('click', click);
+    const canvas = map.getCanvas();
 
-  map.remove();
-});
+    simulate.drag(canvas, { clientX: 100, clientY: 100 }, { clientX: 100, clientY: 103 });
+    t.ok(click.called);
 
-test('Map#on mousedown does not fire subsequent click event if mouse position changes more than click tolerance', t => {
-  const map = createMap(t, { clickTolerance: 4 });
+    map.remove();
+  });
 
-  map.on('mousedown', e => e.preventDefault());
+  await test('Map#on mousedown does not fire subsequent click event if mouse position changes more than click tolerance', t => {
+    const map = createMap(t, { clickTolerance: 4 });
 
-  const click = t.spy();
-  map.on('click', click);
-  const canvas = map.getCanvas();
+    map.on('mousedown', e => e.preventDefault());
 
-  simulate.drag(canvas, { clientX: 100, clientY: 100 }, { clientX: 100, clientY: 104 });
-  t.ok(click.notCalled);
+    const click = t.spy();
+    map.on('click', click);
+    const canvas = map.getCanvas();
 
-  map.remove();
+    simulate.drag(canvas, { clientX: 100, clientY: 100 }, { clientX: 100, clientY: 104 });
+    t.ok(click.notCalled);
+
+    map.remove();
+  });
 });

@@ -1,5 +1,5 @@
 const { test } = require('../../util/mapbox-gl-js-test');
-const window = require('../../../src/util/window');
+const _window = require('../../util/window');
 const Map = require('../../../src/ui/map');
 const LngLat = require('../../../src/geo/lng_lat');
 const Tile = require('../../../src/source/tile');
@@ -53,6 +53,15 @@ function createStyleSource() {
 }
 
 test('Map', async t => {
+  let globalWindow;
+  t.before(() => {
+    globalWindow = globalThis.window;
+    globalThis.window = _window;
+  });
+  t.after(() => {
+    globalThis.window = globalWindow;
+  });
+
   await t.test('constructor', t => {
     const map = createMap({ interactive: true, style: null });
     t.ok(map.getContainer());

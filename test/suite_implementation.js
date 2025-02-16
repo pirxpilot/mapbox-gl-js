@@ -1,7 +1,6 @@
 const { PNG } = require('pngjs');
 const Map = require('../src/ui/map');
 const config = require('../src/util/config');
-const window = require('../src/util/window');
 const browser = require('../src/util/browser');
 const { plugin: rtlTextPlugin } = require('../src/source/rtl_text_plugin');
 const rtlText = require('@mapbox/mapbox-gl-rtl-text');
