@@ -100,9 +100,3 @@ DOM.mouseButton = function (e) {
   }
   return e.button;
 };
-
-DOM.remove = function (node) {
-  if (node.parentNode) {
-    node.parentNode.removeChild(node);
-  }
-};

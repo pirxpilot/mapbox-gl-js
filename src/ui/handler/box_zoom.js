@@ -125,7 +125,7 @@ function boxZoomHandler(map) {
     container.classList.remove('mapboxgl-crosshair');
 
     if (box) {
-      DOM.remove(box);
+      box.remove();
       box = undefined;
     }
     startPos = undefined;
