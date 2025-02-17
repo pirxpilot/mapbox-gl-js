@@ -1,29 +1,12 @@
-function _addEventListener(type, listener, listenerList) {
-  const listenerExists = listenerList[type] && listenerList[type].indexOf(listener) !== -1;
-  if (!listenerExists) {
-    listenerList[type] = listenerList[type] || [];
-    listenerList[type].push(listener);
-  }
-}
-
-function _removeEventListener(type, listener, listenerList) {
-  if (listenerList?.[type]) {
-    const index = listenerList[type].indexOf(listener);
-    if (index !== -1) {
-      listenerList[type].splice(index, 1);
-    }
-  }
-}
-
 class Event {
-  constructor(type, data = {}) {
+  constructor(type, data) {
     Object.assign(this, data);
     this.type = type;
   }
 }
 
 class ErrorEvent extends Event {
-  constructor(error, data = {}) {
+  constructor(error, data) {
     super('error', Object.assign({ error }, data));
   }
 }
@@ -34,6 +17,11 @@ class ErrorEvent extends Event {
  * @mixin Evented
  */
 class Evented {
+  #listeners;
+  #oneTimeListeners;
+  #parent;
+  #parentData;
+
   /**
    * Adds a listener to a specified event type.
    *
@@ -44,8 +32,8 @@ class Evented {
    * @returns {Object} `this`
    */
   on(type, listener) {
-    this._listeners = this._listeners || {};
-    _addEventListener(type, listener, this._listeners);
+    this.#listeners ??= listeners();
+    this.#listeners.add(type, listener);
 
     return this;
   }
@@ -58,8 +46,8 @@ class Evented {
    * @returns {Object} `this`
    */
   off(type, listener) {
-    _removeEventListener(type, listener, this._listeners);
-    _removeEventListener(type, listener, this._oneTimeListeners);
+    this.#listeners?.remove(type, listener);
+    this.#oneTimeListeners?.remove(type, listener);
 
     return this;
   }
@@ -74,8 +62,8 @@ class Evented {
    * @returns {Object} `this`
    */
   once(type, listener) {
-    this._oneTimeListeners = this._oneTimeListeners || {};
-    _addEventListener(type, listener, this._oneTimeListeners);
+    this.#oneTimeListeners ??= listeners({ once: true });
+    this.#oneTimeListeners.add(type, listener);
 
     return this;
   }
@@ -85,38 +73,25 @@ class Evented {
     // See https://github.com/mapbox/mapbox-gl-js/issues/6522,
     //     https://github.com/mapbox/mapbox-gl-draw/issues/766
     if (typeof event === 'string') {
-      event = new Event(event, arguments[1] || {});
+      event = new Event(event, arguments[1]);
     }
 
-    const type = event.type;
+    const { type } = event;
 
     if (this.listens(type)) {
       event.target = this;
+      this.#listeners?.fire(type, this, event);
+      this.#oneTimeListeners?.fire(type, this, event);
 
-      // make sure adding or removing listeners inside other listeners won't cause an infinite loop
-      const listeners = this._listeners?.[type] ? this._listeners[type].slice() : [];
-      for (const listener of listeners) {
-        listener.call(this, event);
-      }
-
-      const oneTimeListeners = this._oneTimeListeners?.[type] ? this._oneTimeListeners[type].slice() : [];
-      for (const listener of oneTimeListeners) {
-        _removeEventListener(type, listener, this._oneTimeListeners);
-        listener.call(this, event);
-      }
-
-      const parent = this._eventedParent;
+      const parent = this.#parent;
       if (parent) {
-        Object.assign(
-          event,
-          typeof this._eventedParentData === 'function' ? this._eventedParentData() : this._eventedParentData
-        );
+        const data = typeof this.#parentData === 'function' ? this.#parentData() : this.#parentData;
+        Object.assign(event, data);
         parent.fire(event);
       }
-
+    } else if (event instanceof ErrorEvent) {
       // To ensure that no error events are dropped, print them to the
       // console if they have no listeners.
-    } else if (event instanceof ErrorEvent) {
       console.error(event.error);
     }
 
@@ -128,26 +103,19 @@ class Evented {
    *
    * @param {string} type The event type
    * @returns {boolean} `true` if there is at least one registered listener for specified event type, `false` otherwise
-   * @private
    */
   listens(type) {
-    return (
-      (this._listeners?.[type] && this._listeners[type].length > 0) ||
-      (this._oneTimeListeners?.[type] && this._oneTimeListeners[type].length > 0) ||
-      this._eventedParent?.listens(type)
-    );
+    return this.#listeners?.listens(type) || this.#oneTimeListeners?.listens(type) || this.#parent?.listens(type);
   }
 
   /**
    * Bubble all events fired by this instance of Evented to this parent instance of Evented.
    *
-   * @private
    * @returns {Object} `this`
-   * @private
    */
   setEventedParent(parent, data) {
-    this._eventedParent = parent;
-    this._eventedParentData = data;
+    this.#parent = parent;
+    this.#parentData = data;
 
     return this;
   }
@@ -158,3 +126,57 @@ module.exports = {
   ErrorEvent,
   Evented
 };
+
+function listeners({ once } = {}) {
+  const bag = new Map();
+
+  return {
+    add,
+    remove,
+    fire,
+    listens
+  };
+
+  function add(type, listener) {
+    const list = bag.get(type);
+    if (!list) {
+      bag.set(type, [listener]);
+    } else if (!list.includes(listener)) {
+      list.push(listener);
+    }
+  }
+
+  function remove(type, listener) {
+    const list = bag.get(type);
+    if (!list) {
+      return;
+    }
+    const index = list.indexOf(listener);
+    if (index !== -1) {
+      list.splice(index, 1);
+    }
+    if (list.length === 0) {
+      bag.delete(type);
+    }
+  }
+
+  function fire(type, thisArg, data) {
+    let list = bag.get(type);
+    if (!list || list.length === 0) {
+      return;
+    }
+    if (once) {
+      bag.delete(type);
+    } else {
+      // make sure adding or removing listeners inside other listeners won't cause an infinite loop
+      list = list.slice();
+    }
+    for (const listener of list) {
+      listener.call(thisArg, data);
+    }
+  }
+
+  function listens(type) {
+    return bag.get(type)?.length > 0;
+  }
+}
