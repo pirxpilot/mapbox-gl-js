@@ -552,7 +552,7 @@ test('camera', async t => {
       t.end();
     });
 
-    await t.test('emits move and zoom events, preserving eventData', { skip: true }, t => {
+    await t.test('emits move and zoom events, preserving eventData', { plan: 6 }, (t, done) => {
       const camera = createCamera();
       let movestarted;
       let moved;
@@ -560,7 +560,13 @@ test('camera', async t => {
       let zoomed;
       const eventData = { data: 'ok' };
 
-      t.plan(6);
+      const result = {};
+      function isItDone(prop) {
+        result[prop] = true;
+        if (result.move && result.zoom) {
+          done();
+        }
+      }
 
       camera
         .on('movestart', d => {
@@ -573,6 +579,7 @@ test('camera', async t => {
           t.equal(movestarted, 'ok');
           t.equal(moved, 'ok');
           t.equal(d.data, 'ok');
+          isItDone('move');
         });
 
       camera
@@ -586,6 +593,7 @@ test('camera', async t => {
           t.equal(zoomstarted, 'ok');
           t.equal(zoomed, 'ok');
           t.equal(d.data, 'ok');
+          isItDone('zoom');
         });
 
       camera.zoomTo(5, { duration: 0 }, eventData);
@@ -645,7 +653,7 @@ test('camera', async t => {
       t.end();
     });
 
-    await t.test('emits move and rotate events, preserving eventData', { skip: true }, t => {
+    await t.test('emits move and rotate events, preserving eventData', { plan: 6 }, (t, done) => {
       const camera = createCamera();
       let movestarted;
       let moved;
@@ -653,7 +661,13 @@ test('camera', async t => {
       let rotated;
       const eventData = { data: 'ok' };
 
-      t.plan(6);
+      const result = {};
+      function isItDone(prop) {
+        result[prop] = true;
+        if (result.move && result.rotate) {
+          done();
+        }
+      }
 
       camera
         .on('movestart', d => {
@@ -666,6 +680,7 @@ test('camera', async t => {
           t.equal(movestarted, 'ok');
           t.equal(moved, 'ok');
           t.equal(d.data, 'ok');
+          isItDone('move');
         });
 
       camera
@@ -679,6 +694,7 @@ test('camera', async t => {
           t.equal(rotatestarted, 'ok');
           t.equal(rotated, 'ok');
           t.equal(d.data, 'ok');
+          isItDone('rotate');
         });
 
       camera.rotateTo(90, { duration: 0 }, eventData);
@@ -821,7 +837,7 @@ test('camera', async t => {
       t.end();
     });
 
-    await t.test('emits move, zoom, rotate, and pitch events, preserving eventData', { skip: true }, t => {
+    await t.test('emits move, zoom, rotate, and pitch events, preserving eventData', { plan: 18 }, (t, done) => {
       const camera = createCamera();
       let movestarted;
       let moved;
@@ -833,7 +849,13 @@ test('camera', async t => {
       let pitched;
       const eventData = { data: 'ok' };
 
-      t.plan(18);
+      const result = {};
+      function isItDone(prop) {
+        result[prop] = true;
+        if (result.move && result.zoom && result.rotate && result.pitch) {
+          done();
+        }
+      }
 
       camera
         .on('movestart', d => {
@@ -853,6 +875,7 @@ test('camera', async t => {
           t.equal(rotated, 'ok');
           t.equal(pitched, 'ok');
           t.equal(d.data, 'ok');
+          isItDone('move');
         });
 
       camera
@@ -866,6 +889,7 @@ test('camera', async t => {
           t.equal(zoomstarted, 'ok');
           t.equal(zoomed, 'ok');
           t.equal(d.data, 'ok');
+          isItDone('zoom');
         });
 
       camera
@@ -879,6 +903,7 @@ test('camera', async t => {
           t.equal(rotatestarted, 'ok');
           t.equal(rotated, 'ok');
           t.equal(d.data, 'ok');
+          isItDone('rotate');
         });
 
       camera
@@ -892,6 +917,7 @@ test('camera', async t => {
           t.equal(pitchstarted, 'ok');
           t.equal(pitched, 'ok');
           t.equal(d.data, 'ok');
+          isItDone('pitch');
         });
 
       camera.easeTo({ center: [100, 0], zoom: 3.2, bearing: 90, duration: 0, pitch: 45 }, eventData);
@@ -1176,9 +1202,7 @@ test('camera', async t => {
       t.end();
     });
 
-    await t.test('emits move, zoom, rotate, and pitch events, preserving eventData', { skip: true }, t => {
-      t.plan(18);
-
+    await t.test('emits move, zoom, rotate, and pitch events, preserving eventData', { plan: 18 }, t => {
       const camera = createCamera();
       let movestarted;
       let moved;
@@ -1189,6 +1213,14 @@ test('camera', async t => {
       let pitchstarted;
       let pitched;
       const eventData = { data: 'ok' };
+
+      const result = {};
+      function isItDone(prop) {
+        result[prop] = true;
+        if (result.move && result.zoom && result.rotate && result.pitch) {
+          t.end();
+        }
+      }
 
       camera
         .on('movestart', d => {
@@ -1214,6 +1246,7 @@ test('camera', async t => {
           t.equal(rotated, 'ok');
           t.equal(pitched, 'ok');
           t.equal(d.data, 'ok');
+          isItDone('move');
         });
 
       camera
@@ -1227,6 +1260,7 @@ test('camera', async t => {
           t.equal(zoomstarted, 'ok');
           t.equal(zoomed, 'ok');
           t.equal(d.data, 'ok');
+          isItDone('zoom');
         });
 
       camera
@@ -1240,6 +1274,7 @@ test('camera', async t => {
           t.equal(rotatestarted, 'ok');
           t.equal(rotated, 'ok');
           t.equal(d.data, 'ok');
+          isItDone('rotate');
         });
 
       camera
@@ -1253,6 +1288,7 @@ test('camera', async t => {
           t.equal(pitchstarted, 'ok');
           t.equal(pitched, 'ok');
           t.equal(d.data, 'ok');
+          isItDone('pitch');
         });
 
       camera.flyTo({ center: [100, 0], zoom: 3.2, bearing: 90, duration: 0, pitch: 45, animate: false }, eventData);
