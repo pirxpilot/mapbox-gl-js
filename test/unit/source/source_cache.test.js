@@ -384,14 +384,12 @@ test('SourceCache / Source lifecycle', async t => {
     sourceCache.onAdd();
   });
 
-  await t.test('reloads tiles after a data event where source is updated', (t, done) => {
+  await t.test('reloads tiles after a data event where source is updated', { plan: 2 }, (t, done) => {
     const transform = new Transform();
     transform.resize(511, 511);
     transform.zoom = 0;
 
     const expected = [new OverscaledTileID(0, 0, 0, 0, 0).key, new OverscaledTileID(0, 0, 0, 0, 0).key];
-    // FIXME
-    // t.plan(expected.length);
 
     const sourceCache = createSourceCache({
       loadTile: function (tile, callback) {

@@ -431,7 +431,7 @@ test('Style', async t => {
       });
     });
 
-    await t.test('sets up source event forwarding', (t, done) => {
+    await t.test('sets up source event forwarding', { plan: 4 }, (t, done) => {
       style = new Style(new StubMap());
       style.loadJSON(
         createStyleJSON({
@@ -446,9 +446,6 @@ test('Style', async t => {
       const source = createSource();
 
       style.on('style.load', () => {
-        // FIME: plan should work
-        // t.plan(4);
-
         style.on('error', () => {
           t.ok(true);
         });
@@ -457,6 +454,7 @@ test('Style', async t => {
             t.ok(true);
           } else if (e.sourceDataType === 'content' && e.dataType === 'source') {
             t.ok(true);
+            done();
           } else {
             t.ok(true);
           }
@@ -465,7 +463,6 @@ test('Style', async t => {
         style.addSource('source-id', source); // fires data twice
         style.sourceCaches['source-id'].fire(new Event('error'));
         style.sourceCaches['source-id'].fire(new Event('data'));
-        done();
       });
     });
   });

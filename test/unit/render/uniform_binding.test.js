@@ -1,9 +1,8 @@
 const { test } = require('../../util/mapbox-gl-js-test');
 const { Uniform1i, Uniform1f, Uniform2f, Uniform3f, Uniform4f } = require('../../../src/render/uniform_binding');
 
-test('Uniform1i', t => {
+test('Uniform1i', { plan: 4 }, t => {
   // test counts ensure we don't call the gl.uniform* setters more than expected
-  // t.plan(4);
 
   const context = {
     gl: {
@@ -22,10 +21,7 @@ test('Uniform1i', t => {
   u.set(2);
 });
 
-test('Uniform1f', t => {
-  // FIXME
-  // t.plan(4);
-
+test('Uniform1f', { plan: 4 }, t => {
   const context = {
     gl: {
       uniform1f: () => {
@@ -43,10 +39,7 @@ test('Uniform1f', t => {
   u.set(2);
 });
 
-test('Uniform2f', t => {
-  // FIXME
-  // t.plan(4);
-
+test('Uniform2f', { plan: 4 }, t => {
   const context = {
     gl: {
       uniform2f: () => {
@@ -64,10 +57,7 @@ test('Uniform2f', t => {
   u.set([1, 2]);
 });
 
-test('Uniform3f', t => {
-  // FIXME
-  // t.plan(4);
-
+test('Uniform3f', { plan: 4 }, t => {
   const context = {
     gl: {
       uniform3f: () => {
@@ -85,10 +75,7 @@ test('Uniform3f', t => {
   u.set([1, 1, 2]);
 });
 
-test('Uniform4f', t => {
-  // FIXME
-  // t.plan(4);
-
+test('Uniform4f', { plan: 4 }, t => {
   const context = {
     gl: {
       uniform4f: () => {
