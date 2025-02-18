@@ -1,7 +1,6 @@
 const DOM = require('../../util/dom');
 
 const browser = require('../../util/browser');
-const window = require('../../util/window');
 const interpolate = require('../../util/interpolate');
 const { Event } = require('../../util/evented');
 const makeFrame = require('./frame');

@@ -1,6 +1,5 @@
 const Point = require('@mapbox/point-geometry');
 
-const window = require('./window');
 const assert = require('assert');
 
 const DOM = {};
@@ -18,19 +17,25 @@ DOM.createNS = function (namespaceURI, tagName) {
   return el;
 };
 
-const docStyle = window.document ? window.document.documentElement.style : null;
+let docStyle;
+let selectProp;
 
-function testProp(props) {
-  if (!docStyle) return null;
-  for (let i = 0; i < props.length; i++) {
-    if (props[i] in docStyle) {
-      return props[i];
+DOM.initEnableDisableDrag = function () {
+  docStyle = window.document ? window.document.documentElement.style : null;
+
+  function testProp(props) {
+    if (!docStyle) return null;
+    for (let i = 0; i < props.length; i++) {
+      if (props[i] in docStyle) {
+        return props[i];
+      }
     }
+    return props[0];
   }
-  return props[0];
-}
 
-const selectProp = testProp(['userSelect', 'MozUserSelect', 'WebkitUserSelect', 'msUserSelect']);
+  selectProp = testProp(['userSelect', 'MozUserSelect', 'WebkitUserSelect', 'msUserSelect']);
+};
+
 let userSelect;
 
 DOM.disableDrag = function () {
@@ -87,7 +92,9 @@ const suppressClick = function (e) {
 DOM.suppressClick = function () {
   window.addEventListener('click', suppressClick, true);
   window.setTimeout(() => {
-    window.removeEventListener('click', suppressClick, true);
+    if (typeof window === 'object' && window) {
+      window.removeEventListener('click', suppressClick, true);
+    }
   }, 0);
 };
 

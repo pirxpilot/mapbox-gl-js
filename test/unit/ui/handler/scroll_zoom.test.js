@@ -1,6 +1,6 @@
 const { test } = require('../../../util/mapbox-gl-js-test');
+const _window = require('../../../util/window');
 const browser = require('../../../../src/util/browser');
-const window = require('../../../../src/util/window');
 const Map = require('../../../../src/ui/map');
 const DOM = require('../../../../src/util/dom');
 const simulate = require('../../../util/mapbox-gl-js-test/simulate_interaction');
@@ -23,11 +23,20 @@ function createMap(options) {
 }
 
 test('ScrollZoomHandler', async t => {
+  let globalWindow;
+  t.before(() => {
+    globalWindow = globalThis.window;
+    globalThis.window = _window;
+  });
+  t.after(() => {
+    globalThis.window = globalWindow;
+  });
+
   const browserNow = t.stub(browser, 'now');
   let now = 1555555555555;
   browserNow.callsFake(() => now);
 
-  await t.test('Zooms for single mouse wheel tick', async t => {
+  await t.test('Zooms for single mouse wheel tick', t => {
     const map = createMap();
     map._renderTaskQueue.run();
 
@@ -43,10 +52,9 @@ test('ScrollZoomHandler', async t => {
     t.equalWithPrecision(map.getZoom() - startZoom, 0.0285, 0.001);
 
     map.remove();
-    t.end();
   });
 
-  await t.test('Zooms for single mouse wheel tick with non-magical deltaY', async t => {
+  await t.test('Zooms for single mouse wheel tick with non-magical deltaY', t => {
     const map = createMap();
     map._renderTaskQueue.run();
 
@@ -56,11 +64,10 @@ test('ScrollZoomHandler', async t => {
     simulate.wheel(map.getCanvas(), { type: 'wheel', deltaY: -20 });
     map.on('zoomstart', () => {
       map.remove();
-      t.end();
     });
   });
 
-  await t.test('Zooms for multiple mouse wheel ticks', async t => {
+  await t.test('Zooms for multiple mouse wheel ticks', t => {
     const map = createMap();
 
     map._renderTaskQueue.run();
@@ -95,10 +102,9 @@ test('ScrollZoomHandler', async t => {
     t.equalWithPrecision(map.getZoom() - startZoom, 1.944, 0.001);
 
     map.remove();
-    t.end();
   });
 
-  await t.test('Gracefully ignores wheel events with deltaY: 0', async t => {
+  await t.test('Gracefully ignores wheel events with deltaY: 0', t => {
     const map = createMap();
     map._renderTaskQueue.run();
 
@@ -114,11 +120,9 @@ test('ScrollZoomHandler', async t => {
     map._renderTaskQueue.run();
 
     t.equal(map.getZoom() - startZoom, 0.0);
-
-    t.end();
   });
 
-  test('does not zoom if preventDefault is called on the wheel event', async t => {
+  test('does not zoom if preventDefault is called on the wheel event', t => {
     const map = createMap();
 
     map.on('wheel', e => e.preventDefault());
@@ -132,10 +136,9 @@ test('ScrollZoomHandler', async t => {
     t.equal(map.getZoom(), 0);
 
     map.remove();
-    t.end();
   });
 
-  await t.test('emits one movestart event and one moveend event while zooming', async t => {
+  await t.test('emits one movestart event and one moveend event while zooming', t => {
     const clock = sinon.useFakeTimers(now);
     const map = createMap(t);
 
@@ -175,11 +178,9 @@ test('ScrollZoomHandler', async t => {
     t.equal(endCount, 1);
 
     clock.restore();
-
-    t.end();
   });
 
-  await t.test('emits one zoomstart event and one zoomend event while zooming', async t => {
+  await t.test('emits one zoomstart event and one zoomend event while zooming', t => {
     const clock = sinon.useFakeTimers(now);
     const map = createMap(t);
 
@@ -219,8 +220,6 @@ test('ScrollZoomHandler', async t => {
     t.equal(endCount, 1);
 
     clock.restore();
-
-    t.end();
   });
 
   t.end();

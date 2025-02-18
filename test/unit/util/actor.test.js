@@ -1,14 +1,32 @@
 const { test } = require('../../util/mapbox-gl-js-test');
+const _window = require('../../util/window');
 const Actor = require('../../../src/util/actor');
-const WebWorker = require('../../../src/util/web_worker');
+
+const WebWorker = _window.Worker;
 
 test('Actor', async t => {
-  await t.test('forwards resopnses to correct callback', async t => {
+  let globalWindow;
+  t.before(() => {
+    globalWindow = globalThis.window;
+    globalThis.window = _window;
+  });
+  t.after(() => {
+    globalThis.window = globalWindow;
+  });
+
+  await t.test('forwards responses to correct callback', (t, done) => {
+    let cnt = 0;
     t.stub(WebWorker, 'Worker').callsFake(function Worker(self) {
       this.self = self;
       this.actor = new Actor(self, this);
       this.test = function (mapId, params, callback) {
-        setTimeout(callback, 0, null, params);
+        setTimeout(() => {
+          callback(null, params);
+          cnt += 1;
+          if (cnt === 2) {
+            done();
+          }
+        }, 0);
       };
     });
 

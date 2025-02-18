@@ -1,10 +1,10 @@
 require('./util/mapbox-gl-js-test/glsl-loader');
 
+globalThis.window ??= require('./util/window');
+
 const querySuite = require('./integration').query;
 const suiteImplementation = require('./suite_implementation');
 const ignores = require('./ignores.json');
-
-globalThis.window ??= require('../src/util/window');
 
 let tests;
 

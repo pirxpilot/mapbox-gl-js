@@ -4,7 +4,6 @@ const { pick } = require('../util/object');
 const loadTileJSON = require('./load_tilejson');
 const TileBounds = require('./tile_bounds');
 const browser = require('../util/browser');
-const window = require('../util/window');
 
 // register feature index for worker transfer
 require('../data/feature_index');

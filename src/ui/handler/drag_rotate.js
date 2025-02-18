@@ -1,7 +1,6 @@
 const DOM = require('../../util/dom');
 
 const { bezier } = require('../../util/util');
-const window = require('../../util/window');
 const { Event } = require('../../util/evented');
 const assert = require('assert');
 const makeFrame = require('./frame');
@@ -276,6 +275,8 @@ function dragRotateHandler(map, { element, button = 'right', bearingSnap = 0, pi
   function fireEvent(type, e) {
     return map.fire(new Event(type, e ? { originalEvent: e } : {}));
   }
+
+  DOM.initEnableDisableDrag();
 
   return {
     isActive,

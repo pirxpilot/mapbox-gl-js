@@ -1,6 +1,5 @@
 const DOM = require('../../util/dom');
 const { bezier } = require('../../util/util');
-const window = require('../../util/window');
 const { Event } = require('../../util/evented');
 const makeFrame = require('./frame');
 const makeInertia = require('./inertia');

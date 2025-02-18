@@ -2,8 +2,6 @@ const { bindAll } = require('../util/object');
 const warn = require('../util/warn');
 
 const browser = require('../util/browser');
-const window = require('../util/window');
-const { HTMLImageElement, HTMLElement } = window;
 const DOM = require('../util/dom');
 const loadImage = require('../util/loader/image');
 
@@ -198,7 +196,7 @@ class Map extends Camera {
         throw new Error(`Container '${options.container}' not found.`);
       }
       this._container = container;
-    } else if (options.container instanceof HTMLElement) {
+    } else if (options.container instanceof window.HTMLElement) {
       this._container = options.container;
     } else {
       throw new Error(`Invalid type: 'container' must be a String or HTMLElement.`);
@@ -857,7 +855,7 @@ class Map extends Camera {
    * @param options.sdf Whether the image should be interpreted as an SDF image
    */
   addImage(id, image, { pixelRatio = 1, sdf = false } = {}) {
-    if (image instanceof HTMLImageElement) {
+    if (image instanceof window.HTMLImageElement) {
       const { width, height, data } = browser.getImageData(image);
       this.style.addImage(id, { data: new RGBAImage({ width, height }, data), pixelRatio, sdf });
     } else if (image.width === undefined || image.height === undefined) {

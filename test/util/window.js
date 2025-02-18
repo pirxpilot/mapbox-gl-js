@@ -1,6 +1,7 @@
 const jsdom = require('jsdom');
 const canvas = require('canvas');
 const gl = require('gl');
+const WebWorker = require('./web_worker');
 
 const _window = create();
 
@@ -50,7 +51,7 @@ function create() {
   };
   window.WebGLFramebuffer ??= Object;
 
-  window.restore = restore;
+  window.Worker ??= WebWorker;
 
   globalThis.document ??= window.document;
 
@@ -61,13 +62,4 @@ async function createPngUrl(obj) {
   const png = await obj.bytes();
   const pngUrl = `data:${obj.type};base64,${Buffer.from(png).toString('base64')}`;
   return pngUrl;
-}
-
-function restore() {
-  // TODO: implement window restore
-  // Remove previous window from exported object
-  // const previousWindow = _window;
-  // if (previousWindow.close) previousWindow.close();
-
-  return _window;
 }

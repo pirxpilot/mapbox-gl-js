@@ -1,9 +1,20 @@
 const { test } = require('../../util/mapbox-gl-js-test');
+const _window = require('../../util/window');
 const makeDispatcher = require('../../../src/util/dispatcher');
-const WebWorker = require('../../../src/util/web_worker');
 const makeWorkerPool = require('../../../src/util/worker_pool');
 
+const WebWorker = _window.Worker;
+
 test('Dispatcher', async t => {
+  let globalWindow;
+  t.before(() => {
+    globalWindow = globalThis.window;
+    globalThis.window = _window;
+  });
+  t.after(() => {
+    globalThis.window = globalWindow;
+  });
+
   await t.test('requests and releases workers from pool', async t => {
     const workers = [new WebWorker(), new WebWorker()];
     const targets = [];
