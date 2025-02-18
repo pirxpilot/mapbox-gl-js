@@ -931,7 +931,7 @@ test('Map', async t => {
   });
 
   await t.test('#setLayoutProperty', async t => {
-    await t.test('sets property', async t => {
+    await t.test('sets property', (t, done) => {
       const map = createMap({
         style: {
           version: 8,
@@ -971,7 +971,7 @@ test('Map', async t => {
         map.setLayoutProperty('symbol', 'text-transform', 'lowercase');
         map.style.update({});
         t.deepEqual(map.getLayoutProperty('symbol', 'text-transform'), 'lowercase');
-        t.end();
+        done();
       });
     });
 
@@ -1011,7 +1011,7 @@ test('Map', async t => {
       });
     });
 
-    await t.test('fires a data event', async t => {
+    await t.test('fires a data event', (t, done) => {
       // background layers do not have a source
       const map = createMap({
         style: {
@@ -1032,7 +1032,7 @@ test('Map', async t => {
       map.once('style.load', () => {
         map.once('data', e => {
           if (e.dataType === 'style') {
-            t.end();
+            done();
           }
         });
 

@@ -59,11 +59,11 @@ test('TileCache - duplicate add', t => {
   t.equal(cache.getAndRemove(idA), tileA2);
 });
 
-test('TileCache - expiry', t => {
+test('TileCache - expiry', (t, done) => {
   const cache = new TileCache(10, removed => {
     t.ok(cache.has(idB));
     t.equal(removed, tileA2);
-    t.end();
+    done();
   });
 
   cache.add(idB, tileB, 0);
