@@ -3,7 +3,7 @@ const cacheControl = require('../../../src/util/cache_control');
 
 test('cache_control', async t => {
   await t.test('parseCacheControl', async t => {
-    await t.test('max-age', async t => {
+    await t.test('max-age', t => {
       t.deepEqual(
         cacheControl.parse('max-age=123456789'),
         {

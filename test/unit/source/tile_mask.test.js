@@ -22,7 +22,7 @@ test('computeTileMasks', async t => {
     }
   }
 
-  await t.test('no children', async t => {
+  await t.test('no children', t => {
     const renderables = [new Tile(0, 0, 0)];
     updateTileMasks(renderables);
     t.deepEqual(Object.keys(renderables[0].mask), [new OverscaledTileID(0, 0, 0, 0, 0).key]);
@@ -50,7 +50,7 @@ test('computeTileMasks', async t => {
     );
   });
 
-  await t.test('parents with all four children', async t => {
+  await t.test('parents with all four children', t => {
     const renderables = [new Tile(0, 0, 0), new Tile(1, 0, 0), new Tile(1, 0, 1), new Tile(1, 1, 0), new Tile(1, 1, 1)];
     updateTileMasks(renderables);
     t.deepEqual(
@@ -68,7 +68,7 @@ test('computeTileMasks', async t => {
     );
   });
 
-  await t.test('parent and one child', async t => {
+  await t.test('parent and one child', t => {
     const renderables = [new Tile(0, 0, 0), new Tile(1, 0, 0)];
     updateTileMasks(renderables);
     t.deepEqual(
@@ -86,7 +86,7 @@ test('computeTileMasks', async t => {
     );
   });
 
-  await t.test('complex masks', async t => {
+  await t.test('complex masks', t => {
     const renderables = [
       new Tile(12, 1028, 1456),
       new Tile(13, 2056, 2912),

@@ -23,7 +23,7 @@ function createShapedIcon() {
 }
 
 test('getIconQuads', async t => {
-  await t.test('point', async t => {
+  await t.test('point', t => {
     const anchor = new Anchor(2, 3, 0, undefined);
     const layer = createLayer({
       layout: { 'icon-rotate': 0 }
@@ -41,7 +41,7 @@ test('getIconQuads', async t => {
     ]);
   });
 
-  await t.test('line', async t => {
+  await t.test('line', t => {
     const anchor = new Anchor(2, 3, 0, 0);
     const layer = createLayer({
       layout: { 'icon-rotate': 0 }
@@ -84,7 +84,7 @@ test('getIconQuads text-fit', async t => {
     };
   }
 
-  await t.test('icon-text-fit: none', async t => {
+  await t.test('icon-text-fit: none', t => {
     const quads = getIconQuads(
       anchor,
       createShapedIcon(),
@@ -119,7 +119,7 @@ test('getIconQuads text-fit', async t => {
     );
   });
 
-  await t.test('icon-text-fit: width', async t => {
+  await t.test('icon-text-fit: width', t => {
     // - Uses text width
     // - Preserves icon height, centers vertically
     const quads = getIconQuads(
@@ -141,7 +141,7 @@ test('getIconQuads text-fit', async t => {
     t.deepEqual(quads[0].br, { x: 20, y: 21 });
   });
 
-  await t.test('icon-text-fit: width, x textSize', async t => {
+  await t.test('icon-text-fit: width, x textSize', t => {
     // - Uses text width (adjusted for textSize)
     // - Preserves icon height, centers vertically
     const quads = getIconQuads(
@@ -163,7 +163,7 @@ test('getIconQuads text-fit', async t => {
     t.deepEqual(quads[0].br, { x: 10, y: 16 });
   });
 
-  await t.test('icon-text-fit: width, x textSize, + padding', async t => {
+  await t.test('icon-text-fit: width, x textSize, + padding', t => {
     // - Uses text width (adjusted for textSize)
     // - Preserves icon height, centers vertically
     // - Applies padding x, padding y
@@ -186,7 +186,7 @@ test('getIconQuads text-fit', async t => {
     t.deepEqual(quads[0].br, { x: 20, y: 21 });
   });
 
-  await t.test('icon-text-fit: height', async t => {
+  await t.test('icon-text-fit: height', t => {
     // - Uses text height
     // - Preserves icon width, centers horizontally
     const quads = getIconQuads(
@@ -208,7 +208,7 @@ test('getIconQuads text-fit', async t => {
     t.deepEqual(quads[0].br, { x: -9, y: 30 });
   });
 
-  await t.test('icon-text-fit: height, x textSize', async t => {
+  await t.test('icon-text-fit: height, x textSize', t => {
     // - Uses text height (adjusted for textSize)
     // - Preserves icon width, centers horizontally
     const quads = getIconQuads(
@@ -230,7 +230,7 @@ test('getIconQuads text-fit', async t => {
     t.deepEqual(quads[0].br, { x: 1, y: 15 });
   });
 
-  await t.test('icon-text-fit: height, x textSize, + padding', async t => {
+  await t.test('icon-text-fit: height, x textSize, + padding', t => {
     // - Uses text height (adjusted for textSize)
     // - Preserves icon width, centers horizontally
     // - Applies padding x, padding y
@@ -253,7 +253,7 @@ test('getIconQuads text-fit', async t => {
     t.deepEqual(quads[0].br, { x: 11, y: 20 });
   });
 
-  await t.test('icon-text-fit: both', async t => {
+  await t.test('icon-text-fit: both', t => {
     // - Uses text width + height
     const quads = getIconQuads(
       anchor,
@@ -274,7 +274,7 @@ test('getIconQuads text-fit', async t => {
     t.deepEqual(quads[0].br, { x: 20, y: 30 });
   });
 
-  await t.test('icon-text-fit: both, x textSize', async t => {
+  await t.test('icon-text-fit: both, x textSize', t => {
     // - Uses text width + height (adjusted for textSize)
     const quads = getIconQuads(
       anchor,
@@ -295,7 +295,7 @@ test('getIconQuads text-fit', async t => {
     t.deepEqual(quads[0].br, { x: 10, y: 15 });
   });
 
-  await t.test('icon-text-fit: both, x textSize, + padding', async t => {
+  await t.test('icon-text-fit: both, x textSize, + padding', t => {
     // - Uses text width + height (adjusted for textSize)
     // - Applies padding x, padding y
     const quads = getIconQuads(
@@ -317,7 +317,7 @@ test('getIconQuads text-fit', async t => {
     t.deepEqual(quads[0].br, { x: 20, y: 20 });
   });
 
-  await t.test('icon-text-fit: both, padding t/r/b/l', async t => {
+  await t.test('icon-text-fit: both, padding t/r/b/l', t => {
     // - Uses text width + height (adjusted for textSize)
     // - Applies padding t/r/b/l
     const quads = getIconQuads(

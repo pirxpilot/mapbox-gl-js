@@ -1,7 +1,7 @@
 const { test: t } = require('../../../util/mapbox-gl-js-test');
 const migrate = require('../../../../src/style-spec/migrate/v8');
 
-t('split text-font', async t => {
+t('split text-font', t => {
   const input = {
     version: 7,
     sources: {
@@ -49,7 +49,7 @@ t('split text-font', async t => {
   t.deepEqual(migrate(input), output, 'splits text-font');
 });
 
-t('rename symbol-min-distance', async t => {
+t('rename symbol-min-distance', t => {
   const input = {
     version: 7,
     sources: {
@@ -95,7 +95,7 @@ t('rename symbol-min-distance', async t => {
   t.deepEqual(migrate(input), output, 'renames symbol-min-distance');
 });
 
-t('renames urls', async t => {
+t('renames urls', t => {
   const input = {
     version: 7,
     sources: {
@@ -133,7 +133,7 @@ t('renames urls', async t => {
   t.deepEqual(migrate(input), output, 'renames url and flips coordinates of of video');
 });
 
-t('not migrate interpolated functions', async t => {
+t('not migrate interpolated functions', t => {
   const input = {
     version: 7,
     sources: {
@@ -191,7 +191,7 @@ t('not migrate interpolated functions', async t => {
   t.deepEqual(migrate(input), output);
 });
 
-t('not migrate piecewise-constant functions', async t => {
+t('not migrate piecewise-constant functions', t => {
   const input = {
     version: 7,
     sources: {
@@ -247,7 +247,7 @@ t('not migrate piecewise-constant functions', async t => {
   t.deepEqual(migrate(input), output);
 });
 
-t('inline constants', async t => {
+t('inline constants', t => {
   const input = {
     version: 7,
     constants: {
@@ -290,7 +290,7 @@ t('inline constants', async t => {
   t.deepEqual(migrate(input), output, 'infers opacity type');
 });
 
-t('migrate and inline fontstack constants', async t => {
+t('migrate and inline fontstack constants', t => {
   const input = {
     version: 7,
     constants: {
@@ -333,7 +333,7 @@ t('migrate and inline fontstack constants', async t => {
   t.deepEqual(migrate(input), output, 'infers opacity type');
 });
 
-t('update fontstack function', async t => {
+t('update fontstack function', t => {
   const input = {
     version: 7,
     sources: {
@@ -385,7 +385,7 @@ t('update fontstack function', async t => {
   t.deepEqual(migrate(input), output);
 });
 
-t('inline and migrate fontstack constant function', async t => {
+t('inline and migrate fontstack constant function', t => {
   const input = {
     version: 7,
     constants: {
@@ -440,7 +440,7 @@ t('inline and migrate fontstack constant function', async t => {
   t.deepEqual(migrate(input), output);
 });
 
-t('update fontstack function constant', async t => {
+t('update fontstack function constant', t => {
   const input = {
     version: 7,
     constants: {
@@ -496,7 +496,7 @@ t('update fontstack function constant', async t => {
   t.deepEqual(migrate(input), output);
 });
 
-t('migrate UNversioned fontstack urls', async t => {
+t('migrate UNversioned fontstack urls', t => {
   const input = {
     version: 7,
     glyphs: 'mapbox://fontstack/{fontstack}/{range}.pbf',
@@ -512,7 +512,7 @@ t('migrate UNversioned fontstack urls', async t => {
   t.deepEqual(migrate(input), output);
 });
 
-t('migrate versioned fontstack urls', async t => {
+t('migrate versioned fontstack urls', t => {
   const input = {
     version: 7,
     glyphs: 'mapbox://fonts/v1/boxmap/{fontstack}/{range}.pbf',

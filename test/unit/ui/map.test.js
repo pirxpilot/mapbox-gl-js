@@ -85,7 +85,7 @@ test('Map', async t => {
   });
 
   await t.test('disables handlers', async t => {
-    await t.test('disables all handlers', async t => {
+    await t.test('disables all handlers', t => {
       const map = createMap({ interactive: false });
 
       t.notOk(map.boxZoom.isEnabled());
@@ -701,21 +701,21 @@ test('Map', async t => {
     });
   });
 
-  await t.test('#setMinZoom', async t => {
+  await t.test('#setMinZoom', t => {
     const map = createMap({ zoom: 5 });
     map.setMinZoom(3.5);
     map.setZoom(1);
     t.equal(map.getZoom(), 3.5);
   });
 
-  await t.test('unset minZoom', async t => {
+  await t.test('unset minZoom', t => {
     const map = createMap({ minZoom: 5 });
     map.setMinZoom(null);
     map.setZoom(1);
     t.equal(map.getZoom(), 1);
   });
 
-  await t.test('#getMinZoom', async t => {
+  await t.test('#getMinZoom', t => {
     const map = createMap({ zoom: 0 });
     t.equal(map.getMinZoom(), 0, 'returns default value');
     map.setMinZoom(10);
@@ -731,21 +731,21 @@ test('Map', async t => {
     t.equal(map.getZoom(), 0);
   });
 
-  await t.test('#setMaxZoom', async t => {
+  await t.test('#setMaxZoom', t => {
     const map = createMap({ zoom: 0 });
     map.setMaxZoom(3.5);
     map.setZoom(4);
     t.equal(map.getZoom(), 3.5);
   });
 
-  await t.test('unset maxZoom', async t => {
+  await t.test('unset maxZoom', t => {
     const map = createMap({ maxZoom: 5 });
     map.setMaxZoom(null);
     map.setZoom(6);
     t.equal(map.getZoom(), 6);
   });
 
-  await t.test('#getMaxZoom', async t => {
+  await t.test('#getMaxZoom', t => {
     const map = createMap({ zoom: 0 });
     t.equal(map.getMaxZoom(), 22, 'returns default value');
     map.setMaxZoom(10);
@@ -773,7 +773,7 @@ test('Map', async t => {
     }, new Error('maxZoom must be greater than minZoom'));
   });
 
-  await t.test('#remove', async t => {
+  await t.test('#remove', t => {
     const map = createMap();
     t.equal(map.getContainer().childNodes.length, 2);
     map.remove();
@@ -807,7 +807,7 @@ test('Map', async t => {
     map.removeControl(control);
   });
 
-  await t.test('#project', async t => {
+  await t.test('#project', t => {
     const map = createMap();
     t.deepEqual(map.project([0, 0]), { x: 100, y: 100 });
   });
@@ -924,7 +924,7 @@ test('Map', async t => {
       });
     });
 
-    await t.test('returns an empty array when no style is loaded', async t => {
+    await t.test('returns an empty array when no style is loaded', t => {
       const map = createMap({ style: undefined });
       t.deepEqual(map.queryRenderedFeatures(), []);
     });
@@ -1353,7 +1353,7 @@ test('Map', async t => {
     });
   });
 
-  await t.test('stops camera animation on mousedown when interactive', async t => {
+  await t.test('stops camera animation on mousedown when interactive', t => {
     const map = createMap({ interactive: true });
     map.flyTo({ center: [200, 0], duration: 100 });
 
@@ -1363,7 +1363,7 @@ test('Map', async t => {
     map.remove();
   });
 
-  await t.test('continues camera animation on mousedown when non-interactive', async t => {
+  await t.test('continues camera animation on mousedown when non-interactive', t => {
     const map = createMap({ interactive: false });
     map.flyTo({ center: [200, 0], duration: 100 });
 
@@ -1373,7 +1373,7 @@ test('Map', async t => {
     map.remove();
   });
 
-  await t.test('stops camera animation on touchstart when interactive', async t => {
+  await t.test('stops camera animation on touchstart when interactive', t => {
     const map = createMap({ interactive: true });
     map.flyTo({ center: [200, 0], duration: 100 });
 
@@ -1383,7 +1383,7 @@ test('Map', async t => {
     map.remove();
   });
 
-  await t.test('continues camera animation on touchstart when non-interactive', async t => {
+  await t.test('continues camera animation on touchstart when non-interactive', t => {
     const map = createMap({ interactive: false });
     map.flyTo({ center: [200, 0], duration: 100 });
 

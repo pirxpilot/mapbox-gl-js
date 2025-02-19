@@ -14,7 +14,7 @@ function makeFeatures(lines) {
   return features;
 }
 
-test('mergeLines merges lines with the same text', async t => {
+test('mergeLines merges lines with the same text', t => {
   t.deepEqual(
     mergeLines(
       makeFeatures([
@@ -34,7 +34,7 @@ test('mergeLines merges lines with the same text', async t => {
   );
 });
 
-test('mergeLines handles merge from both ends', async t => {
+test('mergeLines handles merge from both ends', t => {
   t.deepEqual(
     mergeLines(
       makeFeatures([
@@ -47,7 +47,7 @@ test('mergeLines handles merge from both ends', async t => {
   );
 });
 
-test('mergeLines handles circular lines', async t => {
+test('mergeLines handles circular lines', t => {
   t.deepEqual(
     mergeLines(
       makeFeatures([

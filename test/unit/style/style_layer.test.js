@@ -4,7 +4,7 @@ const FillStyleLayer = require('../../../src/style/style_layer/fill_style_layer'
 const Color = require('../../../src/style-spec/util/color');
 
 test('StyleLayer', async t => {
-  await t.test('instantiates the correct subclass', async t => {
+  await t.test('instantiates the correct subclass', t => {
     const layer = createStyleLayer({ type: 'fill' });
 
     t.ok(layer instanceof FillStyleLayer);
@@ -12,7 +12,7 @@ test('StyleLayer', async t => {
 });
 
 test('StyleLayer#setPaintProperty', async t => {
-  await t.test('sets new property value', async t => {
+  await t.test('sets new property value', t => {
     const layer = createStyleLayer({
       id: 'background',
       type: 'background'
@@ -23,7 +23,7 @@ test('StyleLayer#setPaintProperty', async t => {
     t.deepEqual(layer.getPaintProperty('background-color'), 'blue');
   });
 
-  await t.test('updates property value', async t => {
+  await t.test('updates property value', t => {
     const layer = createStyleLayer({
       id: 'background',
       type: 'background',
@@ -37,7 +37,7 @@ test('StyleLayer#setPaintProperty', async t => {
     t.deepEqual(layer.getPaintProperty('background-color'), 'blue');
   });
 
-  await t.test('unsets value', async t => {
+  await t.test('unsets value', t => {
     const layer = createStyleLayer({
       id: 'background',
       type: 'background',
@@ -57,7 +57,7 @@ test('StyleLayer#setPaintProperty', async t => {
     t.equal(layer.getPaintProperty('background-opacity'), 1);
   });
 
-  await t.test('preserves existing transition', async t => {
+  await t.test('preserves existing transition', t => {
     const layer = createStyleLayer({
       id: 'background',
       type: 'background',
@@ -74,7 +74,7 @@ test('StyleLayer#setPaintProperty', async t => {
     t.deepEqual(layer.getPaintProperty('background-color-transition'), { duration: 600 });
   });
 
-  await t.test('sets transition', async t => {
+  await t.test('sets transition', t => {
     const layer = createStyleLayer({
       id: 'background',
       type: 'background',
@@ -88,7 +88,7 @@ test('StyleLayer#setPaintProperty', async t => {
     t.deepEqual(layer.getPaintProperty('background-color-transition'), { duration: 400 });
   });
 
-  await t.test('can unset fill-outline-color #2886', async t => {
+  await t.test('can unset fill-outline-color #2886', t => {
     const layer = createStyleLayer({
       id: 'building',
       type: 'fill',
@@ -109,7 +109,7 @@ test('StyleLayer#setPaintProperty', async t => {
     t.deepEqual(layer.paint.get('fill-outline-color').value, { kind: 'constant', value: new Color(0, 0, 1, 1) });
   });
 
-  await t.test('can transition fill-outline-color from undefined to a value #3657', async t => {
+  await t.test('can transition fill-outline-color from undefined to a value #3657', t => {
     const layer = createStyleLayer({
       id: 'building',
       type: 'fill',
@@ -138,7 +138,7 @@ test('StyleLayer#setPaintProperty', async t => {
     layer.paint.get('fill-outline-color');
   });
 
-  await t.test('sets null property value', async t => {
+  await t.test('sets null property value', t => {
     const layer = createStyleLayer({
       id: 'background',
       type: 'background'
@@ -151,7 +151,7 @@ test('StyleLayer#setPaintProperty', async t => {
 });
 
 test('StyleLayer#setLayoutProperty', async t => {
-  await t.test('sets new property value', async t => {
+  await t.test('sets new property value', t => {
     const layer = createStyleLayer({
       id: 'symbol',
       type: 'symbol'
@@ -162,7 +162,7 @@ test('StyleLayer#setLayoutProperty', async t => {
     t.deepEqual(layer.getLayoutProperty('text-transform'), 'lowercase');
   });
 
-  await t.test('updates property value', async t => {
+  await t.test('updates property value', t => {
     const layer = createStyleLayer({
       id: 'symbol',
       type: 'symbol',
@@ -176,7 +176,7 @@ test('StyleLayer#setLayoutProperty', async t => {
     t.deepEqual(layer.getLayoutProperty('text-transform'), 'lowercase');
   });
 
-  await t.test('unsets property value', async t => {
+  await t.test('unsets property value', t => {
     const layer = createStyleLayer({
       id: 'symbol',
       type: 'symbol',
@@ -210,11 +210,11 @@ test('StyleLayer#serialize', async t => {
     );
   }
 
-  await t.test('serializes layers', async t => {
+  await t.test('serializes layers', t => {
     t.deepEqual(createStyleLayer(createSymbolLayer()).serialize(), createSymbolLayer());
   });
 
-  await t.test('serializes functions', async t => {
+  await t.test('serializes functions', t => {
     const layerPaint = {
       'text-color': {
         base: 2,
@@ -228,7 +228,7 @@ test('StyleLayer#serialize', async t => {
     t.deepEqual(createStyleLayer(createSymbolLayer({ paint: layerPaint })).serialize().paint, layerPaint);
   });
 
-  await t.test('serializes added paint properties', async t => {
+  await t.test('serializes added paint properties', t => {
     const layer = createStyleLayer(createSymbolLayer());
     layer.setPaintProperty('text-halo-color', 'orange');
 
@@ -236,7 +236,7 @@ test('StyleLayer#serialize', async t => {
     t.equal(layer.serialize().paint['text-color'], 'blue');
   });
 
-  await t.test('serializes added layout properties', async t => {
+  await t.test('serializes added layout properties', t => {
     const layer = createStyleLayer(createSymbolLayer());
     layer.setLayoutProperty('text-size', 20);
 
@@ -262,11 +262,11 @@ test('StyleLayer#serialize', async t => {
     );
   }
 
-  await t.test('serializes layers', async t => {
+  await t.test('serializes layers', t => {
     t.deepEqual(createStyleLayer(createSymbolLayer()).serialize(), createSymbolLayer());
   });
 
-  await t.test('serializes functions', async t => {
+  await t.test('serializes functions', t => {
     const layerPaint = {
       'text-color': {
         base: 2,
@@ -280,7 +280,7 @@ test('StyleLayer#serialize', async t => {
     t.deepEqual(createStyleLayer(createSymbolLayer({ paint: layerPaint })).serialize().paint, layerPaint);
   });
 
-  await t.test('serializes added paint properties', async t => {
+  await t.test('serializes added paint properties', t => {
     const layer = createStyleLayer(createSymbolLayer());
     layer.setPaintProperty('text-halo-color', 'orange');
 
@@ -288,7 +288,7 @@ test('StyleLayer#serialize', async t => {
     t.equal(layer.serialize().paint['text-color'], 'blue');
   });
 
-  await t.test('serializes added layout properties', async t => {
+  await t.test('serializes added layout properties', t => {
     const layer = createStyleLayer(createSymbolLayer());
     layer.setLayoutProperty('text-size', 20);
 

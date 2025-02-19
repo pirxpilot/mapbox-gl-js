@@ -8,7 +8,7 @@ const fixedLngLat = fixed.LngLat;
 const fixedCoord = fixed.Coord;
 
 test('transform', async t => {
-  await t.test('creates a transform', async t => {
+  await t.test('creates a transform', t => {
     const transform = new Transform();
     transform.resize(500, 500);
     t.equal(transform.unmodified, true);
@@ -40,13 +40,13 @@ test('transform', async t => {
     t.deepEqual(transform.locationCoordinate(new LngLat(0, 0)), { column: 512, row: 512, zoom: 10 });
   });
 
-  await t.test('does not throw on bad center', async t => {
+  await t.test('does not throw on bad center', t => {
     const transform = new Transform();
     transform.resize(500, 500);
     transform.center = { lng: 50, lat: -90 };
   });
 
-  await t.test('setLocationAt', async t => {
+  await t.test('setLocationAt', t => {
     const transform = new Transform();
     transform.resize(500, 500);
     transform.zoom = 4;
@@ -55,7 +55,7 @@ test('transform', async t => {
     t.deepEqual(fixedLngLat(transform.pointLocation(new Point(15, 45))), { lng: 13, lat: 10 });
   });
 
-  await t.test('setLocationAt tilted', async t => {
+  await t.test('setLocationAt tilted', t => {
     const transform = new Transform();
     transform.resize(500, 500);
     transform.zoom = 4;
@@ -65,14 +65,14 @@ test('transform', async t => {
     t.deepEqual(fixedLngLat(transform.pointLocation(new Point(15, 45))), { lng: 13, lat: 10 });
   });
 
-  await t.test('has a default zoom', async t => {
+  await t.test('has a default zoom', t => {
     const transform = new Transform();
     transform.resize(500, 500);
     t.equal(transform.tileZoom, 0);
     t.equal(transform.tileZoom, transform.zoom);
   });
 
-  await t.test('set fov', async t => {
+  await t.test('set fov', t => {
     const transform = new Transform();
     transform.fov = 10;
     t.equal(transform.fov, 10);
@@ -80,7 +80,7 @@ test('transform', async t => {
     t.equal(transform.fov, 10);
   });
 
-  await t.test('lngRange & latRange constrain zoom and center', async t => {
+  await t.test('lngRange & latRange constrain zoom and center', t => {
     const transform = new Transform();
     transform.center = new LngLat(0, 0);
     transform.zoom = 10;
@@ -100,7 +100,7 @@ test('transform', async t => {
     t.same(transform.center, new LngLat(-4.828338623046875, -4.828969771321582));
   });
 
-  test('coveringTiles', async t => {
+  test('coveringTiles', t => {
     const options = {
       minzoom: 1,
       maxzoom: 10,
@@ -151,7 +151,7 @@ test('transform', async t => {
     t.end();
   });
 
-  test('coveringZoomLevel', async t => {
+  test('coveringZoomLevel', t => {
     const options = {
       minzoom: 1,
       maxzoom: 10,
@@ -211,7 +211,7 @@ test('transform', async t => {
     t.end();
   });
 
-  await t.test('clamps pitch', async t => {
+  await t.test('clamps pitch', t => {
     const transform = new Transform();
 
     transform.pitch = 45;
@@ -224,7 +224,7 @@ test('transform', async t => {
     t.equal(transform.pitch, 60);
   });
 
-  await t.test('visibleUnwrappedCoordinates', async t => {
+  await t.test('visibleUnwrappedCoordinates', t => {
     const transform = new Transform();
     transform.resize(200, 200);
     transform.zoom = 0;

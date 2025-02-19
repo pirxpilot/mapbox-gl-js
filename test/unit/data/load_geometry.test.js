@@ -10,7 +10,7 @@ const vt = new VectorTile(
   new Protobuf(fs.readFileSync(path.join(__dirname, '/../../fixtures/mbsv5-6-18-23.vector.pbf')))
 );
 
-test('loadGeometry', async t => {
+test('loadGeometry', t => {
   const feature = vt.layers.road.feature(0);
   const originalGeometry = feature.loadGeometry();
   const scaledGeometry = loadGeometry(feature);
@@ -18,7 +18,7 @@ test('loadGeometry', async t => {
   t.equal(scaledGeometry[0][0].y, originalGeometry[0][0].y * 2, 'scales y coords by 2x');
 });
 
-test('loadGeometry extent error', async t => {
+test('loadGeometry extent error', t => {
   const feature = vt.layers.road.feature(0);
   feature.extent = 1024;
 

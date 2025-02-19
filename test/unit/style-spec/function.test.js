@@ -3,7 +3,7 @@ const { createFunction } = require('../../../src/style-spec/function');
 const Color = require('../../../src/style-spec/util/color');
 
 test('binary search', async t => {
-  await t.test('will eventually terminate.', async t => {
+  await t.test('will eventually terminate.', t => {
     const f = createFunction(
       {
         stops: [
@@ -29,7 +29,7 @@ test('binary search', async t => {
 });
 
 test('exponential function', async t => {
-  await t.test('is the default for interpolated properties', async t => {
+  await t.test('is the default for interpolated properties', t => {
     const f = createFunction(
       {
         stops: [
@@ -51,7 +51,7 @@ test('exponential function', async t => {
     t.equalWithPrecision(f({ zoom: 2 }), 30 / 9, 1e-6);
   });
 
-  await t.test('base', async t => {
+  await t.test('base', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -73,7 +73,7 @@ test('exponential function', async t => {
     t.equalWithPrecision(f({ zoom: 4 }), 6, 1e-6);
   });
 
-  await t.test('one stop', async t => {
+  await t.test('one stop', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -89,7 +89,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 2 }), 2);
   });
 
-  await t.test('two stops', async t => {
+  await t.test('two stops', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -110,7 +110,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 4 }), 6);
   });
 
-  await t.test('three stops', async t => {
+  await t.test('three stops', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -136,7 +136,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 6 }), 10);
   });
 
-  await t.test('four stops', async t => {
+  await t.test('four stops', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -167,7 +167,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 8 }), 14);
   });
 
-  await t.test('many stops', async t => {
+  await t.test('many stops', t => {
     const stops = [
       [2, 100],
       [55, 200],
@@ -205,7 +205,7 @@ test('exponential function', async t => {
     t.equalWithPrecision(f({ zoom: 40000 }), 10000000, 1e-6);
   });
 
-  await t.test('color', async t => {
+  await t.test('color', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -224,7 +224,7 @@ test('exponential function', async t => {
     t.deepEqual(f({ zoom: 11 }), new Color(0, 0, 1, 1));
   });
 
-  await t.test('lab colorspace', async t => {
+  await t.test('lab colorspace', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -245,7 +245,7 @@ test('exponential function', async t => {
     t.equalWithPrecision(f({ zoom: 5 }).b, 0.444, 1e-3);
   });
 
-  await t.test('rgb colorspace', async t => {
+  await t.test('rgb colorspace', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -263,7 +263,7 @@ test('exponential function', async t => {
     t.deepEqual(f({ zoom: 5 }), new Color(0.5, 0.5, 0.5, 1));
   });
 
-  await t.test('unknown color spaces', async t => {
+  await t.test('unknown color spaces', t => {
     t.throws(() => {
       createFunction(
         {
@@ -281,7 +281,7 @@ test('exponential function', async t => {
     }, /Unknown color space: unknown/);
   });
 
-  await t.test('interpolation mutation avoidance', async t => {
+  await t.test('interpolation mutation avoidance', t => {
     const params = {
       type: 'exponential',
       colorSpace: 'lab',
@@ -297,7 +297,7 @@ test('exponential function', async t => {
     t.deepEqual(params, paramsCopy);
   });
 
-  await t.test('property present', async t => {
+  await t.test('property present', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -315,7 +315,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), 2);
   });
 
-  await t.test('property absent, function default', async t => {
+  await t.test('property absent, function default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -334,7 +334,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), 3);
   });
 
-  await t.test('property absent, spec default', async t => {
+  await t.test('property absent, spec default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -353,7 +353,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), 3);
   });
 
-  await t.test('property type mismatch, function default', async t => {
+  await t.test('property type mismatch, function default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -372,7 +372,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 'string' } }), 3);
   });
 
-  await t.test('property type mismatch, spec default', async t => {
+  await t.test('property type mismatch, spec default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -391,7 +391,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 'string' } }), 3);
   });
 
-  await t.test('zoom-and-property function, one stop', async t => {
+  await t.test('zoom-and-property function, one stop', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -414,7 +414,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 2 }, { properties: { prop: 2 } }), 2);
   });
 
-  await t.test('zoom-and-property function, two stops', async t => {
+  await t.test('zoom-and-property function, two stops', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -444,7 +444,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 2 }, { properties: { prop: 3 } }), 8);
   });
 
-  await t.test('zoom-and-property function, three stops', async t => {
+  await t.test('zoom-and-property function, three stops', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -469,7 +469,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 2 }, { properties: { prop: 1 } }), 4);
   });
 
-  await t.test('zoom-and-property function, two stops, fractional zoom', async t => {
+  await t.test('zoom-and-property function, two stops, fractional zoom', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -490,7 +490,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 2.1 }, { properties: { prop: 1 } }), 8);
   });
 
-  test('zoom-and-property function, four stops, integer and fractional zooms', async t => {
+  test('zoom-and-property function, four stops, integer and fractional zooms', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -516,7 +516,7 @@ test('exponential function', async t => {
     t.end();
   });
 
-  await t.test('zoom-and-property function, no default', async t => {
+  await t.test('zoom-and-property function, no default', t => {
     // This can happen for fill-outline-color, where the spec has no default.
 
     const f = createFunction(
@@ -541,7 +541,7 @@ test('exponential function', async t => {
 });
 
 test('interval function', async t => {
-  await t.test('is the default for non-interpolated properties', async t => {
+  await t.test('is the default for non-interpolated properties', t => {
     const f = createFunction(
       {
         stops: [
@@ -565,7 +565,7 @@ test('interval function', async t => {
     t.equal(f({ zoom: 0.5 }), 111);
   });
 
-  await t.test('one stop', async t => {
+  await t.test('one stop', t => {
     const f = createFunction(
       {
         type: 'interval',
@@ -581,7 +581,7 @@ test('interval function', async t => {
     t.equal(f({ zoom: 0.5 }), 11);
   });
 
-  await t.test('two stops', async t => {
+  await t.test('two stops', t => {
     const f = createFunction(
       {
         type: 'interval',
@@ -601,7 +601,7 @@ test('interval function', async t => {
     t.equal(f({ zoom: 0.5 }), 111);
   });
 
-  await t.test('three stops', async t => {
+  await t.test('three stops', t => {
     const f = createFunction(
       {
         type: 'interval',
@@ -624,7 +624,7 @@ test('interval function', async t => {
     t.equal(f({ zoom: 1.5 }), 1111);
   });
 
-  await t.test('four stops', async t => {
+  await t.test('four stops', t => {
     const f = createFunction(
       {
         type: 'interval',
@@ -650,7 +650,7 @@ test('interval function', async t => {
     t.equal(f({ zoom: 2.5 }), 11111);
   });
 
-  await t.test('color', async t => {
+  await t.test('color', t => {
     const f = createFunction(
       {
         type: 'interval',
@@ -669,7 +669,7 @@ test('interval function', async t => {
     t.deepEqual(f({ zoom: 11 }), new Color(0, 0, 1, 1));
   });
 
-  await t.test('property present', async t => {
+  await t.test('property present', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -688,7 +688,7 @@ test('interval function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 1.5 } }), 'good');
   });
 
-  await t.test('property absent, function default', async t => {
+  await t.test('property absent, function default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -708,7 +708,7 @@ test('interval function', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), 'default');
   });
 
-  await t.test('property absent, spec default', async t => {
+  await t.test('property absent, spec default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -728,7 +728,7 @@ test('interval function', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), 'default');
   });
 
-  await t.test('property type mismatch, function default', async t => {
+  await t.test('property type mismatch, function default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -748,7 +748,7 @@ test('interval function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 'string' } }), 'default');
   });
 
-  await t.test('property type mismatch, spec default', async t => {
+  await t.test('property type mismatch, spec default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -770,7 +770,7 @@ test('interval function', async t => {
 });
 
 test('categorical function', async t => {
-  await t.test('string', async t => {
+  await t.test('string', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -791,7 +791,7 @@ test('categorical function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 2 } }), 'bad');
   });
 
-  await t.test('string function default', async t => {
+  await t.test('string function default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -812,7 +812,7 @@ test('categorical function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 3 } }), 'default');
   });
 
-  await t.test('string zoom-and-property function default', async t => {
+  await t.test('string zoom-and-property function default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -831,7 +831,7 @@ test('categorical function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 'bar' } }), 'zero');
   });
 
-  await t.test('strict type checking', async t => {
+  await t.test('strict type checking', t => {
     const numberKeys = createFunction(
       {
         property: 'foo',
@@ -877,7 +877,7 @@ test('categorical function', async t => {
     t.equal(stringKeys(0, { properties: { foo: true } }), 'default');
   });
 
-  await t.test('string spec default', async t => {
+  await t.test('string spec default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -898,7 +898,7 @@ test('categorical function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 3 } }), 'default');
   });
 
-  await t.test('color', async t => {
+  await t.test('color', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -917,7 +917,7 @@ test('categorical function', async t => {
     t.deepEqual(f({ zoom: 1 }, { properties: { foo: 1 } }), new Color(0, 0, 1, 1));
   });
 
-  await t.test('color function default', async t => {
+  await t.test('color function default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -937,7 +937,7 @@ test('categorical function', async t => {
     t.deepEqual(f({ zoom: 0 }, { properties: { foo: 3 } }), new Color(0, 1, 0, 1));
   });
 
-  await t.test('color spec default', async t => {
+  await t.test('color spec default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -957,7 +957,7 @@ test('categorical function', async t => {
     t.deepEqual(f({ zoom: 0 }, { properties: { foo: 3 } }), new Color(0, 1, 0, 1));
   });
 
-  await t.test('boolean', async t => {
+  await t.test('boolean', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -978,7 +978,7 @@ test('categorical function', async t => {
 });
 
 test('identity function', async t => {
-  await t.test('number', async t => {
+  await t.test('number', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -992,7 +992,7 @@ test('identity function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), 1);
   });
 
-  await t.test('number function default', async t => {
+  await t.test('number function default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -1007,7 +1007,7 @@ test('identity function', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), 1);
   });
 
-  await t.test('number spec default', async t => {
+  await t.test('number spec default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -1022,7 +1022,7 @@ test('identity function', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), 1);
   });
 
-  await t.test('color', async t => {
+  await t.test('color', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -1037,7 +1037,7 @@ test('identity function', async t => {
     t.deepEqual(f({ zoom: 1 }, { properties: { foo: 'blue' } }), new Color(0, 0, 1, 1));
   });
 
-  await t.test('color function default', async t => {
+  await t.test('color function default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -1052,7 +1052,7 @@ test('identity function', async t => {
     t.deepEqual(f({ zoom: 0 }, { properties: {} }), new Color(1, 0, 0, 1));
   });
 
-  await t.test('color spec default', async t => {
+  await t.test('color spec default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -1067,7 +1067,7 @@ test('identity function', async t => {
     t.deepEqual(f({ zoom: 0 }, { properties: {} }), new Color(1, 0, 0, 1));
   });
 
-  await t.test('color invalid', async t => {
+  await t.test('color invalid', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -1082,7 +1082,7 @@ test('identity function', async t => {
     t.deepEqual(f({ zoom: 0 }, { properties: { foo: 'invalid' } }), new Color(1, 0, 0, 1));
   });
 
-  await t.test('property type mismatch, function default', async t => {
+  await t.test('property type mismatch, function default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -1097,7 +1097,7 @@ test('identity function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), 'default');
   });
 
-  await t.test('property type mismatch, spec default', async t => {
+  await t.test('property type mismatch, spec default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -1112,7 +1112,7 @@ test('identity function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), 'default');
   });
 
-  await t.test('valid enum', async t => {
+  await t.test('valid enum', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -1130,7 +1130,7 @@ test('identity function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 'bar' } }), 'bar');
   });
 
-  await t.test('invalid enum, spec default', async t => {
+  await t.test('invalid enum, spec default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -1148,7 +1148,7 @@ test('identity function', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 'baz' } }), 'def');
   });
 
-  await t.test('invalid type for enum, spec default', async t => {
+  await t.test('invalid type for enum, spec default', t => {
     const f = createFunction(
       {
         property: 'foo',
@@ -1167,7 +1167,7 @@ test('identity function', async t => {
   });
 });
 
-test('unknown function', async t => {
+test('unknown function', t => {
   t.throws(
     () =>
       createFunction(
@@ -1184,7 +1184,7 @@ test('unknown function', async t => {
 });
 
 test('kind', async t => {
-  await t.test('camera', async t => {
+  await t.test('camera', t => {
     const f = createFunction(
       {
         stops: [[1, 1]]
@@ -1197,7 +1197,7 @@ test('kind', async t => {
     t.equal(f.kind, 'camera');
   });
 
-  await t.test('source', async t => {
+  await t.test('source', t => {
     const f = createFunction(
       {
         stops: [[1, 1]],
@@ -1211,7 +1211,7 @@ test('kind', async t => {
     t.equal(f.kind, 'source');
   });
 
-  await t.test('composite', async t => {
+  await t.test('composite', t => {
     const f = createFunction(
       {
         stops: [[{ zoom: 1, value: 1 }, 1]],

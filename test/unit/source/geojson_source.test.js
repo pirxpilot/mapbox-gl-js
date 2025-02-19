@@ -58,7 +58,7 @@ test('GeoJSONSource#setData', async t => {
     });
   }
 
-  await t.test('returns self', async t => {
+  await t.test('returns self', t => {
     const source = createSource();
     t.equal(source.setData({}), source);
   });
@@ -72,7 +72,7 @@ test('GeoJSONSource#setData', async t => {
     source.load();
   });
 
-  await t.test('fires "dataloading" event', async t => {
+  await t.test('fires "dataloading" event', t => {
     const source = createSource();
     source.on('dataloading', t.end);
     source.load();
@@ -214,7 +214,7 @@ test('GeoJSONSource#update', async t => {
 });
 
 test('GeoJSONSource#serialize', async t => {
-  await t.test('serialize source with inline data', async t => {
+  await t.test('serialize source with inline data', t => {
     const source = new GeoJSONSource('id', { data: hawkHill }, mockDispatcher);
     source.load();
     t.deepEqual(source.serialize(), {
@@ -223,7 +223,7 @@ test('GeoJSONSource#serialize', async t => {
     });
   });
 
-  await t.test('serialize source with url', async t => {
+  await t.test('serialize source with url', t => {
     const source = new GeoJSONSource('id', { data: 'local://data.json' }, mockDispatcher);
     source.load();
     t.deepEqual(source.serialize(), {
@@ -232,7 +232,7 @@ test('GeoJSONSource#serialize', async t => {
     });
   });
 
-  await t.test('serialize source with updated data', async t => {
+  await t.test('serialize source with updated data', t => {
     const source = new GeoJSONSource('id', { data: {} }, mockDispatcher);
     source.load();
     source.setData(hawkHill);
@@ -242,7 +242,7 @@ test('GeoJSONSource#serialize', async t => {
     });
   });
 
-  await t.test('serialize source with additional options', async t => {
+  await t.test('serialize source with additional options', t => {
     const source = new GeoJSONSource('id', { data: {}, cluster: true }, mockDispatcher);
     t.deepEqual(source.serialize(), {
       type: 'geojson',

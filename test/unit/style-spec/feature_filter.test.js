@@ -2,7 +2,7 @@ const { test } = require('../../util/mapbox-gl-js-test');
 const filter = require('../../../src/style-spec/feature_filter');
 
 test('filter', async t => {
-  await t.test('expression, zoom', async t => {
+  await t.test('expression, zoom', t => {
     const f = filter(['>=', ['number', ['get', 'x']], ['zoom']]);
     t.equal(f({ zoom: 1 }, { properties: { x: 0 } }), false);
     t.equal(f({ zoom: 1 }, { properties: { x: 1.5 } }), true);
@@ -12,7 +12,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 2 }, { properties: { x: 2.5 } }), true);
   });
 
-  await t.test('expression, compare two properties', async t => {
+  await t.test('expression, compare two properties', t => {
     t.stub(console, 'warn');
     const f = filter(['==', ['string', ['get', 'x']], ['string', ['get', 'y']]]);
     t.equal(f({ zoom: 0 }, { properties: { x: 1, y: 1 } }), false);
@@ -22,7 +22,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { x: undefined } }), false);
   });
 
-  await t.test('expression, any/all', async t => {
+  await t.test('expression, any/all', t => {
     t.equal(filter(['all'])(), true);
     t.equal(filter(['all', true])(), true);
     t.equal(filter(['all', true, false])(), false);
@@ -33,7 +33,7 @@ test('filter', async t => {
     t.equal(filter(['any', false, false])(), false);
   });
 
-  await t.test('expression, type error', async t => {
+  await t.test('expression, type error', t => {
     t.throws(() => {
       filter(['==', ['number', ['get', 'x']], ['string', ['get', 'y']]]);
     });
@@ -47,19 +47,19 @@ test('filter', async t => {
     });
   });
 
-  await t.test('degenerate', async t => {
+  await t.test('degenerate', t => {
     t.equal(filter()(), true);
     t.equal(filter(undefined)(), true);
     t.equal(filter(null)(), true);
   });
 
-  await t.test('==, string', async t => {
+  await t.test('==, string', t => {
     const f = filter(['==', 'foo', 'bar']);
     t.equal(f({ zoom: 0 }, { properties: { foo: 'bar' } }), true);
     t.equal(f({ zoom: 0 }, { properties: { foo: 'baz' } }), false);
   });
 
-  await t.test('==, number', async t => {
+  await t.test('==, number', t => {
     const f = filter(['==', 'foo', 0]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), true);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), false);
@@ -71,7 +71,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), false);
   });
 
-  await t.test('==, null', async t => {
+  await t.test('==, null', t => {
     const f = filter(['==', 'foo', null]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), false);
@@ -83,13 +83,13 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), false);
   });
 
-  await t.test('==, $type', async t => {
+  await t.test('==, $type', t => {
     const f = filter(['==', '$type', 'LineString']);
     t.equal(f({ zoom: 0 }, { type: 1 }), false);
     t.equal(f({ zoom: 0 }, { type: 2 }), true);
   });
 
-  await t.test('==, $id', async t => {
+  await t.test('==, $id', t => {
     const f = filter(['==', '$id', 1234]);
 
     t.equal(f({ zoom: 0 }, { id: 1234 }), true);
@@ -97,13 +97,13 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { id: 1234 } }), false);
   });
 
-  await t.test('!=, string', async t => {
+  await t.test('!=, string', t => {
     const f = filter(['!=', 'foo', 'bar']);
     t.equal(f({ zoom: 0 }, { properties: { foo: 'bar' } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 'baz' } }), true);
   });
 
-  await t.test('!=, number', async t => {
+  await t.test('!=, number', t => {
     const f = filter(['!=', 'foo', 0]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), true);
@@ -115,7 +115,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), true);
   });
 
-  await t.test('!=, null', async t => {
+  await t.test('!=, null', t => {
     const f = filter(['!=', 'foo', null]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), true);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), true);
@@ -127,13 +127,13 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), true);
   });
 
-  await t.test('!=, $type', async t => {
+  await t.test('!=, $type', t => {
     const f = filter(['!=', '$type', 'LineString']);
     t.equal(f({ zoom: 0 }, { type: 1 }), true);
     t.equal(f({ zoom: 0 }, { type: 2 }), false);
   });
 
-  await t.test('<, number', async t => {
+  await t.test('<, number', t => {
     const f = filter(['<', 'foo', 0]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
@@ -148,7 +148,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), false);
   });
 
-  await t.test('<, string', async t => {
+  await t.test('<, string', t => {
     const f = filter(['<', 'foo', '0']);
     t.equal(f({ zoom: 0 }, { properties: { foo: -1 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
@@ -162,7 +162,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: undefined } }), false);
   });
 
-  await t.test('<=, number', async t => {
+  await t.test('<=, number', t => {
     const f = filter(['<=', 'foo', 0]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), true);
@@ -177,7 +177,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), false);
   });
 
-  await t.test('<=, string', async t => {
+  await t.test('<=, string', t => {
     const f = filter(['<=', 'foo', '0']);
     t.equal(f({ zoom: 0 }, { properties: { foo: -1 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
@@ -191,7 +191,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: undefined } }), false);
   });
 
-  await t.test('>, number', async t => {
+  await t.test('>, number', t => {
     const f = filter(['>', 'foo', 0]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), true);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
@@ -206,7 +206,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), false);
   });
 
-  await t.test('>, string', async t => {
+  await t.test('>, string', t => {
     const f = filter(['>', 'foo', '0']);
     t.equal(f({ zoom: 0 }, { properties: { foo: -1 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
@@ -220,7 +220,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: undefined } }), false);
   });
 
-  await t.test('>=, number', async t => {
+  await t.test('>=, number', t => {
     const f = filter(['>=', 'foo', 0]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), true);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), true);
@@ -235,7 +235,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), false);
   });
 
-  await t.test('>=, string', async t => {
+  await t.test('>=, string', t => {
     const f = filter(['>=', 'foo', '0']);
     t.equal(f({ zoom: 0 }, { properties: { foo: -1 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
@@ -249,12 +249,12 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: undefined } }), false);
   });
 
-  await t.test('in, degenerate', async t => {
+  await t.test('in, degenerate', t => {
     const f = filter(['in', 'foo']);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), false);
   });
 
-  await t.test('in, string', async t => {
+  await t.test('in, string', t => {
     const f = filter(['in', 'foo', '0']);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: '0' } }), true);
@@ -265,7 +265,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), false);
   });
 
-  await t.test('in, number', async t => {
+  await t.test('in, number', t => {
     const f = filter(['in', 'foo', 0]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), true);
     t.equal(f({ zoom: 0 }, { properties: { foo: '0' } }), false);
@@ -275,7 +275,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: undefined } }), false);
   });
 
-  await t.test('in, null', async t => {
+  await t.test('in, null', t => {
     const f = filter(['in', 'foo', null]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: '0' } }), false);
@@ -285,14 +285,14 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: undefined } }), false);
   });
 
-  await t.test('in, multiple', async t => {
+  await t.test('in, multiple', t => {
     const f = filter(['in', 'foo', 0, 1]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), true);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), true);
     t.equal(f({ zoom: 0 }, { properties: { foo: 3 } }), false);
   });
 
-  await t.test('in, large_multiple', async t => {
+  await t.test('in, large_multiple', t => {
     const values = Array.apply(null, { length: 2000 }).map(Number.call, Number);
     values.reverse();
     const f = filter(['in', 'foo'].concat(values));
@@ -302,7 +302,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 2000 } }), false);
   });
 
-  await t.test('in, large_multiple, heterogeneous', async t => {
+  await t.test('in, large_multiple, heterogeneous', t => {
     const values = Array.apply(null, { length: 2000 }).map(Number.call, Number);
     values.push('a');
     values.unshift('b');
@@ -315,7 +315,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 2000 } }), false);
   });
 
-  await t.test('in, $type', async t => {
+  await t.test('in, $type', t => {
     const f = filter(['in', '$type', 'LineString', 'Polygon']);
     t.equal(f({ zoom: 0 }, { type: 1 }), false);
     t.equal(f({ zoom: 0 }, { type: 2 }), true);
@@ -327,12 +327,12 @@ test('filter', async t => {
     t.equal(f1({ zoom: 0 }, { type: 3 }), true);
   });
 
-  await t.test('!in, degenerate', async t => {
+  await t.test('!in, degenerate', t => {
     const f = filter(['!in', 'foo']);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), true);
   });
 
-  await t.test('!in, string', async t => {
+  await t.test('!in, string', t => {
     const f = filter(['!in', 'foo', '0']);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), true);
     t.equal(f({ zoom: 0 }, { properties: { foo: '0' } }), false);
@@ -341,7 +341,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), true);
   });
 
-  await t.test('!in, number', async t => {
+  await t.test('!in, number', t => {
     const f = filter(['!in', 'foo', 0]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: '0' } }), true);
@@ -349,7 +349,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: undefined } }), true);
   });
 
-  await t.test('!in, null', async t => {
+  await t.test('!in, null', t => {
     const f = filter(['!in', 'foo', null]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), true);
     t.equal(f({ zoom: 0 }, { properties: { foo: '0' } }), true);
@@ -357,14 +357,14 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: undefined } }), true);
   });
 
-  await t.test('!in, multiple', async t => {
+  await t.test('!in, multiple', t => {
     const f = filter(['!in', 'foo', 0, 1]);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 3 } }), true);
   });
 
-  await t.test('!in, large_multiple', async t => {
+  await t.test('!in, large_multiple', t => {
     const f = filter(['!in', 'foo'].concat(Array.apply(null, { length: 2000 }).map(Number.call, Number)));
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), false);
@@ -372,14 +372,14 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: { foo: 2000 } }), true);
   });
 
-  await t.test('!in, $type', async t => {
+  await t.test('!in, $type', t => {
     const f = filter(['!in', '$type', 'LineString', 'Polygon']);
     t.equal(f({ zoom: 0 }, { type: 1 }), true);
     t.equal(f({ zoom: 0 }, { type: 2 }), false);
     t.equal(f({ zoom: 0 }, { type: 3 }), false);
   });
 
-  await t.test('any', async t => {
+  await t.test('any', t => {
     const f1 = filter(['any']);
     t.equal(f1({ zoom: 0 }, { properties: { foo: 1 } }), false);
 
@@ -393,7 +393,7 @@ test('filter', async t => {
     t.equal(f4({ zoom: 0 }, { properties: { foo: 1 } }), true);
   });
 
-  await t.test('all', async t => {
+  await t.test('all', t => {
     const f1 = filter(['all']);
     t.equal(f1({ zoom: 0 }, { properties: { foo: 1 } }), true);
 
@@ -407,7 +407,7 @@ test('filter', async t => {
     t.equal(f4({ zoom: 0 }, { properties: { foo: 1 } }), false);
   });
 
-  await t.test('none', async t => {
+  await t.test('none', t => {
     const f1 = filter(['none']);
     t.equal(f1({ zoom: 0 }, { properties: { foo: 1 } }), true);
 
@@ -421,7 +421,7 @@ test('filter', async t => {
     t.equal(f4({ zoom: 0 }, { properties: { foo: 1 } }), false);
   });
 
-  await t.test('has', async t => {
+  await t.test('has', t => {
     const f = filter(['has', 'foo']);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), true);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), true);
@@ -433,7 +433,7 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), false);
   });
 
-  await t.test('!has', async t => {
+  await t.test('!has', t => {
     const f = filter(['!has', 'foo']);
     t.equal(f({ zoom: 0 }, { properties: { foo: 0 } }), false);
     t.equal(f({ zoom: 0 }, { properties: { foo: 1 } }), false);

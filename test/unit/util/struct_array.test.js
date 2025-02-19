@@ -4,13 +4,13 @@ const { StructArrayLayout3i6, FeatureIndexArray } = require('../../../src/data/a
 test('StructArray', async t => {
   class TestArray extends StructArrayLayout3i6 {}
 
-  await t.test('array constructs itself', async t => {
+  await t.test('array constructs itself', t => {
     const array = new TestArray();
     t.equal(array.length, 0);
     t.ok(array.arrayBuffer);
   });
 
-  await t.test('emplaceBack', async t => {
+  await t.test('emplaceBack', t => {
     const array = new TestArray();
 
     t.equal(0, array.emplaceBack(1, 7, 3));
@@ -21,7 +21,7 @@ test('StructArray', async t => {
     t.deepEqual(array.int16.slice(0, 6), Int16Array.from([1, 7, 3, 4, 2, 5]));
   });
 
-  await t.test('emplaceBack gracefully accepts extra arguments', async t => {
+  await t.test('emplaceBack gracefully accepts extra arguments', t => {
     // emplaceBack is typically used in fairly hot code paths, where
     // conditionally varying the number of arguments can be expensive.
     const array = new TestArray();
@@ -34,7 +34,7 @@ test('StructArray', async t => {
     t.deepEqual(array.int16.slice(0, 3), Int16Array.from([3, 1, 4]));
   });
 
-  await t.test('reserve', async t => {
+  await t.test('reserve', t => {
     const array = new TestArray();
 
     array.reserve(100);
@@ -46,7 +46,7 @@ test('StructArray', async t => {
     }
   });
 
-  await t.test('automatically resizes', async t => {
+  await t.test('automatically resizes', t => {
     const array = new TestArray();
     const initialCapacity = array.capacity;
 
@@ -60,7 +60,7 @@ test('StructArray', async t => {
     t.ok(array.capacity > initialCapacity);
   });
 
-  await t.test('trims', async t => {
+  await t.test('trims', t => {
     const array = new TestArray();
     const capacityInitial = array.capacity;
 
@@ -76,13 +76,13 @@ test('StructArray', async t => {
 test('FeatureIndexArray', async t => {
   class TestArray extends FeatureIndexArray {}
 
-  await t.test('array constructs itself', async t => {
+  await t.test('array constructs itself', t => {
     const array = new TestArray();
     t.equal(array.length, 0);
     t.ok(array.arrayBuffer);
   });
 
-  await t.test('emplace and retrieve', async t => {
+  await t.test('emplace and retrieve', t => {
     const array = new TestArray();
     t.equal(0, array.emplaceBack(1, 7, 3));
     t.equal(1, array.emplaceBack(4, 2, 5));

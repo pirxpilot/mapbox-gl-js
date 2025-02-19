@@ -10,7 +10,7 @@ test('VertexBuffer', async t => {
     { name: 'box', components: 2, type: 'Int16', offset: 4 }
   ];
 
-  await t.test('constructs itself', async t => {
+  await t.test('constructs itself', t => {
     const context = new Context(require('gl')(10, 10));
     const array = new TestArray();
     array.emplaceBack(1, 1, 1);
@@ -27,7 +27,7 @@ test('VertexBuffer', async t => {
     t.deepEqual(buffer.length, 3);
   });
 
-  await t.test('enableAttributes', async t => {
+  await t.test('enableAttributes', t => {
     const context = new Context(require('gl')(10, 10));
     const array = new TestArray();
     const buffer = new VertexBuffer(context, array, attributes);
@@ -36,7 +36,7 @@ test('VertexBuffer', async t => {
     t.deepEqual(context.gl.enableVertexAttribArray.args, [[5], [6]]);
   });
 
-  await t.test('setVertexAttribPointers', async t => {
+  await t.test('setVertexAttribPointers', t => {
     const context = new Context(require('gl')(10, 10));
     const array = new TestArray();
     const buffer = new VertexBuffer(context, array, attributes);

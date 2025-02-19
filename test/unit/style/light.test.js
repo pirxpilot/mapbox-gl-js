@@ -6,7 +6,7 @@ const { sphericalToCartesian } = require('../../../src/util/util');
 
 const spec = styleSpec.light;
 
-test('Light with defaults', async t => {
+test('Light with defaults', t => {
   const light = new Light({});
   light.recalculate({ zoom: 0, zoomHistory: {} });
 
@@ -16,7 +16,7 @@ test('Light with defaults', async t => {
   t.deepEqual(light.properties.get('color'), Color.parse(spec.color.default));
 });
 
-test('Light with options', async t => {
+test('Light with options', t => {
   const light = new Light({
     anchor: 'map',
     position: [2, 30, 30],
@@ -30,7 +30,7 @@ test('Light with options', async t => {
   t.deepEqual(light.properties.get('color'), Color.parse(spec.color.default));
 });
 
-test('Light with stops function', async t => {
+test('Light with stops function', t => {
   const light = new Light({
     intensity: {
       stops: [
@@ -44,7 +44,7 @@ test('Light with stops function', async t => {
   t.deepEqual(light.properties.get('intensity'), 0.5);
 });
 
-test('Light#getLight', async t => {
+test('Light#getLight', t => {
   const defaults = {};
   for (const key in spec) {
     defaults[key] = spec[key].default;
@@ -53,7 +53,7 @@ test('Light#getLight', async t => {
   t.deepEqual(new Light(defaults).getLight(), defaults);
 });
 
-test('Light#setLight', async t => {
+test('Light#setLight', t => {
   const light = new Light({});
   light.setLight({ color: 'red', 'color-transition': { duration: 3000 } });
   light.updateTransitions({ transition: true }, {});

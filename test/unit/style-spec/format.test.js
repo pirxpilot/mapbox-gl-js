@@ -5,7 +5,7 @@ function roundtrip(style) {
   return JSON.parse(format(style));
 }
 
-t('orders top-level keys', async t => {
+t('orders top-level keys', t => {
   t.deepEqual(
     Object.keys(
       roundtrip({
@@ -21,7 +21,7 @@ t('orders top-level keys', async t => {
   );
 });
 
-t('orders layer keys', async t => {
+t('orders layer keys', t => {
   t.deepEqual(
     Object.keys(
       roundtrip({

@@ -27,7 +27,7 @@ function makeTile(tileID, symbolInstances) {
 }
 
 test('CrossTileSymbolIndex.addLayer', async t => {
-  await t.test('matches ids', async t => {
+  await t.test('matches ids', t => {
     const index = new CrossTileSymbolIndex();
 
     const mainID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -78,7 +78,7 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     t.equal(grandchildInstances[1].crossTileID, 5);
   });
 
-  await t.test('overwrites ids when re-adding', async t => {
+  await t.test('overwrites ids when re-adding', t => {
     const index = new CrossTileSymbolIndex();
 
     const mainID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -106,7 +106,7 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     t.equal(childInstances[0].crossTileID, 2);
   });
 
-  await t.test('does not duplicate ids within one zoom level', async t => {
+  await t.test('does not duplicate ids within one zoom level', t => {
     const index = new CrossTileSymbolIndex();
 
     const mainID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -143,7 +143,7 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[7]), [1, 2, 3]);
   });
 
-  await t.test('does not regenerate ids for same zoom', async t => {
+  await t.test('does not regenerate ids for same zoom', t => {
     const index = new CrossTileSymbolIndex();
 
     const tileID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -177,7 +177,7 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), [1, 2, 3]);
   });
 
-  await t.test('reuses indexes when longitude is wrapped', async t => {
+  await t.test('reuses indexes when longitude is wrapped', t => {
     const index = new CrossTileSymbolIndex();
     const longitude = 370;
 
@@ -197,7 +197,7 @@ test('CrossTileSymbolIndex.addLayer', async t => {
   });
 });
 
-test('CrossTileSymbolIndex.pruneUnusedLayers', async t => {
+test('CrossTileSymbolIndex.pruneUnusedLayers', t => {
   const index = new CrossTileSymbolIndex();
 
   const tileID = new OverscaledTileID(6, 0, 6, 8, 8);

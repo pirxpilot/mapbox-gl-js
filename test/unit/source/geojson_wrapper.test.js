@@ -2,7 +2,7 @@ const { test } = require('../../util/mapbox-gl-js-test');
 const Wrapper = require('../../../src/source/geojson_wrapper');
 
 test('geojsonwrapper', async t => {
-  await t.test('linestring', async t => {
+  await t.test('linestring', t => {
     const features = [
       {
         type: 2,
@@ -30,7 +30,7 @@ test('geojsonwrapper', async t => {
     t.deepEqual(feature.properties, { hello: 'world' }, 'properties');
   });
 
-  await t.test('point', async t => {
+  await t.test('point', t => {
     const features = [
       {
         type: 1,

@@ -48,7 +48,7 @@ function bucketSetup() {
   });
 }
 
-test('SymbolBucket', async t => {
+test('SymbolBucket', t => {
   const bucketA = bucketSetup();
   const bucketB = bucketSetup();
   const options = { iconDependencies: {}, glyphDependencies: {} };
@@ -84,7 +84,7 @@ test('SymbolBucket', async t => {
   t.equal(b2, a2, 'detects collision and does not place feature');
 });
 
-test('SymbolBucket integer overflow', async t => {
+test('SymbolBucket integer overflow', t => {
   t.stub(console, 'warn');
   t.stub(SymbolBucket, 'MAX_GLYPHS').value(5);
 

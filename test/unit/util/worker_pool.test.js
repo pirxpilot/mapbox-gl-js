@@ -12,7 +12,7 @@ test('WorkerPool', async t => {
     globalThis.window = globalWindow;
   });
 
-  await t.test('#acquire', async t => {
+  await t.test('#acquire', t => {
     const pool = makeWorkerPool(4);
 
     t.notOk(pool.workers);
@@ -25,7 +25,7 @@ test('WorkerPool', async t => {
     workers1.forEach((w, i) => t.equal(w, workers2[i]));
   });
 
-  await t.test('#release', async t => {
+  await t.test('#release', t => {
     let workersTerminated = 0;
 
     const pool = makeWorkerPool(4);

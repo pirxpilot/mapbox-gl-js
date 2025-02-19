@@ -50,7 +50,7 @@ test('ImageSource', async t => {
     globalThis.window = globalWindow;
   });
 
-  await t.test('constructor', async t => {
+  await t.test('constructor', t => {
     const source = createSource({ url: new ArrayBuffer(0) });
 
     t.equal(source.minzoom, 0);
@@ -58,7 +58,7 @@ test('ImageSource', async t => {
     t.equal(source.tileSize, 512);
   });
 
-  await t.test('fires dataloading event', async t => {
+  await t.test('fires dataloading event', t => {
     const source = createSource({ url: new ArrayBuffer(0) });
     source.on('dataloading', e => {
       t.equal(e.dataType, 'source');
@@ -68,7 +68,7 @@ test('ImageSource', async t => {
     respond();
   });
 
-  await t.test('fires data event when content is loaded', async t => {
+  await t.test('fires data event when content is loaded', t => {
     const source = createSource({ url: new ArrayBuffer(0) });
     source.on('data', e => {
       if (e.dataType === 'source' && e.sourceDataType === 'content') {
@@ -80,7 +80,7 @@ test('ImageSource', async t => {
     respond();
   });
 
-  await t.test('fires data event when metadata is loaded', async t => {
+  await t.test('fires data event when metadata is loaded', t => {
     const source = createSource({ url: new ArrayBuffer(0) });
     source.on('data', e => {
       if (e.dataType === 'source' && e.sourceDataType === 'metadata') {
@@ -91,7 +91,7 @@ test('ImageSource', async t => {
     respond();
   });
 
-  await t.test('serialize url and coordinates', async t => {
+  await t.test('serialize url and coordinates', t => {
     const url = new ArrayBuffer(0);
     const source = createSource({ url });
 

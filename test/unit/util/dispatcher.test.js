@@ -15,7 +15,7 @@ test('Dispatcher', async t => {
     globalThis.window = globalWindow;
   });
 
-  await t.test('requests and releases workers from pool', async t => {
+  await t.test('requests and releases workers from pool', t => {
     const workers = [new WebWorker(), new WebWorker()];
     const targets = [];
     let removeCalled = 0;
@@ -46,7 +46,7 @@ test('Dispatcher', async t => {
     t.equal(removeCalled, workers.length);
   });
 
-  await t.test('creates Actors with unique map id', async t => {
+  await t.test('creates Actors with unique map id', t => {
     const ids = [];
     function Actor(target, parent, mapId) {
       ids.push(mapId);
@@ -60,7 +60,7 @@ test('Dispatcher', async t => {
     );
   });
 
-  await t.test('#remove destroys actors', async t => {
+  await t.test('#remove destroys actors', t => {
     const actorsRemoved = [];
     function Actor() {
       return {

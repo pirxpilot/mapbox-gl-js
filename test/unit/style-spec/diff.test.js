@@ -1,7 +1,7 @@
 const { test: t } = require('../../util/mapbox-gl-js-test');
 const diffStyles = require('../../../src/style-spec/diff');
 
-t('diff', async t => {
+t('diff', t => {
   t.deepEqual(
     diffStyles(
       {

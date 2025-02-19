@@ -2,7 +2,7 @@ const { test } = require('../../util/mapbox-gl-js-test');
 const GridIndex = require('../../../src/symbol/grid_index');
 
 test('GridIndex', async t => {
-  await t.test('indexes features', async t => {
+  await t.test('indexes features', t => {
     const grid = new GridIndex(100, 100, 10);
     grid.insert(0, 4, 10, 6, 30);
     grid.insert(1, 4, 10, 30, 12);
@@ -39,7 +39,7 @@ test('GridIndex', async t => {
     );
   });
 
-  await t.test('returns multiple copies of a key if multiple boxes were inserted with the same key', async t => {
+  await t.test('returns multiple copies of a key if multiple boxes were inserted with the same key', t => {
     const grid = new GridIndex(100, 100, 10);
     const key = 123;
     grid.insert(key, 3, 3, 4, 4);
@@ -51,7 +51,7 @@ test('GridIndex', async t => {
     );
   });
 
-  await t.test('circle-circle intersection', async t => {
+  await t.test('circle-circle intersection', t => {
     const grid = new GridIndex(100, 100, 10);
     grid.insertCircle(0, 50, 50, 10);
     grid.insertCircle(1, 60, 60, 15);
@@ -63,7 +63,7 @@ test('GridIndex', async t => {
     t.ok(grid.hitTestCircle(80, 60, 10));
   });
 
-  await t.test('circle-rectangle intersection', async t => {
+  await t.test('circle-rectangle intersection', t => {
     const grid = new GridIndex(100, 100, 10);
     grid.insertCircle(0, 50, 50, 10);
     grid.insertCircle(1, 60, 60, 15);

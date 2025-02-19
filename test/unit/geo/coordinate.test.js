@@ -2,14 +2,14 @@ const { test } = require('../../util/mapbox-gl-js-test');
 const Coordinate = require('../../../src/geo/coordinate');
 
 test('Coordinate', async t => {
-  await t.test('#constructor', async t => {
+  await t.test('#constructor', t => {
     const c = new Coordinate(1, 2, 3);
     t.equal(c.column, 1);
     t.equal(c.row, 2);
     t.equal(c.zoom, 3);
   });
 
-  await t.test('#zoomTo', async t => {
+  await t.test('#zoomTo', t => {
     let c = new Coordinate(1, 2, 3);
     c = c.zoomTo(3);
     t.equal(c.column, 1);
@@ -25,7 +25,7 @@ test('Coordinate', async t => {
     t.equal(c.zoom, 5);
   });
 
-  await t.test('#sub', async t => {
+  await t.test('#sub', t => {
     const o = new Coordinate(5, 4, 3);
     const c = new Coordinate(1, 2, 3);
     const r = o.sub(c);
