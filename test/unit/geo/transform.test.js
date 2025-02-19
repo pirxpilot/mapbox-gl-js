@@ -250,6 +250,4 @@ test('transform', async t => {
 
     t.end();
   });
-
-  t.end();
 });

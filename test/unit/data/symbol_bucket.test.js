@@ -82,7 +82,6 @@ test('SymbolBucket', async t => {
   placement.placeLayerTile(bucketB.layers[0], tileB, false, {});
   const b2 = placement.collisionIndex.grid.keysLength();
   t.equal(b2, a2, 'detects collision and does not place feature');
-  t.end();
 });
 
 test('SymbolBucket integer overflow', async t => {
@@ -100,5 +99,4 @@ test('SymbolBucket integer overflow', async t => {
 
   t.ok(console.warn.calledOnce);
   t.ok(console.warn.getCall(0).calledWithMatch(/Too many glyphs being rendered in a tile./));
-  t.end();
 });

@@ -80,6 +80,4 @@ test('Dispatcher', async t => {
     t.equal(actorsRemoved.length, 4);
     t.end();
   });
-
-  t.end();
 });

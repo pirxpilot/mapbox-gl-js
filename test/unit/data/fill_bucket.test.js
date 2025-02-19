@@ -37,8 +37,6 @@ test('FillBucket', async t => {
   bucket.addFeature({}, [[new Point(0, 0), new Point(10, 10), new Point(10, 20)]]);
 
   bucket.addFeature(feature, feature.loadGeometry());
-
-  t.end();
 });
 
 test('FillBucket segmentation', async t => {
@@ -82,6 +80,4 @@ test('FillBucket segmentation', async t => {
     primitiveOffset: 134,
     primitiveLength: 126
   });
-
-  t.end();
 });

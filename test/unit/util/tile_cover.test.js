@@ -85,6 +85,4 @@ test('tileCover', async t => {
 
     t.end();
   });
-
-  t.end();
 });

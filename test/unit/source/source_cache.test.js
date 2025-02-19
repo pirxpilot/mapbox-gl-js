@@ -235,8 +235,6 @@ test('SourceCache#addTile', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('SourceCache#removeTile', async t => {
@@ -314,8 +312,6 @@ test('SourceCache#removeTile', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('SourceCache / Source lifecycle', async t => {
@@ -411,8 +407,6 @@ test('SourceCache / Source lifecycle', async t => {
 
     sourceCache.onAdd();
   });
-
-  t.end();
 });
 
 test('SourceCache#update', async t => {
@@ -779,8 +773,6 @@ test('SourceCache#update', async t => {
     });
     sourceCache.onAdd();
   });
-
-  t.end();
 });
 
 test('SourceCache#_updateRetainedTiles', async t => {
@@ -1246,8 +1238,6 @@ test('SourceCache#_updateRetainedTiles', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('SourceCache#clearTiles', async t => {
@@ -1276,8 +1266,6 @@ test('SourceCache#clearTiles', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('SourceCache#tilesIn', async t => {
@@ -1434,8 +1422,6 @@ test('SourceCache#tilesIn', async t => {
     });
     sourceCache.onAdd();
   });
-
-  t.end();
 });
 
 test('SourceCache#loaded (no errors)', async t => {
@@ -1540,8 +1526,6 @@ test('SourceCache#findLoadedParent', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('SourceCache#reload', async t => {
@@ -1559,8 +1543,6 @@ test('SourceCache#reload', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('SourceCache reloads expiring tiles', async t => {
@@ -1578,8 +1560,6 @@ test('SourceCache reloads expiring tiles', async t => {
 
     sourceCache._addTile(coord);
   });
-
-  t.end();
 });
 
 test('SourceCache sets max cache size correctly', async t => {
@@ -1612,6 +1592,4 @@ test('SourceCache sets max cache size correctly', async t => {
     t.equal(sourceCache._cache.max, 20);
     t.end();
   });
-
-  t.end();
 });

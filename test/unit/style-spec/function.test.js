@@ -28,7 +28,6 @@ test('binary search', async t => {
 
     t.end();
   });
-  t.end();
 });
 
 test('exponential function', async t => {
@@ -584,8 +583,6 @@ test('exponential function', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('interval function', async t => {
@@ -837,8 +834,6 @@ test('interval function', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('categorical function', async t => {
@@ -1065,8 +1060,6 @@ test('categorical function', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('identity function', async t => {
@@ -1281,8 +1274,6 @@ test('identity function', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('unknown function', async t => {
@@ -1299,7 +1290,6 @@ test('unknown function', async t => {
       ),
     /Unknown function type "nonesuch"/
   );
-  t.end();
 });
 
 test('kind', async t => {
@@ -1346,6 +1336,4 @@ test('kind', async t => {
     t.equal(f.kind, 'composite');
     t.end();
   });
-
-  t.end();
 });

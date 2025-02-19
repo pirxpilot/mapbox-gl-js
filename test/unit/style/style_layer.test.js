@@ -10,8 +10,6 @@ test('StyleLayer', async t => {
     t.ok(layer instanceof FillStyleLayer);
     t.end();
   });
-
-  t.end();
 });
 
 test('StyleLayer#setPaintProperty', async t => {
@@ -162,8 +160,6 @@ test('StyleLayer#setPaintProperty', async t => {
     t.deepEqual(layer.getPaintProperty('background-color-transition'), null);
     t.end();
   });
-
-  t.end();
 });
 
 test('StyleLayer#setLayoutProperty', async t => {
@@ -210,8 +206,6 @@ test('StyleLayer#setLayoutProperty', async t => {
     t.equal(layer.getLayoutProperty('text-transform'), undefined);
     t.end();
   });
-
-  t.end();
 });
 
 test('StyleLayer#serialize', async t => {
@@ -270,8 +264,6 @@ test('StyleLayer#serialize', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('StyleLayer#serialize', async t => {
@@ -330,6 +322,4 @@ test('StyleLayer#serialize', async t => {
 
     t.end();
   });
-
-  t.end();
 });

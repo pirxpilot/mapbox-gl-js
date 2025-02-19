@@ -14,7 +14,6 @@ const definitionList = Object.keys(definitions)
 test('v8.json includes all definitions from style-spec', t => {
   const v8List = Object.keys(v8.expression_name.values);
   t.deepEqual(definitionList, v8List.sort());
-  t.end();
 });
 
 test('createPropertyExpression', async t => {
@@ -32,8 +31,6 @@ test('createPropertyExpression', async t => {
     t.equal(value[0].message, '"interpolate" expressions cannot be used with this property');
     t.end();
   });
-
-  t.end();
 });
 
 test('evaluate expression', async t => {
@@ -59,6 +56,4 @@ test('evaluate expression', async t => {
 
     t.end();
   });
-
-  t.end();
 });

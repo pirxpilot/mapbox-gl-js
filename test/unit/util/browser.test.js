@@ -32,6 +32,4 @@ test('browser', async t => {
     t.equal(typeof browser.hardwareConcurrency, 'number');
     t.end();
   });
-
-  t.end();
 });

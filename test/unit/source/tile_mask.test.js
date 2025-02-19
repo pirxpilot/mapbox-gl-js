@@ -187,6 +187,4 @@ test('computeTileMasks', async t => {
     );
     t.end();
   });
-
-  t.end();
 });

@@ -43,8 +43,6 @@ t('declass a style, one class', async t => {
       }
     ]
   });
-
-  t.end();
 });
 
 t('declass a style, missing class ==> noop', async t => {
@@ -71,8 +69,6 @@ t('declass a style, missing class ==> noop', async t => {
       }
     ]
   });
-
-  t.end();
 });
 
 t('declass a style, multiple classes', async t => {
@@ -109,8 +105,6 @@ t('declass a style, multiple classes', async t => {
       }
     ]
   });
-
-  t.end();
 });
 
 t('declassing a style removes paint.CLASS definitions, whether or not they are applied', async t => {
@@ -138,6 +132,4 @@ t('declassing a style removes paint.CLASS definitions, whether or not they are a
       }
     ]
   });
-
-  t.end();
 });

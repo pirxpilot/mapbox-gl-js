@@ -41,8 +41,6 @@ t('deref layers', async t => {
       }
     ]
   });
-
-  t.end();
 });
 
 t('declass style', async t => {
@@ -81,6 +79,4 @@ t('declass style', async t => {
       }
     ]
   });
-
-  t.end();
 });

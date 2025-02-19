@@ -11,5 +11,4 @@ test('mapboxgl', async t => {
     t.ok(typeof mapboxgl.workerCount === 'number');
     t.end();
   });
-  t.end();
 });

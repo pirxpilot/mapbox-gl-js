@@ -19,7 +19,6 @@ t('orders top-level keys', async t => {
     ),
     ['version', 'sources', 'sprite', 'glyphs', 'layers', 'other']
   );
-  t.end();
 });
 
 t('orders layer keys', async t => {
@@ -38,5 +37,4 @@ t('orders layer keys', async t => {
     ),
     ['id', 'type', 'layout', 'paint']
   );
-  t.end();
 });

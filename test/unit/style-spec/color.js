@@ -7,7 +7,6 @@ test('Color.parse', async t => {
   t.deepEqual(Color.parse('invalid'), undefined);
   t.deepEqual(Color.parse(null), undefined);
   t.deepEqual(Color.parse(undefined), undefined);
-  t.end();
 });
 
 test('Color#toString', async t => {
@@ -15,5 +14,4 @@ test('Color#toString', async t => {
   t.equal(purple?.toString(), 'rgba(128,0,128,1)');
   const translucentGreen = Color.parse('rgba(26, 207, 26, .73)');
   t.equal(translucentGreen?.toString(), 'rgba(26,207,26,0.73)');
-  t.end();
 });

@@ -634,6 +634,4 @@ t('diff', async t => {
     [{ command: 'setTransition', args: ['transition'] }],
     'changing transition'
   );
-
-  t.end();
 });

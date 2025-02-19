@@ -88,6 +88,4 @@ test('GridIndex', async t => {
 
     t.end();
   });
-
-  t.end();
 });

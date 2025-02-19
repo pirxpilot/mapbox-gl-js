@@ -24,7 +24,6 @@ t('derefs a ref layer which follows its parent', async t => {
       }
     ]
   );
-  t.end();
 });
 
 t('derefs a ref layer which precedes its parent', async t => {
@@ -50,5 +49,4 @@ t('derefs a ref layer which precedes its parent', async t => {
       }
     ]
   );
-  t.end();
 });

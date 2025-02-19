@@ -204,8 +204,6 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     t.equal(firstInstances[0].crossTileID, 1);
     t.end();
   });
-
-  t.end();
 });
 
 test('CrossTileSymbolIndex.pruneUnusedLayers', async t => {
@@ -227,6 +225,4 @@ test('CrossTileSymbolIndex.pruneUnusedLayers', async t => {
   // remove styleLayer
   index.pruneUnusedLayers([]);
   t.notOk(index.layerIndexes[styleLayer.id]);
-
-  t.end();
 });

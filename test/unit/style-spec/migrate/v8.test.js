@@ -47,7 +47,6 @@ t('split text-font', async t => {
   };
 
   t.deepEqual(migrate(input), output, 'splits text-font');
-  t.end();
 });
 
 t('rename symbol-min-distance', async t => {
@@ -94,7 +93,6 @@ t('rename symbol-min-distance', async t => {
   };
 
   t.deepEqual(migrate(input), output, 'renames symbol-min-distance');
-  t.end();
 });
 
 t('renames urls', async t => {
@@ -133,7 +131,6 @@ t('renames urls', async t => {
   };
 
   t.deepEqual(migrate(input), output, 'renames url and flips coordinates of of video');
-  t.end();
 });
 
 t('not migrate interpolated functions', async t => {
@@ -192,7 +189,6 @@ t('not migrate interpolated functions', async t => {
   };
 
   t.deepEqual(migrate(input), output);
-  t.end();
 });
 
 t('not migrate piecewise-constant functions', async t => {
@@ -249,7 +245,6 @@ t('not migrate piecewise-constant functions', async t => {
   };
 
   t.deepEqual(migrate(input), output);
-  t.end();
 });
 
 t('inline constants', async t => {
@@ -293,7 +288,6 @@ t('inline constants', async t => {
   };
 
   t.deepEqual(migrate(input), output, 'infers opacity type');
-  t.end();
 });
 
 t('migrate and inline fontstack constants', async t => {
@@ -337,7 +331,6 @@ t('migrate and inline fontstack constants', async t => {
   };
 
   t.deepEqual(migrate(input), output, 'infers opacity type');
-  t.end();
 });
 
 t('update fontstack function', async t => {
@@ -390,7 +383,6 @@ t('update fontstack function', async t => {
   };
 
   t.deepEqual(migrate(input), output);
-  t.end();
 });
 
 t('inline and migrate fontstack constant function', async t => {
@@ -446,7 +438,6 @@ t('inline and migrate fontstack constant function', async t => {
   };
 
   t.deepEqual(migrate(input), output);
-  t.end();
 });
 
 t('update fontstack function constant', async t => {
@@ -503,7 +494,6 @@ t('update fontstack function constant', async t => {
   };
 
   t.deepEqual(migrate(input), output);
-  t.end();
 });
 
 t('migrate UNversioned fontstack urls', async t => {
@@ -520,7 +510,6 @@ t('migrate UNversioned fontstack urls', async t => {
   };
 
   t.deepEqual(migrate(input), output);
-  t.end();
 });
 
 t('migrate versioned fontstack urls', async t => {
@@ -537,5 +526,4 @@ t('migrate versioned fontstack urls', async t => {
   };
 
   t.deepEqual(migrate(input), output);
-  t.end();
 });

@@ -492,6 +492,4 @@ test('filter', async t => {
     t.equal(f({ zoom: 0 }, { properties: {} }), true);
     t.end();
   });
-
-  t.end();
 });

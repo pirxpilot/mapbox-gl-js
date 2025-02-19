@@ -53,6 +53,4 @@ test('throttle', async t => {
       t.end();
     }, 10);
   });
-
-  t.end();
 });

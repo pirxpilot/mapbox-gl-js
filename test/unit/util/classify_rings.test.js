@@ -151,8 +151,6 @@ test('classifyRings + maxRings', async t => {
     t.deepEqual(areas, [2763951, 21600, 8298, 4758, 3411]);
     t.end();
   });
-
-  t.end();
 });
 
 function sortRings(geometry) {

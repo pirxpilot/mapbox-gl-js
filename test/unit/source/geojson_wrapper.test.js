@@ -46,6 +46,4 @@ test('geojsonwrapper', async t => {
     t.deepEqual(feature.loadGeometry(), [[{ x: 0, y: 1 }]]);
     t.end();
   });
-
-  t.end();
 });

@@ -60,7 +60,6 @@ test('getIconQuads', async t => {
     ]);
     t.end();
   });
-  t.end();
 });
 
 test('getIconQuads text-fit', async t => {
@@ -353,6 +352,4 @@ test('getIconQuads text-fit', async t => {
     t.deepEqual(quads[0].br, { x: 15, y: 25 });
     t.end();
   });
-
-  t.end();
 });

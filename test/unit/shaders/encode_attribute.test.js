@@ -8,6 +8,4 @@ test('packUint8ToFloat', async t => {
 
   t.equal(packUint8ToFloat(-1, -1), 0);
   t.equal(packUint8ToFloat(256, 256), 65535);
-
-  t.end();
 });

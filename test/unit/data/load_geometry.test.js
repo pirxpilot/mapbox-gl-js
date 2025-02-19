@@ -16,7 +16,6 @@ test('loadGeometry', async t => {
   const scaledGeometry = loadGeometry(feature);
   t.equal(scaledGeometry[0][0].x, originalGeometry[0][0].x * 2, 'scales x coords by 2x');
   t.equal(scaledGeometry[0][0].y, originalGeometry[0][0].y * 2, 'scales y coords by 2x');
-  t.end();
 });
 
 test('loadGeometry extent error', async t => {
@@ -39,6 +38,4 @@ test('loadGeometry extent error', async t => {
 
   // Put it back
   console.warn = warn;
-
-  t.end();
 });

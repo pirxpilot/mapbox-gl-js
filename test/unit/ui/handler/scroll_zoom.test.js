@@ -221,6 +221,4 @@ test('ScrollZoomHandler', async t => {
 
     clock.restore();
   });
-
-  t.end();
 });

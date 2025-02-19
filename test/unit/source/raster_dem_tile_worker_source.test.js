@@ -23,8 +23,6 @@ test('loadTile', async t => {
       }
     );
   });
-
-  t.end();
 });
 
 test('removeTile', async t => {
@@ -43,6 +41,4 @@ test('removeTile', async t => {
     t.deepEqual(source.loaded, {});
     t.end();
   });
-
-  t.end();
 });

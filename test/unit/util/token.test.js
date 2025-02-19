@@ -36,8 +36,6 @@ test('resolveToken', async t => {
   t.equal(resolveTokens({ 'dashed-property': 'dashed' }, '{dashed-property}'), 'dashed');
   t.equal(resolveTokens({ HØYDE: 150 }, '{HØYDE} m'), '150 m');
   t.equal(resolveTokens({ '$special:characters;': 'mapbox' }, '{$special:characters;}'), 'mapbox');
-
-  t.end();
 });
 
 test('resolveToken with language', async t => {
@@ -57,6 +55,4 @@ test('resolveToken with language', async t => {
   // ignores language for other properties
   t.equal('100', resolveTokens(properties, '{a}'));
   t.equal('100', resolveTokens(properties, '{a}', 'pl'));
-
-  t.end();
 });

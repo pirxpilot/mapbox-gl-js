@@ -79,8 +79,6 @@ test('reloadTile', async t => {
       });
     });
   });
-
-  t.end();
 });
 
 test('resourceTiming', async t => {
@@ -109,8 +107,6 @@ test('resourceTiming', async t => {
       t.end();
     });
   });
-
-  t.end();
 });
 
 test('loadData', async t => {
@@ -195,6 +191,4 @@ test('loadData', async t => {
       t.notOk(err);
     });
   });
-
-  t.end();
 });

@@ -65,8 +65,6 @@ test('CanonicalTileID', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('OverscaledTileID', async t => {
@@ -116,6 +114,4 @@ test('OverscaledTileID', async t => {
     });
     t.end();
   });
-
-  t.end();
 });

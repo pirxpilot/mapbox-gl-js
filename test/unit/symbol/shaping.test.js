@@ -212,6 +212,4 @@ test('shaping', async t => {
     WritingMode.horizontal
   );
   t.same(shaped.positionedGlyphs, shaped2.positionedGlyphs);
-
-  t.end();
 });

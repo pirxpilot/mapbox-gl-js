@@ -78,8 +78,6 @@ test('GeoJSONSource#setData', async t => {
     source.on('dataloading', t.end);
     source.load();
   });
-
-  t.end();
 });
 
 test('GeoJSONSource#onRemove', async t => {
@@ -101,8 +99,6 @@ test('GeoJSONSource#onRemove', async t => {
     );
     source.onRemove();
   });
-
-  t.end();
 });
 
 test('GeoJSONSource#update', async t => {
@@ -216,8 +212,6 @@ test('GeoJSONSource#update', async t => {
 
     source.load();
   });
-
-  t.end();
 });
 
 test('GeoJSONSource#serialize', async t => {
@@ -261,6 +255,4 @@ test('GeoJSONSource#serialize', async t => {
     });
     t.end();
   });
-
-  t.end();
 });

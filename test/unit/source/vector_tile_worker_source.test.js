@@ -30,7 +30,6 @@ test('VectorTileWorkerSource#abortTile aborts pending request', async t => {
   );
 
   t.deepEqual(source.loading, undefined);
-  t.end();
 });
 
 test('VectorTileWorkerSource#removeTile removes loaded tile', async t => {
@@ -52,7 +51,6 @@ test('VectorTileWorkerSource#removeTile removes loaded tile', async t => {
   );
 
   t.deepEqual(source.loaded, {});
-  t.end();
 });
 
 test('VectorTileWorkerSource#reloadTile reloads a previously-loaded tile', async t => {
@@ -72,8 +70,6 @@ test('VectorTileWorkerSource#reloadTile reloads a previously-loaded tile', async
 
   parse.firstCall.args[4]();
   t.equal(callback.callCount, 1);
-
-  t.end();
 });
 
 test('VectorTileWorkerSource#reloadTile queues a reload when parsing is in progress', async t => {
@@ -104,8 +100,6 @@ test('VectorTileWorkerSource#reloadTile queues a reload when parsing is in progr
   parse.secondCall.args[4]();
   t.equal(callback1.callCount, 1);
   t.equal(callback2.callCount, 1);
-
-  t.end();
 });
 
 test('VectorTileWorkerSource#reloadTile handles multiple pending reloads', async t => {
@@ -152,6 +146,4 @@ test('VectorTileWorkerSource#reloadTile handles multiple pending reloads', async
   t.equal(callback1.callCount, 1);
   t.equal(callback2.callCount, 1);
   t.equal(callback3.callCount, 1);
-
-  t.end();
 });

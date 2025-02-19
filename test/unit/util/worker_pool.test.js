@@ -48,6 +48,4 @@ test('WorkerPool', async t => {
 
     t.end();
   });
-
-  t.end();
 });

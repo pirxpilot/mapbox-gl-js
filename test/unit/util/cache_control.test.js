@@ -27,6 +27,4 @@ test('cache_control', async t => {
 
     t.end();
   });
-
-  t.end();
 });

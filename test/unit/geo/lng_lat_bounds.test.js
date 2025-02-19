@@ -180,6 +180,4 @@ test('LngLatBounds', async t => {
     t.equal(nullBounds.isEmpty(), false);
     t.end();
   });
-
-  t.end();
 });

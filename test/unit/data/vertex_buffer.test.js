@@ -50,6 +50,4 @@ test('VertexBuffer', async t => {
     ]);
     t.end();
   });
-
-  t.end();
 });

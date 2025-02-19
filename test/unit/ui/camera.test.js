@@ -1996,6 +1996,4 @@ test('camera', async t => {
 
     t.end();
   });
-
-  t.end();
 });

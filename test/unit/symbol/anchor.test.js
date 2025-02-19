@@ -14,6 +14,4 @@ test('Anchor', async t => {
     t.deepEqual(a.clone(), a);
     t.end();
   });
-
-  t.end();
 });

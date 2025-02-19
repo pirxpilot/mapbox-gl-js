@@ -126,6 +126,4 @@ test('convertFunction', async t => {
 
     t.end();
   });
-
-  t.end();
 });

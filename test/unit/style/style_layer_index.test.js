@@ -19,8 +19,6 @@ test('StyleLayerIndex#replace', async t => {
 
   index.replace([]);
   t.deepEqual(index.familiesBySource, {});
-
-  t.end();
 });
 
 test('StyleLayerIndex#update', async t => {
@@ -48,8 +46,6 @@ test('StyleLayerIndex#update', async t => {
   t.equal(families[1][0].source, 'bar');
   t.equal(families[1][1].getPaintProperty('circle-color'), 'yellow');
   t.equal(families[1][1].source, 'bar');
-
-  t.end();
 });
 
 test('StyleLayerIndex#familiesBySource', async t => {
@@ -86,8 +82,6 @@ test('StyleLayerIndex#familiesBySource', async t => {
       _geojsonTileLayer: [['6']]
     }
   });
-
-  t.end();
 });
 
 test('StyleLayerIndex groups families even if layout key order differs', async t => {
@@ -110,6 +104,4 @@ test('StyleLayerIndex groups families even if layout key order differs', async t
 
   const families = index.familiesBySource['source']['layer'];
   t.equal(families[0].length, 2);
-
-  t.end();
 });

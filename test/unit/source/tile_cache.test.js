@@ -32,7 +32,6 @@ test('TileCache', async t => {
   t.equal(cache.getAndRemove(idA), null, '.getAndRemove()');
   t.equal(cache.has(idA), false, '.has()');
   keysExpected(t, cache, []);
-  t.end();
 });
 
 test('TileCache - getWithoutRemoving', async t => {
@@ -43,7 +42,6 @@ test('TileCache - getWithoutRemoving', async t => {
   t.equal(cache.get(idA), tileA, '.get()');
   keysExpected(t, cache, [idA]);
   t.equal(cache.get(idA), tileA, '.get()');
-  t.end();
 });
 
 test('TileCache - duplicate add', async t => {
@@ -59,7 +57,6 @@ test('TileCache - duplicate add', async t => {
   t.equal(cache.getAndRemove(idA), tileA);
   t.ok(cache.has(idA));
   t.equal(cache.getAndRemove(idA), tileA2);
-  t.end();
 });
 
 test('TileCache - expiry', async t => {
@@ -94,8 +91,6 @@ test('TileCache - remove', async t => {
   t.notOk(cache.has(idB));
 
   t.ok(cache.remove(idB));
-
-  t.end();
 });
 
 test('TileCache - overflow', async t => {
@@ -107,7 +102,6 @@ test('TileCache - overflow', async t => {
 
   t.ok(cache.has(idB));
   t.notOk(cache.has(idA));
-  t.end();
 });
 
 test('TileCache#reset', async t => {
@@ -120,7 +114,6 @@ test('TileCache#reset', async t => {
   t.equal(cache.reset(), cache);
   t.equal(cache.has(idA), false);
   t.ok(called);
-  t.end();
 });
 
 test('TileCache#setMaxSize', async t => {
@@ -138,5 +131,4 @@ test('TileCache#setMaxSize', async t => {
   t.equal(numRemoved, 2);
   cache.add(idD, tileD);
   t.equal(numRemoved, 3);
-  t.end();
 });

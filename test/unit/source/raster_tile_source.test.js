@@ -66,6 +66,4 @@ test('RasterTileSource', async t => {
       }
     });
   });
-
-  t.end();
 });

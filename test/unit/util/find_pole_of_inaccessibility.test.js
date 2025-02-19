@@ -7,6 +7,4 @@ test('polygon_poi', async t => {
   const closedRingHole = [new Point(2, 1), new Point(6, 6), new Point(6, 1), new Point(2, 1)];
   t.deepEqual(findPoleOfInaccessibility([closedRing], 0.1), new Point(7.0703125, 2.9296875));
   t.deepEqual(findPoleOfInaccessibility([closedRing, closedRingHole], 0.1), new Point(7.96875, 2.03125));
-
-  t.end();
 });

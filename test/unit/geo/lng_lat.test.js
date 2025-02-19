@@ -81,6 +81,4 @@ test('LngLat', async t => {
     ]);
     t.end();
   });
-
-  t.end();
 });

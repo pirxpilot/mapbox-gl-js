@@ -59,8 +59,6 @@ test('LineBucket', async t => {
   bucket.addLine([new Point(0, 0), new Point(10, 10), new Point(10, 20), new Point(0, 0)], polygon);
 
   bucket.addFeature(feature, feature.loadGeometry());
-
-  t.end();
 });
 
 test('LineBucket segmentation', async t => {
@@ -103,6 +101,4 @@ test('LineBucket segmentation', async t => {
   ]);
 
   t.equal(console.warn.callCount, 1);
-
-  t.end();
 });

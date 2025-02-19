@@ -32,7 +32,6 @@ test('mergeLines merges lines with the same text', async t => {
       ['a', 5, 6, 7, 8, 9]
     ])
   );
-  t.end();
 });
 
 test('mergeLines handles merge from both ends', async t => {
@@ -46,7 +45,6 @@ test('mergeLines handles merge from both ends', async t => {
     ),
     makeFeatures([['a', 0, 1, 2, 3, 4, 5, 6]])
   );
-  t.end();
 });
 
 test('mergeLines handles circular lines', async t => {
@@ -60,5 +58,4 @@ test('mergeLines handles circular lines', async t => {
     ),
     makeFeatures([['a', 0, 1, 2, 3, 4, 0]])
   );
-  t.end();
 });

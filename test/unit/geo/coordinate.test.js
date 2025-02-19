@@ -41,6 +41,4 @@ test('Coordinate', async t => {
     t.equal(r2.zoom, 3);
     t.end();
   });
-
-  t.end();
 });

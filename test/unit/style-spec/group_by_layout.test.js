@@ -13,7 +13,6 @@ t('group layers whose ref properties are identical', async t => {
   t.deepEqual(group([a, b]), [[a, b]]);
   t.equal(group([a, b])[0][0], a);
   t.equal(group([a, b])[0][1], b);
-  t.end();
 });
 
 t('group does not group unrelated layers', async t => {
@@ -43,7 +42,6 @@ t('group does not group unrelated layers', async t => {
       ]
     ]
   );
-  t.end();
 });
 
 t('group works even for differing layout key orders', async t => {
@@ -75,5 +73,4 @@ t('group works even for differing layout key orders', async t => {
       ]
     ]
   );
-  t.end();
 });

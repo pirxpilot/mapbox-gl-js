@@ -81,8 +81,6 @@ test('StructArray', async t => {
 
     t.end();
   });
-
-  t.end();
 });
 
 test('FeatureIndexArray', async t => {
@@ -118,6 +116,4 @@ test('FeatureIndexArray', async t => {
 
     t.end();
   });
-
-  t.end();
 });
