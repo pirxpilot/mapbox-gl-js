@@ -109,7 +109,7 @@ function serialize(input, transferables) {
     return view;
   }
 
-  if (input instanceof window.ImageData) {
+  if (input instanceof ImageData) {
     if (transferables) {
       transferables.push(input.data.buffer);
     }
@@ -186,7 +186,7 @@ function deserialize(input) {
     input instanceof RegExp ||
     input instanceof ArrayBuffer ||
     ArrayBuffer.isView(input) ||
-    input instanceof window.ImageData
+    input instanceof ImageData
   ) {
     return input;
   }

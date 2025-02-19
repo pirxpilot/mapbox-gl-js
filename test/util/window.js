@@ -41,11 +41,14 @@ function create() {
   window.URL.createObjectURL ??= obj => (obj?.type === 'image/png' ? createPngUrl(obj) : URL.createObjectURL(obj));
   window.URL.revokeObjectURL ??= URL.revokeObjectURL;
 
-  window.ImageData ??=
+  globalThis.ImageData ??=
     canvas.ImageData ??
     function () {
       return false;
     };
+  globalThis.HTMLImageElement ??= window.HTMLImageElement;
+  globalThis.HTMLCanvasElement ??= window.HTMLCanvasElement;
+  globalThis.HTMLVideoElement ??= window.HTMLVideoElement;
   window.ImageBitmap ??= function () {
     return false;
   };
