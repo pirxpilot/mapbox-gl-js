@@ -25,10 +25,10 @@ class Texture {
       }
 
       if (
-        image instanceof window.HTMLImageElement ||
-        image instanceof window.HTMLCanvasElement ||
-        image instanceof window.HTMLVideoElement ||
-        image instanceof window.ImageData
+        image instanceof HTMLImageElement ||
+        image instanceof HTMLCanvasElement ||
+        image instanceof HTMLVideoElement ||
+        image instanceof ImageData
       ) {
         gl.texImage2D(gl.TEXTURE_2D, 0, this.format, this.format, gl.UNSIGNED_BYTE, image);
       } else {
@@ -36,10 +36,10 @@ class Texture {
       }
     } else {
       if (
-        image instanceof window.HTMLImageElement ||
-        image instanceof window.HTMLCanvasElement ||
-        image instanceof window.HTMLVideoElement ||
-        image instanceof window.ImageData
+        image instanceof HTMLImageElement ||
+        image instanceof HTMLCanvasElement ||
+        image instanceof HTMLVideoElement ||
+        image instanceof ImageData
       ) {
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, image);
       } else {

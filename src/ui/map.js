@@ -855,7 +855,7 @@ class Map extends Camera {
    * @param options.sdf Whether the image should be interpreted as an SDF image
    */
   addImage(id, image, { pixelRatio = 1, sdf = false } = {}) {
-    if (image instanceof window.HTMLImageElement) {
+    if (image instanceof HTMLImageElement) {
       const { width, height, data } = browser.getImageData(image);
       this.style.addImage(id, { data: new RGBAImage({ width, height }, data), pixelRatio, sdf });
     } else if (image.width === undefined || image.height === undefined) {
