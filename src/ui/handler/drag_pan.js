@@ -89,8 +89,8 @@ function dragPanHandler(map) {
     // window-level event listeners give us the best shot at capturing events that
     // fall outside the map canvas element. Use `{capture: true}` for the move event
     // to prevent map move events from being fired during a drag.
-    DOM.addEventListener(window.document, 'mousemove', onMove, { capture: true });
-    DOM.addEventListener(window.document, 'mouseup', onMouseUp);
+    window.document.addEventListener('mousemove', onMove, { capture: true });
+    window.document.addEventListener('mouseup', onMouseUp);
 
     start(e);
   }
@@ -104,8 +104,8 @@ function dragPanHandler(map) {
     // window-level event listeners give us the best shot at capturing events that
     // fall outside the map canvas element. Use `{capture: true}` for the move event
     // to prevent map move events from being fired during a drag.
-    DOM.addEventListener(window.document, 'touchmove', onMove, { capture: true, passive: false });
-    DOM.addEventListener(window.document, 'touchend', onTouchEnd);
+    window.document.addEventListener('touchmove', onMove, { capture: true, passive: false });
+    window.document.addEventListener('touchend', onTouchEnd);
 
     start(e);
   }
@@ -208,11 +208,11 @@ function dragPanHandler(map) {
   }
 
   function unbind() {
-    DOM.removeEventListener(window.document, 'touchmove', onMove, { capture: true, passive: false });
-    DOM.removeEventListener(window.document, 'touchend', onTouchEnd);
-    DOM.removeEventListener(window.document, 'mousemove', onMove, { capture: true });
-    DOM.removeEventListener(window.document, 'mouseup', onMouseUp);
-    DOM.removeEventListener(window, 'blur', onBlur);
+    window.document.removeEventListener('touchmove', onMove, { capture: true, passive: false });
+    window.document.removeEventListener('touchend', onTouchEnd);
+    window.document.removeEventListener('mousemove', onMove, { capture: true });
+    window.document.removeEventListener('mouseup', onMouseUp);
+    window.removeEventListener('blur', onBlur);
   }
 
   function deactivate() {

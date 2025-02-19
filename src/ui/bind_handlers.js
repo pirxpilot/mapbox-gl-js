@@ -31,26 +31,26 @@ module.exports = function bindHandlers(map, options) {
     }
   });
 
-  DOM.addEventListener(el, 'mouseout', onMouseOut);
-  DOM.addEventListener(el, 'mousedown', onMouseDown);
-  DOM.addEventListener(el, 'mouseup', onMouseUp);
-  DOM.addEventListener(el, 'mousemove', onMouseMove);
-  DOM.addEventListener(el, 'mouseover', onMouseOver);
+  el.addEventListener('mouseout', onMouseOut);
+  el.addEventListener('mousedown', onMouseDown);
+  el.addEventListener('mouseup', onMouseUp);
+  el.addEventListener('mousemove', onMouseMove);
+  el.addEventListener('mouseover', onMouseOver);
 
   // Bind touchstart and touchmove with passive: false because, even though
   // they only fire a map events and therefore could theoretically be
   // passive, binding with passive: true causes iOS not to respect
   // e.preventDefault() in _other_ handlers, even if they are non-passive
   // (see https://bugs.webkit.org/show_bug.cgi?id=184251)
-  DOM.addEventListener(el, 'touchstart', onTouchStart, { passive: false });
-  DOM.addEventListener(el, 'touchmove', onTouchMove, { passive: false });
+  el.addEventListener('touchstart', onTouchStart, { passive: false });
+  el.addEventListener('touchmove', onTouchMove, { passive: false });
 
-  DOM.addEventListener(el, 'touchend', onTouchEnd);
-  DOM.addEventListener(el, 'touchcancel', onTouchCancel);
-  DOM.addEventListener(el, 'click', onClick);
-  DOM.addEventListener(el, 'dblclick', onDblClick);
-  DOM.addEventListener(el, 'contextmenu', onContextMenu);
-  DOM.addEventListener(el, 'wheel', onWheel, { passive: false });
+  el.addEventListener('touchend', onTouchEnd);
+  el.addEventListener('touchcancel', onTouchCancel);
+  el.addEventListener('click', onClick);
+  el.addEventListener('dblclick', onDblClick);
+  el.addEventListener('contextmenu', onContextMenu);
+  el.addEventListener('wheel', onWheel, { passive: false });
 
   function onMouseDown(e) {
     mouseDown = true;

@@ -51,37 +51,6 @@ DOM.enableDrag = function () {
   }
 };
 
-// Feature detection for {passive: false} support in add/removeEventListener.
-let passiveSupported = false;
-
-try {
-  const options = Object.defineProperty({}, 'passive', {
-    get: function () {
-      passiveSupported = true;
-    }
-  });
-  window.addEventListener('test', options, options);
-  window.removeEventListener('test', options, options);
-} catch (err) {
-  passiveSupported = false;
-}
-
-DOM.addEventListener = function (target, type, callback, options = {}) {
-  if ('passive' in options && passiveSupported) {
-    target.addEventListener(type, callback, options);
-  } else {
-    target.addEventListener(type, callback, options.capture);
-  }
-};
-
-DOM.removeEventListener = function (target, type, callback, options = {}) {
-  if ('passive' in options && passiveSupported) {
-    target.removeEventListener(type, callback, options);
-  } else {
-    target.removeEventListener(type, callback, options.capture);
-  }
-};
-
 // Suppress the next click, but only if it's immediate.
 const suppressClick = function (e) {
   e.preventDefault();
@@ -130,10 +99,4 @@ DOM.mouseButton = function (e) {
     return 0;
   }
   return e.button;
-};
-
-DOM.remove = function (node) {
-  if (node.parentNode) {
-    node.parentNode.removeChild(node);
-  }
 };
