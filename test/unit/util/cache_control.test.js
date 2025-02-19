@@ -21,8 +21,6 @@ test('cache_control', async t => {
       );
 
       t.deepEqual(cacheControl.parse('max-age=null'), {}, 'does not return invalid max-age header');
-
-      t.end();
     });
   });
 });

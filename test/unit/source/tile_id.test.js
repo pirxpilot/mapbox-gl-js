@@ -36,7 +36,6 @@ test('CanonicalTileID', async t => {
   await t.test('.url', async t => {
     await t.test('replaces {z}/{x}/{y}', async t => {
       t.equal(new CanonicalTileID(1, 0, 0).url(['{z}/{x}/{y}.json']), '1/0/0.json');
-      t.end();
     });
 
     await t.test('replaces {quadkey}', async t => {
@@ -48,8 +47,6 @@ test('CanonicalTileID', async t => {
       // Test case confirmed by quadkeytools package
       // https://bitbucket.org/steele/quadkeytools/src/master/test/quadkey.js?fileviewer=file-view-default#quadkey.js-57
       t.equal(new CanonicalTileID(6, 29, 3).url(['quadkey={quadkey}']), 'quadkey=011123');
-
-      t.end();
     });
 
     await t.test('replaces {bbox-epsg-3857}', async t => {
@@ -57,7 +54,6 @@ test('CanonicalTileID', async t => {
         new CanonicalTileID(1, 0, 0).url(['bbox={bbox-epsg-3857}']),
         'bbox=-20037508.342789244,0,0,20037508.342789244'
       );
-      t.end();
     });
   });
 });
@@ -82,7 +78,6 @@ test('OverscaledTileID', async t => {
   await t.test('.toString', async t => {
     await t.test('calculates strings', async t => {
       t.deepEqual(new OverscaledTileID(1, 0, 1, 1, 1).toString(), '1/1/1');
-      t.end();
     });
   });
 
@@ -101,7 +96,6 @@ test('OverscaledTileID', async t => {
       t.deepEqual(new OverscaledTileID(2, 0, 2, 0, 0).scaledTo(0), new OverscaledTileID(0, 0, 0, 0, 0));
       t.deepEqual(new OverscaledTileID(1, 0, 1, 0, 0).scaledTo(0), new OverscaledTileID(0, 0, 0, 0, 0));
       t.deepEqual(new OverscaledTileID(1, 0, 0, 0, 0).scaledTo(0), new OverscaledTileID(0, 0, 0, 0, 0));
-      t.end();
     });
   });
 });

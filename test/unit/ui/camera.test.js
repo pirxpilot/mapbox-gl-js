@@ -36,7 +36,6 @@ test('camera', async t => {
     await t.test('sets center', t => {
       camera.jumpTo({ center: [1, 2] });
       t.deepEqual(camera.getCenter(), { lng: 1, lat: 2 });
-      t.end();
     });
 
     await t.test('throws on invalid center argument', t => {
@@ -47,49 +46,41 @@ test('camera', async t => {
         Error,
         'throws with non-LngLatLike argument'
       );
-      t.end();
     });
 
     await t.test('keeps current center if not specified', t => {
       camera.jumpTo({});
       t.deepEqual(camera.getCenter(), { lng: 1, lat: 2 });
-      t.end();
     });
 
     await t.test('sets zoom', t => {
       camera.jumpTo({ zoom: 3 });
       t.deepEqual(camera.getZoom(), 3);
-      t.end();
     });
 
     await t.test('keeps current zoom if not specified', t => {
       camera.jumpTo({});
       t.deepEqual(camera.getZoom(), 3);
-      t.end();
     });
 
     await t.test('sets bearing', t => {
       camera.jumpTo({ bearing: 4 });
       t.deepEqual(camera.getBearing(), 4);
-      t.end();
     });
 
     await t.test('keeps current bearing if not specified', t => {
       camera.jumpTo({});
       t.deepEqual(camera.getBearing(), 4);
-      t.end();
     });
 
     await t.test('sets pitch', t => {
       camera.jumpTo({ pitch: 45 });
       t.deepEqual(camera.getPitch(), 45);
-      t.end();
     });
 
     await t.test('keeps current pitch if not specified', t => {
       camera.jumpTo({});
       t.deepEqual(camera.getPitch(), 45);
-      t.end();
     });
 
     await t.test('sets multiple properties', t => {
@@ -103,7 +94,6 @@ test('camera', async t => {
       t.deepEqual(camera.getZoom(), 10);
       t.deepEqual(camera.getBearing(), 180);
       t.deepEqual(camera.getPitch(), 60);
-      t.end();
     });
 
     await t.test('emits move events, preserving eventData', t => {
@@ -127,7 +117,6 @@ test('camera', async t => {
       t.equal(started, 'ok');
       t.equal(moved, 'ok');
       t.equal(ended, 'ok');
-      t.end();
     });
 
     await t.test('emits zoom events, preserving eventData', t => {
@@ -151,7 +140,6 @@ test('camera', async t => {
       t.equal(started, 'ok');
       t.equal(zoomed, 'ok');
       t.equal(ended, 'ok');
-      t.end();
     });
 
     await t.test('emits rotate events, preserving eventData', t => {
@@ -175,7 +163,6 @@ test('camera', async t => {
       t.equal(started, 'ok');
       t.equal(rotated, 'ok');
       t.equal(ended, 'ok');
-      t.end();
     });
 
     await t.test('emits pitch events, preserving eventData', t => {
@@ -199,7 +186,6 @@ test('camera', async t => {
       t.equal(started, 'ok');
       t.equal(pitched, 'ok');
       t.equal(ended, 'ok');
-      t.end();
     });
 
     await t.test('cancels in-progress easing', t => {
@@ -207,7 +193,6 @@ test('camera', async t => {
       t.ok(camera.isEasing());
       camera.jumpTo({ center: [1, 2] });
       t.ok(!camera.isEasing());
-      t.end();
     });
   });
 
@@ -218,7 +203,6 @@ test('camera', async t => {
     await t.test('sets center', t => {
       camera.setCenter([1, 2]);
       t.deepEqual(camera.getCenter(), { lng: 1, lat: 2 });
-      t.end();
     });
 
     await t.test('throws on invalid center argument', t => {
@@ -229,7 +213,6 @@ test('camera', async t => {
         Error,
         'throws with non-LngLatLike argument'
       );
-      t.end();
     });
 
     await t.test('emits move events, preserving eventData', t => {
@@ -253,7 +236,6 @@ test('camera', async t => {
       t.equal(started, 'ok');
       t.equal(moved, 'ok');
       t.equal(ended, 'ok');
-      t.end();
     });
 
     await t.test('cancels in-progress easing', t => {
@@ -261,7 +243,6 @@ test('camera', async t => {
       t.ok(camera.isEasing());
       camera.setCenter([1, 2]);
       t.ok(!camera.isEasing());
-      t.end();
     });
   });
 
@@ -271,7 +252,6 @@ test('camera', async t => {
     await t.test('sets zoom', t => {
       camera.setZoom(3);
       t.deepEqual(camera.getZoom(), 3);
-      t.end();
     });
 
     await t.test('emits move and zoom events, preserving eventData', t => {
@@ -310,7 +290,6 @@ test('camera', async t => {
       t.equal(zoomstarted, 'ok');
       t.equal(zoomed, 'ok');
       t.equal(zoomended, 'ok');
-      t.end();
     });
 
     await t.test('cancels in-progress easing', t => {
@@ -318,7 +297,6 @@ test('camera', async t => {
       t.ok(camera.isEasing());
       camera.setZoom(5);
       t.ok(!camera.isEasing());
-      t.end();
     });
   });
 
@@ -328,7 +306,6 @@ test('camera', async t => {
     await t.test('sets bearing', t => {
       camera.setBearing(4);
       t.deepEqual(camera.getBearing(), 4);
-      t.end();
     });
 
     await t.test('emits move and rotate events, preserving eventData', t => {
@@ -367,7 +344,6 @@ test('camera', async t => {
       t.equal(rotatestarted, 'ok');
       t.equal(rotated, 'ok');
       t.equal(rotateended, 'ok');
-      t.end();
     });
 
     await t.test('cancels in-progress easing', t => {
@@ -375,7 +351,6 @@ test('camera', async t => {
       t.ok(camera.isEasing());
       camera.setBearing(6);
       t.ok(!camera.isEasing());
-      t.end();
     });
   });
 
@@ -384,14 +359,12 @@ test('camera', async t => {
       const camera = createCamera();
       camera.panBy([100, 0], { duration: 0 });
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 70.3125, lat: 0 });
-      t.end();
     });
 
     await t.test('pans relative to viewport on a rotated camera', t => {
       const camera = createCamera({ bearing: 180 });
       camera.panBy([100, 0], { duration: 0 });
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: -70.3125, lat: 0 });
-      t.end();
     });
 
     await t.test('emits move events, preserving eventData', t => {
@@ -439,7 +412,6 @@ test('camera', async t => {
       const camera = createCamera();
       camera.panTo([100, 0], { duration: 0 });
       t.deepEqual(camera.getCenter(), { lng: 100, lat: 0 });
-      t.end();
     });
 
     await t.test('throws on invalid center argument', t => {
@@ -451,21 +423,18 @@ test('camera', async t => {
         Error,
         'throws with non-LngLatLike argument'
       );
-      t.end();
     });
 
     await t.test('pans with specified offset', t => {
       const camera = createCamera();
       camera.panTo([100, 0], { offset: [100, 0], duration: 0 });
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 29.6875, lat: 0 });
-      t.end();
     });
 
     await t.test('pans with specified offset relative to viewport on a rotated camera', t => {
       const camera = createCamera({ bearing: 180 });
       camera.panTo([100, 0], { offset: [100, 0], duration: 0 });
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 170.3125, lat: 0 });
-      t.end();
     });
 
     await t.test('emits move events, preserving eventData', t => {
@@ -513,7 +482,6 @@ test('camera', async t => {
       const camera = createCamera();
       camera.zoomTo(3.2, { duration: 0 });
       t.equal(camera.getZoom(), 3.2);
-      t.end();
     });
 
     await t.test('zooms around specified location', t => {
@@ -521,7 +489,6 @@ test('camera', async t => {
       camera.zoomTo(3.2, { around: [5, 0], duration: 0 });
       t.equal(camera.getZoom(), 3.2);
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: 4.455905897939886, lat: 0 }));
-      t.end();
     });
 
     await t.test('zooms with specified offset', t => {
@@ -529,7 +496,6 @@ test('camera', async t => {
       camera.zoomTo(3.2, { offset: [100, 0], duration: 0 });
       t.equal(camera.getZoom(), 3.2);
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: 62.66117668978015, lat: 0 }));
-      t.end();
     });
 
     await t.test('zooms with specified offset relative to viewport on a rotated camera', t => {
@@ -537,7 +503,6 @@ test('camera', async t => {
       camera.zoomTo(3.2, { offset: [100, 0], duration: 0 });
       t.equal(camera.getZoom(), 3.2);
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: -62.66117668978012, lat: 0 }));
-      t.end();
     });
 
     await t.test('emits move and zoom events, preserving eventData', { plan: 6 }, (t, done) => {
@@ -593,7 +558,6 @@ test('camera', async t => {
       const camera = createCamera();
       camera.rotateTo(90, { duration: 0 });
       t.equal(camera.getBearing(), 90);
-      t.end();
     });
 
     await t.test('rotates around specified location', t => {
@@ -601,7 +565,6 @@ test('camera', async t => {
       camera.rotateTo(90, { around: [5, 0], duration: 0 });
       t.equal(camera.getBearing(), 90);
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: 4.999999999999972, lat: 4.993665859353271 }));
-      t.end();
     });
 
     await t.test('rotates around specified location, constrained to fit the view', t => {
@@ -612,7 +575,6 @@ test('camera', async t => {
         fixedLngLat(camera.getCenter()),
         fixedLngLat({ lng: 4.999999999999972, lat: 0.000014144426558004852 })
       );
-      t.end();
     });
 
     await t.test('rotates with specified offset', t => {
@@ -620,7 +582,6 @@ test('camera', async t => {
       camera.rotateTo(90, { offset: [200, 0], duration: 0 });
       t.equal(camera.getBearing(), 90);
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: 70.3125, lat: 57.3265212252 }));
-      t.end();
     });
 
     await t.test('rotates with specified offset, constrained to fit the view', t => {
@@ -628,7 +589,6 @@ test('camera', async t => {
       camera.rotateTo(90, { offset: [100, 0], duration: 0 });
       t.equal(camera.getBearing(), 90);
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: 70.3125, lat: 0.000014144426558004852 }));
-      t.end();
     });
 
     await t.test('rotates with specified offset relative to viewport on a rotated camera', t => {
@@ -636,7 +596,6 @@ test('camera', async t => {
       camera.rotateTo(90, { offset: [200, 0], duration: 0 });
       t.equal(camera.getBearing(), 90);
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: -70.3125, lat: 57.3265212252 }));
-      t.end();
     });
 
     await t.test('emits move and rotate events, preserving eventData', { plan: 6 }, (t, done) => {
@@ -692,28 +651,24 @@ test('camera', async t => {
       const camera = createCamera();
       camera.easeTo({ center: [100, 0], duration: 0 });
       t.deepEqual(camera.getCenter(), { lng: 100, lat: 0 });
-      t.end();
     });
 
     await t.test('zooms to specified level', t => {
       const camera = createCamera();
       camera.easeTo({ zoom: 3.2, duration: 0 });
       t.equal(camera.getZoom(), 3.2);
-      t.end();
     });
 
     await t.test('rotates to specified bearing', t => {
       const camera = createCamera();
       camera.easeTo({ bearing: 90, duration: 0 });
       t.equal(camera.getBearing(), 90);
-      t.end();
     });
 
     await t.test('pitches to specified pitch', t => {
       const camera = createCamera();
       camera.easeTo({ pitch: 45, duration: 0 });
       t.equal(camera.getPitch(), 45);
-      t.end();
     });
 
     await t.test('pans and zooms', t => {
@@ -721,7 +676,6 @@ test('camera', async t => {
       camera.easeTo({ center: [100, 0], zoom: 3.2, duration: 0 });
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: 100, lat: 0 }));
       t.equal(camera.getZoom(), 3.2);
-      t.end();
     });
 
     await t.test('zooms around a point', t => {
@@ -729,7 +683,6 @@ test('camera', async t => {
       camera.easeTo({ around: [100, 0], zoom: 3, duration: 0 });
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: 87.5, lat: 0 }));
       t.equal(camera.getZoom(), 3);
-      t.end();
     });
 
     await t.test('pans and rotates', t => {
@@ -737,7 +690,6 @@ test('camera', async t => {
       camera.easeTo({ center: [100, 0], bearing: 90, duration: 0 });
       t.deepEqual(camera.getCenter(), { lng: 100, lat: 0 });
       t.equal(camera.getBearing(), 90);
-      t.end();
     });
 
     await t.test('zooms and rotates', t => {
@@ -745,7 +697,6 @@ test('camera', async t => {
       camera.easeTo({ zoom: 3.2, bearing: 90, duration: 0 });
       t.equal(camera.getZoom(), 3.2);
       t.equal(camera.getBearing(), 90);
-      t.end();
     });
 
     await t.test('pans, zooms, and rotates', t => {
@@ -754,7 +705,6 @@ test('camera', async t => {
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: 100, lat: 0 }));
       t.equal(camera.getZoom(), 3.2);
       t.equal(camera.getBearing(), 90);
-      t.end();
     });
 
     await t.test('noop', t => {
@@ -763,7 +713,6 @@ test('camera', async t => {
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 0, lat: 0 });
       t.equal(camera.getZoom(), 0);
       t.equal(camera.getBearing(), 0);
-      t.end();
     });
 
     await t.test('noop with offset', t => {
@@ -772,21 +721,18 @@ test('camera', async t => {
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 0, lat: 0 });
       t.equal(camera.getZoom(), 0);
       t.equal(camera.getBearing(), 0);
-      t.end();
     });
 
     await t.test('pans with specified offset', t => {
       const camera = createCamera();
       camera.easeTo({ center: [100, 0], offset: [100, 0], duration: 0 });
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 29.6875, lat: 0 });
-      t.end();
     });
 
     await t.test('pans with specified offset relative to viewport on a rotated camera', t => {
       const camera = createCamera({ bearing: 180 });
       camera.easeTo({ center: [100, 0], offset: [100, 0], duration: 0 });
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 170.3125, lat: 0 });
-      t.end();
     });
 
     await t.test('zooms with specified offset', t => {
@@ -794,7 +740,6 @@ test('camera', async t => {
       camera.easeTo({ zoom: 3.2, offset: [100, 0], duration: 0 });
       t.equal(camera.getZoom(), 3.2);
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: 62.66117668978015, lat: 0 }));
-      t.end();
     });
 
     await t.test('zooms with specified offset relative to viewport on a rotated camera', t => {
@@ -802,7 +747,6 @@ test('camera', async t => {
       camera.easeTo({ zoom: 3.2, offset: [100, 0], duration: 0 });
       t.equal(camera.getZoom(), 3.2);
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: -62.66117668978012, lat: 0 }));
-      t.end();
     });
 
     await t.test('rotates with specified offset', t => {
@@ -810,7 +754,6 @@ test('camera', async t => {
       camera.easeTo({ bearing: 90, offset: [100, 0], duration: 0 });
       t.equal(camera.getBearing(), 90);
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: 70.3125, lat: 0.0000141444 }));
-      t.end();
     });
 
     await t.test('rotates with specified offset relative to viewport on a rotated camera', t => {
@@ -818,7 +761,6 @@ test('camera', async t => {
       camera.easeTo({ bearing: 90, offset: [100, 0], duration: 0 });
       t.equal(camera.getBearing(), 90);
       t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat({ lng: -70.3125, lat: 0.0000141444 }));
-      t.end();
     });
 
     await t.test('emits move, zoom, rotate, and pitch events, preserving eventData', { plan: 18 }, (t, done) => {
@@ -932,7 +874,6 @@ test('camera', async t => {
       camera.easeTo({ center: [200, 0], duration: 100 });
       camera.easeTo({ center: [100, 0], duration: 0 });
       t.deepEqual(camera.getCenter(), { lng: 100, lat: 0 });
-      t.end();
     });
 
     await t.test('can be called from within a moveend event handler', t => {
@@ -1040,7 +981,6 @@ test('camera', async t => {
       const camera = createCamera();
       camera.flyTo({ center: [100, 0], animate: false });
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 100, lat: 0 });
-      t.end();
     });
 
     await t.test('throws on invalid center argument', t => {
@@ -1052,13 +992,11 @@ test('camera', async t => {
         Error,
         'throws with non-LngLatLike argument'
       );
-      t.end();
     });
 
     await t.test('does not throw when cameras current zoom is sufficiently greater than passed zoom option', t => {
       const camera = createCamera({ zoom: 22, center: [0, 0] });
       t.doesNotThrow(() => camera.flyTo({ zoom: 10, center: [0, 0] }));
-      t.end();
     });
 
     await t.test(
@@ -1077,14 +1015,12 @@ test('camera', async t => {
       const camera = createCamera();
       camera.flyTo({ zoom: 3.2, animate: false });
       t.equal(fixedNum(camera.getZoom()), 3.2);
-      t.end();
     });
 
     await t.test('zooms to integer level without floating point errors', t => {
       const camera = createCamera({ zoom: 0.6 });
       camera.flyTo({ zoom: 2, animate: false });
       t.equal(camera.getZoom(), 2);
-      t.end();
     });
 
     await t.test('Zoom out from the same position to the same position with animation', t => {
@@ -1109,14 +1045,12 @@ test('camera', async t => {
       const camera = createCamera();
       camera.flyTo({ bearing: 90, animate: false });
       t.equal(camera.getBearing(), 90);
-      t.end();
     });
 
     await t.test('tilts to specified pitch', t => {
       const camera = createCamera();
       camera.flyTo({ pitch: 45, animate: false });
       t.equal(camera.getPitch(), 45);
-      t.end();
     });
 
     await t.test('pans and zooms', t => {
@@ -1124,7 +1058,6 @@ test('camera', async t => {
       camera.flyTo({ center: [100, 0], zoom: 3.2, animate: false });
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 100, lat: 0 });
       t.equal(fixedNum(camera.getZoom()), 3.2);
-      t.end();
     });
 
     await t.test('pans and rotates', t => {
@@ -1132,7 +1065,6 @@ test('camera', async t => {
       camera.flyTo({ center: [100, 0], bearing: 90, animate: false });
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 100, lat: 0 });
       t.equal(camera.getBearing(), 90);
-      t.end();
     });
 
     await t.test('zooms and rotates', t => {
@@ -1140,7 +1072,6 @@ test('camera', async t => {
       camera.flyTo({ zoom: 3.2, bearing: 90, animate: false });
       t.equal(fixedNum(camera.getZoom()), 3.2);
       t.equal(camera.getBearing(), 90);
-      t.end();
     });
 
     await t.test('pans, zooms, and rotates', t => {
@@ -1149,7 +1080,6 @@ test('camera', async t => {
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 100, lat: 0 });
       t.equal(fixedNum(camera.getZoom()), 3.2);
       t.equal(camera.getBearing(), 90);
-      t.end();
     });
 
     await t.test('noop', t => {
@@ -1158,7 +1088,6 @@ test('camera', async t => {
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 0, lat: 0 });
       t.equal(camera.getZoom(), 0);
       t.equal(camera.getBearing(), 0);
-      t.end();
     });
 
     await t.test('noop with offset', t => {
@@ -1167,21 +1096,18 @@ test('camera', async t => {
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 0, lat: 0 });
       t.equal(camera.getZoom(), 0);
       t.equal(camera.getBearing(), 0);
-      t.end();
     });
 
     await t.test('pans with specified offset', t => {
       const camera = createCamera();
       camera.flyTo({ center: [100, 0], offset: [100, 0], animate: false });
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 29.6875, lat: 0 });
-      t.end();
     });
 
     await t.test('pans with specified offset relative to viewport on a rotated camera', t => {
       const camera = createCamera({ bearing: 180 });
       camera.easeTo({ center: [100, 0], offset: [100, 0], animate: false });
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 170.3125, lat: 0 });
-      t.end();
     });
 
     await t.test('emits move, zoom, rotate, and pitch events, preserving eventData', { plan: 18 }, t => {
@@ -1368,7 +1294,6 @@ test('camera', async t => {
       camera.flyTo({ center: [200, 0], duration: 100 });
       camera.flyTo({ center: [100, 0], duration: 0 });
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 100, lat: 0 });
-      t.end();
     });
 
     await t.test('can be called from within a moveend event handler', t => {
@@ -1772,14 +1697,12 @@ test('camera', async t => {
     await t.test('returns false when not easing', t => {
       const camera = createCamera();
       t.ok(!camera.isEasing());
-      t.end();
     });
 
     await t.test('returns true when panning', t => {
       const camera = createCamera();
       camera.panTo([100, 0], { duration: 1 });
       t.ok(camera.isEasing());
-      t.end();
     });
 
     await t.test('returns false when done panning', t => {
@@ -1801,7 +1724,6 @@ test('camera', async t => {
       const camera = createCamera();
       camera.zoomTo(3.2, { duration: 1 });
       t.ok(camera.isEasing());
-      t.end();
     });
 
     await t.test('returns false when done zooming', t => {
@@ -1823,7 +1745,6 @@ test('camera', async t => {
       const camera = createCamera();
       camera.rotateTo(90, { duration: 1 });
       t.ok(camera.isEasing());
-      t.end();
     });
 
     await t.test('returns false when done rotating', t => {
@@ -1848,7 +1769,6 @@ test('camera', async t => {
       camera.zoomTo(3.2);
       camera.stop();
       t.ok(!camera._zooming);
-      t.end();
     });
 
     await t.test('resets camera._rotating', t => {
@@ -1856,7 +1776,6 @@ test('camera', async t => {
       camera.rotateTo(90);
       camera.stop();
       t.ok(!camera._rotating);
-      t.end();
     });
 
     await t.test('emits moveend if panning, preserving eventData', t => {
@@ -1934,7 +1853,6 @@ test('camera', async t => {
         'pans to coordinates based on fitBounds'
       );
       t.equal(fixedNum(camera.getZoom(), 3), 2.469);
-      t.end();
     });
 
     await t.test('padding number', t => {
@@ -1951,7 +1869,6 @@ test('camera', async t => {
         'pans to coordinates based on fitBounds with padding option as number applied'
       );
       t.equal(fixedNum(camera.getZoom(), 3), 2.382);
-      t.end();
     });
 
     await t.test('padding object', t => {
@@ -1967,7 +1884,6 @@ test('camera', async t => {
         { lng: -96.5558, lat: 32.0833 },
         'pans to coordinates based on fitBounds with padding option as object applied'
       );
-      t.end();
     });
   });
 });

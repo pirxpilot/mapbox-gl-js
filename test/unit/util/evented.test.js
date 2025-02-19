@@ -128,7 +128,6 @@ test('Evented', async t => {
       eventedSource.fire(new Event('a'));
       eventedSource.fire(new Event('a'));
       t.ok(listener.calledTwice);
-      t.end();
     });
 
     await t.test('passes original data to parent listeners', async t => {
@@ -139,7 +138,6 @@ test('Evented', async t => {
         t.equal(data.foo, 'bar');
       });
       eventedSource.fire(new Event('a', { foo: 'bar' }));
-      t.end();
     });
 
     await t.test('attaches parent data to parent listeners', async t => {
@@ -150,7 +148,6 @@ test('Evented', async t => {
         t.equal(data.foz, 'baz');
       });
       eventedSource.fire(new Event('a', { foo: 'bar' }));
-      t.end();
     });
 
     await t.test('attaches parent data from a function to parent listeners', async t => {
@@ -161,7 +158,6 @@ test('Evented', async t => {
         t.equal(data.foz, 'baz');
       });
       eventedSource.fire(new Event('a', { foo: 'bar' }));
-      t.end();
     });
 
     await t.test('passes original "target" to parent listeners', async t => {
@@ -173,7 +169,6 @@ test('Evented', async t => {
         t.equal(data.target, eventedSource);
       });
       eventedSource.fire(new Event('a'));
-      t.end();
     });
 
     await t.test('removes parents with "setEventedParent(null)"', async t => {
@@ -185,7 +180,6 @@ test('Evented', async t => {
       eventedSource.setEventedParent(null);
       eventedSource.fire(new Event('a'));
       t.ok(listener.notCalled);
-      t.end();
     });
 
     await t.test('reports if an event has parent listeners with "listens"', async t => {
@@ -194,7 +188,6 @@ test('Evented', async t => {
       eventedSink.on('a', () => {});
       eventedSource.setEventedParent(eventedSink);
       t.ok(eventedSink.listens('a'));
-      t.end();
     });
 
     await t.test('eventedParent data function is evaluated on every fire', async t => {
@@ -207,7 +200,6 @@ test('Evented', async t => {
       t.equal(i, 1);
       eventedSource.fire(new Event('a'));
       t.equal(i, 2);
-      t.end();
     });
   });
 });

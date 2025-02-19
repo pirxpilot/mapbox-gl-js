@@ -51,7 +51,6 @@ test('util', async t => {
       const c = new Point(1, 1);
 
       t.equal(isCounterClockwise(a, b, c), true);
-      t.end();
     });
 
     await t.test('clockwise', async t => {
@@ -60,7 +59,6 @@ test('util', async t => {
       const c = new Point(1, 1);
 
       t.equal(isCounterClockwise(c, b, a), false);
-      t.end();
     });
   });
 
@@ -69,21 +67,18 @@ test('util', async t => {
       const polygon = [new Point(0, 0), new Point(1, 0), new Point(0, 1)];
 
       t.equal(isClosedPolygon(polygon), false);
-      t.end();
     });
 
     await t.test('not equal first + last point', async t => {
       const polygon = [new Point(0, 0), new Point(1, 0), new Point(0, 1), new Point(1, 1)];
 
       t.equal(isClosedPolygon(polygon), false);
-      t.end();
     });
 
     await t.test('closed polygon', async t => {
       const polygon = [new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(0, 1), new Point(0, 0)];
 
       t.equal(isClosedPolygon(polygon), true);
-      t.end();
     });
   });
 });

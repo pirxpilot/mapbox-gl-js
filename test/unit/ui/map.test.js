@@ -927,7 +927,6 @@ test('Map', async t => {
     await t.test('returns an empty array when no style is loaded', async t => {
       const map = createMap({ style: undefined });
       t.deepEqual(map.queryRenderedFeatures(), []);
-      t.end();
     });
   });
 
@@ -992,8 +991,6 @@ test('Map', async t => {
         Error,
         /load/i
       );
-
-      t.end();
     });
 
     await t.test('fires an error if layer not found', (t, done) => {
