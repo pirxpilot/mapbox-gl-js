@@ -39,6 +39,5 @@ test('removeTile', async t => {
     });
 
     t.deepEqual(source.loaded, {});
-    t.end();
   });
 });

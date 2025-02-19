@@ -25,7 +25,6 @@ test('VertexBuffer', async t => {
     ]);
     t.deepEqual(buffer.itemSize, 6);
     t.deepEqual(buffer.length, 3);
-    t.end();
   });
 
   await t.test('enableAttributes', async t => {
@@ -35,7 +34,6 @@ test('VertexBuffer', async t => {
     t.stub(context.gl, 'enableVertexAttribArray').callsFake(() => {});
     buffer.enableAttributes(context.gl, { attributes: { map: 5, box: 6 } });
     t.deepEqual(context.gl.enableVertexAttribArray.args, [[5], [6]]);
-    t.end();
   });
 
   await t.test('setVertexAttribPointers', async t => {
@@ -48,6 +46,5 @@ test('VertexBuffer', async t => {
       [5, 1, context.gl['SHORT'], false, 6, 300],
       [6, 2, context.gl['SHORT'], false, 6, 304]
     ]);
-    t.end();
   });
 });

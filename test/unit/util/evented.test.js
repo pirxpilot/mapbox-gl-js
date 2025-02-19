@@ -9,7 +9,6 @@ test('Evented', async t => {
     evented.fire(new Event('a'));
     evented.fire(new Event('a'));
     t.ok(listener.calledTwice);
-    t.end();
   });
 
   await t.test('calls listeners added with "once" once', async t => {
@@ -20,7 +19,6 @@ test('Evented', async t => {
     evented.fire(new Event('a'));
     t.ok(listener.calledOnce);
     t.notOk(evented.listens('a'));
-    t.end();
   });
 
   await t.test('passes data to listeners', async t => {
@@ -29,7 +27,6 @@ test('Evented', async t => {
       t.equal(data.foo, 'bar');
     });
     evented.fire(new Event('a', { foo: 'bar' }));
-    t.end();
   });
 
   await t.test('passes "target" to listeners', async t => {
@@ -38,7 +35,6 @@ test('Evented', async t => {
       t.equal(data.target, evented);
     });
     evented.fire(new Event('a'));
-    t.end();
   });
 
   await t.test('passes "type" to listeners', async t => {
@@ -47,7 +43,6 @@ test('Evented', async t => {
       t.deepEqual(data.type, 'a');
     });
     evented.fire(new Event('a'));
-    t.end();
   });
 
   await t.test('removes listeners with "off"', async t => {
@@ -57,7 +52,6 @@ test('Evented', async t => {
     evented.off('a', listener);
     evented.fire(new Event('a'));
     t.ok(listener.notCalled);
-    t.end();
   });
 
   await t.test('removes one-time listeners with "off"', async t => {
@@ -67,7 +61,6 @@ test('Evented', async t => {
     evented.off('a', listener);
     evented.fire(new Event('a'));
     t.ok(listener.notCalled);
-    t.end();
   });
 
   await t.test('once listener is removed prior to call', async t => {
@@ -79,7 +72,6 @@ test('Evented', async t => {
     });
     evented.fire(new Event('a'));
     t.ok(listener.calledOnce);
-    t.end();
   });
 
   await t.test('reports if an event has listeners with "listens"', async t => {
@@ -87,7 +79,6 @@ test('Evented', async t => {
     evented.on('a', () => {});
     t.ok(evented.listens('a'));
     t.notOk(evented.listens('b'));
-    t.end();
   });
 
   await t.test('does not report true to "listens" if all listeners have been removed', async t => {
@@ -96,7 +87,6 @@ test('Evented', async t => {
     evented.on('a', listener);
     evented.off('a', listener);
     t.notOk(evented.listens('a'));
-    t.end();
   });
 
   await t.test('does not immediately call listeners added within another listener', async t => {
@@ -105,7 +95,6 @@ test('Evented', async t => {
       evented.on('a', t.fail.bind(t));
     });
     evented.fire(new Event('a'));
-    t.end();
   });
 
   await t.test('has backward compatibility for fire(string, object) API', async t => {
@@ -115,7 +104,6 @@ test('Evented', async t => {
     evented.fire('a', { foo: 'bar' });
     t.ok(listener.calledOnce);
     t.ok(listener.firstCall.args[0].foo, 'bar');
-    t.end();
   });
 
   await t.test('on is idempotent', async t => {
@@ -128,7 +116,6 @@ test('Evented', async t => {
     evented.fire(new Event('a'));
     t.ok(listenerA.calledOnce);
     t.ok(listenerA.calledBefore(listenerB));
-    t.end();
   });
 
   await t.test('evented parents', async t => {
@@ -222,7 +209,5 @@ test('Evented', async t => {
       t.equal(i, 2);
       t.end();
     });
-
-    t.end();
   });
 });

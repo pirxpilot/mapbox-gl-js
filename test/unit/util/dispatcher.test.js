@@ -44,8 +44,6 @@ test('Dispatcher', async t => {
     dispatcher.remove();
     t.same(releaseCalled, [dispatcher.id]);
     t.equal(removeCalled, workers.length);
-
-    t.end();
   });
 
   await t.test('creates Actors with unique map id', async t => {
@@ -60,8 +58,6 @@ test('Dispatcher', async t => {
       ids,
       dispatchers.map(d => d.id)
     );
-
-    t.end();
   });
 
   await t.test('#remove destroys actors', async t => {
@@ -78,6 +74,5 @@ test('Dispatcher', async t => {
     const dispatcher = makeDispatcher(workerPool, {}, Actor);
     dispatcher.remove();
     t.equal(actorsRemoved.length, 4);
-    t.end();
   });
 });

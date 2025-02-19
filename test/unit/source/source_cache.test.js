@@ -138,8 +138,6 @@ test('SourceCache#addTile', async t => {
 
     t.equal(load, 1);
     t.equal(add, 1);
-
-    t.end();
   });
 
   await t.test('updates feature state on cached tile', async t => {
@@ -164,8 +162,6 @@ test('SourceCache#addTile', async t => {
     sourceCache._addTile(tileID);
 
     t.equal(updateFeaturesSpy.getCalls().length, 1);
-
-    t.end();
   });
 
   await t.test('moves timers when adding tile from cache', async t => {
@@ -207,8 +203,6 @@ test('SourceCache#addTile', async t => {
 
     t.ok(sourceCache._timers[id]);
     t.notOk(sourceCache._cache.has(tileID));
-
-    t.end();
   });
 
   await t.test('does not reuse wrapped tile', async t => {
@@ -232,8 +226,6 @@ test('SourceCache#addTile', async t => {
     t.equal(load, 2);
     t.equal(add, 2);
     t.notEqual(t1, t2);
-
-    t.end();
   });
 });
 
@@ -267,8 +259,6 @@ test('SourceCache#removeTile', async t => {
 
     sourceCache._addTile(tileID);
     sourceCache._removeTile(tileID.key);
-
-    t.end();
   });
 
   await t.test('aborts and unloads unfinished tile', async t => {
@@ -292,8 +282,6 @@ test('SourceCache#removeTile', async t => {
 
     t.equal(abort, 1);
     t.equal(unload, 1);
-
-    t.end();
   });
 
   await t.test('_tileLoaded after _removeTile skips tile.added', async t => {
@@ -309,8 +297,6 @@ test('SourceCache#removeTile', async t => {
     sourceCache.map = { painter: { crossTileSymbolIndex: '', tileExtentVAO: {} } };
 
     sourceCache._addTile(tileID);
-
-    t.end();
   });
 });
 
@@ -347,7 +333,6 @@ test('SourceCache / Source lifecycle', async t => {
   await t.test('suppress 404 errors', async t => {
     const sourceCache = createSourceCache({ status: 404, message: 'Not found' }).on('error', t.fail);
     sourceCache.onAdd();
-    t.end();
   });
 
   await t.test('loaded() true after source error', async t => {
@@ -791,7 +776,6 @@ test('SourceCache#_updateRetainedTiles', async t => {
     sourceCache._updateRetainedTiles([idealTile], 1);
     t.ok(getTileSpy.notCalled);
     t.deepEqual(sourceCache.getIds(), [idealTile.key]);
-    t.end();
   });
 
   await t.test('retains all loaded children ', async t => {
@@ -835,8 +819,6 @@ test('SourceCache#_updateRetainedTiles', async t => {
         .concat(loadedChildren)
         .map(t => String(t.key))
     );
-
-    t.end();
   });
 
   await t.test('adds parent tile if ideal tile errors and no child tiles are loaded', t => {
@@ -876,7 +858,6 @@ test('SourceCache#_updateRetainedTiles', async t => {
     });
     addTileSpy.restore();
     getTileSpy.restore();
-    t.end();
   });
 
   await t.test("don't use wrong parent tile", t => {
@@ -924,7 +905,6 @@ test('SourceCache#_updateRetainedTiles', async t => {
 
     addTileSpy.restore();
     getTileSpy.restore();
-    t.end();
   });
 
   await t.test('use parent tile when ideal tile is not loaded', t => {
@@ -985,8 +965,6 @@ test('SourceCache#_updateRetainedTiles', async t => {
 
     addTileSpy.restore();
     getTileSpy.restore();
-
-    t.end();
   });
 
   await t.test("don't load parent if all immediate children are loaded", t => {
@@ -1014,7 +992,6 @@ test('SourceCache#_updateRetainedTiles', async t => {
     // parent tile isn't requested because all covering children are loaded
     t.deepEqual(getTileSpy.getCalls(), []);
     t.deepEqual(Object.keys(retained), [idealTile.key].concat(loadedTiles.map(t => t.key)));
-    t.end();
   });
 
   await t.test('prefer loaded child tiles to parent tiles', t => {
@@ -1073,8 +1050,6 @@ test('SourceCache#_updateRetainedTiles', async t => {
       },
       'only retains parent tile if no child tiles are loaded'
     );
-
-    t.end();
   });
 
   await t.test("don't use tiles below minzoom", t => {
@@ -1113,7 +1088,6 @@ test('SourceCache#_updateRetainedTiles', async t => {
     );
 
     getTileSpy.restore();
-    t.end();
   });
 
   await t.test('use overzoomed tile above maxzoom', t => {
@@ -1153,7 +1127,6 @@ test('SourceCache#_updateRetainedTiles', async t => {
     );
 
     getTileSpy.restore();
-    t.end();
   });
 
   await t.test("dont't ascend multiple times if a tile is not found", t => {
@@ -1209,7 +1182,6 @@ test('SourceCache#_updateRetainedTiles', async t => {
     );
 
     getTileSpy.restore();
-    t.end();
   });
 
   await t.test('adds correct leaded parent tiles for overzoomed tiles', t => {
@@ -1235,8 +1207,6 @@ test('SourceCache#_updateRetainedTiles', async t => {
       new OverscaledTileID(7, 0, 7, 1, 0).key,
       new OverscaledTileID(8, 0, 7, 1, 0).key
     ]);
-
-    t.end();
   });
 });
 
@@ -1263,8 +1233,6 @@ test('SourceCache#clearTiles', async t => {
 
     t.equal(abort, 1);
     t.equal(unload, 1);
-
-    t.end();
   });
 });
 
@@ -1273,8 +1241,6 @@ test('SourceCache#tilesIn', async t => {
     const sourceCache = createSourceCache({ noLoad: true });
     sourceCache.onAdd();
     t.same(sourceCache.tilesIn([new Coordinate(0.5, 0.25, 1), new Coordinate(1.5, 0.75, 1)]), []);
-
-    t.end();
   });
 
   await t.test('regular tiles', async t => {
@@ -1506,7 +1472,6 @@ test('SourceCache#findLoadedParent', async t => {
 
     t.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 3, 3), 0), undefined);
     t.deepEqual(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 0, 0), 0), tile);
-    t.end();
   });
 
   await t.test('retains parents', async t => {
@@ -1523,8 +1488,6 @@ test('SourceCache#findLoadedParent', async t => {
     t.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 3, 3), 0), undefined);
     t.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 0, 0), 0), tile);
     t.equal(sourceCache._cache.order.length, 1);
-
-    t.end();
   });
 });
 
@@ -1540,8 +1503,6 @@ test('SourceCache#reload', async t => {
       null,
       'reload ignored gracefully'
     );
-
-    t.end();
   });
 });
 
@@ -1575,7 +1536,6 @@ test('SourceCache sets max cache size correctly', async t => {
 
     // Expect max size to be ((512 / tileSize + 1) ^ 2) * 5 => 3 * 3 * 5
     t.equal(sourceCache._cache.max, 45);
-    t.end();
   });
 
   await t.test('sets cache size based on 256 tiles', async t => {
@@ -1590,6 +1550,5 @@ test('SourceCache sets max cache size correctly', async t => {
 
     // Expect max size to be ((512 / tileSize + 1) ^ 2) * 5 => 2 * 2 * 5
     t.equal(sourceCache._cache.max, 20);
-    t.end();
   });
 });

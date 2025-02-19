@@ -209,8 +209,6 @@ test('camera', async t => {
       t.ok(!camera.isEasing());
       t.end();
     });
-
-    t.end();
   });
 
   await t.test('#setCenter', async t => {
@@ -265,8 +263,6 @@ test('camera', async t => {
       t.ok(!camera.isEasing());
       t.end();
     });
-
-    t.end();
   });
 
   await t.test('#setZoom', async t => {
@@ -324,8 +320,6 @@ test('camera', async t => {
       t.ok(!camera.isEasing());
       t.end();
     });
-
-    t.end();
   });
 
   await t.test('#setBearing', async t => {
@@ -383,8 +377,6 @@ test('camera', async t => {
       t.ok(!camera.isEasing());
       t.end();
     });
-
-    t.end();
   });
 
   await t.test('#panBy', async t => {
@@ -440,8 +432,6 @@ test('camera', async t => {
 
       camera.panBy([100, 0], { duration: 0, noMoveStart: true });
     });
-
-    t.end();
   });
 
   await t.test('#panTo', async t => {
@@ -516,8 +506,6 @@ test('camera', async t => {
 
       camera.panTo([100, 0], { duration: 0, noMoveStart: true });
     });
-
-    t.end();
   });
 
   await t.test('#zoomTo', async t => {
@@ -598,8 +586,6 @@ test('camera', async t => {
 
       camera.zoomTo(5, { duration: 0 }, eventData);
     });
-
-    t.end();
   });
 
   await t.test('#rotateTo', async t => {
@@ -699,8 +685,6 @@ test('camera', async t => {
 
       camera.rotateTo(90, { duration: 0 }, eventData);
     });
-
-    t.end();
   });
 
   await t.test('#easeTo', async t => {
@@ -1049,8 +1033,6 @@ test('camera', async t => {
         }, 0);
       }, 0);
     });
-
-    t.end();
   });
 
   await t.test('#flyTo', async t => {
@@ -1784,8 +1766,6 @@ test('camera', async t => {
 
       camera.flyTo({ center: [-122.3998631, 37.7884307], maxDuration: 100 });
     });
-
-    t.end();
   });
 
   await t.test('#isEasing', async t => {
@@ -1860,8 +1840,6 @@ test('camera', async t => {
         camera.simulateFrame();
       }, 0);
     });
-
-    t.end();
   });
 
   await t.test('#stop', async t => {
@@ -1939,8 +1917,6 @@ test('camera', async t => {
         camera.simulateFrame();
       }, 0);
     });
-
-    t.end();
   });
 
   await t.test('#fitBounds', async t => {
@@ -1993,7 +1969,5 @@ test('camera', async t => {
       );
       t.end();
     });
-
-    t.end();
   });
 });

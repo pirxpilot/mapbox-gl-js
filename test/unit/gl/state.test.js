@@ -39,7 +39,6 @@ async function ValueTest(Constructor, options, t) {
     t.ok(v);
     const currentV = v.get();
     t.notEqual(typeof currentV, 'undefined', 'instantiates with a default value');
-    t.end();
   });
 
   await t.test('#set', async t => {
@@ -47,7 +46,6 @@ async function ValueTest(Constructor, options, t) {
     v.set(options.setValue);
     const equality = options.equality || ((a, b) => deepEqual(a, b));
     t.ok(equality(v.get(), options.setValue));
-    t.end();
   });
 
   t.end();

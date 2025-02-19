@@ -76,8 +76,6 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     t.equal(grandchildInstances[0].crossTileID, 1);
     // Does not match the previous value for Windsor because that tile was removed
     t.equal(grandchildInstances[1].crossTileID, 5);
-
-    t.end();
   });
 
   await t.test('overwrites ids when re-adding', async t => {
@@ -106,8 +104,6 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     index.addLayer(styleLayer, [mainTile, childTile], 0);
     t.equal(mainInstances[0].crossTileID, 2);
     t.equal(childInstances[0].crossTileID, 2);
-
-    t.end();
   });
 
   await t.test('does not duplicate ids within one zoom level', async t => {
@@ -145,8 +141,6 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     // Updates per-zoom usedCrossTileIDs
     t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), []);
     t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[7]), [1, 2, 3]);
-
-    t.end();
   });
 
   await t.test('does not regenerate ids for same zoom', async t => {
@@ -181,8 +175,6 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     t.equal(secondInstances[2].crossTileID, 3); // C' gets new ID
 
     t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), [1, 2, 3]);
-
-    t.end();
   });
 
   await t.test('reuses indexes when longitude is wrapped', async t => {
@@ -202,7 +194,6 @@ test('CrossTileSymbolIndex.addLayer', async t => {
 
     index.addLayer(styleLayer, [tile], longitude % 360);
     t.equal(firstInstances[0].crossTileID, 1);
-    t.end();
   });
 });
 

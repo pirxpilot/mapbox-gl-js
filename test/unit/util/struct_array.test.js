@@ -8,7 +8,6 @@ test('StructArray', async t => {
     const array = new TestArray();
     t.equal(array.length, 0);
     t.ok(array.arrayBuffer);
-    t.end();
   });
 
   await t.test('emplaceBack', async t => {
@@ -20,8 +19,6 @@ test('StructArray', async t => {
     t.equal(array.length, 2);
 
     t.deepEqual(array.int16.slice(0, 6), Int16Array.from([1, 7, 3, 4, 2, 5]));
-
-    t.end();
   });
 
   await t.test('emplaceBack gracefully accepts extra arguments', async t => {
@@ -35,7 +32,6 @@ test('StructArray', async t => {
     );
     t.equal(array.length, 1);
     t.deepEqual(array.int16.slice(0, 3), Int16Array.from([3, 1, 4]));
-    t.end();
   });
 
   await t.test('reserve', async t => {
@@ -48,8 +44,6 @@ test('StructArray', async t => {
       array.emplaceBack(1, 1, 1);
       t.equal(array.capacity, initialCapacity);
     }
-
-    t.end();
   });
 
   await t.test('automatically resizes', async t => {
@@ -64,8 +58,6 @@ test('StructArray', async t => {
 
     array.emplaceBack(1, 1, 1);
     t.ok(array.capacity > initialCapacity);
-
-    t.end();
   });
 
   await t.test('trims', async t => {
@@ -78,8 +70,6 @@ test('StructArray', async t => {
     array._trim();
     t.equal(array.capacity, 1);
     t.equal(array.arrayBuffer.byteLength, array.bytesPerElement);
-
-    t.end();
   });
 });
 
@@ -90,7 +80,6 @@ test('FeatureIndexArray', async t => {
     const array = new TestArray();
     t.equal(array.length, 0);
     t.ok(array.arrayBuffer);
-    t.end();
   });
 
   await t.test('emplace and retrieve', async t => {
@@ -113,7 +102,5 @@ test('FeatureIndexArray', async t => {
     t.equal(elem1.featureIndex, 4, 'returns correct featureIndex');
     t.equal(elem1.sourceLayerIndex, 2, 'returns correct sourceLayerIndex');
     t.equal(elem1.bucketIndex, 5, 'returns correct bucketIndex');
-
-    t.end();
   });
 });

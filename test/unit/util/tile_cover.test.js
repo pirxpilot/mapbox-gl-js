@@ -82,7 +82,5 @@ test('tileCover', async t => {
       t.deepEqual(res, [new OverscaledTileID(2, 0, 2, 0, 1)]);
       t.end();
     });
-
-    t.end();
   });
 });

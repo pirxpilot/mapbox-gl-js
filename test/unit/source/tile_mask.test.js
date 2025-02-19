@@ -48,7 +48,6 @@ test('computeTileMasks', async t => {
       }),
       [[new OverscaledTileID(0, 0, 0, 0, 0).key], [new OverscaledTileID(0, 0, 0, 0, 0).key]]
     );
-    t.end();
   });
 
   await t.test('parents with all four children', async t => {
@@ -67,7 +66,6 @@ test('computeTileMasks', async t => {
         [new OverscaledTileID(0, 0, 0, 0, 0).key]
       ]
     );
-    t.end();
   });
 
   await t.test('parent and one child', async t => {
@@ -86,7 +84,6 @@ test('computeTileMasks', async t => {
         [new OverscaledTileID(0, 0, 0, 0, 0).key]
       ]
     );
-    t.end();
   });
 
   await t.test('complex masks', async t => {
@@ -126,7 +123,6 @@ test('computeTileMasks', async t => {
         [new OverscaledTileID(0, 0, 0, 0, 0).key.toString()]
       ]
     );
-    t.end();
   });
 
   await t.test('deep descendent masks', t => {
@@ -154,7 +150,6 @@ test('computeTileMasks', async t => {
         [new OverscaledTileID(0, 0, 0, 0, 0).key.toString()]
       ]
     );
-    t.end();
   });
 
   await t.test('wrapped tile masks', t => {
@@ -185,6 +180,5 @@ test('computeTileMasks', async t => {
         [new OverscaledTileID(0, 0, 0, 0, 0).key.toString()]
       ]
     );
-    t.end();
   });
 });

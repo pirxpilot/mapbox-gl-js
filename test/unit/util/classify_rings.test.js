@@ -118,7 +118,6 @@ test('classifyRings + maxRings', async t => {
     t.equal(geometry[0][0].area, 3200);
     t.equal(geometry[0][1].area, 100);
     t.equal(geometry[0][2].area, 4);
-    t.end();
   });
 
   await t.test('maxRings=2', async t => {
@@ -127,7 +126,6 @@ test('classifyRings + maxRings', async t => {
     t.equal(geometry[0].length, 2);
     t.equal(geometry[0][0].area, 3200);
     t.equal(geometry[0][1].area, 100);
-    t.end();
   });
 
   await t.test('maxRings=2, reversed geometry', async t => {
@@ -136,7 +134,6 @@ test('classifyRings + maxRings', async t => {
     t.equal(geometry[0].length, 2);
     t.equal(geometry[0][0].area, 3200);
     t.equal(geometry[0][1].area, 100);
-    t.end();
   });
 
   await t.test('maxRings=5, geometry from fixture', async t => {
@@ -149,7 +146,6 @@ test('classifyRings + maxRings', async t => {
       return ring.area;
     });
     t.deepEqual(areas, [2763951, 21600, 8298, 4758, 3411]);
-    t.end();
   });
 });
 

@@ -28,8 +28,6 @@ test('geojsonwrapper', async t => {
     ]);
     t.equal(feature.type, 2, 'type');
     t.deepEqual(feature.properties, { hello: 'world' }, 'properties');
-
-    t.end();
   });
 
   await t.test('point', async t => {
@@ -44,6 +42,5 @@ test('geojsonwrapper', async t => {
     const wrap = new Wrapper(features);
     const feature = wrap.feature(0);
     t.deepEqual(feature.loadGeometry(), [[{ x: 0, y: 1 }]]);
-    t.end();
   });
 });

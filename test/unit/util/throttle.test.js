@@ -9,7 +9,6 @@ test('throttle', async t => {
       executionCount++;
     }, 0);
     t.equal(executionCount, 0);
-    t.end();
   });
 
   await t.test('executes unthrottled function once per tick when period is 0', async t => {
@@ -37,7 +36,6 @@ test('throttle', async t => {
     throttledFunction();
     throttledFunction();
     t.equal(executionCount, 1);
-    t.end();
   });
 
   await t.test('queues exactly one execution of unthrottled function when period is > 0', async t => {

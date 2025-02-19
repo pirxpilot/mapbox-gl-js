@@ -19,7 +19,6 @@ test('CanonicalTileID', async t => {
       /*eslint no-new: 0*/
       new CanonicalTileID(2, 0, 4);
     });
-    t.end();
   });
 
   await t.test('.key', async t => {
@@ -27,13 +26,11 @@ test('CanonicalTileID', async t => {
     t.deepEqual(new CanonicalTileID(1, 0, 0).key, 1);
     t.deepEqual(new CanonicalTileID(1, 1, 0).key, 33);
     t.deepEqual(new CanonicalTileID(1, 1, 1).key, 97);
-    t.end();
   });
 
   await t.test('.equals', async t => {
     t.ok(new CanonicalTileID(3, 2, 1).equals(new CanonicalTileID(3, 2, 1)));
     t.notOk(new CanonicalTileID(9, 2, 3).equals(new CanonicalTileID(3, 2, 1)));
-    t.end();
   });
 
   await t.test('.url', async t => {
@@ -62,8 +59,6 @@ test('CanonicalTileID', async t => {
       );
       t.end();
     });
-
-    t.end();
   });
 });
 
@@ -74,7 +69,6 @@ test('OverscaledTileID', async t => {
       /*eslint no-new: 0*/
       new OverscaledTileID(7, 0, 8, 0, 0);
     });
-    t.end();
   });
 
   await t.test('.key', async t => {
@@ -83,7 +77,6 @@ test('OverscaledTileID', async t => {
     t.deepEqual(new OverscaledTileID(1, 0, 1, 1, 0).key, 33);
     t.deepEqual(new OverscaledTileID(1, 0, 1, 1, 1).key, 97);
     t.deepEqual(new OverscaledTileID(1, -1, 1, 1, 1).key, 225);
-    t.end();
   });
 
   await t.test('.toString', async t => {
@@ -91,7 +84,6 @@ test('OverscaledTileID', async t => {
       t.deepEqual(new OverscaledTileID(1, 0, 1, 1, 1).toString(), '1/1/1');
       t.end();
     });
-    t.end();
   });
 
   await t.test('.children', async t => {
@@ -102,7 +94,6 @@ test('OverscaledTileID', async t => {
       new OverscaledTileID(1, 0, 1, 1, 1)
     ]);
     t.deepEqual(new OverscaledTileID(0, 0, 0, 0, 0).children(0), [new OverscaledTileID(1, 0, 0, 0, 0)]);
-    t.end();
   });
 
   await t.test('.scaledTo', async t => {
@@ -112,6 +103,5 @@ test('OverscaledTileID', async t => {
       t.deepEqual(new OverscaledTileID(1, 0, 0, 0, 0).scaledTo(0), new OverscaledTileID(0, 0, 0, 0, 0));
       t.end();
     });
-    t.end();
   });
 });

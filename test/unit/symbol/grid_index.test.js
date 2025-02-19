@@ -37,7 +37,6 @@ test('GridIndex', async t => {
         .sort(),
       [0, 1, 2]
     );
-    t.end();
   });
 
   await t.test('returns multiple copies of a key if multiple boxes were inserted with the same key', async t => {
@@ -50,7 +49,6 @@ test('GridIndex', async t => {
       grid.query(0, 0, 30, 30).map(x => x.key),
       [key, key, key]
     );
-    t.end();
   });
 
   await t.test('circle-circle intersection', async t => {
@@ -63,8 +61,6 @@ test('GridIndex', async t => {
     t.notOk(grid.hitTestCircle(10, 10, 10));
     t.ok(grid.hitTestCircle(0, 100, 10));
     t.ok(grid.hitTestCircle(80, 60, 10));
-
-    t.end();
   });
 
   await t.test('circle-rectangle intersection', async t => {
@@ -85,7 +81,5 @@ test('GridIndex', async t => {
       grid.query(0, 80, 20, 100).map(x => x.key),
       [2]
     );
-
-    t.end();
   });
 });

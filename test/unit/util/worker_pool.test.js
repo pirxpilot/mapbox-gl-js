@@ -23,7 +23,6 @@ test('WorkerPool', async t => {
 
     // check that the two different dispatchers' workers arrays correspond
     workers1.forEach((w, i) => t.equal(w, workers2[i]));
-    t.end();
   });
 
   await t.test('#release', async t => {
@@ -45,7 +44,5 @@ test('WorkerPool', async t => {
     t.comment('terminates workers if no dispatchers are active');
     pool.release('map-1');
     t.equal(workersTerminated, 4);
-
-    t.end();
   });
 });

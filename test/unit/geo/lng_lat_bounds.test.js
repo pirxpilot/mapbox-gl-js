@@ -11,7 +11,6 @@ test('LngLatBounds', async t => {
     t.equal(bounds.getWest(), 0);
     t.equal(bounds.getNorth(), 10);
     t.equal(bounds.getEast(), -10);
-    t.end();
   });
 
   await t.test('#constructor across dateline', async t => {
@@ -22,7 +21,6 @@ test('LngLatBounds', async t => {
     t.equal(bounds.getWest(), 170);
     t.equal(bounds.getNorth(), 10);
     t.equal(bounds.getEast(), -170);
-    t.end();
   });
 
   await t.test('#constructor across pole', async t => {
@@ -33,7 +31,6 @@ test('LngLatBounds', async t => {
     t.equal(bounds.getWest(), 0);
     t.equal(bounds.getNorth(), -85);
     t.equal(bounds.getEast(), -10);
-    t.end();
   });
 
   await t.test('#constructor no args', async t => {
@@ -41,7 +38,6 @@ test('LngLatBounds', async t => {
     t.throws(() => {
       bounds.getCenter();
     });
-    t.end();
   });
 
   await t.test('#extend with coordinate', async t => {
@@ -59,8 +55,6 @@ test('LngLatBounds', async t => {
     t.equal(bounds.getWest(), -15);
     t.equal(bounds.getNorth(), 10);
     t.equal(bounds.getEast(), 10);
-
-    t.end();
   });
 
   await t.test('#extend with bounds', async t => {
@@ -83,8 +77,6 @@ test('LngLatBounds', async t => {
     t.equal(bounds1.getWest(), -15);
     t.equal(bounds1.getNorth(), 15);
     t.equal(bounds1.getEast(), 15);
-
-    t.end();
   });
 
   await t.test('#extend with null', async t => {
@@ -96,8 +88,6 @@ test('LngLatBounds', async t => {
     t.equal(bounds.getWest(), 0);
     t.equal(bounds.getNorth(), 10);
     t.equal(bounds.getEast(), 10);
-
-    t.end();
   });
 
   await t.test('#extend undefined bounding box', async t => {
@@ -110,8 +100,6 @@ test('LngLatBounds', async t => {
     t.equal(bounds1.getWest(), -10);
     t.equal(bounds1.getNorth(), 10);
     t.equal(bounds1.getEast(), 10);
-
-    t.end();
   });
 
   await t.test('#extend same LngLat instance', async t => {
@@ -124,8 +112,6 @@ test('LngLatBounds', async t => {
     t.equal(bounds.getWest(), 0);
     t.equal(bounds.getNorth(), 15);
     t.equal(bounds.getEast(), 15);
-
-    t.end();
   });
 
   await t.test('accessors', async t => {
@@ -141,7 +127,6 @@ test('LngLatBounds', async t => {
     t.deepEqual(bounds.getSouthEast(), new LngLat(-10, 0));
     t.deepEqual(bounds.getNorthEast(), new LngLat(-10, -20));
     t.deepEqual(bounds.getNorthWest(), new LngLat(0, -20));
-    t.end();
   });
 
   await t.test('#convert', async t => {
@@ -155,7 +140,6 @@ test('LngLatBounds', async t => {
       LngLatBounds.convert([bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()]),
       bounds
     );
-    t.end();
   });
 
   await t.test('#toArray', async t => {
@@ -164,13 +148,11 @@ test('LngLatBounds', async t => {
       [-73.9876, 40.7661],
       [-73.9397, 40.8002]
     ]);
-    t.end();
   });
 
   await t.test('#toString', async t => {
     const llb = new LngLatBounds([-73.9876, 40.7661], [-73.9397, 40.8002]);
     t.deepEqual(llb.toString(), 'LngLatBounds(LngLat(-73.9876, 40.7661), LngLat(-73.9397, 40.8002))');
-    t.end();
   });
 
   await t.test('#isEmpty', async t => {
@@ -178,6 +160,5 @@ test('LngLatBounds', async t => {
     t.equal(nullBounds.isEmpty(), true);
     nullBounds.extend([-73.9876, 40.7661], [-73.9397, 40.8002]);
     t.equal(nullBounds.isEmpty(), false);
-    t.end();
   });
 });

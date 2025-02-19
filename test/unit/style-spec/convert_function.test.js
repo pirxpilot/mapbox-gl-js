@@ -21,8 +21,6 @@ test('convertFunction', async t => {
       'false',
       'default'
     ]);
-
-    t.end();
   });
 
   await t.test('numeric categorical', async t => {
@@ -37,8 +35,6 @@ test('convertFunction', async t => {
     };
 
     t.deepEqual(convertFunction(fn, {}), ['match', ['get', 'p'], 0, '0', 1, '1', 'default']);
-
-    t.end();
   });
 
   await t.test('feature-constant text-field with token replacement', async t => {
@@ -77,8 +73,6 @@ test('convertFunction', async t => {
       5,
       ['concat', 'trailing ', ['to-string', ['get', 'token']]]
     ]);
-
-    t.end();
   });
 
   await t.test('duplicate step function stops', async t => {
@@ -100,8 +94,6 @@ test('convertFunction', async t => {
       }
     });
     t.deepEqual(expression, ['step', ['zoom'], 'a', 1, 'b', 2, 'd']);
-
-    t.end();
   });
 
   await t.test('duplicate interpolate function stops', async t => {
@@ -123,7 +115,5 @@ test('convertFunction', async t => {
       }
     });
     t.deepEqual(expression, ['interpolate', ['exponential', 1], ['zoom'], 0, 'a', 1, 'b', 2, 'd']);
-
-    t.end();
   });
 });

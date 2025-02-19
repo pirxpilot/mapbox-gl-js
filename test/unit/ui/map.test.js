@@ -929,8 +929,6 @@ test('Map', async t => {
       t.deepEqual(map.queryRenderedFeatures(), []);
       t.end();
     });
-
-    t.end();
   });
 
   await t.test('#setLayoutProperty', async t => {
@@ -1138,8 +1136,6 @@ test('Map', async t => {
         done();
       });
     });
-
-    t.end();
   });
 
   await t.test('#setPaintProperty', async t => {
@@ -1276,8 +1272,6 @@ test('Map', async t => {
         map.setFeatureState({ source: 'vector', sourceLayer: 0, id: '12345' }, { hover: true });
       });
     });
-
-    t.end();
   });
 
   await t.test('error event', async t => {
@@ -1299,8 +1293,6 @@ test('Map', async t => {
       });
       map.fire(new ErrorEvent(error));
     });
-
-    t.end();
   });
 
   await t.test('render stabilizes', (t, done) => {

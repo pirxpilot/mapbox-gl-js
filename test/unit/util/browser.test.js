@@ -12,7 +12,6 @@ test('browser', async t => {
 
   await t.test('now', async t => {
     t.equal(typeof browser.now(), 'number');
-    t.end();
   });
 
   await t.test('cancelFrame', async t => {
@@ -20,16 +19,13 @@ test('browser', async t => {
       t.fail();
     });
     browser.cancelFrame(id);
-    t.end();
   });
 
   await t.test('devicePixelRatio', async t => {
     t.equal(typeof browser.devicePixelRatio, 'number');
-    t.end();
   });
 
   await t.test('hardwareConcurrency', async t => {
     t.equal(typeof browser.hardwareConcurrency, 'number');
-    t.end();
   });
 });

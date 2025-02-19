@@ -61,7 +61,6 @@ test('GeoJSONSource#setData', async t => {
   await t.test('returns self', async t => {
     const source = createSource();
     t.equal(source.setData({}), source);
-    t.end();
   });
 
   await t.test('fires "data" event', async t => {
@@ -222,7 +221,6 @@ test('GeoJSONSource#serialize', async t => {
       type: 'geojson',
       data: hawkHill
     });
-    t.end();
   });
 
   await t.test('serialize source with url', async t => {
@@ -232,7 +230,6 @@ test('GeoJSONSource#serialize', async t => {
       type: 'geojson',
       data: 'local://data.json'
     });
-    t.end();
   });
 
   await t.test('serialize source with updated data', async t => {
@@ -243,7 +240,6 @@ test('GeoJSONSource#serialize', async t => {
       type: 'geojson',
       data: hawkHill
     });
-    t.end();
   });
 
   await t.test('serialize source with additional options', async t => {
@@ -253,6 +249,5 @@ test('GeoJSONSource#serialize', async t => {
       data: {},
       cluster: true
     });
-    t.end();
   });
 });

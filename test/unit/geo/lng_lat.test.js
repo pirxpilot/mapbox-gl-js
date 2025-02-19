@@ -25,7 +25,6 @@ test('LngLat', async t => {
       'Invalid LngLat latitude value: must be between -90 and 90',
       'detects and throws on invalid input'
     );
-    t.end();
   });
 
   await t.test('#convert', t => {
@@ -49,7 +48,6 @@ test('LngLat', async t => {
       '`LngLatLike` argument must be specified as a LngLat instance, an object {lng: <lng>, lat: <lat>}, or an array of [<lng>, <lat>]',
       'detects and throws on invalid input'
     );
-    t.end();
   });
 
   await t.test('#wrap', t => {
@@ -57,17 +55,14 @@ test('LngLat', async t => {
     t.deepEqual(new LngLat(10, 20).wrap(), { lng: 10, lat: 20 });
     t.deepEqual(new LngLat(360, 0).wrap(), { lng: 0, lat: 0 });
     t.deepEqual(new LngLat(190, 0).wrap(), { lng: -170, lat: 0 });
-    t.end();
   });
 
   await t.test('#toArray', t => {
     t.deepEqual(new LngLat(10, 20).toArray(), [10, 20]);
-    t.end();
   });
 
   await t.test('#toString', t => {
     t.equal(new LngLat(10, 20).toString(), 'LngLat(10, 20)');
-    t.end();
   });
 
   await t.test('#toBounds', t => {
@@ -79,6 +74,5 @@ test('LngLat', async t => {
       [-73.97501862141328, 40.77351016847229],
       [-73.97478137858673, 40.77368983152771]
     ]);
-    t.end();
   });
 });

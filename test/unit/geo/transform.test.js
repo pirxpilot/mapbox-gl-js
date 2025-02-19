@@ -38,14 +38,12 @@ test('transform', async t => {
     t.deepEqual(fixedCoord(transform.pointCoordinate(new Point(250, 250))), { column: 512, row: 512, zoom: 10 });
     t.deepEqual(transform.locationPoint(new LngLat(0, 0)), { x: 250, y: 250 });
     t.deepEqual(transform.locationCoordinate(new LngLat(0, 0)), { column: 512, row: 512, zoom: 10 });
-    t.end();
   });
 
   await t.test('does not throw on bad center', async t => {
     const transform = new Transform();
     transform.resize(500, 500);
     transform.center = { lng: 50, lat: -90 };
-    t.end();
   });
 
   await t.test('setLocationAt', async t => {
@@ -55,7 +53,6 @@ test('transform', async t => {
     t.deepEqual(transform.center, { lng: 0, lat: 0 });
     transform.setLocationAtPoint({ lng: 13, lat: 10 }, new Point(15, 45));
     t.deepEqual(fixedLngLat(transform.pointLocation(new Point(15, 45))), { lng: 13, lat: 10 });
-    t.end();
   });
 
   await t.test('setLocationAt tilted', async t => {
@@ -66,7 +63,6 @@ test('transform', async t => {
     t.deepEqual(transform.center, { lng: 0, lat: 0 });
     transform.setLocationAtPoint({ lng: 13, lat: 10 }, new Point(15, 45));
     t.deepEqual(fixedLngLat(transform.pointLocation(new Point(15, 45))), { lng: 13, lat: 10 });
-    t.end();
   });
 
   await t.test('has a default zoom', async t => {
@@ -74,7 +70,6 @@ test('transform', async t => {
     transform.resize(500, 500);
     t.equal(transform.tileZoom, 0);
     t.equal(transform.tileZoom, transform.zoom);
-    t.end();
   });
 
   await t.test('set fov', async t => {
@@ -83,7 +78,6 @@ test('transform', async t => {
     t.equal(transform.fov, 10);
     transform.fov = 10;
     t.equal(transform.fov, 10);
-    t.end();
   });
 
   await t.test('lngRange & latRange constrain zoom and center', async t => {
@@ -104,8 +98,6 @@ test('transform', async t => {
     transform.zoom = 10;
     transform.center = new LngLat(-50, -30);
     t.same(transform.center, new LngLat(-4.828338623046875, -4.828969771321582));
-
-    t.end();
   });
 
   test('coveringTiles', async t => {
@@ -230,8 +222,6 @@ test('transform', async t => {
 
     transform.pitch = 90;
     t.equal(transform.pitch, 60);
-
-    t.end();
   });
 
   await t.test('visibleUnwrappedCoordinates', async t => {
@@ -247,7 +237,5 @@ test('transform', async t => {
     transform._renderWorldCopies = false;
     unwrappedCoords = transform.getVisibleUnwrappedCoordinates(new CanonicalTileID(0, 0, 0));
     t.equal(unwrappedCoords.length, 1);
-
-    t.end();
   });
 });

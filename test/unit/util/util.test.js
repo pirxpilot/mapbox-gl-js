@@ -20,7 +20,6 @@ test('util', async t => {
 
   await t.test('getCoordinatesCenter', async t => {
     t.deepEqual(getCoordinatesCenter([new Coordinate(0, 0, 2), new Coordinate(1, 1, 2)]), new Coordinate(0.5, 0.5, 0));
-    t.end();
   });
 
   await t.test('clamp', async t => {
@@ -28,7 +27,6 @@ test('util', async t => {
     t.equal(clamp(1, 0, 1), 1);
     t.equal(clamp(200, 0, 180), 180);
     t.equal(clamp(-200, 0, 180), 0);
-    t.end();
   });
 
   await t.test('wrap', async t => {
@@ -36,7 +34,6 @@ test('util', async t => {
     t.equal(wrap(1, 0, 1), 1);
     t.equal(wrap(200, 0, 180), 20);
     t.equal(wrap(-200, 0, 180), 160);
-    t.end();
   });
 
   await t.test('bezier', async t => {
@@ -45,7 +42,6 @@ test('util', async t => {
     t.equal(curve(0), 0);
     t.equal(curve(1), 1);
     t.equal(curve(0.5), 0.8230854638965502);
-    t.end();
   });
 
   await t.test('isCounterClockwise ', async t => {
@@ -66,8 +62,6 @@ test('util', async t => {
       t.equal(isCounterClockwise(c, b, a), false);
       t.end();
     });
-
-    t.end();
   });
 
   await t.test('isClosedPolygon', async t => {
@@ -91,7 +85,5 @@ test('util', async t => {
       t.equal(isClosedPolygon(polygon), true);
       t.end();
     });
-
-    t.end();
   });
 });

@@ -26,7 +26,6 @@ test('CollisionFeature', async t => {
     t.equal(box.x2, 50);
     t.equal(box.y1, -10);
     t.equal(box.y2, 10);
-    t.end();
   });
 
   await t.test('line label', async t => {
@@ -56,7 +55,6 @@ test('CollisionFeature', async t => {
       { x: 612, y: 42 },
       { x: 630, y: 33 }
     ]);
-    t.end();
   });
 
   await t.test('boxes for handling pitch underzooming', async t => {
@@ -68,7 +66,6 @@ test('CollisionFeature', async t => {
       distancesToAnchor,
       [-112, -96, -80, -64, -48, -32, -24, -16, -8, 0, 8, 16, 24, 32, 40, 48, 64, 80, 96, 112]
     );
-    t.end();
   });
 
   await t.test('vertical line label', async t => {
@@ -93,7 +90,6 @@ test('CollisionFeature', async t => {
       { x: 0, y: 170 },
       { x: 0, y: 190 }
     ]);
-    t.end();
   });
 
   await t.test('doesnt create any boxes for features with zero height', async t => {
@@ -108,7 +104,6 @@ test('CollisionFeature', async t => {
     const anchor = new Anchor(505, 95, 0, 1);
     const cf = new CollisionFeature(collisionBoxArray, line, anchor, 0, 0, 0, shapedText, 1, 0, true, 1);
     t.equal(cf.boxEndIndex - cf.boxStartIndex, 0);
-    t.end();
   });
 
   await t.test('doesnt create any boxes for features with negative height', async t => {
@@ -123,7 +118,6 @@ test('CollisionFeature', async t => {
     const anchor = new Anchor(505, 95, 0, 1);
     const cf = new CollisionFeature(collisionBoxArray, line, anchor, 0, 0, 0, shapedText, 1, 0, true, 1);
     t.equal(cf.boxEndIndex - cf.boxStartIndex, 0);
-    t.end();
   });
 
   await t.test('doesnt create way too many tiny boxes for features with really low height', async t => {
@@ -138,7 +132,6 @@ test('CollisionFeature', async t => {
     const anchor = new Anchor(505, 95, 0, 1);
     const cf = new CollisionFeature(collisionBoxArray, line, anchor, 0, 0, 0, shapedText, 1, 0, true, 1);
     t.ok(cf.boxEndIndex - cf.boxStartIndex < 45);
-    t.end();
   });
 
   await t.test('height is big enough that first box can be placed *after* anchor', async t => {
@@ -147,7 +140,6 @@ test('CollisionFeature', async t => {
     const shaping = { right: 256, left: 0, bottom: 256, top: 0 };
     const cf = new CollisionFeature(collisionBoxArray, line, anchor, 0, 0, 0, shaping, 1, 0, true, 1);
     t.equal(cf.boxEndIndex - cf.boxStartIndex, 1);
-    t.end();
   });
 
   t.end();
