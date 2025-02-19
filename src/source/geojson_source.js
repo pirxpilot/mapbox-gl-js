@@ -156,6 +156,7 @@ class GeoJSONSource extends Evented {
    * using geojson-vt or supercluster as appropriate.
    */
   _updateWorkerData(callback) {
+    // biome-ignore lint/suspicious/useAwait: normalize return values as promises
     async function loadGeoJSON(data) {
       if (typeof data === 'function') {
         return data();

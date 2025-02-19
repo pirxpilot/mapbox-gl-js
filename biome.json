@@ -79,6 +79,7 @@
         "noGlobalIsNan": "off",
         "noPrototypeBuiltins": "off",
         "noShadowRestrictedNames": "off",
+        "useAwait": "error",
         "useValidTypeof": "off"
       }
     }

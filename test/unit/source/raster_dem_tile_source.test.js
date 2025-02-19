@@ -16,8 +16,8 @@ function createSource(options) {
 
   return source;
 
-  async function loadTile() {
-    return;
+  function loadTile() {
+    return Promise.resolve();
   }
 }
 

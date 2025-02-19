@@ -25,8 +25,8 @@ function createSource(options) {
 
   return source;
 
-  async function loadTile() {
-    return { data: new ArrayBuffer(0) };
+  function loadTile() {
+    return Promise.resolve({ data: new ArrayBuffer(0) });
   }
 }
 
@@ -85,8 +85,8 @@ test('VectorTileSource', async t => {
   });
 
   await t.test('serialize TileJSON', t => {
-    async function loadTile() {
-      return { data: new ArrayBuffer(0) };
+    function loadTile() {
+      return Promise.resolve({ data: new ArrayBuffer(0) });
     }
 
     const source = createSource({
