@@ -15,7 +15,7 @@ function makeFeatures(lines) {
 }
 
 test('mergeLines merges lines with the same text', t => {
-  t.deepEqual(
+  t.assert.deepEqual(
     mergeLines(
       makeFeatures([
         ['a', 0, 1, 2],
@@ -35,7 +35,7 @@ test('mergeLines merges lines with the same text', t => {
 });
 
 test('mergeLines handles merge from both ends', t => {
-  t.deepEqual(
+  t.assert.deepEqual(
     mergeLines(
       makeFeatures([
         ['a', 0, 1, 2],
@@ -48,7 +48,7 @@ test('mergeLines handles merge from both ends', t => {
 });
 
 test('mergeLines handles circular lines', t => {
-  t.deepEqual(
+  t.assert.deepEqual(
     mergeLines(
       makeFeatures([
         ['a', 0, 1, 2],

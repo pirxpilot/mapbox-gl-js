@@ -40,8 +40,11 @@ test('RasterTileSource', async t => {
     });
     source.on('data', e => {
       if (e.sourceDataType === 'metadata') {
-        t.false(source.hasTile(new OverscaledTileID(8, 0, 8, 96, 132)), 'returns false for tiles outside bounds');
-        t.true(source.hasTile(new OverscaledTileID(8, 0, 8, 95, 132)), 'returns true for tiles inside bounds');
+        t.assert.notOk(
+          source.hasTile(new OverscaledTileID(8, 0, 8, 96, 132)),
+          'returns false for tiles outside bounds'
+        );
+        t.assert.ok(source.hasTile(new OverscaledTileID(8, 0, 8, 95, 132)), 'returns true for tiles inside bounds');
         done();
       }
     });
@@ -57,7 +60,7 @@ test('RasterTileSource', async t => {
 
     source.on('data', e => {
       if (e.sourceDataType === 'metadata') {
-        t.deepEqual(
+        t.assert.deepEqual(
           source.tileBounds.bounds,
           { _sw: { lng: -47, lat: -7 }, _ne: { lng: -45, lat: 90 } },
           'converts invalid bounds to closest valid bounds'

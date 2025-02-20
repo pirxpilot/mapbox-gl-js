@@ -15,9 +15,9 @@ globSync(`${__dirname}/fixture/*.input.json`).forEach(file => {
     }
     const expect = JSON.parse(readFileSync(outputfile));
     if (expect[0]?.error) {
-      t.equal(result[0].message, expect[0].message);
+      t.assert.equal(result[0].message, expect[0].message);
     } else {
-      t.deepEqual(result, expect);
+      t.assert.deepEqual(result, expect);
     }
   });
 });
@@ -27,19 +27,19 @@ const style = JSON.parse(readFileSync(fixtures[0]));
 const reference = require('../../../src/style-spec/reference/latest');
 
 test('validate.parsed exists', { skip: true }, t => {
-  t.equal(typeof validate.parsed, 'function');
+  t.assert.equal(typeof validate.parsed, 'function');
 });
 
 test('errors from validate.parsed do not contain line numbers', { skip: true }, t => {
   const result = validate.parsed(style, reference);
-  t.equal(result[0].line, undefined);
+  t.assert.equal(result[0].line, undefined);
 });
 
 test('validate.latest exists', { skip: true }, t => {
-  t.equal(typeof validate.latest, 'function');
+  t.assert.equal(typeof validate.latest, 'function');
 });
 
 test('errors from validate.latest do not contain line numbers', { skip: true }, t => {
   const result = validate.latest(style);
-  t.equal(result[0].line, undefined);
+  t.assert.equal(result[0].line, undefined);
 });

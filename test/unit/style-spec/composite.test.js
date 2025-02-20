@@ -28,15 +28,15 @@ test('composites Mapbox vector sources', t => {
     ]
   });
 
-  t.deepEqual(result.sources, {
+  t.assert.deepEqual(result.sources, {
     'a,b': {
       type: 'vector',
       url: 'mapbox://a,b'
     }
   });
 
-  t.equal(result.layers[0].source, 'a,b');
-  t.equal(result.layers[1].source, 'a,b');
+  t.assert.equal(result.layers[0].source, 'a,b');
+  t.assert.equal(result.layers[1].source, 'a,b');
 });
 
 test('does not composite vector + raster', t => {
@@ -55,7 +55,7 @@ test('does not composite vector + raster', t => {
     layers: []
   });
 
-  t.deepEqual(Object.keys(result.sources), ['a', 'b']);
+  t.assert.deepEqual(Object.keys(result.sources), ['a', 'b']);
 });
 
 test('incorrect url match', t => {
@@ -74,7 +74,7 @@ test('incorrect url match', t => {
     layers: []
   });
 
-  t.deepEqual(Object.keys(result.sources), ['a', 'b']);
+  t.assert.deepEqual(Object.keys(result.sources), ['a', 'b']);
 });
 
 test('composites Mapbox vector sources with conflicting source layer names', t => {

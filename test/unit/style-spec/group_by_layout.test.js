@@ -10,13 +10,13 @@ test('group layers whose ref properties are identical', t => {
     id: 'child',
     type: 'line'
   };
-  t.deepEqual(group([a, b]), [[a, b]]);
-  t.equal(group([a, b])[0][0], a);
-  t.equal(group([a, b])[0][1], b);
+  t.assert.deepEqual(group([a, b]), [[a, b]]);
+  t.assert.equal(group([a, b])[0][0], a);
+  t.assert.equal(group([a, b])[0][1], b);
 });
 
 test('group does not group unrelated layers', t => {
-  t.deepEqual(
+  t.assert.deepEqual(
     group([
       {
         id: 'parent',
@@ -45,7 +45,7 @@ test('group does not group unrelated layers', t => {
 });
 
 test('group works even for differing layout key orders', t => {
-  t.deepEqual(
+  t.assert.deepEqual(
     group([
       {
         id: 'parent',

@@ -20,7 +20,7 @@ test('Map#isRotating', async t => {
 
   await t.test('Map#isRotating returns false by default', t => {
     const map = createMap();
-    t.equal(map.isRotating(), false);
+    t.assert.equal(map.isRotating(), false);
     map.remove();
   });
 
@@ -28,11 +28,11 @@ test('Map#isRotating', async t => {
     const map = createMap();
 
     map.on('rotatestart', () => {
-      t.equal(map.isRotating(), true);
+      t.assert.equal(map.isRotating(), true);
     });
 
     map.on('rotateend', () => {
-      t.equal(map.isRotating(), false);
+      t.assert.equal(map.isRotating(), false);
       map.remove();
       done();
     });
@@ -44,11 +44,11 @@ test('Map#isRotating', async t => {
     const map = createMap();
 
     map.on('rotatestart', () => {
-      t.equal(map.isRotating(), true);
+      t.assert.equal(map.isRotating(), true);
     });
 
     map.on('rotateend', () => {
-      t.equal(map.isRotating(), false);
+      t.assert.equal(map.isRotating(), false);
       map.remove();
       done();
     });

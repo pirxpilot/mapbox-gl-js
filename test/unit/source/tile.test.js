@@ -36,7 +36,7 @@ test('Tile', async t => {
 
       result = [];
       tile.querySourceFeatures(result, {});
-      t.equal(result.length, 0);
+      t.assert.equal(result.length, 0);
 
       const geojsonWrapper = new GeoJSONWrapper(features);
       geojsonWrapper.name = '_geojsonTileLayer';
@@ -47,18 +47,18 @@ test('Tile', async t => {
 
       result = [];
       tile.querySourceFeatures(result);
-      t.equal(result.length, 1);
-      t.deepEqual(result[0].geometry.coordinates[0], [-90, 0]);
+      t.assert.equal(result.length, 1);
+      t.assert.deepEqual(result[0].geometry.coordinates[0], [-90, 0]);
       result = [];
       tile.querySourceFeatures(result, {});
-      t.equal(result.length, 1);
-      t.deepEqual(result[0].properties, features[0].tags);
+      t.assert.equal(result.length, 1);
+      t.assert.deepEqual(result[0].properties, features[0].tags);
       result = [];
       tile.querySourceFeatures(result, { filter: ['==', 'oneway', true] });
-      t.equal(result.length, 1);
+      t.assert.equal(result.length, 1);
       result = [];
       tile.querySourceFeatures(result, { filter: ['!=', 'oneway', true] });
-      t.equal(result.length, 0);
+      t.assert.equal(result.length, 0);
     });
 
     await t.test('empty geojson tile', t => {
@@ -67,16 +67,16 @@ test('Tile', async t => {
 
       result = [];
       tile.querySourceFeatures(result, {});
-      t.equal(result.length, 0);
+      t.assert.equal(result.length, 0);
 
       const geojsonWrapper = new GeoJSONWrapper([]);
       geojsonWrapper.name = '_geojsonTileLayer';
       tile.rawTileData = vtpbf({ layers: { _geojsonTileLayer: geojsonWrapper } });
       result = [];
-      t.doesNotThrow(() => {
+      t.assert.doesNotThrow(() => {
         tile.querySourceFeatures(result);
       });
-      t.equal(result.length, 0);
+      t.assert.equal(result.length, 0);
     });
 
     await t.test('vector tile', t => {
@@ -85,24 +85,24 @@ test('Tile', async t => {
 
       result = [];
       tile.querySourceFeatures(result, {});
-      t.equal(result.length, 0);
+      t.assert.equal(result.length, 0);
 
       tile.loadVectorData(createVectorData({ rawTileData: createRawTileData() }), createPainter());
 
       result = [];
       tile.querySourceFeatures(result, { sourceLayer: 'does-not-exist' });
-      t.equal(result.length, 0);
+      t.assert.equal(result.length, 0);
 
       result = [];
       tile.querySourceFeatures(result, { sourceLayer: 'road' });
-      t.equal(result.length, 3);
+      t.assert.equal(result.length, 3);
 
       result = [];
       tile.querySourceFeatures(result, { sourceLayer: 'road', filter: ['==', 'class', 'main'] });
-      t.equal(result.length, 1);
+      t.assert.equal(result.length, 1);
       result = [];
       tile.querySourceFeatures(result, { sourceLayer: 'road', filter: ['!=', 'class', 'main'] });
-      t.equal(result.length, 2);
+      t.assert.equal(result.length, 2);
     });
 
     await t.test('loadVectorData unloads existing data before overwriting it', t => {
@@ -113,7 +113,7 @@ test('Tile', async t => {
 
       tile.loadVectorData(null, painter);
 
-      t.ok(tile.unloadVectorData.calledWith());
+      t.assert.ok(tile.unloadVectorData.calledWith());
     });
 
     await t.test('loadVectorData preserves the most recent rawTileData', t => {
@@ -125,7 +125,7 @@ test('Tile', async t => {
 
       const features = [];
       tile.querySourceFeatures(features, { sourceLayer: 'road' });
-      t.equal(features.length, 3);
+      t.assert.equal(features.length, 3);
     });
   });
 
@@ -139,7 +139,7 @@ test('Tile', async t => {
       mask[a.id] = a;
       mask[b.id] = b;
       tile.setMask(mask, context);
-      t.deepEqual(tile.mask, mask);
+      t.assert.deepEqual(tile.mask, mask);
     });
 
     await t.test('complex mask', t => {
@@ -159,7 +159,7 @@ test('Tile', async t => {
       mask[e.id] = e;
       mask[f.id] = f;
       tile.setMask(mask, context);
-      t.deepEqual(tile.mask, mask);
+      t.assert.deepEqual(tile.mask, mask);
     });
   });
 
@@ -188,7 +188,7 @@ test('Tile', async t => {
         return a.isLessThan(b) ? -1 : b.isLessThan(a) ? 1 : 0;
       });
 
-      t.deepEqual(sortedTiles, [
+      t.assert.deepEqual(sortedTiles, [
         new OverscaledTileID(9, 0, 9, 145, 194),
         new OverscaledTileID(9, 0, 9, 145, 196),
         new OverscaledTileID(9, 0, 9, 146, 195),
@@ -215,8 +215,8 @@ test('Tile', async t => {
       tile.state = 'loaded';
       tile.timeAdded = Date.now();
 
-      t.notOk(tile.cacheControl);
-      t.notOk(tile.expires);
+      t.assert.notOk(tile.cacheControl);
+      t.assert.notOk(tile.expires);
     });
 
     await t.test('set, get expiry', t => {
@@ -224,8 +224,8 @@ test('Tile', async t => {
       tile.state = 'loaded';
       tile.timeAdded = Date.now();
 
-      t.notOk(tile.cacheControl, 'no cache-control set');
-      t.notOk(tile.expires, 'no expires set');
+      t.assert.notOk(tile.cacheControl, 'no cache-control set');
+      t.assert.notOk(tile.expires, 'no expires set');
 
       tile.setExpiryData({
         cacheControl: 'max-age=60'
@@ -233,7 +233,7 @@ test('Tile', async t => {
 
       // times are fuzzy, so we'll give this a little leeway:
       let expiryTimeout = tile.getExpiryTimeout();
-      t.ok(expiryTimeout >= 56000 && expiryTimeout <= 60000, 'cache-control parsed as expected');
+      t.assert.ok(expiryTimeout >= 56000 && expiryTimeout <= 60000, 'cache-control parsed as expected');
 
       const date = new Date();
       date.setMinutes(date.getMinutes() + 10);
@@ -244,7 +244,7 @@ test('Tile', async t => {
       });
 
       expiryTimeout = tile.getExpiryTimeout();
-      t.ok(expiryTimeout > 598000 && expiryTimeout < 600000, 'expires header set date as expected');
+      t.assert.ok(expiryTimeout > 598000 && expiryTimeout < 600000, 'expires header set date as expected');
     });
 
     await t.test('exponential backoff handling', t => {
@@ -257,7 +257,7 @@ test('Tile', async t => {
       });
 
       const expiryTimeout = tile.getExpiryTimeout();
-      t.ok(expiryTimeout >= 8000 && expiryTimeout <= 10000, 'expiry timeout as expected when fresh');
+      t.assert.ok(expiryTimeout >= 8000 && expiryTimeout <= 10000, 'expiry timeout as expected when fresh');
 
       const justNow = new Date();
       justNow.setSeconds(justNow.getSeconds() - 1);
@@ -268,21 +268,21 @@ test('Tile', async t => {
       tile.setExpiryData({
         expires: justNow
       });
-      t.equal(tile.getExpiryTimeout(), 1000, 'tile with one expired request retries after 1 second');
+      t.assert.equal(tile.getExpiryTimeout(), 1000, 'tile with one expired request retries after 1 second');
 
       tile.setExpiryData({
         expires: justNow
       });
-      t.equal(tile.getExpiryTimeout(), 2000, 'exponential backoff');
+      t.assert.equal(tile.getExpiryTimeout(), 2000, 'exponential backoff');
       tile.setExpiryData({
         expires: justNow
       });
-      t.equal(tile.getExpiryTimeout(), 4000, 'exponential backoff');
+      t.assert.equal(tile.getExpiryTimeout(), 4000, 'exponential backoff');
 
       tile.setExpiryData({
         expires: justNow
       });
-      t.equal(tile.getExpiryTimeout(), 8000, 'exponential backoff');
+      t.assert.equal(tile.getExpiryTimeout(), 8000, 'exponential backoff');
     });
   });
 });

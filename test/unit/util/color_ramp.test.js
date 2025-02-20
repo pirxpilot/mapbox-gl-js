@@ -43,12 +43,12 @@ test('renderColorRamp', t => {
 
   const ramp = renderColorRamp(expression, 'lineProgress');
 
-  t.equal(ramp.width, 256);
-  t.equal(ramp.height, 1);
+  t.assert.equal(ramp.width, 256);
+  t.assert.equal(ramp.height, 1);
 
-  t.equal(pixelAt(ramp, 0)[3], 0, 'pixel at 0.0 matches input alpha');
-  t.ok(nearlyEquals(pixelAt(ramp, 63), [255, 255, 255, 255]), 'pixel at 0.25 matches input');
-  t.ok(nearlyEquals(pixelAt(ramp, 127), [0, 255, 255, 127]), 'pixel at 0.5 matches input');
-  t.ok(nearlyEquals(pixelAt(ramp, 191), [0, 0, 0, 255]), 'pixel at 0.75 matches input');
-  t.ok(nearlyEquals(pixelAt(ramp, 255), [255, 0, 0, 255]), 'pixel at 1.0 matches input');
+  t.assert.equal(pixelAt(ramp, 0)[3], 0, 'pixel at 0.0 matches input alpha');
+  t.assert.ok(nearlyEquals(pixelAt(ramp, 63), [255, 255, 255, 255]), 'pixel at 0.25 matches input');
+  t.assert.ok(nearlyEquals(pixelAt(ramp, 127), [0, 255, 255, 127]), 'pixel at 0.5 matches input');
+  t.assert.ok(nearlyEquals(pixelAt(ramp, 191), [0, 0, 0, 255]), 'pixel at 0.75 matches input');
+  t.assert.ok(nearlyEquals(pixelAt(ramp, 255), [255, 0, 0, 255]), 'pixel at 1.0 matches input');
 });

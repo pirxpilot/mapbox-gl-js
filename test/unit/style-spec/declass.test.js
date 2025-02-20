@@ -26,12 +26,12 @@ test('declass a style, one class', t => {
 
   const declassed = declass(style, ['one']);
 
-  t.notEqual(declassed, style, 'returns a new style object');
-  t.notEqual(declassed.layers, style.layers, 'makes new style.layers array');
-  t.notEqual(declassed.layers[0], style.layers[0], 'makes new layer object');
-  t.notEqual(declassed.layers[0].paint, style.layers[0].paint, 'makes new paint object');
+  t.assert.notEqual(declassed, style, 'returns a new style object');
+  t.assert.notEqual(declassed.layers, style.layers, 'makes new style.layers array');
+  t.assert.notEqual(declassed.layers[0], style.layers[0], 'makes new layer object');
+  t.assert.notEqual(declassed.layers[0].paint, style.layers[0].paint, 'makes new paint object');
 
-  t.deepEqual(declassed, {
+  t.assert.deepEqual(declassed, {
     layers: [
       {
         id: 'a',
@@ -58,7 +58,7 @@ test('declass a style, missing class ==> noop', t => {
     ]
   };
 
-  t.deepEqual(declass(style, ['one']), {
+  t.assert.deepEqual(declass(style, ['one']), {
     layers: [
       {
         id: 'a',
@@ -92,7 +92,7 @@ test('declass a style, multiple classes', t => {
     ]
   };
 
-  t.deepEqual(declass(style, ['one', 'two']), {
+  t.assert.deepEqual(declass(style, ['one', 'two']), {
     layers: [
       {
         id: 'a',
@@ -121,7 +121,7 @@ test('declassing a style removes paint.CLASS definitions, whether or not they ar
     ]
   };
 
-  t.deepEqual(declass(style, ['one']), {
+  t.assert.deepEqual(declass(style, ['one']), {
     layers: [
       {
         id: 'a',

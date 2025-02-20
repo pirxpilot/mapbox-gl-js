@@ -75,8 +75,8 @@ test('SourceCache#addTile', async t => {
     const tileID = new OverscaledTileID(0, 0, 0, 0, 0);
     const sourceCache = createSourceCache({
       loadTile: function (tile) {
-        t.deepEqual(tile.tileID, tileID);
-        t.equal(tile.uses, 0);
+        t.assert.deepEqual(tile.tileID, tileID);
+        t.assert.equal(tile.uses, 0);
         done();
       }
     });
@@ -87,8 +87,8 @@ test('SourceCache#addTile', async t => {
   await t.test('adds tile when uncached', (t, done) => {
     const tileID = new OverscaledTileID(0, 0, 0, 0, 0);
     const sourceCache = createSourceCache({}).on('dataloading', data => {
-      t.deepEqual(data.tile.tileID, tileID);
-      t.equal(data.tile.uses, 1);
+      t.assert.deepEqual(data.tile.tileID, tileID);
+      t.assert.equal(data.tile.uses, 1);
       done();
     });
     sourceCache.onAdd();
@@ -101,7 +101,7 @@ test('SourceCache#addTile', async t => {
     const sourceCache = createSourceCache({
       loadTile: function (tile, callback) {
         sourceCache.on('data', () => {
-          t.equal(updateFeaturesSpy.getCalls().length, 1);
+          t.assert.equal(updateFeaturesSpy.getCalls().length, 1);
           done();
         });
         updateFeaturesSpy = t.spy(tile, 'setFeatureState');
@@ -136,8 +136,8 @@ test('SourceCache#addTile', async t => {
     sourceCache._removeTile(tileID.key);
     sourceCache._addTile(tileID);
 
-    t.equal(load, 1);
-    t.equal(add, 1);
+    t.assert.equal(load, 1);
+    t.assert.equal(add, 1);
   });
 
   await t.test('updates feature state on cached tile', t => {
@@ -161,7 +161,7 @@ test('SourceCache#addTile', async t => {
     sourceCache._removeTile(tileID.key);
     sourceCache._addTile(tileID);
 
-    t.equal(updateFeaturesSpy.getCalls().length, 1);
+    t.assert.equal(updateFeaturesSpy.getCalls().length, 1);
   });
 
   await t.test('moves timers when adding tile from cache', t => {
@@ -186,23 +186,23 @@ test('SourceCache#addTile', async t => {
     sourceCache.updateCacheSize(tr);
 
     const id = tileID.key;
-    t.notOk(sourceCache._timers[id]);
-    t.notOk(sourceCache._cache.has(tileID));
+    t.assert.notOk(sourceCache._timers[id]);
+    t.assert.notOk(sourceCache._cache.has(tileID));
 
     sourceCache._addTile(tileID);
 
-    t.ok(sourceCache._timers[id]);
-    t.notOk(sourceCache._cache.has(tileID));
+    t.assert.ok(sourceCache._timers[id]);
+    t.assert.notOk(sourceCache._cache.has(tileID));
 
     sourceCache._removeTile(tileID.key);
 
-    t.notOk(sourceCache._timers[id]);
-    t.ok(sourceCache._cache.has(tileID));
+    t.assert.notOk(sourceCache._timers[id]);
+    t.assert.ok(sourceCache._cache.has(tileID));
 
     sourceCache._addTile(tileID);
 
-    t.ok(sourceCache._timers[id]);
-    t.notOk(sourceCache._cache.has(tileID));
+    t.assert.ok(sourceCache._timers[id]);
+    t.assert.notOk(sourceCache._cache.has(tileID));
   });
 
   await t.test('does not reuse wrapped tile', t => {
@@ -223,9 +223,9 @@ test('SourceCache#addTile', async t => {
     const t1 = sourceCache._addTile(tileID);
     const t2 = sourceCache._addTile(new OverscaledTileID(0, 1, 0, 0, 0));
 
-    t.equal(load, 2);
-    t.equal(add, 2);
-    t.notEqual(t1, t2);
+    t.assert.equal(load, 2);
+    t.assert.equal(add, 2);
+    t.assert.notEqual(t1, t2);
   });
 });
 
@@ -236,7 +236,7 @@ test('SourceCache#removeTile', async t => {
     sourceCache._addTile(tileID);
     sourceCache.on('data', () => {
       sourceCache._removeTile(tileID.key);
-      t.notOk(sourceCache._tiles[tileID.key]);
+      t.assert.notOk(sourceCache._tiles[tileID.key]);
       done();
     });
   });
@@ -248,7 +248,7 @@ test('SourceCache#removeTile', async t => {
         tile.state = 'loaded';
       },
       unloadTile: function () {
-        t.fail();
+        t.assert.fail();
       }
     });
 
@@ -268,11 +268,11 @@ test('SourceCache#removeTile', async t => {
 
     const sourceCache = createSourceCache({
       abortTile: function (tile) {
-        t.deepEqual(tile.tileID, tileID);
+        t.assert.deepEqual(tile.tileID, tileID);
         abort++;
       },
       unloadTile: function (tile) {
-        t.deepEqual(tile.tileID, tileID);
+        t.assert.deepEqual(tile.tileID, tileID);
         unload++;
       }
     });
@@ -280,8 +280,8 @@ test('SourceCache#removeTile', async t => {
     sourceCache._addTile(tileID);
     sourceCache._removeTile(tileID.key);
 
-    t.equal(abort, 1);
-    t.equal(unload, 1);
+    t.assert.equal(abort, 1);
+    t.assert.equal(unload, 1);
   });
 
   await t.test('_tileLoaded after _removeTile skips tile.added', t => {
@@ -289,7 +289,7 @@ test('SourceCache#removeTile', async t => {
 
     const sourceCache = createSourceCache({
       loadTile: function (tile, callback) {
-        tile.added = t.notOk();
+        tile.added = t.assert.notOk();
         sourceCache._removeTile(tileID.key);
         callback();
       }
@@ -328,7 +328,7 @@ test('SourceCache / Source lifecycle', async t => {
 
   await t.test('forward error event', (t, done) => {
     const sourceCache = createSourceCache({ error: 'Error loading source' }).on('error', err => {
-      t.equal(err.error, 'Error loading source');
+      t.assert.equal(err.error, 'Error loading source');
       done();
     });
     sourceCache.onAdd();
@@ -341,7 +341,7 @@ test('SourceCache / Source lifecycle', async t => {
 
   await t.test('loaded() true after source error', (t, done) => {
     const sourceCache = createSourceCache({ error: 'Error loading source' }).on('error', () => {
-      t.ok(sourceCache.loaded());
+      t.assert.ok(sourceCache.loaded());
       done();
     });
     sourceCache.onAdd();
@@ -362,7 +362,7 @@ test('SourceCache / Source lifecycle', async t => {
         }
       })
       .on('error', () => {
-        t.true(sourceCache.loaded());
+        t.assert.ok(sourceCache.loaded());
         done();
       });
 
@@ -378,7 +378,7 @@ test('SourceCache / Source lifecycle', async t => {
 
     const sourceCache = createSourceCache({
       loadTile: function (tile, callback) {
-        t.equal(tile.tileID.key, expected.shift());
+        t.assert.equal(tile.tileID.key, expected.shift());
         tile.loaded = true;
         callback();
         if (expected.length === 0) {
@@ -408,7 +408,7 @@ test('SourceCache#update', async t => {
     sourceCache.on('data', e => {
       if (e.sourceDataType === 'metadata') {
         sourceCache.update(transform);
-        t.deepEqual(sourceCache.getIds(), []);
+        t.assert.deepEqual(sourceCache.getIds(), []);
         done();
       }
     });
@@ -424,7 +424,7 @@ test('SourceCache#update', async t => {
     sourceCache.on('data', e => {
       if (e.sourceDataType === 'metadata') {
         sourceCache.update(transform);
-        t.deepEqual(sourceCache.getIds(), [new OverscaledTileID(0, 0, 0, 0, 0).key]);
+        t.assert.deepEqual(sourceCache.getIds(), [new OverscaledTileID(0, 0, 0, 0, 0).key]);
         done();
       }
     });
@@ -442,7 +442,7 @@ test('SourceCache#update', async t => {
     sourceCache.on('data', e => {
       if (e.sourceDataType === 'metadata') {
         sourceCache.update(transform);
-        t.deepEqual(
+        t.assert.deepEqual(
           sourceCache.getIds().sort(),
           [new OverscaledTileID(1, 0, 1, 1, 0).key, new OverscaledTileID(1, 0, 1, 1, 1).key].sort()
         );
@@ -467,12 +467,12 @@ test('SourceCache#update', async t => {
     sourceCache.on('data', e => {
       if (e.sourceDataType === 'metadata') {
         sourceCache.update(transform);
-        t.deepEqual(sourceCache.getIds(), [new OverscaledTileID(0, 0, 0, 0, 0).key]);
+        t.assert.deepEqual(sourceCache.getIds(), [new OverscaledTileID(0, 0, 0, 0, 0).key]);
 
         transform.zoom = 1;
         sourceCache.update(transform);
 
-        t.deepEqual(sourceCache.getIds(), [
+        t.assert.deepEqual(sourceCache.getIds(), [
           new OverscaledTileID(1, 0, 1, 1, 1).key,
           new OverscaledTileID(1, 0, 1, 0, 1).key,
           new OverscaledTileID(1, 0, 1, 1, 0).key,
@@ -501,12 +501,12 @@ test('SourceCache#update', async t => {
     sourceCache.on('data', e => {
       if (e.sourceDataType === 'metadata') {
         sourceCache.update(transform);
-        t.deepEqual(sourceCache.getIds(), [new OverscaledTileID(0, 0, 0, 0, 0).key]);
+        t.assert.deepEqual(sourceCache.getIds(), [new OverscaledTileID(0, 0, 0, 0, 0).key]);
 
         transform.zoom = 1;
         sourceCache.update(transform);
 
-        t.deepEqual(sourceCache.getIds(), [
+        t.assert.deepEqual(sourceCache.getIds(), [
           new OverscaledTileID(0, 0, 0, 0, 0).key,
           new OverscaledTileID(1, 0, 1, 1, 1).key,
           new OverscaledTileID(1, 0, 1, 0, 1).key,
@@ -535,12 +535,12 @@ test('SourceCache#update', async t => {
     sourceCache.on('data', e => {
       if (e.sourceDataType === 'metadata') {
         sourceCache.update(transform);
-        t.deepEqual(sourceCache.getIds(), [new OverscaledTileID(0, 1, 0, 0, 0).key]);
+        t.assert.deepEqual(sourceCache.getIds(), [new OverscaledTileID(0, 1, 0, 0, 0).key]);
 
         transform.zoom = 1;
         sourceCache.update(transform);
 
-        t.deepEqual(sourceCache.getIds(), [
+        t.assert.deepEqual(sourceCache.getIds(), [
           new OverscaledTileID(0, 1, 0, 0, 0).key,
           new OverscaledTileID(1, 1, 1, 1, 1).key,
           new OverscaledTileID(1, 1, 1, 0, 1).key,
@@ -572,7 +572,7 @@ test('SourceCache#update', async t => {
     sourceCache.on('data', e => {
       if (e.sourceDataType === 'metadata') {
         sourceCache.update(transform);
-        t.deepEqual(sourceCache.getIds(), [
+        t.assert.deepEqual(sourceCache.getIds(), [
           new OverscaledTileID(2, 0, 2, 2, 2).key,
           new OverscaledTileID(2, 0, 2, 1, 2).key,
           new OverscaledTileID(2, 0, 2, 2, 1).key,
@@ -582,7 +582,7 @@ test('SourceCache#update', async t => {
         transform.zoom = 0;
         sourceCache.update(transform);
 
-        t.deepEqual(sourceCache.getRenderableIds().length, 5);
+        t.assert.deepEqual(sourceCache.getRenderableIds().length, 5);
         done();
       }
     });
@@ -615,7 +615,7 @@ test('SourceCache#update', async t => {
         transform.zoom = 1;
         sourceCache.update(transform);
 
-        t.equal(sourceCache._coveredTiles[new OverscaledTileID(0, 0, 0, 0, 0).key], true);
+        t.assert.equal(sourceCache._coveredTiles[new OverscaledTileID(0, 0, 0, 0, 0).key], true);
         done();
       }
     });
@@ -644,7 +644,7 @@ test('SourceCache#update', async t => {
         transform.zoom = 0;
         sourceCache.update(transform);
 
-        t.equal(sourceCache.getRenderableIds().length, 5, 'retains 0/0/0 and its four children');
+        t.assert.equal(sourceCache.getRenderableIds().length, 5, 'retains 0/0/0 and its four children');
         done();
       }
     });
@@ -681,15 +681,15 @@ test('SourceCache#update', async t => {
         transform.zoom = 0;
         sourceCache.update(transform);
 
-        t.equal(sourceCache.getRenderableIds().length, 5, 'retains 0/0/0 and its four children');
+        t.assert.equal(sourceCache.getRenderableIds().length, 5, 'retains 0/0/0 and its four children');
 
         time = start + 98;
         sourceCache.update(transform);
-        t.equal(sourceCache.getRenderableIds().length, 5, 'retains 0/0/0 and its four children');
+        t.assert.equal(sourceCache.getRenderableIds().length, 5, 'retains 0/0/0 and its four children');
 
         time = start + fadeTime + 1;
         sourceCache.update(transform);
-        t.equal(sourceCache.getRenderableIds().length, 1, 'drops children after fading is complete');
+        t.assert.equal(sourceCache.getRenderableIds().length, 1, 'drops children after fading is complete');
         done();
       }
     });
@@ -716,7 +716,7 @@ test('SourceCache#update', async t => {
     sourceCache.on('data', e => {
       if (e.sourceDataType === 'metadata') {
         sourceCache.update(transform);
-        t.deepEqual(sourceCache.getRenderableIds(), [
+        t.assert.deepEqual(sourceCache.getRenderableIds(), [
           new OverscaledTileID(16, 0, 16, 8192, 8192).key,
           new OverscaledTileID(16, 0, 16, 8191, 8192).key,
           new OverscaledTileID(16, 0, 16, 8192, 8191).key,
@@ -726,7 +726,7 @@ test('SourceCache#update', async t => {
         transform.zoom = 15;
         sourceCache.update(transform);
 
-        t.deepEqual(sourceCache.getRenderableIds(), [
+        t.assert.deepEqual(sourceCache.getRenderableIds(), [
           new OverscaledTileID(16, 0, 16, 8192, 8192).key,
           new OverscaledTileID(16, 0, 16, 8191, 8192).key,
           new OverscaledTileID(16, 0, 16, 8192, 8191).key,
@@ -749,14 +749,14 @@ test('SourceCache#update', async t => {
         transform.center = new LngLat(360, 0);
         const tileID = new OverscaledTileID(0, 1, 0, 0, 0);
         sourceCache.update(transform);
-        t.deepEqual(sourceCache.getIds(), [tileID.key]);
+        t.assert.deepEqual(sourceCache.getIds(), [tileID.key]);
         const tile = sourceCache.getTile(tileID);
 
         transform.center = new LngLat(0, 0);
         const wrappedTileID = new OverscaledTileID(0, 0, 0, 0, 0);
         sourceCache.update(transform);
-        t.deepEqual(sourceCache.getIds(), [wrappedTileID.key]);
-        t.equal(sourceCache.getTile(wrappedTileID), tile);
+        t.assert.deepEqual(sourceCache.getIds(), [wrappedTileID.key]);
+        t.assert.equal(sourceCache.getTile(wrappedTileID), tile);
         done();
       }
     });
@@ -778,8 +778,8 @@ test('SourceCache#_updateRetainedTiles', async t => {
     const idealTile = new OverscaledTileID(1, 0, 1, 1, 1);
     stateCache[idealTile.key] = 'loaded';
     sourceCache._updateRetainedTiles([idealTile], 1);
-    t.ok(getTileSpy.notCalled);
-    t.deepEqual(sourceCache.getIds(), [idealTile.key]);
+    t.assert.ok(getTileSpy.notCalled);
+    t.assert.deepEqual(sourceCache.getIds(), [idealTile.key]);
   });
 
   await t.test('retains all loaded children ', t => {
@@ -810,7 +810,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
     }
 
     const retained = sourceCache._updateRetainedTiles([idealTile], 3);
-    t.deepEqual(
+    t.assert.deepEqual(
       Object.keys(retained),
       [
         // parents are requested because ideal ideal tile is not completely covered by
@@ -840,7 +840,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
     const idealTiles = [new OverscaledTileID(1, 0, 1, 1, 1), new OverscaledTileID(1, 0, 1, 0, 1)];
     stateCache[idealTiles[0].key] = 'loaded';
     const retained = sourceCache._updateRetainedTiles(idealTiles, 1);
-    t.deepEqual(
+    t.assert.deepEqual(
       getTileSpy.getCalls().map(c => {
         return c.args[0];
       }),
@@ -852,7 +852,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
 
     // retained tiles include all ideal tiles and any parents that were loaded to cover
     // non-existant tiles
-    t.deepEqual(retained, {
+    t.assert.deepEqual(retained, {
       // parent
       0: new OverscaledTileID(0, 0, 0, 0, 0),
       //  1/0/1
@@ -883,7 +883,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
     const getTileSpy = t.spy(sourceCache, 'getTile');
 
     sourceCache._updateRetainedTiles([idealTile], 2);
-    t.deepEqual(
+    t.assert.deepEqual(
       getTileSpy.getCalls().map(c => {
         return c.args[0];
       }),
@@ -894,7 +894,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
       ]
     );
 
-    t.deepEqual(
+    t.assert.deepEqual(
       addTileSpy.getCalls().map(c => {
         return c.args[0];
       }),
@@ -929,7 +929,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
 
     const retained = sourceCache._updateRetainedTiles([idealTile], 1);
 
-    t.deepEqual(
+    t.assert.deepEqual(
       getTileSpy.getCalls().map(c => {
         return c.args[0];
       }),
@@ -939,7 +939,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
       ]
     );
 
-    t.deepEqual(
+    t.assert.deepEqual(
       retained,
       {
         // parent of ideal tile 0/0/0
@@ -957,8 +957,8 @@ test('SourceCache#_updateRetainedTiles', async t => {
     sourceCache._tiles[idealTile.key].state = 'loaded';
     const retainedLoaded = sourceCache._updateRetainedTiles([idealTile], 1);
 
-    t.ok(getTileSpy.notCalled);
-    t.deepEqual(
+    t.assert.ok(getTileSpy.notCalled);
+    t.assert.deepEqual(
       retainedLoaded,
       {
         // only ideal tile retained
@@ -994,8 +994,8 @@ test('SourceCache#_updateRetainedTiles', async t => {
     const getTileSpy = t.spy(sourceCache, 'getTile');
     const retained = sourceCache._updateRetainedTiles([idealTile], 2);
     // parent tile isn't requested because all covering children are loaded
-    t.deepEqual(getTileSpy.getCalls(), []);
-    t.deepEqual(Object.keys(retained), [idealTile.key].concat(loadedTiles.map(t => t.key)));
+    t.assert.deepEqual(getTileSpy.getCalls(), []);
+    t.assert.deepEqual(Object.keys(retained), [idealTile.key].concat(loadedTiles.map(t => t.key)));
   });
 
   await t.test('prefer loaded child tiles to parent tiles', t => {
@@ -1014,7 +1014,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
 
     const getTileSpy = t.spy(sourceCache, 'getTile');
     let retained = sourceCache._updateRetainedTiles([idealTile], 1);
-    t.deepEqual(
+    t.assert.deepEqual(
       getTileSpy.getCalls().map(c => {
         return c.args[0];
       }),
@@ -1024,7 +1024,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
       ]
     );
 
-    t.deepEqual(
+    t.assert.deepEqual(
       retained,
       {
         // parent of ideal tile (0, 0, 0) (only partially covered by loaded child
@@ -1043,7 +1043,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
     delete sourceCache._tiles['2'];
     retained = sourceCache._updateRetainedTiles([idealTile], 1);
 
-    t.deepEqual(
+    t.assert.deepEqual(
       retained,
       {
         // parent of ideal tile (0, 0, 0) (only partially covered by loaded child
@@ -1074,7 +1074,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
     const getTileSpy = t.spy(sourceCache, 'getTile');
     const retained = sourceCache._updateRetainedTiles([idealTile], 2);
 
-    t.deepEqual(
+    t.assert.deepEqual(
       getTileSpy.getCalls().map(c => {
         return c.args[0];
       }),
@@ -1082,7 +1082,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
       "doesn't request parent tiles bc they are lower than minzoom"
     );
 
-    t.deepEqual(
+    t.assert.deepEqual(
       retained,
       {
         // ideal tile id (2, 0, 0)
@@ -1107,7 +1107,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
     const getTileSpy = t.spy(sourceCache, 'getTile');
     const retained = sourceCache._updateRetainedTiles([idealTile], 2);
 
-    t.deepEqual(
+    t.assert.deepEqual(
       getTileSpy.getCalls().map(c => {
         return c.args[0];
       }),
@@ -1121,7 +1121,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
       "doesn't request childtiles above maxzoom"
     );
 
-    t.deepEqual(
+    t.assert.deepEqual(
       retained,
       {
         // ideal tile id (2, 0, 0)
@@ -1144,7 +1144,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
 
     const getTileSpy = t.spy(sourceCache, 'getTile');
     sourceCache._updateRetainedTiles(idealTiles, 8);
-    t.deepEqual(
+    t.assert.deepEqual(
       getTileSpy.getCalls().map(c => {
         return c.args[0];
       }),
@@ -1171,7 +1171,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
     });
 
     sourceCache._updateRetainedTiles(idealTiles, 8);
-    t.deepEqual(
+    t.assert.deepEqual(
       getTileSpy.getCalls().map(c => {
         return c.args[0];
       }),
@@ -1205,7 +1205,7 @@ test('SourceCache#_updateRetainedTiles', async t => {
     const idealTiles = [new OverscaledTileID(8, 0, 7, 0, 0), new OverscaledTileID(8, 0, 7, 1, 0)];
     const retained = sourceCache._updateRetainedTiles(idealTiles, 8);
 
-    t.deepEqual(Object.keys(retained), [
+    t.assert.deepEqual(Object.keys(retained), [
       new OverscaledTileID(7, 0, 7, 0, 0).key,
       new OverscaledTileID(8, 0, 7, 0, 0).key,
       new OverscaledTileID(7, 0, 7, 1, 0).key,
@@ -1222,11 +1222,11 @@ test('SourceCache#clearTiles', async t => {
 
     const sourceCache = createSourceCache({
       abortTile: function (tile) {
-        t.deepEqual(tile.tileID, coord);
+        t.assert.deepEqual(tile.tileID, coord);
         abort++;
       },
       unloadTile: function (tile) {
-        t.deepEqual(tile.tileID, coord);
+        t.assert.deepEqual(tile.tileID, coord);
         unload++;
       }
     });
@@ -1235,8 +1235,8 @@ test('SourceCache#clearTiles', async t => {
     sourceCache._addTile(coord);
     sourceCache.clearTiles();
 
-    t.equal(abort, 1);
-    t.equal(unload, 1);
+    t.assert.equal(abort, 1);
+    t.assert.equal(unload, 1);
   });
 });
 
@@ -1244,7 +1244,7 @@ test('SourceCache#tilesIn', async t => {
   await t.test('graceful response before source loaded', t => {
     const sourceCache = createSourceCache({ noLoad: true });
     sourceCache.onAdd();
-    t.same(sourceCache.tilesIn([new Coordinate(0.5, 0.25, 1), new Coordinate(1.5, 0.75, 1)]), []);
+    t.assert.deepEqual(sourceCache.tilesIn([new Coordinate(0.5, 0.25, 1), new Coordinate(1.5, 0.75, 1)]), []);
   });
 
   await t.test('regular tiles', (t, done) => {
@@ -1264,7 +1264,7 @@ test('SourceCache#tilesIn', async t => {
       if (e.sourceDataType === 'metadata') {
         sourceCache.update(transform);
 
-        t.deepEqual(sourceCache.getIds(), [
+        t.assert.deepEqual(sourceCache.getIds(), [
           new OverscaledTileID(1, 0, 1, 1, 1).key,
           new OverscaledTileID(1, 0, 1, 0, 1).key,
           new OverscaledTileID(1, 0, 1, 1, 0).key,
@@ -1280,20 +1280,20 @@ test('SourceCache#tilesIn', async t => {
           delete result.tile.uid;
         });
 
-        t.equal(tiles[0].tile.tileID.key, 1);
-        t.equal(tiles[0].tile.tileSize, 512);
-        t.equal(tiles[0].scale, 1);
-        t.deepEqual(tiles[0].queryGeometry, [
+        t.assert.equal(tiles[0].tile.tileID.key, 1);
+        t.assert.equal(tiles[0].tile.tileSize, 512);
+        t.assert.equal(tiles[0].scale, 1);
+        t.assert.deepEqual(tiles[0].queryGeometry, [
           [
             { x: 4096, y: 2048 },
             { x: 12288, y: 6144 }
           ]
         ]);
 
-        t.equal(tiles[1].tile.tileID.key, 33);
-        t.equal(tiles[1].tile.tileSize, 512);
-        t.equal(tiles[1].scale, 1);
-        t.deepEqual(tiles[1].queryGeometry, [
+        t.assert.equal(tiles[1].tile.tileID.key, 33);
+        t.assert.equal(tiles[1].tile.tileSize, 512);
+        t.assert.equal(tiles[1].scale, 1);
+        t.assert.deepEqual(tiles[1].queryGeometry, [
           [
             { x: -4096, y: 2048 },
             { x: 4096, y: 6144 }
@@ -1326,7 +1326,7 @@ test('SourceCache#tilesIn', async t => {
         transform.zoom = 2.0;
         sourceCache.update(transform);
 
-        t.deepEqual(sourceCache.getIds(), [
+        t.assert.deepEqual(sourceCache.getIds(), [
           new OverscaledTileID(2, 0, 2, 1, 1).key,
           new OverscaledTileID(2, 0, 2, 0, 1).key,
           new OverscaledTileID(2, 0, 2, 1, 0).key,
@@ -1342,20 +1342,20 @@ test('SourceCache#tilesIn', async t => {
           delete result.tile.uid;
         });
 
-        t.equal(tiles[0].tile.tileID.key, 2);
-        t.equal(tiles[0].tile.tileSize, 1024);
-        t.equal(tiles[0].scale, 1);
-        t.deepEqual(tiles[0].queryGeometry, [
+        t.assert.equal(tiles[0].tile.tileID.key, 2);
+        t.assert.equal(tiles[0].tile.tileSize, 1024);
+        t.assert.equal(tiles[0].scale, 1);
+        t.assert.deepEqual(tiles[0].queryGeometry, [
           [
             { x: 4096, y: 2048 },
             { x: 12288, y: 6144 }
           ]
         ]);
 
-        t.equal(tiles[1].tile.tileID.key, 34);
-        t.equal(tiles[1].tile.tileSize, 1024);
-        t.equal(tiles[1].scale, 1);
-        t.deepEqual(tiles[1].queryGeometry, [
+        t.assert.equal(tiles[1].tile.tileID.key, 34);
+        t.assert.equal(tiles[1].tile.tileSize, 1024);
+        t.assert.equal(tiles[1].scale, 1);
+        t.assert.deepEqual(tiles[1].queryGeometry, [
           [
             { x: -4096, y: 2048 },
             { x: 4096, y: 6144 }
@@ -1407,7 +1407,7 @@ test('SourceCache#loaded (no errors)', (t, done) => {
       const coord = new OverscaledTileID(0, 0, 0, 0, 0);
       sourceCache._addTile(coord);
 
-      t.ok(sourceCache.loaded());
+      t.assert.ok(sourceCache.loaded());
       done();
     }
   });
@@ -1426,7 +1426,7 @@ test('SourceCache#loaded (with errors)', (t, done) => {
       const coord = new OverscaledTileID(0, 0, 0, 0, 0);
       sourceCache._addTile(coord);
 
-      t.ok(sourceCache.loaded());
+      t.assert.ok(sourceCache.loaded());
       done();
     }
   });
@@ -1446,7 +1446,7 @@ test('SourceCache#getIds (ascending order by zoom level)', t => {
   for (let i = 0; i < ids.length; i++) {
     sourceCache._tiles[ids[i].key] = { tileID: ids[i] };
   }
-  t.deepEqual(sourceCache.getIds(), [
+  t.assert.deepEqual(sourceCache.getIds(), [
     new OverscaledTileID(0, 0, 0, 0, 0).key,
     new OverscaledTileID(1, 0, 1, 0, 0).key,
     new OverscaledTileID(2, 0, 2, 0, 0).key,
@@ -1473,8 +1473,8 @@ test('SourceCache#findLoadedParent', async t => {
 
     sourceCache._tiles[tile.tileID.key] = tile;
 
-    t.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 3, 3), 0), undefined);
-    t.deepEqual(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 0, 0), 0), tile);
+    t.assert.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 3, 3), 0), undefined);
+    t.assert.deepEqual(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 0, 0), 0), tile);
   });
 
   await t.test('retains parents', t => {
@@ -1488,9 +1488,9 @@ test('SourceCache#findLoadedParent', async t => {
     const tile = new Tile(new OverscaledTileID(1, 0, 1, 0, 0), 512, 22);
     sourceCache._cache.add(tile.tileID, tile);
 
-    t.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 3, 3), 0), undefined);
-    t.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 0, 0), 0), tile);
-    t.equal(sourceCache._cache.order.length, 1);
+    t.assert.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 3, 3), 0), undefined);
+    t.assert.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 0, 0), 0), tile);
+    t.assert.equal(sourceCache._cache.order.length, 1);
   });
 });
 
@@ -1499,7 +1499,7 @@ test('SourceCache#reload', async t => {
     const sourceCache = createSourceCache({ noLoad: true });
     sourceCache.onAdd();
 
-    t.doesNotThrow(
+    t.assert.doesNotThrow(
       () => {
         sourceCache.reload();
       },
@@ -1518,7 +1518,7 @@ test('SourceCache reloads expiring tiles', async t => {
     const sourceCache = createSourceCache({ expires: expiryDate });
 
     sourceCache._reloadTile = (id, state) => {
-      t.equal(state, 'expired');
+      t.assert.equal(state, 'expired');
       done();
     };
 
@@ -1538,7 +1538,7 @@ test('SourceCache sets max cache size correctly', async t => {
     sourceCache.updateCacheSize(tr);
 
     // Expect max size to be ((512 / tileSize + 1) ^ 2) * 5 => 3 * 3 * 5
-    t.equal(sourceCache._cache.max, 45);
+    t.assert.equal(sourceCache._cache.max, 45);
   });
 
   await t.test('sets cache size based on 256 tiles', t => {
@@ -1552,6 +1552,6 @@ test('SourceCache sets max cache size correctly', async t => {
     sourceCache.updateCacheSize(tr);
 
     // Expect max size to be ((512 / tileSize + 1) ^ 2) * 5 => 2 * 2 * 5
-    t.equal(sourceCache._cache.max, 20);
+    t.assert.equal(sourceCache._cache.max, 20);
   });
 });

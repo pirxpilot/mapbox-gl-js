@@ -37,14 +37,14 @@ test('reloadTile', async t => {
     function addData(callback) {
       source.loadData({ source: 'sourceId', data: JSON.stringify(geoJson) }, err => {
         source.coalesce({ source: 'sourceId' });
-        t.equal(err, null);
+        t.assert.equal(err, null);
         callback();
       });
     }
 
     function reloadTile(callback) {
       source.reloadTile(tileParams, (err, data) => {
-        t.equal(err, null);
+        t.assert.equal(err, null);
         return callback(data);
       });
     }
@@ -55,26 +55,26 @@ test('reloadTile', async t => {
       reloadTile(data => {
         firstData = data;
       });
-      t.equal(loadVectorCallCount, 1);
+      t.assert.equal(loadVectorCallCount, 1);
 
       // second call won't give us new rawTileData
       reloadTile(data => {
-        t.notOk('rawTileData' in data);
+        t.assert.notOk('rawTileData' in data);
         data.rawTileData = firstData.rawTileData;
-        t.deepEqual(data, firstData);
+        t.assert.deepEqual(data, firstData);
       });
 
       // also shouldn't call loadVectorData again
-      t.equal(loadVectorCallCount, 1);
+      t.assert.equal(loadVectorCallCount, 1);
 
       // replace geojson data
       addData(() => {
         // should call loadVectorData again after changing geojson data
         reloadTile(data => {
-          t.ok('rawTileData' in data);
-          t.deepEqual(data, firstData);
+          t.assert.ok('rawTileData' in data);
+          t.assert.deepEqual(data, firstData);
         });
-        t.equal(loadVectorCallCount, 2);
+        t.assert.equal(loadVectorCallCount, 2);
         done();
       });
     });
@@ -102,8 +102,8 @@ test('resourceTiming', async t => {
     const source = new GeoJSONWorkerSource(null, layerIndex);
 
     source.loadData({ source: 'testSource', data: JSON.stringify(geoJson) }, (err, result) => {
-      t.equal(err, null);
-      t.equal(result.resourceTiming, undefined, 'no resourceTiming property when loadData is not sent a URL');
+      t.assert.equal(err, null);
+      t.assert.equal(result.resourceTiming, undefined, 'no resourceTiming property when loadData is not sent a URL');
       done();
     });
   });
@@ -152,19 +152,19 @@ test('loadData', async t => {
     // and third to run in response to coalesce
     const worker = createWorker();
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {
-      t.equal(err, null);
-      t.notOk(result?.abandoned);
+      t.assert.equal(err, null);
+      t.assert.notOk(result?.abandoned);
       worker.coalesce({ source: 'source1' });
     });
 
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {
-      t.equal(err, null);
-      t.ok(result?.abandoned);
+      t.assert.equal(err, null);
+      t.assert.ok(result?.abandoned);
     });
 
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {
-      t.equal(err, null);
-      t.notOk(result?.abandoned);
+      t.assert.equal(err, null);
+      t.assert.notOk(result?.abandoned);
       done();
     });
   });
@@ -177,18 +177,18 @@ test('loadData', async t => {
     // First loadData finishes running, sends results back to foreground
     const worker = createWorker();
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {
-      t.equal(err, null);
-      t.notOk(result?.abandoned);
+      t.assert.equal(err, null);
+      t.assert.notOk(result?.abandoned);
       done();
     });
 
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {
-      t.equal(err, null);
-      t.ok(result?.abandoned);
+      t.assert.equal(err, null);
+      t.assert.ok(result?.abandoned);
     });
 
     worker.removeSource({ source: 'source1' }, err => {
-      t.notOk(err);
+      t.assert.notOk(err);
     });
   });
 });

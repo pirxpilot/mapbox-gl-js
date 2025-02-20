@@ -10,10 +10,10 @@ test('Light with defaults', t => {
   const light = new Light({});
   light.recalculate({ zoom: 0, zoomHistory: {} });
 
-  t.deepEqual(light.properties.get('anchor'), spec.anchor.default);
-  t.deepEqual(light.properties.get('position'), sphericalToCartesian(spec.position.default));
-  t.deepEqual(light.properties.get('intensity'), spec.intensity.default);
-  t.deepEqual(light.properties.get('color'), Color.parse(spec.color.default));
+  t.assert.deepEqual(light.properties.get('anchor'), spec.anchor.default);
+  t.assert.deepEqual(light.properties.get('position'), sphericalToCartesian(spec.position.default));
+  t.assert.deepEqual(light.properties.get('intensity'), spec.intensity.default);
+  t.assert.deepEqual(light.properties.get('color'), Color.parse(spec.color.default));
 });
 
 test('Light with options', t => {
@@ -24,10 +24,10 @@ test('Light with options', t => {
   });
   light.recalculate({ zoom: 0, zoomHistory: {} });
 
-  t.deepEqual(light.properties.get('anchor'), 'map');
-  t.deepEqual(light.properties.get('position'), sphericalToCartesian([2, 30, 30]));
-  t.deepEqual(light.properties.get('intensity'), 1);
-  t.deepEqual(light.properties.get('color'), Color.parse(spec.color.default));
+  t.assert.deepEqual(light.properties.get('anchor'), 'map');
+  t.assert.deepEqual(light.properties.get('position'), sphericalToCartesian([2, 30, 30]));
+  t.assert.deepEqual(light.properties.get('intensity'), 1);
+  t.assert.deepEqual(light.properties.get('color'), Color.parse(spec.color.default));
 });
 
 test('Light with stops function', t => {
@@ -41,7 +41,7 @@ test('Light with stops function', t => {
   });
   light.recalculate({ zoom: 16.5, zoomHistory: {} });
 
-  t.deepEqual(light.properties.get('intensity'), 0.5);
+  t.assert.deepEqual(light.properties.get('intensity'), 0.5);
 });
 
 test('Light#getLight', t => {
@@ -50,7 +50,7 @@ test('Light#getLight', t => {
     defaults[key] = spec[key].default;
   }
 
-  t.deepEqual(new Light(defaults).getLight(), defaults);
+  t.assert.deepEqual(new Light(defaults).getLight(), defaults);
 });
 
 test('Light#setLight', t => {
@@ -59,5 +59,5 @@ test('Light#setLight', t => {
   light.updateTransitions({ transition: true }, {});
   light.recalculate({ zoom: 16, zoomHistory: {}, now: 1500 });
 
-  t.deepEqual(light.properties.get('color'), new Color(1, 0.5, 0.5, 1));
+  t.assert.deepEqual(light.properties.get('color'), new Color(1, 0.5, 0.5, 1));
 });

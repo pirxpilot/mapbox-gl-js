@@ -21,7 +21,7 @@ test('Map#isMoving', async t => {
 
   await t.test('Map#isMoving returns false by default', t => {
     const map = createMap();
-    t.equal(map.isMoving(), false);
+    t.assert.equal(map.isMoving(), false);
     map.remove();
   });
 
@@ -29,11 +29,11 @@ test('Map#isMoving', async t => {
     const map = createMap();
 
     map.on('zoomstart', () => {
-      t.equal(map.isMoving(), true);
+      t.assert.equal(map.isMoving(), true);
     });
 
     map.on('zoomend', () => {
-      t.equal(map.isMoving(), false);
+      t.assert.equal(map.isMoving(), false);
       map.remove();
       done();
     });
@@ -45,11 +45,11 @@ test('Map#isMoving', async t => {
     const map = createMap();
 
     map.on('dragstart', () => {
-      t.equal(map.isMoving(), true);
+      t.assert.equal(map.isMoving(), true);
     });
 
     map.on('dragend', () => {
-      t.equal(map.isMoving(), false);
+      t.assert.equal(map.isMoving(), false);
       map.remove();
       done();
     });
@@ -68,11 +68,11 @@ test('Map#isMoving', async t => {
     const map = createMap();
 
     map.on('rotatestart', () => {
-      t.equal(map.isMoving(), true);
+      t.assert.equal(map.isMoving(), true);
     });
 
     map.on('rotateend', () => {
-      t.equal(map.isMoving(), false);
+      t.assert.equal(map.isMoving(), false);
       map.remove();
       done();
     });
@@ -91,11 +91,11 @@ test('Map#isMoving', async t => {
     const map = createMap();
 
     map.on('zoomstart', () => {
-      t.equal(map.isMoving(), true);
+      t.assert.equal(map.isMoving(), true);
     });
 
     map.on('zoomend', () => {
-      t.equal(map.isMoving(), false);
+      t.assert.equal(map.isMoving(), false);
       map.remove();
       done();
     });
@@ -115,21 +115,21 @@ test('Map#isMoving', async t => {
     const map = createMap();
 
     map.on('dragstart', () => {
-      t.equal(map.isMoving(), true);
+      t.assert.equal(map.isMoving(), true);
     });
 
     map.on('zoomstart', () => {
-      t.equal(map.isMoving(), true);
+      t.assert.equal(map.isMoving(), true);
     });
 
     map.on('zoomend', () => {
-      t.equal(map.isMoving(), true);
+      t.assert.equal(map.isMoving(), true);
       simulate.mouseup(map.getCanvas());
       map._renderTaskQueue.run();
     });
 
     map.on('dragend', () => {
-      t.equal(map.isMoving(), false);
+      t.assert.equal(map.isMoving(), false);
       map.remove();
       done();
     });

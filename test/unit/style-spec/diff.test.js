@@ -2,7 +2,7 @@ const { test } = require('../../util/mapbox-gl-js-test');
 const diffStyles = require('../../../src/style-spec/diff');
 
 test('diff', t => {
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a' }]
@@ -15,7 +15,7 @@ test('diff', t => {
     'no changes'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         version: 7,
@@ -30,7 +30,7 @@ test('diff', t => {
     'version change'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a' }]
@@ -43,7 +43,7 @@ test('diff', t => {
     'add a layer'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'b' }]
@@ -56,7 +56,7 @@ test('diff', t => {
     'add a layer before another'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a' }, { id: 'b', source: 'foo', nested: [1] }]
@@ -69,7 +69,7 @@ test('diff', t => {
     'remove a layer'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a' }, { id: 'b' }]
@@ -85,7 +85,7 @@ test('diff', t => {
     'move a layer'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a', paint: { foo: 1 } }]
@@ -98,7 +98,7 @@ test('diff', t => {
     'update paint property'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a', 'paint.light': { foo: 1 } }]
@@ -111,7 +111,7 @@ test('diff', t => {
     'update paint property class'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a', paint: { foo: { ramp: [1, 2] } } }]
@@ -124,7 +124,7 @@ test('diff', t => {
     'nested style change'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a', layout: { foo: 1 } }]
@@ -137,7 +137,7 @@ test('diff', t => {
     'update layout property'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a', filter: ['==', 'foo', 'bar'] }]
@@ -150,7 +150,7 @@ test('diff', t => {
     'update a filter'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         sources: { foo: 1 }
@@ -163,7 +163,7 @@ test('diff', t => {
     'remove a source'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         sources: {}
@@ -176,7 +176,7 @@ test('diff', t => {
     'add a source'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         sources: {
@@ -223,7 +223,7 @@ test('diff', t => {
     'update a geojson source'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         sources: {
@@ -260,7 +260,7 @@ test('diff', t => {
     'remove and re-add a source if cluster changes'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         sources: {
@@ -300,7 +300,7 @@ test('diff', t => {
     'remove and re-add a source if cluster radius changes'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         sources: {
@@ -339,7 +339,7 @@ test('diff', t => {
     'remove and re-add a source if cluster radius changes (before and after swapped)'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {},
       {
@@ -350,7 +350,7 @@ test('diff', t => {
     'ignore style metadata'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a', metadata: { 'mapbox:group': 'Group Name' } }]
@@ -363,7 +363,7 @@ test('diff', t => {
     'ignore layer metadata'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         center: [0, 0]
@@ -376,7 +376,7 @@ test('diff', t => {
     'center change'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         zoom: 12
@@ -389,7 +389,7 @@ test('diff', t => {
     'zoom change'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         bearing: 0
@@ -402,7 +402,7 @@ test('diff', t => {
     'bearing change'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         pitch: 0
@@ -415,7 +415,7 @@ test('diff', t => {
     'pitch change'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         light: {
@@ -438,7 +438,7 @@ test('diff', t => {
     'light no change'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         light: { anchor: 'map' }
@@ -451,7 +451,7 @@ test('diff', t => {
     'light anchor change'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         light: { color: 'white' }
@@ -464,7 +464,7 @@ test('diff', t => {
     'light color change'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         light: { position: [0, 1, 0] }
@@ -477,7 +477,7 @@ test('diff', t => {
     'light position change'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         light: { intensity: 1 }
@@ -490,7 +490,7 @@ test('diff', t => {
     'light intensity change'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         light: {
@@ -525,7 +525,7 @@ test('diff', t => {
     'multiple light properties change'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a', source: 'source-one' }]
@@ -541,7 +541,7 @@ test('diff', t => {
     "updating a layer's source removes/re-adds the layer"
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a', type: 'fill' }]
@@ -557,7 +557,7 @@ test('diff', t => {
     "updating a layer's type removes/re-adds the layer"
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'a', source: 'a', 'source-layer': 'layer-one' }]
@@ -573,7 +573,7 @@ test('diff', t => {
     "updating a layer's source-layer removes/re-adds the layer"
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         layers: [{ id: 'b' }, { id: 'c' }, { id: 'a', type: 'fill' }]
@@ -591,7 +591,7 @@ test('diff', t => {
     'pair respects layer reordering'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         sources: { foo: { data: 1 }, bar: {} },
@@ -619,7 +619,7 @@ test('diff', t => {
     'changing a source removes and re-adds dependent layers'
   );
 
-  t.deepEqual(
+  t.assert.deepEqual(
     diffStyles(
       {
         sources: { foo: { data: 1 }, bar: {} },

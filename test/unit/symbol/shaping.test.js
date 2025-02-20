@@ -35,7 +35,10 @@ test('shaping', t => {
   );
   if (UPDATE)
     fs.writeFileSync(path.join(__dirname, '/../../expected/text-shaping-null.json'), JSON.stringify(shaped, null, 2));
-  t.deepEqual(shaped, JSON.parse(fs.readFileSync(path.join(__dirname, '/../../expected/text-shaping-null.json'))));
+  t.assert.deepEqual(
+    shaped,
+    JSON.parse(fs.readFileSync(path.join(__dirname, '/../../expected/text-shaping-null.json')))
+  );
 
   // Default shaping.
   shaped = shaping.shapeText(
@@ -55,7 +58,10 @@ test('shaping', t => {
       path.join(__dirname, '/../../expected/text-shaping-default.json'),
       JSON.stringify(shaped, null, 2)
     );
-  t.deepEqual(shaped, JSON.parse(fs.readFileSync(path.join(__dirname, '/../../expected/text-shaping-default.json'))));
+  t.assert.deepEqual(
+    shaped,
+    JSON.parse(fs.readFileSync(path.join(__dirname, '/../../expected/text-shaping-default.json')))
+  );
 
   // Letter spacing.
   shaped = shaping.shapeText(
@@ -75,7 +81,10 @@ test('shaping', t => {
       path.join(__dirname, '/../../expected/text-shaping-spacing.json'),
       JSON.stringify(shaped, null, 2)
     );
-  t.deepEqual(shaped, JSON.parse(fs.readFileSync(path.join(__dirname, '/../../expected/text-shaping-spacing.json'))));
+  t.assert.deepEqual(
+    shaped,
+    JSON.parse(fs.readFileSync(path.join(__dirname, '/../../expected/text-shaping-spacing.json')))
+  );
 
   // Line break.
   shaped = shaping.shapeText(
@@ -95,7 +104,7 @@ test('shaping', t => {
       path.join(__dirname, '/../../expected/text-shaping-linebreak.json'),
       JSON.stringify(shaped, null, 2)
     );
-  t.deepEqual(shaped, require('../../expected/text-shaping-linebreak.json'));
+  t.assert.deepEqual(shaped, require('../../expected/text-shaping-linebreak.json'));
 
   const expectedNewLine = JSON.parse(
     fs.readFileSync(path.join(__dirname, '/../../expected/text-shaping-newline.json'))
@@ -118,7 +127,7 @@ test('shaping', t => {
       path.join(__dirname, '/../../expected/text-shaping-newline.json'),
       JSON.stringify(shaped, null, 2)
     );
-  t.deepEqual(shaped, expectedNewLine);
+  t.assert.deepEqual(shaped, expectedNewLine);
 
   shaped = shaping.shapeText(
     'abcde\r\nabcde',
@@ -132,7 +141,7 @@ test('shaping', t => {
     oneEm,
     WritingMode.horizontal
   );
-  t.deepEqual(shaped.positionedGlyphs, expectedNewLine.positionedGlyphs);
+  t.assert.deepEqual(shaped.positionedGlyphs, expectedNewLine.positionedGlyphs);
 
   const expectedNewLinesInMiddle = JSON.parse(
     fs.readFileSync(path.join(__dirname, '/../../expected/text-shaping-newlines-in-middle.json'))
@@ -155,7 +164,7 @@ test('shaping', t => {
       path.join(__dirname, '/../../expected/text-shaping-newlines-in-middle.json'),
       JSON.stringify(shaped, null, 2)
     );
-  t.deepEqual(shaped, expectedNewLinesInMiddle);
+  t.assert.deepEqual(shaped, expectedNewLinesInMiddle);
 
   // Null shaping.
   shaped = shaping.shapeText(
@@ -170,7 +179,7 @@ test('shaping', t => {
     oneEm,
     WritingMode.horizontal
   );
-  t.equal(false, shaped);
+  t.assert.equal(false, shaped);
 
   shaped = shaping.shapeText(
     String.fromCharCode(0),
@@ -184,7 +193,7 @@ test('shaping', t => {
     oneEm,
     WritingMode.horizontal
   );
-  t.equal(false, shaped);
+  t.assert.equal(false, shaped);
 
   // https://github.com/mapbox/mapbox-gl-js/issues/3254
   shaped = shaping.shapeText(
@@ -211,5 +220,5 @@ test('shaping', t => {
     oneEm,
     WritingMode.horizontal
   );
-  t.same(shaped.positionedGlyphs, shaped2.positionedGlyphs);
+  t.assert.deepEqual(shaped.positionedGlyphs, shaped2.positionedGlyphs);
 });

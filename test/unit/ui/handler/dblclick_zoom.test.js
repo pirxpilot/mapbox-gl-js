@@ -27,7 +27,7 @@ test('DoubleClickZoomHandler does not zoom if preventDefault is called on the db
 
   simulate.dblclick(map.getCanvas());
 
-  t.equal(zoom.callCount, 0);
+  t.assert.equal(zoom.callCount, 0);
 
   map.remove();
 });

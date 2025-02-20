@@ -81,7 +81,7 @@ test('web worker transfer', async t => {
     const deserialized = deserialize(serialize(bar));
     t.assert.ok(deserialized instanceof Bar);
     const bar2 = deserialized;
-    t.equal(bar2.id, bar.id);
+    t.assert.equal(bar2.id, bar.id);
     t.assert.ok(bar2._deserialized);
   });
 });

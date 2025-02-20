@@ -40,7 +40,7 @@ test('Evented', async t => {
   await t.test('passes "type" to listeners', t => {
     const evented = new Evented();
     evented.on('a', data => {
-      t.deepEqual(data.type, 'a');
+      t.assert.deepEqual(data.type, 'a');
     });
     evented.fire(new Event('a'));
   });
@@ -92,7 +92,7 @@ test('Evented', async t => {
   await t.test('does not immediately call listeners added within another listener', t => {
     const evented = new Evented();
     evented.on('a', () => {
-      evented.on('a', t.fail.bind(t));
+      evented.on('a', () => t.assert.fail());
     });
     evented.fire(new Event('a'));
   });
@@ -100,7 +100,7 @@ test('Evented', async t => {
   await t.test('does not immediately call once listeners added within another once listener', t => {
     const evented = new Evented();
     evented.once('a', () => {
-      evented.once('a', t.fail.bind(t));
+      evented.once('a', () => t.assert.fail());
     });
     evented.fire(new Event('a'));
     t.assert.ok(evented.listens('a'), 'listener has been attached');

@@ -15,9 +15,9 @@ test('loadTile', async t => {
         dim: 256
       },
       (err, data) => {
-        if (err) t.fail();
-        t.deepEqual(Object.keys(source.loaded), [0]);
-        t.ok(data instanceof DEMData, 'returns DEM data');
+        if (err) t.assert.fail();
+        t.assert.deepEqual(Object.keys(source.loaded), [0]);
+        t.assert.ok(data instanceof DEMData, 'returns DEM data');
 
         done();
       }
@@ -38,7 +38,7 @@ test('removeTile', async t => {
       uid: 0
     });
 
-    t.deepEqual(source.loaded, {});
+    t.assert.deepEqual(source.loaded, {});
     done();
   });
 });

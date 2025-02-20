@@ -17,7 +17,7 @@ test('load tile', async t => {
         tileID: { overscaledZ: 0, wrap: 0, canonical: { x: 0, y: 0, z: 0, w: 0 } }
       },
       err => {
-        t.ok(err);
+        t.assert.ok(err);
         done();
       }
     );
@@ -38,15 +38,15 @@ test("isolates different instances' data", t => {
     () => {}
   );
 
-  t.notEqual(worker.layerIndexes[0], worker.layerIndexes[1]);
+  t.assert.notEqual(worker.layerIndexes[0], worker.layerIndexes[1]);
 });
 
 test('worker source messages dispatched to the correct map instance', (t, done) => {
   const worker = new Worker(_self);
 
   worker.actor.send = function (type, data, callback, mapId) {
-    t.equal(type, 'main thread task');
-    t.equal(mapId, 999);
+    t.assert.equal(type, 'main thread task');
+    t.assert.equal(mapId, 999);
     done();
   };
 

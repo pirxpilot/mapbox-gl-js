@@ -76,12 +76,12 @@ test('SymbolBucket', t => {
   const a = placement.collisionIndex.grid.keysLength();
   placement.placeLayerTile(bucketA.layers[0], tileA, false, {});
   const b = placement.collisionIndex.grid.keysLength();
-  t.notEqual(a, b, 'places feature');
+  t.assert.notEqual(a, b, 'places feature');
 
   const a2 = placement.collisionIndex.grid.keysLength();
   placement.placeLayerTile(bucketB.layers[0], tileB, false, {});
   const b2 = placement.collisionIndex.grid.keysLength();
-  t.equal(b2, a2, 'detects collision and does not place feature');
+  t.assert.equal(b2, a2, 'detects collision and does not place feature');
 });
 
 test('SymbolBucket integer overflow', t => {
@@ -97,6 +97,6 @@ test('SymbolBucket integer overflow', t => {
     Test: { 97: fakeGlyph, 98: fakeGlyph, 99: fakeGlyph, 100: fakeGlyph, 101: fakeGlyph, 102: fakeGlyph }
   });
 
-  t.ok(console.warn.calledOnce);
-  t.ok(console.warn.getCall(0).calledWithMatch(/Too many glyphs being rendered in a tile./));
+  t.assert.ok(console.warn.calledOnce);
+  t.assert.ok(console.warn.getCall(0).calledWithMatch(/Too many glyphs being rendered in a tile./));
 });

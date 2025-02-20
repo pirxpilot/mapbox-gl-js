@@ -119,7 +119,7 @@ test('ScrollZoomHandler', async t => {
     now += 400;
     map._renderTaskQueue.run();
 
-    t.equal(map.getZoom() - startZoom, 0.0);
+    t.assert.equal(map.getZoom() - startZoom, 0.0);
   });
 
   test('does not zoom if preventDefault is called on the wheel event', t => {
@@ -133,7 +133,7 @@ test('ScrollZoomHandler', async t => {
     now += 400;
     map._renderTaskQueue.run();
 
-    t.equal(map.getZoom(), 0);
+    t.assert.equal(map.getZoom(), 0);
 
     map.remove();
   });
@@ -174,8 +174,8 @@ test('ScrollZoomHandler', async t => {
 
     clock.tick(200);
 
-    t.equal(startCount, 1);
-    t.equal(endCount, 1);
+    t.assert.equal(startCount, 1);
+    t.assert.equal(endCount, 1);
 
     clock.restore();
   });
@@ -216,8 +216,8 @@ test('ScrollZoomHandler', async t => {
 
     clock.tick(200);
 
-    t.equal(startCount, 1);
-    t.equal(endCount, 1);
+    t.assert.equal(startCount, 1);
+    t.assert.equal(endCount, 1);
 
     clock.restore();
   });

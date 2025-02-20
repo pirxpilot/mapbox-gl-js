@@ -19,12 +19,12 @@ test('VertexBuffer', async t => {
 
     const buffer = new VertexBuffer(context, array, attributes);
 
-    t.deepEqual(buffer.attributes, [
+    t.assert.deepEqual(buffer.attributes, [
       { name: 'map', components: 1, type: 'Int16', offset: 0 },
       { name: 'box', components: 2, type: 'Int16', offset: 4 }
     ]);
-    t.deepEqual(buffer.itemSize, 6);
-    t.deepEqual(buffer.length, 3);
+    t.assert.deepEqual(buffer.itemSize, 6);
+    t.assert.deepEqual(buffer.length, 3);
   });
 
   await t.test('enableAttributes', t => {
@@ -33,7 +33,7 @@ test('VertexBuffer', async t => {
     const buffer = new VertexBuffer(context, array, attributes);
     t.stub(context.gl, 'enableVertexAttribArray').callsFake(() => {});
     buffer.enableAttributes(context.gl, { attributes: { map: 5, box: 6 } });
-    t.deepEqual(context.gl.enableVertexAttribArray.args, [[5], [6]]);
+    t.assert.deepEqual(context.gl.enableVertexAttribArray.args, [[5], [6]]);
   });
 
   await t.test('setVertexAttribPointers', t => {
@@ -42,7 +42,7 @@ test('VertexBuffer', async t => {
     const buffer = new VertexBuffer(context, array, attributes);
     t.stub(context.gl, 'vertexAttribPointer').callsFake(() => {});
     buffer.setVertexAttribPointers(context.gl, { attributes: { map: 5, box: 6 } }, 50);
-    t.deepEqual(context.gl.vertexAttribPointer.args, [
+    t.assert.deepEqual(context.gl.vertexAttribPointer.args, [
       [5, 1, context.gl['SHORT'], false, 6, 300],
       [6, 2, context.gl['SHORT'], false, 6, 304]
     ]);

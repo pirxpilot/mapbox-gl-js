@@ -21,7 +21,7 @@ test('Map#isZooming', async t => {
 
   await t.test('Map#isZooming returns false by default', t => {
     const map = createMap();
-    t.equal(map.isZooming(), false);
+    t.assert.equal(map.isZooming(), false);
     map.remove();
   });
 
@@ -29,11 +29,11 @@ test('Map#isZooming', async t => {
     const map = createMap();
 
     map.on('zoomstart', () => {
-      t.equal(map.isZooming(), true);
+      t.assert.equal(map.isZooming(), true);
     });
 
     map.on('zoomend', () => {
-      t.equal(map.isZooming(), false);
+      t.assert.equal(map.isZooming(), false);
       map.remove();
       done();
     });
@@ -45,11 +45,11 @@ test('Map#isZooming', async t => {
     const map = createMap();
 
     map.on('zoomstart', () => {
-      t.equal(map.isZooming(), true);
+      t.assert.equal(map.isZooming(), true);
     });
 
     map.on('zoomend', () => {
-      t.equal(map.isZooming(), false);
+      t.assert.equal(map.isZooming(), false);
       map.remove();
       done();
     });
@@ -68,11 +68,11 @@ test('Map#isZooming', async t => {
     const map = createMap();
 
     map.on('zoomstart', () => {
-      t.equal(map.isZooming(), true);
+      t.assert.equal(map.isZooming(), true);
     });
 
     map.on('zoomend', () => {
-      t.equal(map.isZooming(), false);
+      t.assert.equal(map.isZooming(), false);
       map.remove();
       done();
     });

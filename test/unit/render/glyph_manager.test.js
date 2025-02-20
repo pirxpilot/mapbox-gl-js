@@ -12,9 +12,9 @@ test('GlyphManager requests 0-255 PBF', (t, done) => {
   function glyphLoader() {}
 
   t.stub(GlyphManager, 'loadGlyphRange').callsFake((stack, range, load, callback) => {
-    t.equal(stack, 'Arial Unicode MS');
-    t.equal(range, 0);
-    t.equal(load, glyphLoader);
+    t.assert.equal(stack, 'Arial Unicode MS');
+    t.assert.equal(range, 0);
+    t.assert.equal(load, glyphLoader);
     setImmediate(() => callback(null, glyphs));
   });
 
@@ -22,8 +22,8 @@ test('GlyphManager requests 0-255 PBF', (t, done) => {
   manager.setGlyphsLoader(glyphLoader);
 
   manager.getGlyphs({ 'Arial Unicode MS': [55] }, (err, glyphs) => {
-    t.ifError(err);
-    t.equal(glyphs['Arial Unicode MS']['55'].metrics.advance, 12);
+    t.assert.ifError(err);
+    t.assert.equal(glyphs['Arial Unicode MS']['55'].metrics.advance, 12);
     done();
   });
 });
@@ -37,8 +37,8 @@ test('GlyphManager requests remote CJK PBF', (t, done) => {
   manager.setGlyphsLoader(() => {});
 
   manager.getGlyphs({ 'Arial Unicode MS': [0x5e73] }, (err, glyphs) => {
-    t.ifError(err);
-    t.equal(glyphs['Arial Unicode MS'][0x5e73], null); // The fixture returns a PBF without the glyph we requested
+    t.assert.ifError(err);
+    t.assert.equal(glyphs['Arial Unicode MS'][0x5e73], null); // The fixture returns a PBF without the glyph we requested
     done();
   });
 });
@@ -57,8 +57,8 @@ test('GlyphManager generates CJK PBF locally', (t, done) => {
   manager.setGlyphsLoader(() => {});
 
   manager.getGlyphs({ 'Arial Unicode MS': [0x5e73] }, (err, glyphs) => {
-    t.ifError(err);
-    t.equal(glyphs['Arial Unicode MS'][0x5e73].metrics.advance, 24);
+    t.assert.ifError(err);
+    t.assert.equal(glyphs['Arial Unicode MS'][0x5e73].metrics.advance, 24);
     done();
   });
 });

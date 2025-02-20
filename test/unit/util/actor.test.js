@@ -36,13 +36,13 @@ test('Actor', async t => {
     const m2 = new Actor(worker, {}, 'map-2');
 
     m1.send('test', { value: 1729 }, (err, response) => {
-      t.ifError(err);
-      t.same(response, { value: 1729 });
+      t.assert.ifError(err);
+      t.assert.deepEqual(response, { value: 1729 });
       isItDone();
     });
     m2.send('test', { value: 4104 }, (err, response) => {
-      t.ifError(err);
-      t.same(response, { value: 4104 });
+      t.assert.ifError(err);
+      t.assert.deepEqual(response, { value: 4104 });
       isItDone();
     });
   });
@@ -70,7 +70,7 @@ test('Actor', async t => {
       worker,
       {
         test: function () {
-          t.fail();
+          t.assert.fail();
           done();
         }
       },
@@ -87,7 +87,7 @@ test('Actor', async t => {
           this._addEventListenerArgs = [type, callback, useCapture];
         },
         removeEventListener: function (type, callback, useCapture) {
-          t.same([type, callback, useCapture], this._addEventListenerArgs, 'listener removed');
+          t.assert.deepEqual([type, callback, useCapture], this._addEventListenerArgs, 'listener removed');
           done();
         }
       },

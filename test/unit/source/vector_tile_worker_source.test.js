@@ -13,8 +13,8 @@ test('VectorTileWorkerSource#abortTile aborts pending request', t => {
       response: {}
     },
     (err, res) => {
-      t.false(err);
-      t.false(res);
+      t.assert.notOk(err);
+      t.assert.notOk(res);
     }
   );
 
@@ -24,12 +24,12 @@ test('VectorTileWorkerSource#abortTile aborts pending request', t => {
       uid: 0
     },
     (err, res) => {
-      t.false(err);
-      t.false(res);
+      t.assert.notOk(err);
+      t.assert.notOk(res);
     }
   );
 
-  t.deepEqual(source.loading, undefined);
+  t.assert.deepEqual(source.loading, undefined);
 });
 
 test('VectorTileWorkerSource#removeTile removes loaded tile', t => {
@@ -45,12 +45,12 @@ test('VectorTileWorkerSource#removeTile removes loaded tile', t => {
       uid: 0
     },
     (err, res) => {
-      t.false(err);
-      t.false(res);
+      t.assert.notOk(err);
+      t.assert.notOk(res);
     }
   );
 
-  t.deepEqual(source.loaded, {});
+  t.assert.deepEqual(source.loaded, {});
 });
 
 test('VectorTileWorkerSource#reloadTile reloads a previously-loaded tile', t => {
@@ -66,10 +66,10 @@ test('VectorTileWorkerSource#reloadTile reloads a previously-loaded tile', t => 
 
   const callback = t.spy();
   source.reloadTile({ uid: 0 }, callback);
-  t.equal(parse.callCount, 1);
+  t.assert.equal(parse.callCount, 1);
 
   parse.firstCall.args[4]();
-  t.equal(callback.callCount, 1);
+  t.assert.equal(callback.callCount, 1);
 });
 
 test('VectorTileWorkerSource#reloadTile queues a reload when parsing is in progress', t => {
@@ -86,20 +86,20 @@ test('VectorTileWorkerSource#reloadTile queues a reload when parsing is in progr
   const callback1 = t.spy();
   const callback2 = t.spy();
   source.reloadTile({ uid: 0 }, callback1);
-  t.equal(parse.callCount, 1);
+  t.assert.equal(parse.callCount, 1);
 
   source.loaded[0].status = 'parsing';
   source.reloadTile({ uid: 0 }, callback2);
-  t.equal(parse.callCount, 1);
+  t.assert.equal(parse.callCount, 1);
 
   parse.firstCall.args[4]();
-  t.equal(parse.callCount, 2);
-  t.equal(callback1.callCount, 1);
-  t.equal(callback2.callCount, 0);
+  t.assert.equal(parse.callCount, 2);
+  t.assert.equal(callback1.callCount, 1);
+  t.assert.equal(callback2.callCount, 0);
 
   parse.secondCall.args[4]();
-  t.equal(callback1.callCount, 1);
-  t.equal(callback2.callCount, 1);
+  t.assert.equal(callback1.callCount, 1);
+  t.assert.equal(callback2.callCount, 1);
 });
 
 test('VectorTileWorkerSource#reloadTile handles multiple pending reloads', t => {
@@ -118,32 +118,32 @@ test('VectorTileWorkerSource#reloadTile handles multiple pending reloads', t => 
   const callback2 = t.spy();
   const callback3 = t.spy();
   source.reloadTile({ uid: 0 }, callback1);
-  t.equal(parse.callCount, 1);
+  t.assert.equal(parse.callCount, 1);
 
   source.loaded[0].status = 'parsing';
   source.reloadTile({ uid: 0 }, callback2);
-  t.equal(parse.callCount, 1);
+  t.assert.equal(parse.callCount, 1);
 
   parse.firstCall.args[4]();
-  t.equal(parse.callCount, 2);
-  t.equal(callback1.callCount, 1);
-  t.equal(callback2.callCount, 0);
-  t.equal(callback3.callCount, 0);
+  t.assert.equal(parse.callCount, 2);
+  t.assert.equal(callback1.callCount, 1);
+  t.assert.equal(callback2.callCount, 0);
+  t.assert.equal(callback3.callCount, 0);
 
   source.reloadTile({ uid: 0 }, callback3);
-  t.equal(parse.callCount, 2);
-  t.equal(callback1.callCount, 1);
-  t.equal(callback2.callCount, 0);
-  t.equal(callback3.callCount, 0);
+  t.assert.equal(parse.callCount, 2);
+  t.assert.equal(callback1.callCount, 1);
+  t.assert.equal(callback2.callCount, 0);
+  t.assert.equal(callback3.callCount, 0);
 
   parse.secondCall.args[4]();
-  t.equal(parse.callCount, 3);
-  t.equal(callback1.callCount, 1);
-  t.equal(callback2.callCount, 1);
-  t.equal(callback3.callCount, 0);
+  t.assert.equal(parse.callCount, 3);
+  t.assert.equal(callback1.callCount, 1);
+  t.assert.equal(callback2.callCount, 1);
+  t.assert.equal(callback3.callCount, 0);
 
   parse.thirdCall.args[4]();
-  t.equal(callback1.callCount, 1);
-  t.equal(callback2.callCount, 1);
-  t.equal(callback3.callCount, 1);
+  t.assert.equal(callback1.callCount, 1);
+  t.assert.equal(callback2.callCount, 1);
+  t.assert.equal(callback3.callCount, 1);
 });

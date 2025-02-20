@@ -64,15 +64,15 @@ test('Map', async t => {
 
   await t.test('constructor', t => {
     const map = createMap({ interactive: true, style: null });
-    t.ok(map.getContainer());
-    t.equal(map.getStyle(), undefined);
-    t.ok(map.boxZoom.isEnabled());
-    t.ok(map.doubleClickZoom.isEnabled());
-    t.ok(map.dragPan.isEnabled());
-    t.ok(map.dragRotate.isEnabled());
-    t.ok(map.keyboard.isEnabled());
-    t.ok(map.scrollZoom.isEnabled());
-    t.ok(map.touchZoomRotate.isEnabled());
+    t.assert.ok(map.getContainer());
+    t.assert.equal(map.getStyle(), undefined);
+    t.assert.ok(map.boxZoom.isEnabled());
+    t.assert.ok(map.doubleClickZoom.isEnabled());
+    t.assert.ok(map.dragPan.isEnabled());
+    t.assert.ok(map.dragRotate.isEnabled());
+    t.assert.ok(map.keyboard.isEnabled());
+    t.assert.ok(map.scrollZoom.isEnabled());
+    t.assert.ok(map.touchZoomRotate.isEnabled());
     t.throws(
       () => {
         new Map({
@@ -88,13 +88,13 @@ test('Map', async t => {
     await t.test('disables all handlers', t => {
       const map = createMap({ interactive: false });
 
-      t.notOk(map.boxZoom.isEnabled());
-      t.notOk(map.doubleClickZoom.isEnabled());
-      t.notOk(map.dragPan.isEnabled());
-      t.notOk(map.dragRotate.isEnabled());
-      t.notOk(map.keyboard.isEnabled());
-      t.notOk(map.scrollZoom.isEnabled());
-      t.notOk(map.touchZoomRotate.isEnabled());
+      t.assert.notOk(map.boxZoom.isEnabled());
+      t.assert.notOk(map.doubleClickZoom.isEnabled());
+      t.assert.notOk(map.dragPan.isEnabled());
+      t.assert.notOk(map.dragRotate.isEnabled());
+      t.assert.notOk(map.keyboard.isEnabled());
+      t.assert.notOk(map.scrollZoom.isEnabled());
+      t.assert.notOk(map.touchZoomRotate.isEnabled());
     });
 
     const handlerNames = [
@@ -113,7 +113,7 @@ test('Map', async t => {
           options[handlerName] = false;
           const map = createMap(options);
 
-          t.notOk(map[handlerName].isEnabled());
+          t.assert.notOk(map[handlerName].isEnabled());
         })
       )
     );
@@ -131,7 +131,7 @@ test('Map', async t => {
     }, 1);
 
     function fail() {
-      t.ok(false);
+      t.assert.ok(false);
     }
     function pass() {
       done();
@@ -141,7 +141,7 @@ test('Map', async t => {
   await t.test('#setStyle', async t => {
     await t.test('returns self', t => {
       const map = new Map({ container: window.document.createElement('div') });
-      t.equal(
+      t.assert.equal(
         map.setStyle({
           version: 8,
           sources: {},
@@ -168,7 +168,7 @@ test('Map', async t => {
         map.style.fire(new Event('data'));
         map.style.fire(new Event('dataloading'));
 
-        t.deepEqual(events, ['error', 'data', 'dataloading']);
+        t.assert.deepEqual(events, ['error', 'data', 'dataloading']);
         done();
       });
     });
@@ -196,7 +196,7 @@ test('Map', async t => {
         map.style.fire(new Event('data', { dataType: 'tile' }));
         map.style.fire(new Event('dataloading', { dataType: 'tile' }));
 
-        t.deepEqual(events, [
+        t.assert.deepEqual(events, [
           'styledata',
           'styledataloading',
           'sourcedata',
@@ -220,14 +220,14 @@ test('Map', async t => {
       map.transform.lngRange = [-120, 140];
       map.transform.latRange = [-60, 80];
       map.transform.resize(600, 400);
-      t.equal(map.transform.zoom, 0.6983039737971012, 'map transform is constrained');
-      t.ok(map.transform.unmodified, 'map transform is not modified');
+      t.assert.equal(map.transform.zoom, 0.6983039737971012, 'map transform is constrained');
+      t.assert.ok(map.transform.unmodified, 'map transform is not modified');
       map.setStyle(createStyle());
       map.on('style.load', () => {
-        t.deepEqual(fixedLngLat(map.transform.center), fixedLngLat({ lng: -73.9749, lat: 40.7736 }));
-        t.equal(fixedNum(map.transform.zoom), 12.5);
-        t.equal(fixedNum(map.transform.bearing), 29);
-        t.equal(fixedNum(map.transform.pitch), 50);
+        t.assert.deepEqual(fixedLngLat(map.transform.center), fixedLngLat({ lng: -73.9749, lat: 40.7736 }));
+        t.assert.equal(fixedNum(map.transform.zoom), 12.5);
+        t.assert.equal(fixedNum(map.transform.bearing), 29);
+        t.assert.equal(fixedNum(map.transform.pitch), 50);
         done();
       });
     });
@@ -238,29 +238,29 @@ test('Map', async t => {
         zoom: 10,
         center: [-77.0186, 38.8888]
       });
-      t.notOk(map.transform.unmodified, 'map transform is modified by options');
+      t.assert.notOk(map.transform.unmodified, 'map transform is modified by options');
       map.setStyle(createStyle());
       map.on('style.load', () => {
-        t.deepEqual(fixedLngLat(map.transform.center), fixedLngLat({ lng: -77.0186, lat: 38.8888 }));
-        t.equal(fixedNum(map.transform.zoom), 10);
-        t.equal(fixedNum(map.transform.bearing), 0);
-        t.equal(fixedNum(map.transform.pitch), 0);
+        t.assert.deepEqual(fixedLngLat(map.transform.center), fixedLngLat({ lng: -77.0186, lat: 38.8888 }));
+        t.assert.equal(fixedNum(map.transform.zoom), 10);
+        t.assert.equal(fixedNum(map.transform.bearing), 0);
+        t.assert.equal(fixedNum(map.transform.pitch), 0);
         done();
       });
     });
 
     await t.test('style transform does not override map transform modified via setters', (t, done) => {
       const map = new Map({ container: window.document.createElement('div') });
-      t.ok(map.transform.unmodified);
+      t.assert.ok(map.transform.unmodified);
       map.setZoom(10);
       map.setCenter([-77.0186, 38.8888]);
-      t.notOk(map.transform.unmodified, 'map transform is modified via setters');
+      t.assert.notOk(map.transform.unmodified, 'map transform is modified via setters');
       map.setStyle(createStyle());
       map.on('style.load', () => {
-        t.deepEqual(fixedLngLat(map.transform.center), fixedLngLat({ lng: -77.0186, lat: 38.8888 }));
-        t.equal(fixedNum(map.transform.zoom), 10);
-        t.equal(fixedNum(map.transform.bearing), 0);
-        t.equal(fixedNum(map.transform.pitch), 0);
+        t.assert.deepEqual(fixedLngLat(map.transform.center), fixedLngLat({ lng: -77.0186, lat: 38.8888 }));
+        t.assert.equal(fixedNum(map.transform.zoom), 10);
+        t.assert.equal(fixedNum(map.transform.bearing), 0);
+        t.assert.equal(fixedNum(map.transform.pitch), 0);
         done();
       });
     });
@@ -268,10 +268,10 @@ test('Map', async t => {
     await t.test('passing null removes style', (t, done) => {
       const map = createMap();
       const style = map.style;
-      t.ok(style);
+      t.assert.ok(style);
       t.spy(style, '_remove');
       map.setStyle(null);
-      t.equal(style._remove.callCount, 1);
+      t.assert.equal(style._remove.callCount, 1);
       done();
     });
   });
@@ -284,12 +284,12 @@ test('Map', async t => {
       map.on('load', () => {
         map.on('data', e => {
           if (e.dataType === 'source' && e.sourceDataType === 'metadata') {
-            t.equal(map.isSourceLoaded('geojson'), true, 'true when loaded');
+            t.assert.equal(map.isSourceLoaded('geojson'), true, 'true when loaded');
             done();
           }
         });
         map.addSource('geojson', createStyleSource());
-        t.equal(map.isSourceLoaded('geojson'), false, 'false before loaded');
+        t.assert.equal(map.isSourceLoaded('geojson'), false, 'false before loaded');
       });
     });
 
@@ -297,9 +297,9 @@ test('Map', async t => {
       const style = createStyle();
       const map = createMap({ style: style });
 
-      t.equal(map.isStyleLoaded(), false, 'false before style has loaded');
+      t.assert.equal(map.isStyleLoaded(), false, 'false before style has loaded');
       map.on('load', () => {
-        t.equal(map.isStyleLoaded(), true, 'true when style is loaded');
+        t.assert.equal(map.isStyleLoaded(), true, 'true when style is loaded');
         done();
       });
     });
@@ -307,13 +307,13 @@ test('Map', async t => {
     await t.test('Map#areTilesLoaded', (t, done) => {
       const style = createStyle();
       const map = createMap({ style: style });
-      t.equal(map.areTilesLoaded(), true, 'returns true if there are no sources on the map');
+      t.assert.equal(map.areTilesLoaded(), true, 'returns true if there are no sources on the map');
       map.on('load', () => {
         map.addSource('geojson', createStyleSource());
         map.style.sourceCaches.geojson._tiles.fakeTile = new Tile(new OverscaledTileID(0, 0, 0, 0, 0));
-        t.equal(map.areTilesLoaded(), false, 'returns false if tiles are loading');
+        t.assert.equal(map.areTilesLoaded(), false, 'returns false if tiles are loading');
         map.style.sourceCaches.geojson._tiles.fakeTile.state = 'loaded';
-        t.equal(map.areTilesLoaded(), true, 'returns true if tiles are loaded');
+        t.assert.equal(map.areTilesLoaded(), true, 'returns true if tiles are loaded');
         done();
       });
     });
@@ -325,7 +325,7 @@ test('Map', async t => {
       const map = createMap({ style: style });
 
       map.on('load', () => {
-        t.deepEqual(map.getStyle(), style);
+        t.assert.deepEqual(map.getStyle(), style);
         done();
       });
     });
@@ -336,7 +336,7 @@ test('Map', async t => {
 
       map.on('load', () => {
         map.addSource('geojson', createStyleSource());
-        t.deepEqual(
+        t.assert.deepEqual(
           map.getStyle(),
           Object.assign(createStyle(), {
             sources: { geojson: createStyleSource() }
@@ -352,7 +352,7 @@ test('Map', async t => {
 
       map.on('load', () => {
         map.on('error', ({ error }) => {
-          t.match(error.message, /There is no source with ID/);
+          t.assert.match(error.message, /There is no source with ID/);
           done();
         });
         map.isSourceLoaded('geojson');
@@ -369,7 +369,7 @@ test('Map', async t => {
 
       map.on('load', () => {
         map.addLayer(layer);
-        t.deepEqual(
+        t.assert.deepEqual(
           map.getStyle(),
           Object.assign(createStyle(), {
             layers: [layer]
@@ -392,7 +392,7 @@ test('Map', async t => {
       map.on('load', () => {
         map.addSource('fill', source);
         map.addLayer(layer);
-        t.deepEqual(
+        t.assert.deepEqual(
           map.getStyle(),
           Object.assign(createStyle(), {
             sources: { fill: source },
@@ -434,8 +434,8 @@ test('Map', async t => {
 
     map.once('render', () => {
       map.moveLayer('layerId1', 'layerId2');
-      t.equal(map.getLayer('layerId1').id, 'layerId1');
-      t.equal(map.getLayer('layerId2').id, 'layerId2');
+      t.assert.equal(map.getLayer('layerId1').id, 'layerId1');
+      t.assert.equal(map.getLayer('layerId2').id, 'layerId2');
       done();
     });
   });
@@ -463,9 +463,9 @@ test('Map', async t => {
 
     map.once('render', () => {
       const mapLayer = map.getLayer('layerId');
-      t.equal(mapLayer.id, layer.id);
-      t.equal(mapLayer.type, layer.type);
-      t.equal(mapLayer.source, layer.source);
+      t.assert.equal(mapLayer.id, layer.id);
+      t.assert.equal(mapLayer.type, layer.type);
+      t.assert.equal(mapLayer.source, layer.source);
       done();
     });
   });
@@ -479,8 +479,8 @@ test('Map', async t => {
       Object.defineProperty(container, 'offsetHeight', { value: 250 });
       map.resize();
 
-      t.equal(map.transform.width, 250);
-      t.equal(map.transform.height, 250);
+      t.assert.equal(map.transform.width, 250);
+      t.assert.equal(map.transform.height, 250);
 
       done();
     });
@@ -496,7 +496,7 @@ test('Map', async t => {
       });
 
       map.resize();
-      t.deepEqual(events, ['movestart', 'move', 'resize', 'moveend']);
+      t.assert.deepEqual(events, ['movestart', 'move', 'resize', 'moveend']);
     });
 
     await t.test('listen to window resize event', (t, done) => {
@@ -521,9 +521,9 @@ test('Map', async t => {
 
       map._onWindowResize();
 
-      t.notOk(map.stop.called);
-      t.notOk(map._update.called);
-      t.notOk(map.resize.called);
+      t.assert.notOk(map.stop.called);
+      t.assert.notOk(map._update.called);
+      t.assert.notOk(map.resize.called);
     });
 
     await t.test('do resize if trackResize is true (default)', t => {
@@ -535,18 +535,18 @@ test('Map', async t => {
 
       map._onWindowResize();
 
-      t.ok(map.stop.called);
-      t.ok(map._update.called);
-      t.ok(map.resize.called);
+      t.assert.ok(map.stop.called);
+      t.assert.ok(map._update.called);
+      t.assert.ok(map.resize.called);
     });
   });
 
   await t.test('#getBounds', async t => {
     const map = createMap({ zoom: 0 });
-    t.deepEqual(Number.parseFloat(map.getBounds().getCenter().lng.toFixed(10)), 0, 'getBounds');
-    t.deepEqual(Number.parseFloat(map.getBounds().getCenter().lat.toFixed(10)), 0, 'getBounds');
+    t.assert.deepEqual(Number.parseFloat(map.getBounds().getCenter().lng.toFixed(10)), 0, 'getBounds');
+    t.assert.deepEqual(Number.parseFloat(map.getBounds().getCenter().lat.toFixed(10)), 0, 'getBounds');
 
-    t.deepEqual(
+    t.assert.deepEqual(
       toFixed(map.getBounds().toArray()),
       toFixed([
         [-70.31249999999976, -57.326521225216965],
@@ -556,7 +556,7 @@ test('Map', async t => {
 
     await t.test('rotated bounds', t => {
       const map = createMap({ zoom: 1, bearing: 45 });
-      t.deepEqual(
+      t.assert.deepEqual(
         toFixed([
           [-49.718445552178764, 0],
           [49.7184455522, 0]
@@ -586,7 +586,7 @@ test('Map', async t => {
         [-130.4297, 50.0642],
         [-61.52344, 24.20688]
       ]);
-      t.deepEqual(
+      t.assert.deepEqual(
         toFixed([
           [-130.4297, 7.0136641176],
           [-61.52344, 60.2398142283]
@@ -601,7 +601,7 @@ test('Map', async t => {
         [-130.4297, 50.0642],
         [-61.52344, 24.20688]
       ]);
-      t.deepEqual(
+      t.assert.deepEqual(
         toFixed([
           [-166.28906999999964, -27.6835270554],
           [-25.664070000000066, 73.8248206697]
@@ -616,7 +616,7 @@ test('Map', async t => {
         [-130.4297, 50.0642],
         [-61.52344, 24.20688]
       ]);
-      t.notEqual(map.setZoom(0).getZoom(), 0);
+      t.assert.notEqual(map.setZoom(0).getZoom(), 0);
     });
 
     await t.test('throws on invalid bounds', t => {
@@ -649,7 +649,7 @@ test('Map', async t => {
   await t.test('#getMaxBounds', async t => {
     await t.test('returns null when no bounds set', t => {
       const map = createMap({ zoom: 0 });
-      t.equal(map.getMaxBounds(), null);
+      t.assert.equal(map.getMaxBounds(), null);
     });
 
     await t.test('returns bounds', t => {
@@ -659,19 +659,19 @@ test('Map', async t => {
         [-61.52344, 24.20688]
       ];
       map.setMaxBounds(bounds);
-      t.deepEqual(map.getMaxBounds().toArray(), bounds);
+      t.assert.deepEqual(map.getMaxBounds().toArray(), bounds);
     });
   });
 
   await t.test('#getRenderWorldCopies', async t => {
     await t.test('initially false', t => {
       const map = createMap({ renderWorldCopies: false });
-      t.equal(map.getRenderWorldCopies(), false);
+      t.assert.equal(map.getRenderWorldCopies(), false);
     });
 
     await t.test('initially true', t => {
       const map = createMap({ renderWorldCopies: true });
-      t.equal(map.getRenderWorldCopies(), true);
+      t.assert.equal(map.getRenderWorldCopies(), true);
     });
   });
 
@@ -679,25 +679,25 @@ test('Map', async t => {
     await t.test('initially false', t => {
       const map = createMap({ renderWorldCopies: false });
       map.setRenderWorldCopies(true);
-      t.equal(map.getRenderWorldCopies(), true);
+      t.assert.equal(map.getRenderWorldCopies(), true);
     });
 
     await t.test('initially true', t => {
       const map = createMap({ renderWorldCopies: true });
       map.setRenderWorldCopies(false);
-      t.equal(map.getRenderWorldCopies(), false);
+      t.assert.equal(map.getRenderWorldCopies(), false);
     });
 
     await t.test('undefined', t => {
       const map = createMap({ renderWorldCopies: false });
       map.setRenderWorldCopies(undefined);
-      t.equal(map.getRenderWorldCopies(), true);
+      t.assert.equal(map.getRenderWorldCopies(), true);
     });
 
     await t.test('null', t => {
       const map = createMap({ renderWorldCopies: true });
       map.setRenderWorldCopies(null);
-      t.equal(map.getRenderWorldCopies(), false);
+      t.assert.equal(map.getRenderWorldCopies(), false);
     });
   });
 
@@ -705,21 +705,21 @@ test('Map', async t => {
     const map = createMap({ zoom: 5 });
     map.setMinZoom(3.5);
     map.setZoom(1);
-    t.equal(map.getZoom(), 3.5);
+    t.assert.equal(map.getZoom(), 3.5);
   });
 
   await t.test('unset minZoom', t => {
     const map = createMap({ minZoom: 5 });
     map.setMinZoom(null);
     map.setZoom(1);
-    t.equal(map.getZoom(), 1);
+    t.assert.equal(map.getZoom(), 1);
   });
 
   await t.test('#getMinZoom', t => {
     const map = createMap({ zoom: 0 });
-    t.equal(map.getMinZoom(), 0, 'returns default value');
+    t.assert.equal(map.getMinZoom(), 0, 'returns default value');
     map.setMinZoom(10);
-    t.equal(map.getMinZoom(), 10, 'returns custom value');
+    t.assert.equal(map.getMinZoom(), 10, 'returns custom value');
   });
 
   await t.test('ignore minZooms over maxZoom', async t => {
@@ -728,28 +728,28 @@ test('Map', async t => {
       map.setMinZoom(6);
     });
     map.setZoom(0);
-    t.equal(map.getZoom(), 0);
+    t.assert.equal(map.getZoom(), 0);
   });
 
   await t.test('#setMaxZoom', t => {
     const map = createMap({ zoom: 0 });
     map.setMaxZoom(3.5);
     map.setZoom(4);
-    t.equal(map.getZoom(), 3.5);
+    t.assert.equal(map.getZoom(), 3.5);
   });
 
   await t.test('unset maxZoom', t => {
     const map = createMap({ maxZoom: 5 });
     map.setMaxZoom(null);
     map.setZoom(6);
-    t.equal(map.getZoom(), 6);
+    t.assert.equal(map.getZoom(), 6);
   });
 
   await t.test('#getMaxZoom', t => {
     const map = createMap({ zoom: 0 });
-    t.equal(map.getMaxZoom(), 22, 'returns default value');
+    t.assert.equal(map.getMaxZoom(), 22, 'returns default value');
     map.setMaxZoom(10);
-    t.equal(map.getMaxZoom(), 10, 'returns custom value');
+    t.assert.equal(map.getMaxZoom(), 10, 'returns custom value');
   });
 
   await t.test('ignore maxZooms over minZoom', async t => {
@@ -758,7 +758,7 @@ test('Map', async t => {
       map.setMaxZoom(4);
     });
     map.setZoom(5);
-    t.equal(map.getZoom(), 5);
+    t.assert.equal(map.getZoom(), 5);
   });
 
   await t.test('throw on maxZoom smaller than minZoom at init', async t => {
@@ -775,16 +775,16 @@ test('Map', async t => {
 
   await t.test('#remove', t => {
     const map = createMap();
-    t.equal(map.getContainer().childNodes.length, 2);
+    t.assert.equal(map.getContainer().childNodes.length, 2);
     map.remove();
-    t.equal(map.getContainer().childNodes.length, 0);
+    t.assert.equal(map.getContainer().childNodes.length, 0);
   });
 
   await t.test('#addControl', (t, done) => {
     const map = createMap();
     const control = {
       onAdd: function (_) {
-        t.equal(map, _, 'addTo() called with map');
+        t.assert.equal(map, _, 'addTo() called with map');
         done();
         return window.document.createElement('div');
       }
@@ -799,7 +799,7 @@ test('Map', async t => {
         return window.document.createElement('div');
       },
       onRemove: function (_) {
-        t.equal(map, _, 'onRemove() called with map');
+        t.assert.equal(map, _, 'onRemove() called with map');
         done();
       }
     };
@@ -809,12 +809,12 @@ test('Map', async t => {
 
   await t.test('#project', t => {
     const map = createMap();
-    t.deepEqual(map.project([0, 0]), { x: 100, y: 100 });
+    t.assert.deepEqual(map.project([0, 0]), { x: 100, y: 100 });
   });
 
   await t.test('#unproject', t => {
     const map = createMap();
-    t.deepEqual(fixedLngLat(map.unproject([100, 100])), { lng: 0, lat: 0 });
+    t.assert.deepEqual(fixedLngLat(map.unproject([100, 100])), { lng: 0, lat: 0 });
   });
 
   await t.test('#listImages', (t, done) => {
@@ -848,9 +848,9 @@ test('Map', async t => {
         const output = map.queryRenderedFeatures();
 
         const args = map.style.queryRenderedFeatures.getCall(0).args;
-        t.ok(args[0]);
-        t.deepEqual(args[1], {});
-        t.deepEqual(output, []);
+        t.assert.ok(args[0]);
+        t.assert.deepEqual(args[1], {});
+        t.assert.deepEqual(output, []);
 
         done();
       });
@@ -864,13 +864,13 @@ test('Map', async t => {
         const output = map.queryRenderedFeatures(map.project(new LngLat(0, 0)));
 
         const args = map.style.queryRenderedFeatures.getCall(0).args;
-        t.deepEqual(
+        t.assert.deepEqual(
           args[0].worldCoordinate.map(c => fixedCoord(c)),
           [{ column: 0.5, row: 0.5, zoom: 0 }]
         ); // query geometry
-        t.deepEqual(args[1], {}); // params
-        t.deepEqual(args[2], map.transform); // transform
-        t.deepEqual(output, []);
+        t.assert.deepEqual(args[1], {}); // params
+        t.assert.deepEqual(args[2], map.transform); // transform
+        t.assert.deepEqual(output, []);
 
         done();
       });
@@ -884,9 +884,9 @@ test('Map', async t => {
         const output = map.queryRenderedFeatures({ filter: ['all'] });
 
         const args = map.style.queryRenderedFeatures.getCall(0).args;
-        t.ok(args[0]);
-        t.deepEqual(args[1], { filter: ['all'] });
-        t.deepEqual(output, []);
+        t.assert.ok(args[0]);
+        t.assert.deepEqual(args[1], { filter: ['all'] });
+        t.assert.deepEqual(output, []);
 
         done();
       });
@@ -900,9 +900,9 @@ test('Map', async t => {
         const output = map.queryRenderedFeatures({ filter: ['all'] });
 
         const args = map.style.queryRenderedFeatures.getCall(0).args;
-        t.ok(args[0]);
-        t.deepEqual(args[1], { filter: ['all'] });
-        t.deepEqual(output, []);
+        t.assert.ok(args[0]);
+        t.assert.deepEqual(args[1], { filter: ['all'] });
+        t.assert.deepEqual(output, []);
 
         done();
       });
@@ -916,9 +916,9 @@ test('Map', async t => {
         map.queryRenderedFeatures(map.project(new LngLat(360, 0)));
 
         const coords = map.style.queryRenderedFeatures.getCall(0).args[0].worldCoordinate.map(c => fixedCoord(c));
-        t.equal(coords[0].column, 1.5);
-        t.equal(coords[0].row, 0.5);
-        t.equal(coords[0].zoom, 0);
+        t.assert.equal(coords[0].column, 1.5);
+        t.assert.equal(coords[0].row, 0.5);
+        t.assert.equal(coords[0].zoom, 0);
 
         done();
       });
@@ -926,7 +926,7 @@ test('Map', async t => {
 
     await t.test('returns an empty array when no style is loaded', t => {
       const map = createMap({ style: undefined });
-      t.deepEqual(map.queryRenderedFeatures(), []);
+      t.assert.deepEqual(map.queryRenderedFeatures(), []);
     });
   });
 
@@ -959,8 +959,8 @@ test('Map', async t => {
 
       map.on('style.load', () => {
         map.style.dispatcher.broadcast = function (key, value) {
-          t.equal(key, 'updateLayers');
-          t.deepEqual(
+          t.assert.equal(key, 'updateLayers');
+          t.assert.deepEqual(
             value.layers.map(layer => {
               return layer.id;
             }),
@@ -970,7 +970,7 @@ test('Map', async t => {
 
         map.setLayoutProperty('symbol', 'text-transform', 'lowercase');
         map.style.update({});
-        t.deepEqual(map.getLayoutProperty('symbol', 'text-transform'), 'lowercase');
+        t.assert.deepEqual(map.getLayoutProperty('symbol', 'text-transform'), 'lowercase');
         done();
       });
     });
@@ -1004,7 +1004,7 @@ test('Map', async t => {
 
       map.on('style.load', () => {
         map.on('error', ({ error }) => {
-          t.match(error.message, /does not exist in the map\'s style and cannot be styled/);
+          t.assert.match(error.message, /does not exist in the map\'s style and cannot be styled/);
           done();
         });
         map.setLayoutProperty('non-existant', 'text-transform', 'lowercase');
@@ -1060,7 +1060,7 @@ test('Map', async t => {
 
       map.on('style.load', () => {
         map.setLayoutProperty('background', 'visibility', 'visible');
-        t.deepEqual(map.getLayoutProperty('background', 'visibility'), 'visible');
+        t.assert.deepEqual(map.getLayoutProperty('background', 'visibility'), 'visible');
         done();
       });
     });
@@ -1093,7 +1093,7 @@ test('Map', async t => {
 
       map.on('style.load', () => {
         map.setLayoutProperty('satellite', 'visibility', 'visible');
-        t.deepEqual(map.getLayoutProperty('satellite', 'visibility'), 'visible');
+        t.assert.deepEqual(map.getLayoutProperty('satellite', 'visibility'), 'visible');
         done();
       });
     });
@@ -1129,7 +1129,7 @@ test('Map', async t => {
 
       map.on('style.load', () => {
         map.setLayoutProperty('image', 'visibility', 'visible');
-        t.deepEqual(map.getLayoutProperty('image', 'visibility'), 'visible');
+        t.assert.deepEqual(map.getLayoutProperty('image', 'visibility'), 'visible');
         done();
       });
     });
@@ -1152,7 +1152,7 @@ test('Map', async t => {
 
       map.on('style.load', () => {
         map.setPaintProperty('background', 'background-color', 'red');
-        t.deepEqual(map.getPaintProperty('background', 'background-color'), 'red');
+        t.assert.deepEqual(map.getPaintProperty('background', 'background-color'), 'red');
         done();
       });
     });
@@ -1186,7 +1186,7 @@ test('Map', async t => {
 
       map.on('style.load', () => {
         map.on('error', ({ error }) => {
-          t.match(error.message, /does not exist in the map\'s style and cannot be styled/);
+          t.assert.match(error.message, /does not exist in the map\'s style and cannot be styled/);
           done();
         });
         map.setPaintProperty('non-existant', 'background-color', 'red');
@@ -1208,7 +1208,7 @@ test('Map', async t => {
       map.on('load', () => {
         map.setFeatureState({ source: 'geojson', id: '12345' }, { hover: true });
         const fState = map.getFeatureState({ source: 'geojson', id: '12345' });
-        t.equal(fState.hover, true);
+        t.assert.equal(fState.hover, true);
         done();
       });
     });
@@ -1242,7 +1242,7 @@ test('Map', async t => {
       });
       map.on('load', () => {
         map.on('error', ({ error }) => {
-          t.match(error.message, /source/);
+          t.assert.match(error.message, /source/);
           done();
         });
         map.setFeatureState({ source: 'vector', id: '12345' }, { hover: true });
@@ -1263,7 +1263,7 @@ test('Map', async t => {
       });
       map.on('load', () => {
         map.on('error', ({ error }) => {
-          t.match(error.message, /sourceLayer/);
+          t.assert.match(error.message, /sourceLayer/);
           done();
         });
         map.setFeatureState({ source: 'vector', sourceLayer: 0, id: '12345' }, { hover: true });
@@ -1277,15 +1277,15 @@ test('Map', async t => {
       const stub = t.stub(console, 'error');
       const error = new Error('test');
       map.fire(new ErrorEvent(error));
-      t.ok(stub.calledOnce);
-      t.equal(stub.getCall(0).args[0], error);
+      t.assert.ok(stub.calledOnce);
+      t.assert.equal(stub.getCall(0).args[0], error);
     });
 
     await t.test('calls listeners', (t, done) => {
       const map = createMap();
       const error = new Error('test');
       map.on('error', event => {
-        t.equal(event.error, error);
+        t.assert.equal(event.error, error);
         done();
       });
       map.fire(new ErrorEvent(error));
@@ -1314,7 +1314,7 @@ test('Map', async t => {
       timer = setTimeout(() => {
         map.off('render');
         map.on('render', t.fail);
-        t.notOk(map._frameId, 'no rerender scheduled');
+        t.assert.notOk(map._frameId, 'no rerender scheduled');
         done();
       }, 100);
     });
@@ -1358,7 +1358,7 @@ test('Map', async t => {
     map.flyTo({ center: [200, 0], duration: 100 });
 
     simulate.mousedown(map.getCanvasContainer());
-    t.equal(map.isEasing(), false);
+    t.assert.equal(map.isEasing(), false);
 
     map.remove();
   });
@@ -1368,7 +1368,7 @@ test('Map', async t => {
     map.flyTo({ center: [200, 0], duration: 100 });
 
     simulate.mousedown(map.getCanvasContainer());
-    t.equal(map.isEasing(), true);
+    t.assert.equal(map.isEasing(), true);
 
     map.remove();
   });
@@ -1378,7 +1378,7 @@ test('Map', async t => {
     map.flyTo({ center: [200, 0], duration: 100 });
 
     simulate.touchstart(map.getCanvasContainer());
-    t.equal(map.isEasing(), false);
+    t.assert.equal(map.isEasing(), false);
 
     map.remove();
   });
@@ -1388,7 +1388,7 @@ test('Map', async t => {
     map.flyTo({ center: [200, 0], duration: 100 });
 
     simulate.touchstart(map.getCanvasContainer());
-    t.equal(map.isEasing(), true);
+    t.assert.equal(map.isEasing(), true);
 
     map.remove();
   });

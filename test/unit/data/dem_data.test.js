@@ -24,10 +24,10 @@ test('DEMData', async t => {
 
   await t.test('constructor', t => {
     const dem = new DEMData(0, { width: 4, height: 4, data: new Uint8ClampedArray(4 * 4 * 4) });
-    t.equal(dem.uid, 0);
-    t.equal(dem.dim, 4);
-    t.equal(dem.stride, 6);
-    t.true(dem.data instanceof Int32Array);
+    t.assert.equal(dem.uid, 0);
+    t.assert.equal(dem.dim, 4);
+    t.assert.equal(dem.stride, 6);
+    t.assert.ok(dem.data instanceof Int32Array);
   });
 
   await t.test('setters and getters throw for invalid data coordinates', t => {
@@ -49,9 +49,9 @@ test('DEMData', async t => {
     t.stub(console, 'warn');
 
     const dem = new DEMData(0, { width: 4, height: 4, data: new Uint8ClampedArray(4 * 4 * 4) }, 'derp');
-    t.equal(dem.uid, 0);
-    t.ok(console.warn.calledOnce);
-    t.ok(console.warn.getCall(0).calledWithMatch(/"derp" is not a valid encoding type/));
+    t.assert.equal(dem.uid, 0);
+    t.assert.ok(console.warn.calledOnce);
+    t.assert.ok(console.warn.getCall(0).calledWithMatch(/"derp" is not a valid encoding type/));
   });
 });
 
@@ -78,7 +78,7 @@ test('DEMData#backfillBorder', async t => {
         }
       }
     }
-    t.true(nonempty, 'pixel data populates DEM data level');
+    t.assert.ok(nonempty, 'pixel data populates DEM data level');
 
     let verticalBorderMatch = true;
     for (const x of [-1, 4]) {
@@ -89,7 +89,7 @@ test('DEMData#backfillBorder', async t => {
         }
       }
     }
-    t.true(verticalBorderMatch, 'vertical border of DEM data is initially equal to next column of data');
+    t.assert.ok(verticalBorderMatch, 'vertical border of DEM data is initially equal to next column of data');
 
     // horizontal borders empty
     let horizontalBorderMatch = true;
@@ -101,47 +101,47 @@ test('DEMData#backfillBorder', async t => {
         }
       }
     }
-    t.true(horizontalBorderMatch, 'horizontal border of DEM data is initially equal to next row of data');
+    t.assert.ok(horizontalBorderMatch, 'horizontal border of DEM data is initially equal to next row of data');
 
-    t.true(dem0.get(-1, 4) === dem0.get(0, 3), '-1, 1 corner initially equal to closest corner data');
-    t.true(dem0.get(4, 4) === dem0.get(3, 3), '1, 1 corner initially equal to closest corner data');
-    t.true(dem0.get(-1, -1) === dem0.get(0, 0), '-1, -1 corner initially equal to closest corner data');
-    t.true(dem0.get(4, -1) === dem0.get(3, 0), '-1, 1 corner initially equal to closest corner data');
+    t.assert.ok(dem0.get(-1, 4) === dem0.get(0, 3), '-1, 1 corner initially equal to closest corner data');
+    t.assert.ok(dem0.get(4, 4) === dem0.get(3, 3), '1, 1 corner initially equal to closest corner data');
+    t.assert.ok(dem0.get(-1, -1) === dem0.get(0, 0), '-1, -1 corner initially equal to closest corner data');
+    t.assert.ok(dem0.get(4, -1) === dem0.get(3, 0), '-1, 1 corner initially equal to closest corner data');
   });
 
   await t.test('backfillBorder correctly populates borders with neighboring data', t => {
     dem0.backfillBorder(dem1, -1, 0);
     for (let y = 0; y < 4; y++) {
       // dx = -1, dy = 0, so the left edge of dem1 should equal the right edge of dem0
-      t.true(dem0.get(-1, y) === dem1.get(3, y), 'backfills neighbor -1, 0');
+      t.assert.ok(dem0.get(-1, y) === dem1.get(3, y), 'backfills neighbor -1, 0');
     }
 
     dem0.backfillBorder(dem1, 0, -1);
     for (let x = 0; x < 4; x++) {
-      t.true(dem0.get(x, -1) === dem1.get(x, 3), 'backfills neighbor 0, -1');
+      t.assert.ok(dem0.get(x, -1) === dem1.get(x, 3), 'backfills neighbor 0, -1');
     }
 
     dem0.backfillBorder(dem1, 1, 0);
     for (let y = 0; y < 4; y++) {
-      t.true(dem0.get(4, y) === dem1.get(0, y), 'backfills neighbor 1, 0');
+      t.assert.ok(dem0.get(4, y) === dem1.get(0, y), 'backfills neighbor 1, 0');
     }
 
     dem0.backfillBorder(dem1, 0, 1);
     for (let x = 0; x < 4; x++) {
-      t.true(dem0.get(x, 4) === dem1.get(x, 0), 'backfills neighbor 0, 1');
+      t.assert.ok(dem0.get(x, 4) === dem1.get(x, 0), 'backfills neighbor 0, 1');
     }
 
     dem0.backfillBorder(dem1, -1, 1);
-    t.true(dem0.get(-1, 4) === dem1.get(3, 0), 'backfills neighbor -1, 1');
+    t.assert.ok(dem0.get(-1, 4) === dem1.get(3, 0), 'backfills neighbor -1, 1');
 
     dem0.backfillBorder(dem1, 1, 1);
-    t.true(dem0.get(4, 4) === dem1.get(0, 0), 'backfills neighbor 1, 1');
+    t.assert.ok(dem0.get(4, 4) === dem1.get(0, 0), 'backfills neighbor 1, 1');
 
     dem0.backfillBorder(dem1, -1, -1);
-    t.true(dem0.get(-1, -1) === dem1.get(3, 3), 'backfills neighbor -1, -1');
+    t.assert.ok(dem0.get(-1, -1) === dem1.get(3, 3), 'backfills neighbor -1, -1');
 
     dem0.backfillBorder(dem1, 1, -1);
-    t.true(dem0.get(4, -1) === dem1.get(0, 3), 'backfills neighbor -1, 1');
+    t.assert.ok(dem0.get(4, -1) === dem1.get(0, 3), 'backfills neighbor -1, 1');
   });
 
   await t.test('DEMData is correctly serialized', t => {
@@ -149,7 +149,7 @@ test('DEMData#backfillBorder', async t => {
     const dem0 = new DEMData(0, imageData0);
     const serialized = serialize(dem0);
 
-    t.deepEqual(
+    t.assert.deepEqual(
       serialized,
       {
         $name: 'DEMData',
@@ -163,7 +163,7 @@ test('DEMData#backfillBorder', async t => {
 
     const transferrables = [];
     serialize(dem0, transferrables);
-    t.deepEqual(new Int32Array(transferrables[0]), dem0.data, 'populates transferrables with correct data');
+    t.assert.deepEqual(new Int32Array(transferrables[0]), dem0.data, 'populates transferrables with correct data');
   });
 
   await t.test('DEMData is correctly deserialized', t => {
@@ -172,6 +172,6 @@ test('DEMData#backfillBorder', async t => {
     const serialized = serialize(dem0);
 
     const deserialized = deserialize(serialized);
-    t.deepEqual(deserialized, dem0, 'deserializes serialized DEMData instance');
+    t.assert.deepEqual(deserialized, dem0, 'deserializes serialized DEMData instance');
   });
 });

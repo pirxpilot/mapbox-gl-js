@@ -84,8 +84,8 @@ test('LineBucket segmentation', t => {
   // first segment to include the first feature and the first polygon
   // of the second feature, and the second segment to include the
   // second polygon of the second feature.
-  t.equal(bucket.layoutVertexArray.length, 276);
-  t.deepEqual(bucket.segments.get(), [
+  t.assert.equal(bucket.layoutVertexArray.length, 276);
+  t.assert.deepEqual(bucket.segments.get(), [
     {
       vertexOffset: 0,
       vertexLength: 20,
@@ -100,5 +100,5 @@ test('LineBucket segmentation', t => {
     }
   ]);
 
-  t.equal(console.warn.callCount, 1);
+  t.assert.equal(console.warn.callCount, 1);
 });

@@ -53,15 +53,15 @@ test('ImageSource', async t => {
   await t.test('constructor', t => {
     const source = createSource({ url: new ArrayBuffer(0) });
 
-    t.equal(source.minzoom, 0);
-    t.equal(source.maxzoom, 22);
-    t.equal(source.tileSize, 512);
+    t.assert.equal(source.minzoom, 0);
+    t.assert.equal(source.maxzoom, 22);
+    t.assert.equal(source.tileSize, 512);
   });
 
   await t.test('fires dataloading event', (t, done) => {
     const source = createSource({ url: new ArrayBuffer(0) });
     source.on('dataloading', e => {
-      t.equal(e.dataType, 'source');
+      t.assert.equal(e.dataType, 'source');
       done();
     });
     source.onAdd(new StubMap());
@@ -72,7 +72,7 @@ test('ImageSource', async t => {
     const source = createSource({ url: new ArrayBuffer(0) });
     source.on('data', e => {
       if (e.dataType === 'source' && e.sourceDataType === 'content') {
-        t.equal(typeof source.tileID, 'object');
+        t.assert.equal(typeof source.tileID, 'object');
         done();
       }
     });
@@ -96,9 +96,9 @@ test('ImageSource', async t => {
     const source = createSource({ url });
 
     const serialized = source.serialize();
-    t.equal(serialized.type, 'image');
-    t.equal(serialized.url, url);
-    t.deepEqual(serialized.coordinates, [
+    t.assert.equal(serialized.type, 'image');
+    t.assert.equal(serialized.url, url);
+    t.assert.deepEqual(serialized.coordinates, [
       [0, 0],
       [1, 0],
       [1, 1],

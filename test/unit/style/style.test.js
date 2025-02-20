@@ -77,10 +77,10 @@ test('Style', async t => {
 
       style = new Style(new StubMap());
       t.spy(style.dispatcher, 'broadcast');
-      t.ok(Style.registerForPluginAvailability.calledOnce);
+      t.assert.ok(Style.registerForPluginAvailability.calledOnce);
 
       setRTLTextPlugin('some bogus url');
-      t.ok(style.dispatcher.broadcast.calledWith('loadRTLTextPlugin', 'some bogus url'));
+      t.assert.ok(style.dispatcher.broadcast.calledWith('loadRTLTextPlugin', 'some bogus url'));
     });
 
     await t.test('loads plugin immediately if already registered', { skip: true }, (t, done) => {
@@ -92,7 +92,7 @@ test('Style', async t => {
         // Getting this error message shows the bogus URL was succesfully passed to the worker
         // We'll get the error from all workers, only pay attention to the first one
         if (firstError) {
-          t.equal(error.message, 'RTL Text Plugin failed to import scripts from /plugin.js');
+          t.assert.equal(error.message, 'RTL Text Plugin failed to import scripts from /plugin.js');
           done();
           firstError = false;
         }
@@ -115,9 +115,9 @@ test('Style', async t => {
       style.on('dataloading', spy);
       style.loadJSON(createStyleJSON());
 
-      t.ok(spy.calledOnce);
-      t.equal(spy.getCall(0).args[0].target, style);
-      t.equal(spy.getCall(0).args[0].dataType, 'style');
+      t.assert.ok(spy.calledOnce);
+      t.assert.equal(spy.getCall(0).args[0].target, style);
+      t.assert.equal(spy.getCall(0).args[0].dataType, 'style');
     });
 
     await t.test('fires "data" (asynchronously)', (t, done) => {
@@ -126,8 +126,8 @@ test('Style', async t => {
       style.loadJSON(createStyleJSON());
 
       style.on('data', e => {
-        t.equal(e.target, style);
-        t.equal(e.dataType, 'style');
+        t.assert.equal(e.target, style);
+        t.assert.equal(e.dataType, 'style');
         done();
       });
     });
@@ -180,15 +180,15 @@ test('Style', async t => {
           sprite: 'http://example.com/sprite'
         });
 
-        style.once('error', e => t.ifError(e));
+        style.once('error', e => t.assert.ifError(e));
 
         style.once('data', e => {
-          t.equal(e.target, style);
-          t.equal(e.dataType, 'style');
+          t.assert.equal(e.target, style);
+          t.assert.equal(e.dataType, 'style');
 
           style.once('data', e => {
-            t.equal(e.target, style);
-            t.equal(e.dataType, 'style');
+            t.assert.equal(e.target, style);
+            t.assert.equal(e.dataType, 'style');
             done();
           });
 
@@ -201,7 +201,7 @@ test('Style', async t => {
       style = new Style(new StubMap());
 
       style.on('style.load', () => {
-        t.ok(style.sourceCaches['mapbox'] instanceof SourceCache);
+        t.assert.ok(style.sourceCaches['mapbox'] instanceof SourceCache);
         done();
       });
 
@@ -221,7 +221,7 @@ test('Style', async t => {
       style = new Style(new StubMap());
 
       style.on('style.load', () => {
-        t.ok(style.getLayer('fill') instanceof StyleLayer);
+        t.assert.ok(style.getLayer('fill') instanceof StyleLayer);
         done();
       });
 
@@ -271,10 +271,10 @@ test('Style', async t => {
 
       style.on('error', event => {
         const err = event.error;
-        t.ok(err);
-        t.ok(err.toString().indexOf('-source-layer-') !== -1);
-        t.ok(err.toString().indexOf('-source-id-') !== -1);
-        t.ok(err.toString().indexOf('-layer-id-') !== -1);
+        t.assert.ok(err);
+        t.assert.ok(err.toString().indexOf('-source-layer-') !== -1);
+        t.assert.ok(err.toString().indexOf('-source-id-') !== -1);
+        t.assert.ok(err.toString().indexOf('-layer-id-') !== -1);
 
         done();
       });
@@ -294,8 +294,8 @@ test('Style', async t => {
       );
 
       style.on('error', e => {
-        t.deepEqual(e.layer, { id: 'background' });
-        t.ok(e.mapbox);
+        t.assert.deepEqual(e.layer, { id: 'background' });
+        t.assert.ok(e.mapbox);
         done();
       });
 
@@ -318,7 +318,7 @@ test('Style', async t => {
         const sourceCache = style.sourceCaches['source-id'];
         t.spy(sourceCache, 'clearTiles');
         style._remove();
-        t.ok(sourceCache.clearTiles.calledOnce);
+        t.assert.ok(sourceCache.clearTiles.calledOnce);
         done();
       });
     });
@@ -332,7 +332,7 @@ test('Style', async t => {
         style._remove();
 
         rtlTextPluginEvented.fire(new Event('pluginAvailable'));
-        t.notOk(style.dispatcher.broadcast.calledWith('loadRTLTextPlugin'));
+        t.assert.notOk(style.dispatcher.broadcast.calledWith('loadRTLTextPlugin'));
         done();
       });
     });
@@ -358,7 +358,7 @@ test('Style', async t => {
     });
 
     style.on('error', error => {
-      t.ifError(error);
+      t.assert.ifError(error);
     });
 
     style.on('style.load', () => {
@@ -367,14 +367,14 @@ test('Style', async t => {
       style.removeLayer('second');
 
       style.dispatcher.broadcast = function (key, value) {
-        t.equal(key, 'updateLayers');
-        t.deepEqual(
+        t.assert.equal(key, 'updateLayers');
+        t.assert.deepEqual(
           value.layers.map(layer => {
             return layer.id;
           }),
           ['first', 'third']
         );
-        t.deepEqual(value.removedIds, ['second']);
+        t.assert.deepEqual(value.removedIds, ['second']);
         style._remove();
         done();
       };
@@ -447,16 +447,16 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.on('error', () => {
-          t.ok(true);
+          t.assert.ok(true);
         });
         style.on('data', e => {
           if (e.sourceDataType === 'metadata' && e.dataType === 'source') {
-            t.ok(true);
+            t.assert.ok(true);
           } else if (e.sourceDataType === 'content' && e.dataType === 'source') {
-            t.ok(true);
+            t.assert.ok(true);
             done();
           } else {
-            t.ok(true);
+            t.assert.ok(true);
           }
         });
 
@@ -502,7 +502,7 @@ test('Style', async t => {
         const sourceCache = style.sourceCaches['source-id'];
         t.spy(sourceCache, 'clearTiles');
         style.removeSource('source-id');
-        t.ok(sourceCache.clearTiles.calledOnce);
+        t.assert.ok(sourceCache.clearTiles.calledOnce);
         done();
       });
     });
@@ -545,8 +545,8 @@ test('Style', async t => {
     await t.test('throws if source is in use', (t, done) => {
       createStyle(style => {
         style.on('error', event => {
-          t.ok(event.error.message.includes('"mapbox-source"'));
-          t.ok(event.error.message.includes('"mapbox-layer"'));
+          t.assert.ok(event.error.message.includes('"mapbox-source"'));
+          t.assert.ok(event.error.message.includes('"mapbox-layer"'));
           done();
         });
         style.removeSource('mapbox-source');
@@ -556,7 +556,7 @@ test('Style', async t => {
     await t.test('does not throw if source is not in use', (t, done) => {
       createStyle(style => {
         style.on('error', () => {
-          t.fail();
+          t.assert.fail();
         });
         style.removeLayer('mapbox-layer');
         style.removeSource('mapbox-source');
@@ -579,10 +579,10 @@ test('Style', async t => {
         source.on('error', () => {});
 
         style.on('data', () => {
-          t.ok(false);
+          t.assert.ok(false);
         });
         style.on('error', () => {
-          t.ok(false);
+          t.assert.ok(false);
         });
         source.fire(new Event('data'));
         source.fire(new Event('error'));
@@ -635,8 +635,8 @@ test('Style', async t => {
       style.loadJSON(createStyleJSON());
 
       style.on('error', e => {
-        t.deepEqual(e.layer, { id: 'background' });
-        t.ok(e.mapbox);
+        t.assert.deepEqual(e.layer, { id: 'background' });
+        t.assert.ok(e.mapbox);
         done();
       });
 
@@ -675,10 +675,10 @@ test('Style', async t => {
       style.on('error', event => {
         const err = event.error;
 
-        t.ok(err);
-        t.ok(err.toString().indexOf('-source-layer-') !== -1);
-        t.ok(err.toString().indexOf('-source-id-') !== -1);
-        t.ok(err.toString().indexOf('-layer-id-') !== -1);
+        t.assert.ok(err);
+        t.assert.ok(err.toString().indexOf('-source-layer-') !== -1);
+        t.assert.ok(err.toString().indexOf('-source-id-') !== -1);
+        t.assert.ok(err.toString().indexOf('-layer-id-') !== -1);
 
         done();
       });
@@ -755,7 +755,7 @@ test('Style', async t => {
             };
             t.spy(sourceCache, 'clearTiles');
             assertsOnDone.push(() => {
-              t.notOk(sourceCache.clearTiles.called);
+              t.assert.notOk(sourceCache.clearTiles.called);
             });
             style.removeLayer('my-layer');
             style.addLayer(layer);
@@ -800,7 +800,7 @@ test('Style', async t => {
             const sourceCache = style.sourceCaches['mapbox'];
             t.spy(sourceCache, 'reload');
             assertsOnDone.push(() => {
-              t.notOk(sourceCache.reload.called);
+              t.assert.notOk(sourceCache.reload.called);
             });
             const { clearTiles } = sourceCache;
             sourceCache.clearTiles = () => {
@@ -835,7 +835,7 @@ test('Style', async t => {
       const layer = { id: 'background', type: 'background' };
 
       style.on('error', e => {
-        t.match(e.error.message, /already exists/);
+        t.assert.match(e.error.message, /already exists/);
         done();
       });
 
@@ -865,7 +865,7 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.addLayer(layer);
-        t.deepEqual(style._order, ['a', 'b', 'c']);
+        t.assert.deepEqual(style._order, ['a', 'b', 'c']);
         done();
       });
     });
@@ -890,7 +890,7 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.addLayer(layer, 'a');
-        t.deepEqual(style._order, ['c', 'a', 'b']);
+        t.assert.deepEqual(style._order, ['c', 'a', 'b']);
         done();
       });
     });
@@ -915,7 +915,7 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.on('error', error => {
-          t.match(error.error.message, /does not exist on this map/);
+          t.assert.match(error.error.message, /does not exist on this map/);
           done();
         });
         style.addLayer(layer, 'z');
@@ -944,7 +944,7 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.on('error', ({ error }) => {
-          t.match(error.message, /does not exist on source/);
+          t.assert.match(error.message, /does not exist on source/);
           done();
         });
         style.addLayer(layer);
@@ -991,7 +991,7 @@ test('Style', async t => {
       );
 
       style.on('error', () => {
-        t.fail();
+        t.assert.fail();
       });
 
       style.on('style.load', () => {
@@ -1012,7 +1012,7 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.on('error', ({ error }) => {
-          t.match(error.message, /does not exist in the map\'s style and cannot be removed/);
+          t.assert.match(error.message, /does not exist in the map\'s style and cannot be removed/);
           done();
         });
         style.removeLayer('background');
@@ -1038,7 +1038,7 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.removeLayer('a');
-        t.deepEqual(style._order, ['b']);
+        t.assert.deepEqual(style._order, ['b']);
         done();
       });
     });
@@ -1062,8 +1062,8 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.removeLayer('a');
-        t.equal(style.getLayer('a'), undefined);
-        t.notEqual(style.getLayer('b'), undefined);
+        t.assert.equal(style.getLayer('a'), undefined);
+        t.assert.notEqual(style.getLayer('b'), undefined);
         done();
       });
     });
@@ -1101,7 +1101,7 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.on('error', ({ error }) => {
-          t.match(error.message, /does not exist in the map\'s style and cannot be moved/);
+          t.assert.match(error.message, /does not exist in the map\'s style and cannot be moved/);
           done();
         });
         style.moveLayer('background');
@@ -1122,7 +1122,7 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.moveLayer('a', 'c');
-        t.deepEqual(style._order, ['b', 'a', 'c']);
+        t.assert.deepEqual(style._order, ['b', 'a', 'c']);
         done();
       });
     });
@@ -1141,7 +1141,7 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.moveLayer('b', 'b');
-        t.deepEqual(style._order, ['a', 'b', 'c']);
+        t.assert.deepEqual(style._order, ['a', 'b', 'c']);
         done();
       });
     });
@@ -1189,7 +1189,7 @@ test('Style', async t => {
             if (!begun && sourceCache.loaded()) {
               begun = true;
               t.stub(sourceCache, 'reload').callsFake(() => {
-                t.ok(styleUpdateCalled, 'loadTile called before layer data broadcast');
+                t.assert.ok(styleUpdateCalled, 'loadTile called before layer data broadcast');
                 done();
               });
 
@@ -1233,15 +1233,15 @@ test('Style', async t => {
           ]
         };
         style.setPaintProperty('background', 'background-color', value);
-        t.notEqual(style.getPaintProperty('background', 'background-color'), value);
-        t.ok(style._changed);
+        t.assert.notEqual(style.getPaintProperty('background', 'background-color'), value);
+        t.assert.ok(style._changed);
 
         style.update({});
-        t.notOk(style._changed);
+        t.assert.notOk(style._changed);
 
         value.stops[0][0] = 1;
         style.setPaintProperty('background', 'background-color', value);
-        t.ok(style._changed);
+        t.assert.ok(style._changed);
 
         done();
       });
@@ -1275,12 +1275,12 @@ test('Style', async t => {
           ]
         });
         style.update({});
-        t.notOk(style._changed);
+        t.assert.notOk(style._changed);
 
         const value = style.getPaintProperty('background', 'background-color');
         value.stops[0][0] = 1;
         style.setPaintProperty('background', 'background-color', value);
-        t.ok(style._changed);
+        t.assert.ok(style._changed);
 
         done();
       });
@@ -1323,15 +1323,15 @@ test('Style', async t => {
           ]
         };
         style.setLayoutProperty('line', 'line-cap', value);
-        t.notEqual(style.getLayoutProperty('line', 'line-cap'), value);
-        t.ok(style._changed);
+        t.assert.notEqual(style.getLayoutProperty('line', 'line-cap'), value);
+        t.assert.ok(style._changed);
 
         style.update({});
-        t.notOk(style._changed);
+        t.assert.notOk(style._changed);
 
         value.stops[0][0] = 1;
         style.setLayoutProperty('line', 'line-cap', value);
-        t.ok(style._changed);
+        t.assert.ok(style._changed);
 
         done();
       });
@@ -1374,12 +1374,12 @@ test('Style', async t => {
           ]
         });
         style.update({});
-        t.notOk(style._changed);
+        t.assert.notOk(style._changed);
 
         const value = style.getLayoutProperty('line', 'line-cap');
         value.stops[0][0] = 1;
         style.setLayoutProperty('line', 'line-cap', value);
-        t.ok(style._changed);
+        t.assert.ok(style._changed);
 
         done();
       });
@@ -1415,14 +1415,14 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.dispatcher.broadcast = function (key, value) {
-          t.equal(key, 'updateLayers');
-          t.deepEqual(value.layers[0].id, 'symbol');
-          t.deepEqual(value.layers[0].filter, ['==', 'id', 1]);
+          t.assert.equal(key, 'updateLayers');
+          t.assert.deepEqual(value.layers[0].id, 'symbol');
+          t.assert.deepEqual(value.layers[0].filter, ['==', 'id', 1]);
           done();
         };
 
         style.setFilter('symbol', ['==', 'id', 1]);
-        t.deepEqual(style.getFilter('symbol'), ['==', 'id', 1]);
+        t.assert.deepEqual(style.getFilter('symbol'), ['==', 'id', 1]);
         style.update({}); // trigger dispatcher broadcast
       });
     });
@@ -1436,9 +1436,9 @@ test('Style', async t => {
         const filter2 = style.getFilter('symbol');
         const filter3 = style.getLayer('symbol').filter;
 
-        t.notEqual(filter1, filter2);
-        t.notEqual(filter1, filter3);
-        t.notEqual(filter2, filter3);
+        t.assert.notEqual(filter1, filter2);
+        t.assert.notEqual(filter1, filter3);
+        t.assert.notEqual(filter2, filter3);
 
         done();
       });
@@ -1453,9 +1453,9 @@ test('Style', async t => {
         style.update({}); // flush pending operations
 
         style.dispatcher.broadcast = function (key, value) {
-          t.equal(key, 'updateLayers');
-          t.deepEqual(value.layers[0].id, 'symbol');
-          t.deepEqual(value.layers[0].filter, ['==', 'id', 2]);
+          t.assert.equal(key, 'updateLayers');
+          t.assert.deepEqual(value.layers[0].id, 'symbol');
+          t.assert.deepEqual(value.layers[0].filter, ['==', 'id', 2]);
           done();
         };
         filter[2] = 2;
@@ -1468,7 +1468,7 @@ test('Style', async t => {
       style = createStyle();
       style.on('style.load', () => {
         style.setFilter('symbol', null);
-        t.equal(style.getLayer('symbol').serialize().filter, undefined);
+        t.assert.equal(style.getLayer('symbol').serialize().filter, undefined);
         done();
       });
     });
@@ -1478,7 +1478,7 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.on('error', ({ error }) => {
-          t.match(error.message, /does not exist in the map\'s style and cannot be filtered/);
+          t.assert.match(error.message, /does not exist in the map\'s style and cannot be filtered/);
           done();
         });
         style.setFilter('non-existant', ['==', 'id', 1]);
@@ -1521,8 +1521,8 @@ test('Style', async t => {
 
       style.on('style.load', () => {
         style.dispatcher.broadcast = function (key, value) {
-          t.equal(key, 'updateLayers');
-          t.deepEqual(
+          t.assert.equal(key, 'updateLayers');
+          t.assert.deepEqual(
             value.map(layer => {
               return layer.id;
             }),
@@ -1531,8 +1531,8 @@ test('Style', async t => {
         };
 
         style.setLayerZoomRange('symbol', 5, 12);
-        t.equal(style.getLayer('symbol').minzoom, 5, 'set minzoom');
-        t.equal(style.getLayer('symbol').maxzoom, 12, 'set maxzoom');
+        t.assert.equal(style.getLayer('symbol').minzoom, 5, 'set minzoom');
+        t.assert.equal(style.getLayer('symbol').maxzoom, 12, 'set maxzoom');
         done();
       });
     });
@@ -1541,7 +1541,7 @@ test('Style', async t => {
       style = createStyle();
       style.on('style.load', () => {
         style.on('error', ({ error }) => {
-          t.match(error.message, /does not exist in the map\'s style and cannot have zoom extent/);
+          t.assert.match(error.message, /does not exist in the map\'s style and cannot have zoom extent/);
           done();
         });
         style.setLayerZoomRange('non-existant', 5, 12);
@@ -1675,13 +1675,13 @@ test('Style', async t => {
 
       await t.test('returns feature type', (t, done) => {
         const results = style.queryRenderedFeatures([{ column: 1, row: 1, zoom: 1 }], {}, transform);
-        t.equal(results[0].geometry.type, 'Line');
+        t.assert.equal(results[0].geometry.type, 'Line');
         done();
       });
 
       await t.test('filters by `layers` option', (t, done) => {
         const results = style.queryRenderedFeatures([{ column: 1, row: 1, zoom: 1 }], { layers: ['land'] }, transform);
-        t.equal(results.length, 2);
+        t.assert.equal(results.length, 2);
         done();
       });
 
@@ -1691,20 +1691,20 @@ test('Style', async t => {
           if (event.error?.message.includes('parameters.layers must be an Array.')) errors++;
         });
         style.queryRenderedFeatures([{ column: 1, row: 1, zoom: 1 }], { layers: 'string' }, transform);
-        t.equal(errors, 1);
+        t.assert.equal(errors, 1);
         done();
       });
 
       await t.test('includes layout properties', (t, done) => {
         const results = style.queryRenderedFeatures([{ column: 1, row: 1, zoom: 1 }], {}, transform);
         const layout = results[0].layer.layout;
-        t.deepEqual(layout['line-cap'], 'round');
+        t.assert.deepEqual(layout['line-cap'], 'round');
         done();
       });
 
       await t.test('includes paint properties', (t, done) => {
         const results = style.queryRenderedFeatures([{ column: 1, row: 1, zoom: 1 }], {}, transform);
-        t.deepEqual(results[2].layer.paint['line-color'], 'red');
+        t.assert.deepEqual(results[2].layer.paint['line-color'], 'red');
         done();
       });
 
@@ -1712,7 +1712,7 @@ test('Style', async t => {
         const results = style.queryRenderedFeatures([{ column: 1, row: 1, zoom: 1 }], {}, transform);
 
         const layer = results[1].layer;
-        t.equal(layer.metadata.something, 'else');
+        t.assert.equal(layer.metadata.something, 'else');
 
         done();
       });
@@ -1723,13 +1723,13 @@ test('Style', async t => {
           { layers: ['land', 'landref'] },
           transform
         );
-        t.equal(results.length, 3);
+        t.assert.equal(results.length, 3);
         done();
       });
 
       await t.test('does not query sources not implicated by `layers` parameter', (t, done) => {
         style.sourceCaches.mapbox.queryRenderedFeatures = function () {
-          t.fail();
+          t.assert.fail();
         };
         style.queryRenderedFeatures([{ column: 1, row: 1, zoom: 1 }], { layers: ['land--other'] }, transform);
         done();
@@ -1742,8 +1742,8 @@ test('Style', async t => {
             errors++;
         });
         const results = style.queryRenderedFeatures([{ column: 1, row: 1, zoom: 1 }], { layers: ['merp'] }, transform);
-        t.equal(errors, 0);
-        t.equal(results.length, 0);
+        t.assert.equal(errors, 0);
+        t.assert.equal(results.length, 0);
         done();
       });
 
@@ -1778,21 +1778,21 @@ test('Style', async t => {
       style.setPaintProperty('first', 'text-color', 'black');
       style.setPaintProperty('first', 'text-halo-color', 'white');
 
-      t.notOk(style.fire.called, 'fire is deferred');
-      t.notOk(style._reloadSource.called, '_reloadSource is deferred');
-      t.notOk(style._updateWorkerLayers.called, '_updateWorkerLayers is deferred');
+      t.assert.notOk(style.fire.called, 'fire is deferred');
+      t.assert.notOk(style._reloadSource.called, '_reloadSource is deferred');
+      t.assert.notOk(style._updateWorkerLayers.called, '_updateWorkerLayers is deferred');
 
       style.update({});
 
-      t.equal(style.fire.args[0][0].type, 'data', 'a data event was fired');
+      t.assert.equal(style.fire.args[0][0].type, 'data', 'a data event was fired');
 
       // called per source
-      t.ok(style._reloadSource.calledTwice, '_reloadSource is called per source');
-      t.ok(style._reloadSource.calledWith('streets'), '_reloadSource is called for streets');
-      t.ok(style._reloadSource.calledWith('terrain'), '_reloadSource is called for terrain');
+      t.assert.ok(style._reloadSource.calledTwice, '_reloadSource is called per source');
+      t.assert.ok(style._reloadSource.calledWith('streets'), '_reloadSource is called for streets');
+      t.assert.ok(style._reloadSource.calledWith('terrain'), '_reloadSource is called for terrain');
 
       // called once
-      t.ok(style._updateWorkerLayers.calledOnce, '_updateWorkerLayers is called once');
+      t.assert.ok(style._updateWorkerLayers.calledOnce, '_updateWorkerLayers is called once');
 
       style._remove();
       done();
@@ -1819,12 +1819,12 @@ test('Style', async t => {
       // expect no call to load worker source
       style.dispatcher.broadcast = function (type) {
         if (type === 'loadWorkerSource') {
-          t.fail();
+          t.assert.fail();
         }
       };
 
       style.addSourceType('foo', SourceType, () => {
-        t.equal(_types['foo'], SourceType);
+        t.assert.equal(_types['foo'], SourceType);
         done();
       });
     });
@@ -1836,15 +1836,15 @@ test('Style', async t => {
 
       style.dispatcher.broadcast = function (type, params) {
         if (type === 'loadWorkerSource') {
-          t.equal(_types['bar'], SourceType);
-          t.equal(params.name, 'bar');
-          t.equal(params.url, 'worker-source.js');
+          t.assert.equal(_types['bar'], SourceType);
+          t.assert.equal(params.name, 'bar');
+          t.assert.equal(params.url, 'worker-source.js');
           done();
         }
       };
 
       style.addSourceType('bar', SourceType, err => {
-        t.ifError(err);
+        t.assert.ifError(err);
       });
     });
 
@@ -1854,7 +1854,7 @@ test('Style', async t => {
         'existing',
         () => {},
         err => {
-          t.ok(err);
+          t.assert.ok(err);
           done();
         }
       );
@@ -1869,7 +1869,7 @@ test('Style', async t => {
 
     await t.test('returns false when the style is loading', t => {
       style = new Style(new StubMap());
-      t.equal(style.hasTransitions(), false);
+      t.assert.equal(style.hasTransitions(), false);
     });
 
     await t.test('returns true when a property is transitioning', (t, done) => {
@@ -1888,7 +1888,7 @@ test('Style', async t => {
       style.on('style.load', () => {
         style.setPaintProperty('background', 'background-color', 'blue');
         style.update({ transition: { duration: 300, delay: 0 } });
-        t.equal(style.hasTransitions(), true);
+        t.assert.equal(style.hasTransitions(), true);
         done();
       });
     });
@@ -1909,7 +1909,7 @@ test('Style', async t => {
       style.on('style.load', () => {
         style.setPaintProperty('background', 'background-color', 'blue');
         style.update({ transition: { duration: 0, delay: 0 } });
-        t.equal(style.hasTransitions(), false);
+        t.assert.equal(style.hasTransitions(), false);
         done();
       });
     });
