@@ -42,8 +42,7 @@ test('RasterTileSource', async t => {
         const tile = {
           tileID: new OverscaledTileID(10, 0, 10, 5, 5),
           state: 'loading',
-          loadVectorData: function () {},
-          setExpiryData: function () {}
+          loadVectorData: function () {}
         };
         source.loadTile(tile, () => {
           t.assert.deepEqual(Object.keys(tile.neighboringTiles), [
@@ -74,8 +73,7 @@ test('RasterTileSource', async t => {
         const tile = {
           tileID: new OverscaledTileID(5, 0, 5, 31, 5),
           state: 'loading',
-          loadVectorData: function () {},
-          setExpiryData: function () {}
+          loadVectorData: function () {}
         };
         source.loadTile(tile, () => {
           t.assert.deepEqual(Object.keys(tile.neighboringTiles), [

@@ -19,21 +19,8 @@ class CanonicalTileID {
     return this.z === id.z && this.x === id.x && this.y === id.y;
   }
 
-  // given a list of urls, choose a url template and return a tile URL
-  url(urls, scheme) {
-    if (!urls) {
-      return;
-    }
-    const bbox = getTileBBox(this.x, this.y, this.z);
-    const quadkey = getQuadkey(this.z, this.x, this.y);
-
-    return urls[(this.x + this.y) % urls.length]
-      .replace('{prefix}', (this.x % 16).toString(16) + (this.y % 16).toString(16))
-      .replace('{z}', String(this.z))
-      .replace('{x}', String(this.x))
-      .replace('{y}', String(scheme === 'tms' ? 2 ** this.z - this.y - 1 : this.y))
-      .replace('{quadkey}', quadkey)
-      .replace('{bbox-epsg-3857}', bbox);
+  get cacheKey() {
+    return this.key;
   }
 }
 
@@ -117,6 +104,10 @@ class OverscaledTileID {
     return false;
   }
 
+  get cacheKey() {
+    return calculateKey(this.wrap, this.overscaledZ, this.canonical.x, this.canonical.y);
+  }
+
   wrapped() {
     return new OverscaledTileID(this.overscaledZ, 0, this.canonical.z, this.canonical.x, this.canonical.y);
   }
@@ -147,16 +138,6 @@ function calculateKey(wrap, z, x, y) {
   if (wrap < 0) wrap = wrap * -1 - 1;
   const dim = 1 << z;
   return (dim * dim * wrap + dim * y + x) * 32 + z;
-}
-
-function getQuadkey(z, x, y) {
-  let quadkey = '';
-  let mask;
-  for (let i = z; i > 0; i--) {
-    mask = 1 << (i - 1);
-    quadkey += (x & mask ? 1 : 0) + (y & mask ? 2 : 0);
-  }
-  return quadkey;
 }
 
 register('CanonicalTileID', CanonicalTileID);

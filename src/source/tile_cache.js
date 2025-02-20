@@ -1,11 +1,11 @@
+const assert = require('assert');
+
 /**
- * A [least-recently-used cache](http://en.wikipedia.org/wiki/Cache_algorithms)
- * with hash lookup made possible by keeping a list of keys in parallel to
- * an array of dictionary of values
- *
- * @private
+ * A [fifo cache](http://en.wikipedia.org/wiki/Cache_algorithms)
  */
 class TileCache {
+  #data = new Map();
+
   /**
    * @param {number} max number of permitted values
    * @param {Function} onRemove callback called with items when they expire
@@ -13,26 +13,18 @@ class TileCache {
   constructor(max, onRemove) {
     this.max = max;
     this.onRemove = onRemove;
-    this.reset();
   }
 
   /**
    * Clear the cache
    *
    * @returns {TileCache} this cache
-   * @private
    */
   reset() {
-    for (const key in this.data) {
-      for (const removedData of this.data[key]) {
-        if (removedData.timeout) clearTimeout(removedData.timeout);
-        this.onRemove(removedData.value);
-      }
+    for (const data of this.#data.values()) {
+      this.onRemove(data);
     }
-
-    this.data = {};
-    this.order = [];
-
+    this.#data.clear();
     return this;
   }
 
@@ -44,31 +36,15 @@ class TileCache {
    * @param {*} data any value
    *
    * @returns {TileCache} this cache
-   * @private
    */
-  add(tileID, data, expiryTimeout) {
-    const key = tileID.wrapped().key;
-    if (this.data[key] === undefined) {
-      this.data[key] = [];
-    }
-
-    const dataWrapper = {
-      value: data,
-      timeout: undefined
-    };
-
-    if (expiryTimeout !== undefined) {
-      dataWrapper.timeout = setTimeout(() => {
-        this.remove(tileID, dataWrapper);
-      }, expiryTimeout);
-    }
-
-    this.data[key].push(dataWrapper);
-    this.order.push(key);
-
-    if (this.order.length > this.max) {
-      const removedData = this._getAndRemoveByKey(this.order[0]);
-      if (removedData) this.onRemove(removedData);
+  add(data) {
+    const key = data.tileID.cacheKey;
+    assert(!this.#data.has(key));
+    this.#data.set(key, data);
+    if (this.#data.size > this.max) {
+      const [[key, tile]] = this.#data;
+      this.onRemove(tile);
+      this.#data.delete(key);
     }
 
     return this;
@@ -79,10 +55,9 @@ class TileCache {
    *
    * @param {OverscaledTileID} tileID the key to be looked-up
    * @returns {boolean} whether the cache has this value
-   * @private
    */
   has(tileID) {
-    return tileID.wrapped().key in this.data;
+    return this.#data.has(tileID.cacheKey);
   }
 
   /**
@@ -91,28 +66,20 @@ class TileCache {
    *
    * @param {OverscaledTileID} tileID the key to look up
    * @returns {*} the data, or null if it isn't found
-   * @private
    */
   getAndRemove(tileID) {
-    if (!this.has(tileID)) {
-      return null;
-    }
-    return this._getAndRemoveByKey(tileID.wrapped().key);
+    return this.#getAndRemoveByKey(tileID.cacheKey);
   }
 
   /*
    * Get and remove the value with the specified key.
    */
-  _getAndRemoveByKey(key) {
-    const data = this.data[key].shift();
-    if (data.timeout) clearTimeout(data.timeout);
-
-    if (this.data[key].length === 0) {
-      delete this.data[key];
+  #getAndRemoveByKey(key) {
+    const tile = this.#data.get(key);
+    if (tile) {
+      this.#data.delete(key);
+      return tile;
     }
-    this.order.splice(this.order.indexOf(key), 1);
-
-    return data.value;
   }
 
   /**
@@ -121,42 +88,9 @@ class TileCache {
    *
    * @param {OverscaledTileID} tileID the key to look up
    * @returns {*} the data, or null if it isn't found
-   * @private
    */
   get(tileID) {
-    if (!this.has(tileID)) {
-      return null;
-    }
-
-    const data = this.data[tileID.wrapped().key][0];
-    return data.value;
-  }
-
-  /**
-   * Remove a key/value combination from the cache.
-   *
-   * @param {OverscaledTileID} tileID the key for the pair to delete
-   * @param {Tile} value If a value is provided, remove that exact version of the value.
-   * @returns {TileCache} this cache
-   * @private
-   */
-  remove(tileID, value) {
-    if (!this.has(tileID)) {
-      return this;
-    }
-    const key = tileID.wrapped().key;
-
-    const dataIndex = value === undefined ? 0 : this.data[key].indexOf(value);
-    const data = this.data[key][dataIndex];
-    this.data[key].splice(dataIndex, 1);
-    if (data.timeout) clearTimeout(data.timeout);
-    if (this.data[key].length === 0) {
-      delete this.data[key];
-    }
-    this.onRemove(data.value);
-    this.order.splice(this.order.indexOf(key), 1);
-
-    return this;
+    return this.#data.get(tileID.cacheKey);
   }
 
   /**
@@ -164,17 +98,24 @@ class TileCache {
    *
    * @param {number} max the max size of the cache
    * @returns {TileCache} this cache
-   * @private
    */
   setMaxSize(max) {
-    this.max = max;
-
-    while (this.order.length > this.max) {
-      const removedData = this._getAndRemoveByKey(this.order[0]);
-      if (removedData) this.onRemove(removedData);
+    for (let overflow = this.#data.size - max; overflow > 0; overflow--) {
+      const [[key, data]] = this.#data;
+      this.onRemove(data);
+      this.#data.delete(key);
     }
 
+    this.max = max;
     return this;
+  }
+
+  get keys() {
+    return Array.from(this.#data.keys());
+  }
+
+  get size() {
+    return this.#data.size;
   }
 }
 

@@ -48,7 +48,6 @@ class RasterDEMTileSource extends RasterTileSource {
         tile.state = 'errored';
         callback(err);
       } else if (img) {
-        if (this.map._refreshExpiredTiles) tile.setExpiryData(img);
         delete img.cacheControl;
         delete img.expires;
 

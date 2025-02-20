@@ -26,11 +26,6 @@ function MockSourceType(id, sourceOptions, _dispatcher, eventedParent) {
       }
     }
     loadTile(tile, callback) {
-      if (sourceOptions.expires) {
-        tile.setExpiryData({
-          expires: sourceOptions.expires
-        });
-      }
       setTimeout(callback, 0);
     }
     onAdd() {
@@ -162,47 +157,6 @@ test('SourceCache#addTile', async t => {
     sourceCache._addTile(tileID);
 
     t.assert.equal(updateFeaturesSpy.getCalls().length, 1);
-  });
-
-  await t.test('moves timers when adding tile from cache', t => {
-    const tileID = new OverscaledTileID(0, 0, 0, 0, 0);
-    const time = new Date();
-    time.setSeconds(time.getSeconds() + 5);
-
-    const sourceCache = createSourceCache();
-    sourceCache._setTileReloadTimer = id => {
-      sourceCache._timers[id] = setTimeout(() => {}, 0);
-    };
-    sourceCache._loadTile = (tile, callback) => {
-      tile.state = 'loaded';
-      tile.getExpiryTimeout = () => 1000 * 60;
-      sourceCache._setTileReloadTimer(tileID.key, tile);
-      callback();
-    };
-
-    const tr = new Transform();
-    tr.width = 512;
-    tr.height = 512;
-    sourceCache.updateCacheSize(tr);
-
-    const id = tileID.key;
-    t.assert.notOk(sourceCache._timers[id]);
-    t.assert.notOk(sourceCache._cache.has(tileID));
-
-    sourceCache._addTile(tileID);
-
-    t.assert.ok(sourceCache._timers[id]);
-    t.assert.notOk(sourceCache._cache.has(tileID));
-
-    sourceCache._removeTile(tileID.key);
-
-    t.assert.notOk(sourceCache._timers[id]);
-    t.assert.ok(sourceCache._cache.has(tileID));
-
-    sourceCache._addTile(tileID);
-
-    t.assert.ok(sourceCache._timers[id]);
-    t.assert.notOk(sourceCache._cache.has(tileID));
   });
 
   await t.test('does not reuse wrapped tile', t => {
@@ -1486,11 +1440,11 @@ test('SourceCache#findLoadedParent', async t => {
     sourceCache.updateCacheSize(tr);
 
     const tile = new Tile(new OverscaledTileID(1, 0, 1, 0, 0), 512, 22);
-    sourceCache._cache.add(tile.tileID, tile);
+    sourceCache._cache.add(tile);
 
     t.assert.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 3, 3), 0), undefined);
     t.assert.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 0, 0), 0), tile);
-    t.assert.equal(sourceCache._cache.order.length, 1);
+    t.assert.equal(sourceCache._cache.size, 1);
   });
 });
 
@@ -1506,23 +1460,6 @@ test('SourceCache#reload', async t => {
       null,
       'reload ignored gracefully'
     );
-  });
-});
-
-test('SourceCache reloads expiring tiles', async t => {
-  await t.test('calls reloadTile when tile expires', (t, done) => {
-    const coord = new OverscaledTileID(1, 0, 1, 0, 1, 0, 0);
-
-    const expiryDate = new Date();
-    expiryDate.setMilliseconds(expiryDate.getMilliseconds() + 50);
-    const sourceCache = createSourceCache({ expires: expiryDate });
-
-    sourceCache._reloadTile = (id, state) => {
-      t.assert.equal(state, 'expired');
-      done();
-    };
-
-    sourceCache._addTile(coord);
   });
 });
 
