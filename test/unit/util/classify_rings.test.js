@@ -11,7 +11,7 @@ const vt = new VectorTile(
 );
 const feature = vt.layers.water.feature(0);
 
-test('classifyRings', assert => {
+test('classifyRings', t => {
   let geometry;
   let classified;
 
@@ -25,8 +25,8 @@ test('classifyRings', assert => {
     ]
   ];
   classified = classifyRings(geometry);
-  assert.equal(classified.length, 1, '1 polygon');
-  assert.equal(classified[0].length, 1, 'polygon 1 has 1 exterior');
+  t.equal(classified.length, 1, '1 polygon');
+  t.equal(classified[0].length, 1, 'polygon 1 has 1 exterior');
 
   geometry = [
     [
@@ -45,9 +45,9 @@ test('classifyRings', assert => {
     ]
   ];
   classified = classifyRings(geometry);
-  assert.equal(classified.length, 2, '2 polygons');
-  assert.equal(classified[0].length, 1, 'polygon 1 has 1 exterior');
-  assert.equal(classified[1].length, 1, 'polygon 2 has 1 exterior');
+  t.equal(classified.length, 2, '2 polygons');
+  t.equal(classified[0].length, 1, 'polygon 1 has 1 exterior');
+  t.equal(classified[1].length, 1, 'polygon 2 has 1 exterior');
 
   geometry = [
     [
@@ -65,16 +65,14 @@ test('classifyRings', assert => {
     ]
   ];
   classified = classifyRings(geometry);
-  assert.equal(classified.length, 1, '1 polygon');
-  assert.equal(classified[0].length, 2, 'polygon 1 has 1 exterior, 1 interior');
+  t.equal(classified.length, 1, '1 polygon');
+  t.equal(classified[0].length, 2, 'polygon 1 has 1 exterior, 1 interior');
 
   geometry = feature.loadGeometry();
   classified = classifyRings(geometry);
-  assert.equal(classified.length, 2, '2 polygons');
-  assert.equal(classified[0].length, 1, 'polygon 1 has 1 exterior');
-  assert.equal(classified[1].length, 10, 'polygon 2 has 1 exterior, 9 interior');
-
-  assert.end();
+  t.equal(classified.length, 2, '2 polygons');
+  t.equal(classified[0].length, 1, 'polygon 1 has 1 exterior');
+  t.equal(classified[1].length, 10, 'polygon 2 has 1 exterior, 9 interior');
 });
 
 test('classifyRings + maxRings', async t => {
