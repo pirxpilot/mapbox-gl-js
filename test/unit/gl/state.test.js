@@ -47,8 +47,6 @@ async function ValueTest(Constructor, options, t) {
     const equality = options.equality || ((a, b) => deepEqual(a, b));
     t.ok(equality(v.get(), options.setValue));
   });
-
-  t.end();
 }
 
 test(

@@ -8,7 +8,6 @@ module.exports = {
 };
 
 test.beforeEach(t => {
-  t.end = () => {};
   t.ok = t.assert.ok;
   t.notOk = (cond, ...args) => t.assert.ok(!cond, ...args);
   t.comment = () => {};

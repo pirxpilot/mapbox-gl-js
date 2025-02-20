@@ -58,33 +58,33 @@ test('ImageSource', async t => {
     t.equal(source.tileSize, 512);
   });
 
-  await t.test('fires dataloading event', t => {
+  await t.test('fires dataloading event', (t, done) => {
     const source = createSource({ url: new ArrayBuffer(0) });
     source.on('dataloading', e => {
       t.equal(e.dataType, 'source');
-      t.end();
+      done();
     });
     source.onAdd(new StubMap());
     respond();
   });
 
-  await t.test('fires data event when content is loaded', t => {
+  await t.test('fires data event when content is loaded', (t, done) => {
     const source = createSource({ url: new ArrayBuffer(0) });
     source.on('data', e => {
       if (e.dataType === 'source' && e.sourceDataType === 'content') {
         t.equal(typeof source.tileID, 'object');
-        t.end();
+        done();
       }
     });
     source.onAdd(new StubMap());
     respond();
   });
 
-  await t.test('fires data event when metadata is loaded', t => {
+  await t.test('fires data event when metadata is loaded', (t, done) => {
     const source = createSource({ url: new ArrayBuffer(0) });
     source.on('data', e => {
       if (e.dataType === 'source' && e.sourceDataType === 'metadata') {
-        t.end();
+        done();
       }
     });
     source.onAdd(new StubMap());

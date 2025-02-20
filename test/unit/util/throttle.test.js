@@ -11,7 +11,7 @@ test('throttle', async t => {
     t.equal(executionCount, 0);
   });
 
-  await t.test('executes unthrottled function once per tick when period is 0', t => {
+  await t.test('executes unthrottled function once per tick when period is 0', (t, done) => {
     let executionCount = 0;
     const throttledFunction = throttle(() => {
       executionCount++;
@@ -23,7 +23,7 @@ test('throttle', async t => {
       throttledFunction();
       throttledFunction();
       t.equal(executionCount, 2);
-      t.end();
+      done();
     }, 0);
   });
 
@@ -38,7 +38,7 @@ test('throttle', async t => {
     t.equal(executionCount, 1);
   });
 
-  await t.test('queues exactly one execution of unthrottled function when period is > 0', t => {
+  await t.test('queues exactly one execution of unthrottled function when period is > 0', (t, done) => {
     let executionCount = 0;
     const throttledFunction = throttle(() => {
       executionCount++;
@@ -48,7 +48,7 @@ test('throttle', async t => {
     throttledFunction();
     setTimeout(() => {
       t.equal(executionCount, 2);
-      t.end();
+      done();
     }, 10);
   });
 });

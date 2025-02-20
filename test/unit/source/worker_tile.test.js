@@ -26,7 +26,7 @@ function createWrapper() {
   ]);
 }
 
-test('WorkerTile#parse', t => {
+test('WorkerTile#parse', (t, done) => {
   const layerIndex = new StyleLayerIndex([
     {
       id: 'test',
@@ -39,11 +39,11 @@ test('WorkerTile#parse', t => {
   tile.parse(createWrapper(), layerIndex, {}, 'en', (err, result) => {
     t.ifError(err);
     t.ok(result.buckets[0]);
-    t.end();
+    done();
   });
 });
 
-test('WorkerTile#parse skips hidden layers', t => {
+test('WorkerTile#parse skips hidden layers', (t, done) => {
   const layerIndex = new StyleLayerIndex([
     {
       id: 'test-hidden',
@@ -57,11 +57,11 @@ test('WorkerTile#parse skips hidden layers', t => {
   tile.parse(createWrapper(), layerIndex, {}, 'en', (err, result) => {
     t.ifError(err);
     t.equal(result.buckets.length, 0);
-    t.end();
+    done();
   });
 });
 
-test('WorkerTile#parse skips layers without a corresponding source layer', t => {
+test('WorkerTile#parse skips layers without a corresponding source layer', (t, done) => {
   const layerIndex = new StyleLayerIndex([
     {
       id: 'test',
@@ -75,11 +75,11 @@ test('WorkerTile#parse skips layers without a corresponding source layer', t => 
   tile.parse({ layers: {} }, layerIndex, {}, 'en', (err, result) => {
     t.ifError(err);
     t.equal(result.buckets.length, 0);
-    t.end();
+    done();
   });
 });
 
-test('WorkerTile#parse warns once when encountering a v1 vector tile layer', t => {
+test('WorkerTile#parse warns once when encountering a v1 vector tile layer', (t, done) => {
   const layerIndex = new StyleLayerIndex([
     {
       id: 'test',
@@ -103,6 +103,6 @@ test('WorkerTile#parse warns once when encountering a v1 vector tile layer', t =
   tile.parse(data, layerIndex, {}, 'en', err => {
     t.ifError(err);
     t.ok(console.warn.calledWithMatch(/does not use vector tile spec v2/));
-    t.end();
+    done();
   });
 });

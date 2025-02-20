@@ -367,7 +367,7 @@ test('camera', async t => {
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: -70.3125, lat: 0 });
     });
 
-    await t.test('emits move events, preserving eventData', t => {
+    await t.test('emits move events, preserving eventData', (t, done) => {
       const camera = createCamera();
       let started;
       let moved;
@@ -384,13 +384,12 @@ test('camera', async t => {
           t.equal(started, 'ok');
           t.equal(moved, 'ok');
           t.equal(d.data, 'ok');
-          t.end();
+          done();
         });
 
       camera.panBy([100, 0], { duration: 0 }, eventData);
     });
-
-    await t.test('supresses movestart if noMoveStart option is true', t => {
+    await t.test('supresses movestart if noMoveStart option is true', (t, done) => {
       const camera = createCamera();
       let started;
 
@@ -400,7 +399,7 @@ test('camera', async t => {
         })
         .on('moveend', () => {
           t.ok(!started);
-          t.end();
+          done();
         });
 
       camera.panBy([100, 0], { duration: 0, noMoveStart: true });
@@ -437,7 +436,7 @@ test('camera', async t => {
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 170.3125, lat: 0 });
     });
 
-    await t.test('emits move events, preserving eventData', t => {
+    await t.test('emits move events, preserving eventData', (t, done) => {
       const camera = createCamera();
       let started;
       let moved;
@@ -454,13 +453,13 @@ test('camera', async t => {
           t.equal(started, 'ok');
           t.equal(moved, 'ok');
           t.equal(d.data, 'ok');
-          t.end();
+          done();
         });
 
       camera.panTo([100, 0], { duration: 0 }, eventData);
     });
 
-    await t.test('supresses movestart if noMoveStart option is true', t => {
+    await t.test('supresses movestart if noMoveStart option is true', (t, done) => {
       const camera = createCamera();
       let started;
 
@@ -470,7 +469,7 @@ test('camera', async t => {
         })
         .on('moveend', () => {
           t.ok(!started);
-          t.end();
+          done();
         });
 
       camera.panTo([100, 0], { duration: 0, noMoveStart: true });
@@ -849,7 +848,7 @@ test('camera', async t => {
       camera.easeTo({ center: [100, 0], zoom: 3.2, bearing: 90, duration: 0, pitch: 45 }, eventData);
     });
 
-    await t.test('does not emit zoom events if not zooming', t => {
+    await t.test('does not emit zoom events if not zooming', (t, done) => {
       const camera = createCamera();
 
       camera
@@ -863,7 +862,7 @@ test('camera', async t => {
           t.fail();
         })
         .on('moveend', () => {
-          t.end();
+          done();
         });
 
       camera.easeTo({ center: [100, 0], duration: 0 });
@@ -876,7 +875,7 @@ test('camera', async t => {
       t.deepEqual(camera.getCenter(), { lng: 100, lat: 0 });
     });
 
-    await t.test('can be called from within a moveend event handler', t => {
+    await t.test('can be called from within a moveend event handler', (t, done) => {
       const camera = createCamera();
       const stub = t.stub(browser, 'now');
 
@@ -888,7 +887,7 @@ test('camera', async t => {
         camera.once('moveend', () => {
           camera.easeTo({ center: [300, 0], duration: 10 });
           camera.once('moveend', () => {
-            t.end();
+            done();
           });
 
           setTimeout(() => {
@@ -911,7 +910,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test('pans eastward across the antimeridian', t => {
+    await t.test('pans eastward across the antimeridian', (t, done) => {
       const camera = createCamera();
       const stub = t.stub(browser, 'now');
 
@@ -926,7 +925,7 @@ test('camera', async t => {
 
       camera.on('moveend', () => {
         t.ok(crossedAntimeridian);
-        t.end();
+        done();
       });
 
       stub.callsFake(() => 0);
@@ -943,7 +942,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test('pans westward across the antimeridian', t => {
+    await t.test('pans westward across the antimeridian', (t, done) => {
       const camera = createCamera();
       const stub = t.stub(browser, 'now');
 
@@ -958,7 +957,7 @@ test('camera', async t => {
 
       camera.on('moveend', () => {
         t.ok(crossedAntimeridian);
-        t.end();
+        done();
       });
 
       stub.callsFake(() => 0);
@@ -1001,13 +1000,13 @@ test('camera', async t => {
 
     await t.test(
       'does not throw when cameras current zoom is above maxzoom and an offset creates infinite zoom out factor',
-      t => {
+      (t, done) => {
         const transform = new Transform(0, 20.9999, true);
         transform.resize(512, 512);
         const camera = attachSimulateFrame(new Camera(transform, {})).jumpTo({ zoom: 21, center: [0, 0] });
         camera._update = () => {};
         t.doesNotThrow(() => camera.flyTo({ zoom: 7.5, center: [0, 0], offset: [0, 70] }));
-        t.end();
+        done();
       }
     );
 
@@ -1023,7 +1022,7 @@ test('camera', async t => {
       t.equal(camera.getZoom(), 2);
     });
 
-    await t.test('Zoom out from the same position to the same position with animation', t => {
+    await t.test('Zoom out from the same position to the same position with animation', (t, done) => {
       const pos = { lng: 0, lat: 0 };
       const camera = createCamera({ zoom: 20, center: pos });
       const stub = t.stub(browser, 'now');
@@ -1031,7 +1030,7 @@ test('camera', async t => {
       camera.once('zoomend', () => {
         t.deepEqual(fixedLngLat(camera.getCenter()), fixedLngLat(pos));
         t.equal(camera.getZoom(), 19);
-        t.end();
+        done();
       });
 
       stub.callsFake(() => 0);
@@ -1110,7 +1109,7 @@ test('camera', async t => {
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 170.3125, lat: 0 });
     });
 
-    await t.test('emits move, zoom, rotate, and pitch events, preserving eventData', { plan: 18 }, t => {
+    await t.test('emits move, zoom, rotate, and pitch events, preserving eventData', { plan: 18 }, (t, done) => {
       const camera = createCamera();
       let movestarted;
       let moved;
@@ -1126,7 +1125,7 @@ test('camera', async t => {
       function isItDone(prop) {
         result[prop] = true;
         if (result.move && result.zoom && result.rotate && result.pitch) {
-          t.end();
+          done();
         }
       }
 
@@ -1202,7 +1201,7 @@ test('camera', async t => {
       camera.flyTo({ center: [100, 0], zoom: 3.2, bearing: 90, duration: 0, pitch: 45, animate: false }, eventData);
     });
 
-    await t.test('for short flights, emits (solely) move events, preserving eventData', t => {
+    await t.test('for short flights, emits (solely) move events, preserving eventData', (t, done) => {
       //As I type this, the code path for guiding super-short flights is (and will probably remain) different.
       //As such; it deserves a separate test case. This test case flies the map from A to A.
       const camera = createCamera({ center: [100, 0] });
@@ -1270,7 +1269,7 @@ test('camera', async t => {
           t.equal(pitchstarted, undefined);
           t.equal(pitchended, undefined);
           t.equal(d.data, 'ok');
-          t.end();
+          done();
         });
 
       const stub = t.stub(browser, 'now');
@@ -1296,7 +1295,7 @@ test('camera', async t => {
       t.deepEqual(fixedLngLat(camera.getCenter()), { lng: 100, lat: 0 });
     });
 
-    await t.test('can be called from within a moveend event handler', t => {
+    await t.test('can be called from within a moveend event handler', (t, done) => {
       const camera = createCamera();
       const stub = t.stub(browser, 'now');
       stub.callsFake(() => 0);
@@ -1307,7 +1306,7 @@ test('camera', async t => {
         camera.once('moveend', () => {
           camera.flyTo({ center: [300, 0], duration: 10 });
           camera.once('moveend', () => {
-            t.end();
+            done();
           });
         });
       });
@@ -1328,7 +1327,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test('ascends', t => {
+    await t.test('ascends', (t, done) => {
       const camera = createCamera();
       camera.setZoom(18);
       let ascended;
@@ -1341,7 +1340,7 @@ test('camera', async t => {
 
       camera.on('moveend', () => {
         t.ok(ascended);
-        t.end();
+        done();
       });
 
       const stub = t.stub(browser, 'now');
@@ -1360,7 +1359,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test('pans eastward across the prime meridian', t => {
+    await t.test('pans eastward across the prime meridian', (t, done) => {
       const camera = createCamera();
       const stub = t.stub(browser, 'now');
 
@@ -1375,7 +1374,7 @@ test('camera', async t => {
 
       camera.on('moveend', () => {
         t.ok(crossedPrimeMeridian);
-        t.end();
+        done();
       });
 
       stub.callsFake(() => 0);
@@ -1392,7 +1391,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test('pans westward across the prime meridian', t => {
+    await t.test('pans westward across the prime meridian', (t, done) => {
       const camera = createCamera();
       const stub = t.stub(browser, 'now');
 
@@ -1407,7 +1406,7 @@ test('camera', async t => {
 
       camera.on('moveend', () => {
         t.ok(crossedPrimeMeridian);
-        t.end();
+        done();
       });
 
       stub.callsFake(() => 0);
@@ -1424,7 +1423,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test('pans eastward across the antimeridian', t => {
+    await t.test('pans eastward across the antimeridian', (t, done) => {
       const camera = createCamera();
       const stub = t.stub(browser, 'now');
 
@@ -1439,7 +1438,7 @@ test('camera', async t => {
 
       camera.on('moveend', () => {
         t.ok(crossedAntimeridian);
-        t.end();
+        done();
       });
 
       stub.callsFake(() => 0);
@@ -1456,7 +1455,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test('pans westward across the antimeridian', t => {
+    await t.test('pans westward across the antimeridian', (t, done) => {
       const camera = createCamera();
       const stub = t.stub(browser, 'now');
 
@@ -1471,7 +1470,7 @@ test('camera', async t => {
 
       camera.on('moveend', () => {
         t.ok(crossedAntimeridian);
-        t.end();
+        done();
       });
 
       stub.callsFake(() => 0);
@@ -1488,7 +1487,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test('does not pan eastward across the antimeridian if no world copies', t => {
+    await t.test('does not pan eastward across the antimeridian if no world copies', (t, done) => {
       const camera = createCamera({ renderWorldCopies: false });
       const stub = t.stub(browser, 'now');
 
@@ -1503,7 +1502,7 @@ test('camera', async t => {
 
       camera.on('moveend', () => {
         t.notOk(crossedAntimeridian);
-        t.end();
+        done();
       });
 
       stub.callsFake(() => 0);
@@ -1520,7 +1519,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test('does not pan westward across the antimeridian if no world copies', t => {
+    await t.test('does not pan westward across the antimeridian if no world copies', (t, done) => {
       const camera = createCamera({ renderWorldCopies: false });
       const stub = t.stub(browser, 'now');
 
@@ -1535,7 +1534,7 @@ test('camera', async t => {
 
       camera.on('moveend', () => {
         t.notOk(crossedAntimeridian);
-        t.end();
+        done();
       });
 
       stub.callsFake(() => 0);
@@ -1552,7 +1551,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test('jumps back to world 0 when crossing the antimeridian', t => {
+    await t.test('jumps back to world 0 when crossing the antimeridian', (t, done) => {
       const camera = createCamera();
       const stub = t.stub(browser, 'now');
 
@@ -1566,7 +1565,7 @@ test('camera', async t => {
 
       camera.on('moveend', () => {
         t.false(leftWorld0);
-        t.end();
+        done();
       });
 
       stub.callsFake(() => 0);
@@ -1620,7 +1619,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test("respects transform's maxZoom", t => {
+    await t.test("respects transform's maxZoom", (t, done) => {
       const transform = new Transform(2, 10, false);
       transform.resize(512, 512);
 
@@ -1633,7 +1632,7 @@ test('camera', async t => {
         t.equalWithPrecision(lng, 12, 1e-10);
         t.equalWithPrecision(lat, 34, 1e-10);
 
-        t.end();
+        done();
       });
 
       const stub = t.stub(browser, 'now');
@@ -1646,7 +1645,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test("respects transform's minZoom", t => {
+    await t.test("respects transform's minZoom", (t, done) => {
       const transform = new Transform(2, 10, false);
       transform.resize(512, 512);
 
@@ -1659,7 +1658,7 @@ test('camera', async t => {
         t.equalWithPrecision(lng, 12, 1e-10);
         t.equalWithPrecision(lat, 34, 1e-10);
 
-        t.end();
+        done();
       });
 
       const stub = t.stub(browser, 'now');
@@ -1672,7 +1671,7 @@ test('camera', async t => {
       }, 0);
     });
 
-    await t.test('resets duration to 0 if it exceeds maxDuration', t => {
+    await t.test('resets duration to 0 if it exceeds maxDuration', (t, done) => {
       let startTime;
       let endTime;
       let timeDiff;
@@ -1686,7 +1685,7 @@ test('camera', async t => {
           endTime = new Date();
           timeDiff = endTime - startTime;
           t.equalWithPrecision(timeDiff, 0, 1e1);
-          t.end();
+          done();
         });
 
       camera.flyTo({ center: [-122.3998631, 37.7884307], maxDuration: 100 });
@@ -1705,11 +1704,11 @@ test('camera', async t => {
       t.ok(camera.isEasing());
     });
 
-    await t.test('returns false when done panning', t => {
+    await t.test('returns false when done panning', (t, done) => {
       const camera = createCamera();
       camera.on('moveend', () => {
         t.ok(!camera.isEasing());
-        t.end();
+        done();
       });
       const stub = t.stub(browser, 'now');
       stub.callsFake(() => 0);
@@ -1726,11 +1725,11 @@ test('camera', async t => {
       t.ok(camera.isEasing());
     });
 
-    await t.test('returns false when done zooming', t => {
+    await t.test('returns false when done zooming', (t, done) => {
       const camera = createCamera();
       camera.on('moveend', () => {
         t.ok(!camera.isEasing());
-        t.end();
+        done();
       });
       const stub = t.stub(browser, 'now');
       stub.callsFake(() => 0);
@@ -1747,11 +1746,11 @@ test('camera', async t => {
       t.ok(camera.isEasing());
     });
 
-    await t.test('returns false when done rotating', t => {
+    await t.test('returns false when done rotating', (t, done) => {
       const camera = createCamera();
       camera.on('moveend', () => {
         t.ok(!camera.isEasing());
-        t.end();
+        done();
       });
       const stub = t.stub(browser, 'now');
       stub.callsFake(() => 0);
@@ -1778,53 +1777,53 @@ test('camera', async t => {
       t.ok(!camera._rotating);
     });
 
-    await t.test('emits moveend if panning, preserving eventData', t => {
+    await t.test('emits moveend if panning, preserving eventData', (t, done) => {
       const camera = createCamera();
       const eventData = { data: 'ok' };
 
       camera.on('moveend', d => {
         t.equal(d.data, 'ok');
-        t.end();
+        done();
       });
 
       camera.panTo([100, 0], {}, eventData);
       camera.stop();
     });
 
-    await t.test('emits moveend if zooming, preserving eventData', t => {
+    await t.test('emits moveend if zooming, preserving eventData', (t, done) => {
       const camera = createCamera();
       const eventData = { data: 'ok' };
 
       camera.on('moveend', d => {
         t.equal(d.data, 'ok');
-        t.end();
+        done();
       });
 
       camera.zoomTo(3.2, {}, eventData);
       camera.stop();
     });
 
-    await t.test('emits moveend if rotating, preserving eventData', t => {
+    await t.test('emits moveend if rotating, preserving eventData', (t, done) => {
       const camera = createCamera();
       const eventData = { data: 'ok' };
 
       camera.on('moveend', d => {
         t.equal(d.data, 'ok');
-        t.end();
+        done();
       });
 
       camera.rotateTo(90, {}, eventData);
       camera.stop();
     });
 
-    await t.test('does not emit moveend if not moving', t => {
+    await t.test('does not emit moveend if not moving', (t, done) => {
       const camera = createCamera();
       const eventData = { data: 'ok' };
 
       camera.on('moveend', d => {
         t.equal(d.data, 'ok');
         camera.stop();
-        t.end(); // Fails with ".end() called twice" if we get here a second time.
+        done(); // Fails with "done() called twice" if we get here a second time.
       });
 
       const stub = t.stub(browser, 'now');

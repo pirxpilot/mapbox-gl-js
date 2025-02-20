@@ -31,7 +31,7 @@ test('RasterTileSource', async t => {
     globalThis.window = globalWindow;
   });
 
-  await t.test('respects TileJSON.bounds', t => {
+  await t.test('respects TileJSON.bounds', (t, done) => {
     const source = createSource({
       minzoom: 0,
       maxzoom: 22,
@@ -42,12 +42,12 @@ test('RasterTileSource', async t => {
       if (e.sourceDataType === 'metadata') {
         t.false(source.hasTile(new OverscaledTileID(8, 0, 8, 96, 132)), 'returns false for tiles outside bounds');
         t.true(source.hasTile(new OverscaledTileID(8, 0, 8, 95, 132)), 'returns true for tiles inside bounds');
-        t.end();
+        done();
       }
     });
   });
 
-  await t.test('does not error on invalid bounds', t => {
+  await t.test('does not error on invalid bounds', (t, done) => {
     const source = createSource({
       minzoom: 0,
       maxzoom: 22,
@@ -62,7 +62,7 @@ test('RasterTileSource', async t => {
           { _sw: { lng: -47, lat: -7 }, _ne: { lng: -45, lat: 90 } },
           'converts invalid bounds to closest valid bounds'
         );
-        t.end();
+        done();
       }
     });
   });

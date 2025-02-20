@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const loadGlyphRange = require('../../../src/style/load_glyph_range');
 
-test('loadGlyphRange', t => {
+test('loadGlyphRange', (t, done) => {
   function load(fontstack, range) {
     t.equal(fontstack, 'Arial Unicode MS');
     t.equal(range, 0);
@@ -27,6 +27,6 @@ test('loadGlyphRange', t => {
       t.equal(typeof glyph.metrics.top, 'number');
       t.equal(typeof glyph.metrics.advance, 'number');
     }
-    t.end();
+    done();
   });
 });

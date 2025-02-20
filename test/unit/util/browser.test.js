@@ -2,11 +2,11 @@ const { test } = require('../../util/mapbox-gl-js-test');
 const browser = require('../../../src/util/browser');
 
 test('browser', async t => {
-  await t.test('frame', t => {
+  await t.test('frame', (t, done) => {
     const id = browser.frame(() => {
       t.pass('called frame');
       t.ok(id, 'returns id');
-      t.end();
+      done();
     });
   });
 

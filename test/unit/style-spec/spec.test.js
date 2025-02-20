@@ -15,7 +15,6 @@ const spec = require('../../../src/style-spec/style-spec');
           validSchema(k, t, spec[v][k], spec[v], version, kind);
         }
       }
-      t.end();
     });
   });
 });

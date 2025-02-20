@@ -4,7 +4,7 @@ const StyleLayerIndex = require('../../../src/style/style_layer_index');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
 
 test('reloadTile', async t => {
-  await t.test('does not rebuild vector data unless data has changed', t => {
+  await t.test('does not rebuild vector data unless data has changed', (t, done) => {
     const layers = [
       {
         id: 'mylayer',
@@ -75,7 +75,7 @@ test('reloadTile', async t => {
           t.deepEqual(data, firstData);
         });
         t.equal(loadVectorCallCount, 2);
-        t.end();
+        done();
       });
     });
   });
@@ -97,14 +97,14 @@ test('resourceTiming', async t => {
     }
   };
 
-  await t.test('loadData - data', t => {
+  await t.test('loadData - data', (t, done) => {
     const layerIndex = new StyleLayerIndex(layers);
     const source = new GeoJSONWorkerSource(null, layerIndex);
 
     source.loadData({ source: 'testSource', data: JSON.stringify(geoJson) }, (err, result) => {
       t.equal(err, null);
       t.equal(result.resourceTiming, undefined, 'no resourceTiming property when loadData is not sent a URL');
-      t.end();
+      done();
     });
   });
 });
@@ -147,7 +147,7 @@ test('loadData', async t => {
     return worker;
   }
 
-  await t.test('abandons coalesced callbacks', t => {
+  await t.test('abandons coalesced callbacks', (t, done) => {
     // Expect first call to run, second to be abandoned,
     // and third to run in response to coalesce
     const worker = createWorker();
@@ -165,11 +165,11 @@ test('loadData', async t => {
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {
       t.equal(err, null);
       t.notOk(result?.abandoned);
-      t.end();
+      done();
     });
   });
 
-  await t.test('removeSource aborts callbacks', t => {
+  await t.test('removeSource aborts callbacks', (t, done) => {
     // Expect:
     // First loadData starts running before removeSource arrives
     // Second loadData is pending when removeSource arrives, gets cancelled
@@ -179,7 +179,7 @@ test('loadData', async t => {
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {
       t.equal(err, null);
       t.notOk(result?.abandoned);
-      t.end();
+      done();
     });
 
     worker.loadData({ source: 'source1', data: JSON.stringify(geoJson) }, (err, result) => {

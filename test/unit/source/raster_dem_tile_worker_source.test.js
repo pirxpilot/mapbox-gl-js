@@ -4,7 +4,7 @@ const StyleLayerIndex = require('../../../src/style/style_layer_index');
 const DEMData = require('../../../src/data/dem_data');
 
 test('loadTile', async t => {
-  await t.test('loads DEM tile', t => {
+  await t.test('loads DEM tile', (t, done) => {
     const source = new RasterDEMTileWorkerSource(null, new StyleLayerIndex());
 
     source.loadTile(
@@ -19,14 +19,14 @@ test('loadTile', async t => {
         t.deepEqual(Object.keys(source.loaded), [0]);
         t.ok(data instanceof DEMData, 'returns DEM data');
 
-        t.end();
+        done();
       }
     );
   });
 });
 
 test('removeTile', async t => {
-  await t.test('removes loaded tile', t => {
+  await t.test('removes loaded tile', (t, done) => {
     const source = new RasterDEMTileWorkerSource(null, new StyleLayerIndex());
 
     source.loaded = {
@@ -39,5 +39,6 @@ test('removeTile', async t => {
     });
 
     t.deepEqual(source.loaded, {});
+    done();
   });
 });
