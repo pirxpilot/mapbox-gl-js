@@ -48,7 +48,7 @@ test('exponential function', async t => {
       }
     ).evaluate;
 
-    t.equalWithPrecision(f({ zoom: 2 }), 30 / 9, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 2 }), 30 / 9, 1e-6);
   });
 
   await t.test('base', t => {
@@ -66,11 +66,11 @@ test('exponential function', async t => {
       }
     ).evaluate;
 
-    t.equalWithPrecision(f({ zoom: 0 }), 2, 1e-6);
-    t.equalWithPrecision(f({ zoom: 1 }), 2, 1e-6);
-    t.equalWithPrecision(f({ zoom: 2 }), 30 / 9, 1e-6);
-    t.equalWithPrecision(f({ zoom: 3 }), 6, 1e-6);
-    t.equalWithPrecision(f({ zoom: 4 }), 6, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 0 }), 2, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 1 }), 2, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 2 }), 30 / 9, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 3 }), 6, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 4 }), 6, 1e-6);
   });
 
   await t.test('one stop', t => {
@@ -194,15 +194,15 @@ test('exponential function', async t => {
       }
     ).evaluate;
 
-    t.equalWithPrecision(f({ zoom: 2 }), 100, 1e-6);
-    t.equalWithPrecision(f({ zoom: 20 }), 133.9622641509434, 1e-6);
-    t.equalWithPrecision(f({ zoom: 607 }), 400, 1e-6);
-    t.equalWithPrecision(f({ zoom: 680 }), 410.7352941176471, 1e-6);
-    t.equalWithPrecision(f({ zoom: 4927 }), 1000, 1e-6); //86
-    t.equalWithPrecision(f({ zoom: 7300 }), 14779.590419993057, 1e-6);
-    t.equalWithPrecision(f({ zoom: 10000 }), 99125.30371398819, 1e-6);
-    t.equalWithPrecision(f({ zoom: 20000 }), 3360628.527166095, 1e-6);
-    t.equalWithPrecision(f({ zoom: 40000 }), 10000000, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 2 }), 100, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 20 }), 133.9622641509434, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 607 }), 400, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 680 }), 410.7352941176471, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 4927 }), 1000, 1e-6); //86
+    t.assert.equalWithPrecision(f({ zoom: 7300 }), 14779.590419993057, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 10000 }), 99125.30371398819, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 20000 }), 3360628.527166095, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 40000 }), 10000000, 1e-6);
   });
 
   await t.test('color', t => {
@@ -240,9 +240,9 @@ test('exponential function', async t => {
     ).evaluate;
 
     t.assert.deepEqual(f({ zoom: 0 }), new Color(0, 0, 0, 1));
-    t.equalWithPrecision(f({ zoom: 5 }).r, 0, 1e-6);
-    t.equalWithPrecision(f({ zoom: 5 }).g, 0.444, 1e-3);
-    t.equalWithPrecision(f({ zoom: 5 }).b, 0.444, 1e-3);
+    t.assert.equalWithPrecision(f({ zoom: 5 }).r, 0, 1e-6);
+    t.assert.equalWithPrecision(f({ zoom: 5 }).g, 0.444, 1e-3);
+    t.assert.equalWithPrecision(f({ zoom: 5 }).b, 0.444, 1e-3);
   });
 
   await t.test('rgb colorspace', t => {

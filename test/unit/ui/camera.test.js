@@ -1630,10 +1630,10 @@ test('camera', async t => {
       camera._update = () => {};
 
       camera.on('moveend', () => {
-        t.equalWithPrecision(camera.getZoom(), 10, 1e-10);
+        t.assert.equalWithPrecision(camera.getZoom(), 10, 1e-10);
         const { lng, lat } = camera.getCenter();
-        t.equalWithPrecision(lng, 12, 1e-10);
-        t.equalWithPrecision(lat, 34, 1e-10);
+        t.assert.equalWithPrecision(lng, 12, 1e-10);
+        t.assert.equalWithPrecision(lat, 34, 1e-10);
 
         done();
       });
@@ -1656,10 +1656,10 @@ test('camera', async t => {
       camera._update = () => {};
 
       camera.on('moveend', () => {
-        t.equalWithPrecision(camera.getZoom(), 2, 1e-10);
+        t.assert.equalWithPrecision(camera.getZoom(), 2, 1e-10);
         const { lng, lat } = camera.getCenter();
-        t.equalWithPrecision(lng, 12, 1e-10);
-        t.equalWithPrecision(lat, 34, 1e-10);
+        t.assert.equalWithPrecision(lng, 12, 1e-10);
+        t.assert.equalWithPrecision(lat, 34, 1e-10);
 
         done();
       });
@@ -1687,7 +1687,7 @@ test('camera', async t => {
         .on('moveend', () => {
           endTime = new Date();
           timeDiff = endTime - startTime;
-          t.equalWithPrecision(timeDiff, 0, 1e1);
+          t.assert.equalWithPrecision(timeDiff, 0, 1e1);
           done();
         });
 

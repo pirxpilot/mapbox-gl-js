@@ -8,11 +8,8 @@ module.exports = {
 };
 
 test.beforeEach(t => {
-  t.assert.notOk = (cond, ...args) => t.assert.ok(!cond, ...args);
-  t.equalWithPrecision = assertEqualWithPrecision;
-});
-
-test.beforeEach(t => {
+  t.assert.notOk = assertNotOk;
+  t.assert.equalWithPrecision = assertEqualWithPrecision;
   t._sandbox = sinon.createSandbox({
     injectInto: t,
     properties: ['spy', 'stub', 'mock']
@@ -23,9 +20,13 @@ test.afterEach(t => {
   t._sandbox.restore();
 });
 
-function assertEqualWithPrecision(expected, actual, multiplier, message) {
+function assertNotOk(cond, ...args) {
+  this.ok(!cond, ...args);
+}
+
+function assertEqualWithPrecision(expected, actual, multiplier, message = `should be equal to within ${multiplier}`) {
   const expectedRounded = Math.round(expected / multiplier) * multiplier;
   const actualRounded = Math.round(actual / multiplier) * multiplier;
 
-  return this.assert.equal(expectedRounded, actualRounded, message ?? `should be equal to within ${multiplier}`);
+  return this.equal(expectedRounded, actualRounded, message);
 }

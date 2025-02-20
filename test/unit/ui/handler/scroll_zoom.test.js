@@ -49,7 +49,7 @@ test('ScrollZoomHandler', async t => {
     now += 400;
     map._renderTaskQueue.run();
 
-    t.equalWithPrecision(map.getZoom() - startZoom, 0.0285, 0.001);
+    t.assert.equalWithPrecision(map.getZoom() - startZoom, 0.0285, 0.001);
 
     map.remove();
   });
@@ -99,7 +99,7 @@ test('ScrollZoomHandler', async t => {
       }
     }
 
-    t.equalWithPrecision(map.getZoom() - startZoom, 1.944, 0.001);
+    t.assert.equalWithPrecision(map.getZoom() - startZoom, 1.944, 0.001);
 
     map.remove();
   });
