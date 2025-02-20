@@ -637,7 +637,7 @@ class SourceCache extends Evented {
     if (tile.uses > 0) return;
 
     if (tile.hasData()) {
-      this._cache.add(tile.tileID, tile);
+      this._cache.add(tile);
     } else {
       tile.aborted = true;
       this._abortTile(tile);

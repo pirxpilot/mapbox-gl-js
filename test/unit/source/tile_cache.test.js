@@ -25,7 +25,7 @@ test('TileCache', t => {
     t.assert.equal(removed, 'dc');
   });
   t.assert.equal(cache.getAndRemove(idC), null, '.getAndRemove() to null');
-  t.assert.equal(cache.add(idA, tileA), cache, '.add()');
+  t.assert.equal(cache.add(tileA), cache, '.add()');
   keysExpected(t, cache, [idA]);
   t.assert.equal(cache.has(idA), true, '.has()');
   t.assert.equal(cache.getAndRemove(idA), tileA, '.getAndRemove()');
@@ -38,7 +38,7 @@ test('TileCache - getWithoutRemoving', t => {
   const cache = new TileCache(10, () => {
     t.assert.fail();
   });
-  t.assert.equal(cache.add(idA, tileA), cache, '.add()');
+  t.assert.equal(cache.add(tileA), cache, '.add()');
   t.assert.equal(cache.get(idA), tileA, '.get()');
   keysExpected(t, cache, [idA]);
   t.assert.equal(cache.get(idA), tileA, '.get()');
@@ -49,8 +49,8 @@ test('TileCache - duplicate add', t => {
     t.assert.fail();
   });
 
-  cache.add(idA, tileA);
-  cache.add(idA, tileA2);
+  cache.add(tileA);
+  cache.add(tileA2);
 
   keysExpected(t, cache, [idA]);
   t.assert.ok(cache.has(idA));
@@ -62,9 +62,9 @@ test('TileCache - duplicate add', t => {
 test('TileCache - remove', t => {
   const cache = new TileCache(10, () => {});
 
-  cache.add(idA, tileA);
-  cache.add(idB, tileB);
-  cache.add(idC, tileC);
+  cache.add(tileA);
+  cache.add(tileB);
+  cache.add(tileC);
 
   keysExpected(t, cache, [idA, idB, idC]);
   t.assert.ok(cache.has(idB));
@@ -81,8 +81,8 @@ test('TileCache - overflow', t => {
   const cache = new TileCache(1, removed => {
     t.assert.equal(removed, tileA);
   });
-  cache.add(idA, tileA);
-  cache.add(idB, tileB);
+  cache.add(tileA);
+  cache.add(tileB);
 
   t.assert.ok(cache.has(idB));
   t.assert.notOk(cache.has(idA));
@@ -94,7 +94,7 @@ test('TileCache#reset', t => {
     t.assert.equal(removed, tileA);
     called = true;
   });
-  cache.add(idA, tileA);
+  cache.add(tileA);
   t.assert.equal(cache.reset(), cache);
   t.assert.equal(cache.has(idA), false);
   t.assert.ok(called);
@@ -105,14 +105,14 @@ test('TileCache#setMaxSize', t => {
   const cache = new TileCache(10, () => {
     numRemoved++;
   });
-  cache.add(idA, tileA);
-  cache.add(idB, tileB);
-  cache.add(idC, tileC);
+  cache.add(tileA);
+  cache.add(tileB);
+  cache.add(tileC);
   t.assert.equal(numRemoved, 0);
   cache.setMaxSize(15);
   t.assert.equal(numRemoved, 0);
   cache.setMaxSize(1);
   t.assert.equal(numRemoved, 2);
-  cache.add(idD, tileD);
+  cache.add(tileD);
   t.assert.equal(numRemoved, 3);
 });

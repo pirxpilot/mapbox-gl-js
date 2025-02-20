@@ -1440,7 +1440,7 @@ test('SourceCache#findLoadedParent', async t => {
     sourceCache.updateCacheSize(tr);
 
     const tile = new Tile(new OverscaledTileID(1, 0, 1, 0, 0), 512, 22);
-    sourceCache._cache.add(tile.tileID, tile);
+    sourceCache._cache.add(tile);
 
     t.assert.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 3, 3), 0), undefined);
     t.assert.equal(sourceCache.findLoadedParent(new OverscaledTileID(2, 0, 2, 0, 0), 0), tile);

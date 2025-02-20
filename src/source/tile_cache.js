@@ -35,8 +35,8 @@ class TileCache {
    *
    * @returns {TileCache} this cache
    */
-  add(tileID, data) {
-    const key = tileID.cacheKey;
+  add(data) {
+    const key = data.tileID.cacheKey;
     const items = this.#data.get(key);
     if (items) {
       items.push(data);
