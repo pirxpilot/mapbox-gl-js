@@ -69,12 +69,11 @@ test('TileCache - remove', t => {
   keysExpected(t, cache, [idA, idB, idC]);
   t.assert.ok(cache.has(idB));
 
-  cache.remove(idB);
+  cache.getAndRemove(idB);
 
   keysExpected(t, cache, [idA, idC]);
   t.assert.notOk(cache.has(idB));
-
-  t.assert.ok(cache.remove(idB));
+  t.assert.notOk(cache.getAndRemove(idB));
 });
 
 test('TileCache - overflow', t => {

@@ -100,34 +100,6 @@ class TileCache {
   }
 
   /**
-   * Remove a key/value combination from the cache.
-   *
-   * @param {OverscaledTileID} tileID the key for the pair to delete
-   * @param {Tile} value If a value is provided, remove that exact version of the value.
-   * @returns {TileCache} this cache
-   */
-  remove(tileID, value) {
-    const key = tileID.cacheKey;
-    const items = this.#data.get(key);
-    if (!items) {
-      return this;
-    }
-    if (items.length === 1) {
-      if (value === undefined || items[0] === value) {
-        this.onRemove(items[0]);
-        this.#data.delete(key);
-      }
-    } else {
-      const dataIndex = value === undefined ? 0 : items.indexOf(value);
-      const data = items[dataIndex];
-      items.splice(dataIndex, 1);
-      this.onRemove(data);
-    }
-
-    return this;
-  }
-
-  /**
    * Change the max size of the cache.
    *
    * @param {number} max the max size of the cache
