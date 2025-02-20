@@ -1,3 +1,5 @@
+const assert = require('assert');
+
 /**
  * A [fifo cache](http://en.wikipedia.org/wiki/Cache_algorithms)
  */
@@ -19,8 +21,8 @@ class TileCache {
    * @returns {TileCache} this cache
    */
   reset() {
-    for (const items of this.#data.values()) {
-      items.forEach(data => this.onRemove(data));
+    for (const data of this.#data.values()) {
+      this.onRemove(data);
     }
     this.#data.clear();
     return this;
@@ -37,16 +39,12 @@ class TileCache {
    */
   add(data) {
     const key = data.tileID.cacheKey;
-    const items = this.#data.get(key);
-    if (items) {
-      items.push(data);
-    } else {
-      this.#data.set(key, [data]);
-      if (this.#data.size > this.max) {
-        const [[key, items]] = this.#data;
-        items.forEach(data => this.onRemove(data));
-        this.#data.delete(key);
-      }
+    assert(!this.#data.has(key));
+    this.#data.set(key, data);
+    if (this.#data.size > this.max) {
+      const [[key, tile]] = this.#data;
+      this.onRemove(tile);
+      this.#data.delete(key);
     }
 
     return this;
@@ -77,15 +75,11 @@ class TileCache {
    * Get and remove the value with the specified key.
    */
   #getAndRemoveByKey(key) {
-    const items = this.#data.get(key);
-    if (!items) {
-      return null;
-    }
-    const data = items.shift();
-    if (items.length === 0) {
+    const tile = this.#data.get(key);
+    if (tile) {
       this.#data.delete(key);
+      return tile;
     }
-    return data;
   }
 
   /**
@@ -96,7 +90,7 @@ class TileCache {
    * @returns {*} the data, or null if it isn't found
    */
   get(tileID) {
-    return this.#data.get(tileID.cacheKey)?.[0];
+    return this.#data.get(tileID.cacheKey);
   }
 
   /**
@@ -107,8 +101,8 @@ class TileCache {
    */
   setMaxSize(max) {
     for (let overflow = this.#data.size - max; overflow > 0; overflow--) {
-      const [[key, items]] = this.#data;
-      items.forEach(data => this.onRemove(data));
+      const [[key, data]] = this.#data;
+      this.onRemove(data);
       this.#data.delete(key);
     }
 

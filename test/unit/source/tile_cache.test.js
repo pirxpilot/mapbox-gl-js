@@ -44,21 +44,6 @@ test('TileCache - getWithoutRemoving', t => {
   t.assert.equal(cache.get(idA), tileA, '.get()');
 });
 
-test('TileCache - duplicate add', t => {
-  const cache = new TileCache(10, () => {
-    t.assert.fail();
-  });
-
-  cache.add(tileA);
-  cache.add(tileA2);
-
-  keysExpected(t, cache, [idA]);
-  t.assert.ok(cache.has(idA));
-  t.assert.equal(cache.getAndRemove(idA), tileA);
-  t.assert.ok(cache.has(idA));
-  t.assert.equal(cache.getAndRemove(idA), tileA2);
-});
-
 test('TileCache - remove', t => {
   const cache = new TileCache(10, () => {});
 
