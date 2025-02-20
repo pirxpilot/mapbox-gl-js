@@ -391,7 +391,7 @@ test('Style', async t => {
 
     await t.test('throw before loaded', t => {
       style = new Style(new StubMap());
-      t.throws(() => style.addSource('source-id', createSource()), /load/i);
+      t.assert.throws(() => style.addSource('source-id', createSource()), /load/i);
     });
 
     await t.test('throw if missing source type', (t, done) => {
@@ -402,7 +402,7 @@ test('Style', async t => {
       delete source.type;
 
       style.on('style.load', () => {
-        t.throws(() => style.addSource('source-id', source), /type/i);
+        t.assert.throws(() => style.addSource('source-id', source), /type/i);
         done();
       });
     });
@@ -424,7 +424,7 @@ test('Style', async t => {
       const source = createSource();
       style.on('style.load', () => {
         style.addSource('source-id', source);
-        t.throws(() => {
+        t.assert.throws(() => {
           style.addSource('source-id', source);
         }, /There is already a source with this ID/);
         done();
@@ -475,7 +475,7 @@ test('Style', async t => {
 
     await t.test('throw before loaded', t => {
       style = new Style(new StubMap());
-      t.throws(() => style.removeSource('source-id'), /load/i);
+      t.assert.throws(() => style.removeSource('source-id'), /load/i);
     });
 
     await t.test('fires "data" event', (t, done) => {
@@ -511,7 +511,7 @@ test('Style', async t => {
       style = new Style(new StubMap());
       style.loadJSON(createStyleJSON());
       style.on('style.load', () => {
-        t.throws(() => {
+        t.assert.throws(() => {
           style.removeSource('source-id');
         }, /There is no source with this ID/);
         done();
@@ -601,7 +601,7 @@ test('Style', async t => {
 
     await t.test('throws before loaded', (t, done) => {
       style = new Style(new StubMap());
-      t.throws(() => style.setGeoJSONSourceData('source-id', geoJSON), /load/i);
+      t.assert.throws(() => style.setGeoJSONSourceData('source-id', geoJSON), /load/i);
       done();
     });
 
@@ -609,7 +609,7 @@ test('Style', async t => {
       style = new Style(new StubMap());
       style.loadJSON(createStyleJSON());
       style.on('style.load', () => {
-        t.throws(() => style.setGeoJSONSourceData('source-id', geoJSON), /There is no source with this ID/);
+        t.assert.throws(() => style.setGeoJSONSourceData('source-id', geoJSON), /There is no source with this ID/);
         done();
       });
     });
@@ -627,7 +627,7 @@ test('Style', async t => {
 
     await t.test('throw before loaded', t => {
       style = new Style(new StubMap());
-      t.throws(() => style.addLayer({ id: 'background', type: 'background' }), /load/i);
+      t.assert.throws(() => style.addLayer({ id: 'background', type: 'background' }), /load/i);
     });
 
     await t.test('sets up layer event forwarding', (t, done) => {
@@ -960,7 +960,7 @@ test('Style', async t => {
 
     await t.test('throw before loaded', t => {
       style = new Style(new StubMap());
-      t.throws(() => style.removeLayer('background'), /load/i);
+      t.assert.throws(() => style.removeLayer('background'), /load/i);
     });
 
     await t.test('fires "data" event', (t, done) => {
@@ -1077,7 +1077,7 @@ test('Style', async t => {
 
     await t.test('throw before loaded', (t, done) => {
       style = new Style(new StubMap());
-      t.throws(() => style.moveLayer('background'), /load/i);
+      t.assert.throws(() => style.moveLayer('background'), /load/i);
       done();
     });
 
@@ -1394,7 +1394,7 @@ test('Style', async t => {
 
     await t.test('throws if style is not loaded', (t, done) => {
       style = new Style(new StubMap());
-      t.throws(() => style.setFilter('symbol', ['==', 'id', 1]), /load/i);
+      t.assert.throws(() => style.setFilter('symbol', ['==', 'id', 1]), /load/i);
       done();
     });
 
@@ -1494,7 +1494,7 @@ test('Style', async t => {
 
     await t.test('throw before loaded', (t, done) => {
       style = new Style(new StubMap());
-      t.throws(() => style.setLayerZoomRange('symbol', 5, 12), /load/i);
+      t.assert.throws(() => style.setLayerZoomRange('symbol', 5, 12), /load/i);
       done();
     });
 

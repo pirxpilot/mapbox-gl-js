@@ -33,12 +33,12 @@ test('DEMData', async t => {
   await t.test('setters and getters throw for invalid data coordinates', t => {
     const dem = new DEMData(0, { width: 4, height: 4, data: new Uint8ClampedArray(4 * 4 * 4) });
 
-    t.throws(
+    t.assert.throws(
       () => dem.set(20, 0, 255),
       { message: 'out of range source coordinates for DEM data' },
       'detects and throws on invalid input'
     );
-    t.throws(
+    t.assert.throws(
       () => dem.set(10, 20, 255),
       { message: 'out of range source coordinates for DEM data' },
       'detects and throws on invalid input'

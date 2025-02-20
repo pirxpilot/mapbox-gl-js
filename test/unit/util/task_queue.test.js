@@ -77,7 +77,7 @@ test('TaskQueue', async t => {
   await t.test('TaskQueue#run() throws on attempted re-entrance', t => {
     const q = new TaskQueue();
     q.add(() => q.run());
-    t.throws(() => q.run());
+    t.assert.throws(() => q.run());
   });
 
   await t.test('TaskQueue#clear() prevents queued task from being executed', t => {

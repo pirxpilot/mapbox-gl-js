@@ -34,11 +34,11 @@ test('filter', async t => {
   });
 
   await t.test('expression, type error', t => {
-    t.throws(() => {
+    t.assert.throws(() => {
       filter(['==', ['number', ['get', 'x']], ['string', ['get', 'y']]]);
     });
 
-    t.throws(() => {
+    t.assert.throws(() => {
       filter(['number', ['get', 'x']]);
     });
 

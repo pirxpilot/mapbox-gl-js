@@ -39,7 +39,7 @@ test('camera', async t => {
     });
 
     await t.test('throws on invalid center argument', t => {
-      t.throws(
+      t.assert.throws(
         () => {
           camera.jumpTo({ center: 1 });
         },
@@ -206,7 +206,7 @@ test('camera', async t => {
     });
 
     await t.test('throws on invalid center argument', t => {
-      t.throws(
+      t.assert.throws(
         () => {
           camera.jumpTo({ center: 1 });
         },
@@ -415,7 +415,7 @@ test('camera', async t => {
 
     await t.test('throws on invalid center argument', t => {
       const camera = createCamera();
-      t.throws(
+      t.assert.throws(
         () => {
           camera.panTo({ center: 1 });
         },
@@ -987,7 +987,7 @@ test('camera', async t => {
 
     await t.test('throws on invalid center argument', t => {
       const camera = createCamera();
-      t.throws(
+      t.assert.throws(
         () => {
           camera.flyTo({ center: 1 });
         },

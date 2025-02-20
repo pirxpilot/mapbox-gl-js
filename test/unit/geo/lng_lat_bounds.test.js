@@ -35,7 +35,7 @@ test('LngLatBounds', async t => {
 
   await t.test('#constructor no args', t => {
     const bounds = new LngLatBounds();
-    t.throws(() => {
+    t.assert.throws(() => {
       bounds.getCenter();
     });
   });

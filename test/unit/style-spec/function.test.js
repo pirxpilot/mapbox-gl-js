@@ -264,7 +264,7 @@ test('exponential function', async t => {
   });
 
   await t.test('unknown color spaces', t => {
-    t.throws(() => {
+    t.assert.throws(() => {
       createFunction(
         {
           type: 'exponential',
@@ -1166,7 +1166,7 @@ test('identity function', async t => {
 });
 
 test('unknown function', t => {
-  t.throws(
+  t.assert.throws(
     () =>
       createFunction(
         {

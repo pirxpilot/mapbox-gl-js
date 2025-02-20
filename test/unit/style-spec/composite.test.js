@@ -78,7 +78,7 @@ test('incorrect url match', t => {
 });
 
 test('composites Mapbox vector sources with conflicting source layer names', t => {
-  t.throws(
+  t.assert.throws(
     () => {
       composite({
         version: 7,

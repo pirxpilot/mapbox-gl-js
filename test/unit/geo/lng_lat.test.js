@@ -4,25 +4,25 @@ const LngLat = require('../../../src/geo/lng_lat');
 test('LngLat', async t => {
   await t.test('#constructor', t => {
     t.assert.ok(new LngLat(0, 0) instanceof LngLat, 'creates an object');
-    t.throws(
+    t.assert.throws(
       () => {
         new LngLat('foo', 0);
       },
-      'Invalid LngLat object: (foo, 0)',
+      { message: 'Invalid LngLat object: (foo, 0)' },
       'detects and throws on invalid input'
     );
-    t.throws(
+    t.assert.throws(
       () => {
         new LngLat(0, -91);
       },
-      'Invalid LngLat latitude value: must be between -90 and 90',
+      { message: 'Invalid LngLat latitude value: must be between -90 and 90' },
       'detects and throws on invalid input'
     );
-    t.throws(
+    t.assert.throws(
       () => {
         new LngLat(0, 91);
       },
-      'Invalid LngLat latitude value: must be between -90 and 90',
+      { message: 'Invalid LngLat latitude value: must be between -90 and 90' },
       'detects and throws on invalid input'
     );
   });
@@ -30,22 +30,28 @@ test('LngLat', async t => {
   await t.test('#convert', t => {
     t.assert.ok(LngLat.convert([0, 10]) instanceof LngLat, 'convert creates a LngLat instance');
     t.assert.ok(LngLat.convert([0, 10, 0]) instanceof LngLat, 'convert creates a LngLat instance (Elevation)');
-    t.throws(
+    t.assert.throws(
       () => {
         LngLat.convert([0, 10, 0, 5]);
       },
-      // "LngLat must not accept an array size bigger than 3'",
+      {
+        message:
+          '`LngLatLike` argument must be specified as a LngLat instance, an object {lng: <lng>, lat: <lat>}, or an array of [<lng>, <lat>]'
+      },
       'detects and throws on invalid input'
     );
     t.assert.ok(LngLat.convert({ lng: 0, lat: 10 }) instanceof LngLat, 'convert creates a LngLat instance');
     t.assert.ok(LngLat.convert({ lng: 0, lat: 0 }) instanceof LngLat, 'convert creates a LngLat instance');
     t.assert.ok(LngLat.convert({ lng: 0, lat: 0, elev: 0 }) instanceof LngLat, 'convert creates a LngLat instance');
     t.assert.ok(LngLat.convert(new LngLat(0, 0)) instanceof LngLat, 'convert creates a LngLat instance');
-    t.throws(
+    t.assert.throws(
       () => {
         LngLat.convert(0, 10);
       },
-      '`LngLatLike` argument must be specified as a LngLat instance, an object {lng: <lng>, lat: <lat>}, or an array of [<lng>, <lat>]',
+      {
+        message:
+          '`LngLatLike` argument must be specified as a LngLat instance, an object {lng: <lng>, lat: <lat>}, or an array of [<lng>, <lat>]'
+      },
       'detects and throws on invalid input'
     );
   });

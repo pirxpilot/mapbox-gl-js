@@ -11,13 +11,13 @@ const spec = require('../../../src/style-spec/style-spec');
 const UPDATE = !!process.env.UPDATE;
 
 test('does not migrate from version 5', t => {
-  t.throws(() => {
+  t.assert.throws(() => {
     migrate({ version: 5, layers: [] });
   }, new Error('cannot migrate from', 5));
 });
 
 test('does not migrate from version 6', t => {
-  t.throws(() => {
+  t.assert.throws(() => {
     migrate({ version: 6, layers: [] });
   }, new Error('cannot migrate from', 6));
 });

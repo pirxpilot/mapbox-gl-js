@@ -73,7 +73,7 @@ test('Map', async t => {
     t.assert.ok(map.keyboard.isEnabled());
     t.assert.ok(map.scrollZoom.isEnabled());
     t.assert.ok(map.touchZoomRotate.isEnabled());
-    t.throws(
+    t.assert.throws(
       () => {
         new Map({
           container: 'anElementIdWhichDoesNotExistInTheDocument'
@@ -621,14 +621,14 @@ test('Map', async t => {
 
     await t.test('throws on invalid bounds', t => {
       const map = createMap({ zoom: 0 });
-      t.throws(
+      t.assert.throws(
         () => {
           map.setMaxBounds([-130.4297, 50.0642], [-61.52344, 24.20688]);
         },
         Error,
         'throws on two decoupled array coordinate arguments'
       );
-      t.throws(
+      t.assert.throws(
         () => {
           map.setMaxBounds(-130.4297, 50.0642, -61.52344, 24.20688);
         },
@@ -724,7 +724,7 @@ test('Map', async t => {
 
   await t.test('ignore minZooms over maxZoom', async t => {
     const map = createMap({ zoom: 2, maxZoom: 5 });
-    t.throws(() => {
+    t.assert.throws(() => {
       map.setMinZoom(6);
     });
     map.setZoom(0);
@@ -754,7 +754,7 @@ test('Map', async t => {
 
   await t.test('ignore maxZooms over minZoom', async t => {
     const map = createMap({ minZoom: 5 });
-    t.throws(() => {
+    t.assert.throws(() => {
       map.setMaxZoom(4);
     });
     map.setZoom(5);
@@ -762,13 +762,13 @@ test('Map', async t => {
   });
 
   await t.test('throw on maxZoom smaller than minZoom at init', async t => {
-    t.throws(() => {
+    t.assert.throws(() => {
       createMap({ minZoom: 10, maxZoom: 5 });
     }, new Error('maxZoom must be greater than minZoom'));
   });
 
   await t.test('throw on maxZoom smaller than minZoom at init with falsey maxZoom', async t => {
-    t.throws(() => {
+    t.assert.throws(() => {
       createMap({ minZoom: 1, maxZoom: 0 });
     }, new Error('maxZoom must be greater than minZoom'));
   });
@@ -834,7 +834,7 @@ test('Map', async t => {
 
   await t.test('#listImages throws an error if called before "load"', t => {
     const map = createMap();
-    t.throws(() => {
+    t.assert.throws(() => {
       map.listImages();
     }, Error);
   });
@@ -984,7 +984,7 @@ test('Map', async t => {
         }
       });
 
-      t.throws(
+      t.assert.throws(
         () => {
           map.setLayoutProperty('symbol', 'text-transform', 'lowercase');
         },
@@ -1166,7 +1166,7 @@ test('Map', async t => {
         }
       });
 
-      t.throws(
+      t.assert.throws(
         () => {
           map.setPaintProperty('background', 'background-color', 'red');
         },
@@ -1222,7 +1222,7 @@ test('Map', async t => {
           layers: []
         }
       });
-      t.throws(
+      t.assert.throws(
         () => {
           map.setFeatureState({ source: 'geojson', id: '12345' }, { hover: true });
         },
