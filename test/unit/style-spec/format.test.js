@@ -1,11 +1,11 @@
-const { test: t } = require('../../util/mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const format = require('../../../src/style-spec/format');
 
 function roundtrip(style) {
   return JSON.parse(format(style));
 }
 
-t('orders top-level keys', t => {
+test('orders top-level keys', t => {
   t.deepEqual(
     Object.keys(
       roundtrip({
@@ -21,7 +21,7 @@ t('orders top-level keys', t => {
   );
 });
 
-t('orders layer keys', t => {
+test('orders layer keys', t => {
   t.deepEqual(
     Object.keys(
       roundtrip({

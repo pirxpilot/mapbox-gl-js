@@ -1,7 +1,7 @@
-const { test: t } = require('../../util/mapbox-gl-js-test');
+const { test } = require('../../util/mapbox-gl-js-test');
 const deref = require('../../../src/style-spec/deref');
 
-t('derefs a ref layer which follows its parent', t => {
+test('derefs a ref layer which follows its parent', t => {
   t.deepEqual(
     deref([
       {
@@ -26,7 +26,7 @@ t('derefs a ref layer which follows its parent', t => {
   );
 });
 
-t('derefs a ref layer which precedes its parent', t => {
+test('derefs a ref layer which precedes its parent', t => {
   t.deepEqual(
     deref([
       {
