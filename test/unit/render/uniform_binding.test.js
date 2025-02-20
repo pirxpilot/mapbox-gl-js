@@ -14,9 +14,9 @@ test('Uniform1i', { plan: 4 }, t => {
 
   const u = new Uniform1i(context, 0);
 
-  t.equal(u.current, 0, 'not set upon initialization');
+  t.assert.equal(u.current, 0, 'not set upon initialization');
   u.set(1);
-  t.equal(u.current, 1, 'correctly set value');
+  t.assert.equal(u.current, 1, 'correctly set value');
   u.set(1);
   u.set(2);
 });
@@ -32,9 +32,9 @@ test('Uniform1f', { plan: 4 }, t => {
 
   const u = new Uniform1f(context, 0);
 
-  t.equal(u.current, 0, 'not set upon initialization');
+  t.assert.equal(u.current, 0, 'not set upon initialization');
   u.set(1);
-  t.equal(u.current, 1, 'correctly set value');
+  t.assert.equal(u.current, 1, 'correctly set value');
   u.set(1);
   u.set(2);
 });

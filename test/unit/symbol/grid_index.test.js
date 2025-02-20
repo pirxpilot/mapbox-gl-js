@@ -8,29 +8,29 @@ test('GridIndex', async t => {
     grid.insert(1, 4, 10, 30, 12);
     grid.insert(2, -10, 30, 5, 35);
 
-    t.deepEqual(
+    t.assert.deepEqual(
       grid
         .query(4, 10, 5, 11)
         .map(x => x.key)
         .sort(),
       [0, 1]
     );
-    t.deepEqual(
+    t.assert.deepEqual(
       grid
         .query(24, 10, 25, 11)
         .map(x => x.key)
         .sort(),
       [1]
     );
-    t.deepEqual(
+    t.assert.deepEqual(
       grid.query(40, 40, 100, 100).map(x => x.key),
       []
     );
-    t.deepEqual(
+    t.assert.deepEqual(
       grid.query(-6, 0, 3, 100).map(x => x.key),
       [2]
     );
-    t.deepEqual(
+    t.assert.deepEqual(
       grid
         .query(Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY)
         .map(x => x.key)
@@ -45,7 +45,7 @@ test('GridIndex', async t => {
     grid.insert(key, 3, 3, 4, 4);
     grid.insert(key, 13, 13, 14, 14);
     grid.insert(key, 23, 23, 24, 24);
-    t.deepEqual(
+    t.assert.deepEqual(
       grid.query(0, 0, 30, 30).map(x => x.key),
       [key, key, key]
     );
@@ -57,10 +57,10 @@ test('GridIndex', async t => {
     grid.insertCircle(1, 60, 60, 15);
     grid.insertCircle(2, -10, 110, 20);
 
-    t.ok(grid.hitTestCircle(55, 55, 2));
-    t.notOk(grid.hitTestCircle(10, 10, 10));
-    t.ok(grid.hitTestCircle(0, 100, 10));
-    t.ok(grid.hitTestCircle(80, 60, 10));
+    t.assert.ok(grid.hitTestCircle(55, 55, 2));
+    t.assert.notOk(grid.hitTestCircle(10, 10, 10));
+    t.assert.ok(grid.hitTestCircle(0, 100, 10));
+    t.assert.ok(grid.hitTestCircle(80, 60, 10));
   });
 
   await t.test('circle-rectangle intersection', t => {
@@ -69,15 +69,15 @@ test('GridIndex', async t => {
     grid.insertCircle(1, 60, 60, 15);
     grid.insertCircle(2, -10, 110, 20);
 
-    t.deepEqual(
+    t.assert.deepEqual(
       grid.query(45, 45, 55, 55).map(x => x.key),
       [0, 1]
     );
-    t.deepEqual(
+    t.assert.deepEqual(
       grid.query(0, 0, 30, 30).map(x => x.key),
       []
     );
-    t.deepEqual(
+    t.assert.deepEqual(
       grid.query(0, 80, 20, 100).map(x => x.key),
       [2]
     );

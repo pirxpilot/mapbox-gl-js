@@ -21,7 +21,7 @@ test('deref layers', t => {
     ]
   };
 
-  t.deepEqual(migrate(input), {
+  t.assert.deepEqual(migrate(input), {
     version: 9,
     sources: {
       a: { type: 'vector', tiles: ['http://dev/null'] }
@@ -65,7 +65,7 @@ test('declass style', t => {
     ]
   };
 
-  t.deepEqual(migrate(input), {
+  t.assert.deepEqual(migrate(input), {
     version: 9,
     sources: {
       a: { type: 'vector', tiles: ['http://dev/null'] }

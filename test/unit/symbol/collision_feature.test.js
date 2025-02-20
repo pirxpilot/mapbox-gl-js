@@ -19,13 +19,13 @@ test('CollisionFeature', async t => {
     const anchor = new Anchor(point.x, point.y, 0, undefined);
 
     const cf = new CollisionFeature(collisionBoxArray, [point], anchor, 0, 0, 0, shapedText, 1, 0, false, 1);
-    t.equal(cf.boxEndIndex - cf.boxStartIndex, 1);
+    t.assert.equal(cf.boxEndIndex - cf.boxStartIndex, 1);
 
     const box = collisionBoxArray.get(cf.boxStartIndex);
-    t.equal(box.x1, -50);
-    t.equal(box.x2, 50);
-    t.equal(box.y1, -10);
-    t.equal(box.y2, 10);
+    t.assert.equal(box.x1, -50);
+    t.assert.equal(box.x2, 50);
+    t.assert.equal(box.y1, -10);
+    t.assert.equal(box.y2, 10);
   });
 
   await t.test('line label', t => {
@@ -33,7 +33,7 @@ test('CollisionFeature', async t => {
     const anchor = new Anchor(505, 95, 0, 1);
     const cf = new CollisionFeature(collisionBoxArray, line, anchor, 0, 0, 0, shapedText, 1, 0, true, 1);
     const boxPoints = pluckAnchorPoints(cf);
-    t.deepEqual(boxPoints, [
+    t.assert.deepEqual(boxPoints, [
       { x: 370, y: 74 },
       { x: 389, y: 78 },
       { x: 409, y: 82 },
@@ -62,7 +62,7 @@ test('CollisionFeature', async t => {
     const anchor = new Anchor(505, 95, 0, 1);
     const cf = new CollisionFeature(collisionBoxArray, line, anchor, 0, 0, 0, shapedText, 1, 0, true, 1);
     const distancesToAnchor = pluckDistancesToAnchor(cf);
-    t.deepEqual(
+    t.assert.deepEqual(
       distancesToAnchor,
       [-112, -96, -80, -64, -48, -32, -24, -16, -8, 0, 8, 16, 24, 32, 40, 48, 64, 80, 96, 112]
     );
@@ -73,7 +73,7 @@ test('CollisionFeature', async t => {
     const anchor = new Anchor(0, 110, 0, 1);
     const cf = new CollisionFeature(collisionBoxArray, line, anchor, 0, 0, 0, shapedText, 1, 0, true, 1);
     const boxPoints = pluckAnchorPoints(cf);
-    t.deepEqual(boxPoints, [
+    t.assert.deepEqual(boxPoints, [
       { x: 0, y: 10 },
       { x: 0, y: 30 },
       { x: 0, y: 50 },
@@ -103,7 +103,7 @@ test('CollisionFeature', async t => {
     const line = [new Point(0, 0), new Point(500, 100), new Point(510, 90), new Point(700, 0)];
     const anchor = new Anchor(505, 95, 0, 1);
     const cf = new CollisionFeature(collisionBoxArray, line, anchor, 0, 0, 0, shapedText, 1, 0, true, 1);
-    t.equal(cf.boxEndIndex - cf.boxStartIndex, 0);
+    t.assert.equal(cf.boxEndIndex - cf.boxStartIndex, 0);
   });
 
   await t.test('doesnt create any boxes for features with negative height', t => {
@@ -117,7 +117,7 @@ test('CollisionFeature', async t => {
     const line = [new Point(0, 0), new Point(500, 100), new Point(510, 90), new Point(700, 0)];
     const anchor = new Anchor(505, 95, 0, 1);
     const cf = new CollisionFeature(collisionBoxArray, line, anchor, 0, 0, 0, shapedText, 1, 0, true, 1);
-    t.equal(cf.boxEndIndex - cf.boxStartIndex, 0);
+    t.assert.equal(cf.boxEndIndex - cf.boxStartIndex, 0);
   });
 
   await t.test('doesnt create way too many tiny boxes for features with really low height', t => {
@@ -131,7 +131,7 @@ test('CollisionFeature', async t => {
     const line = [new Point(0, 0), new Point(500, 100), new Point(510, 90), new Point(700, 0)];
     const anchor = new Anchor(505, 95, 0, 1);
     const cf = new CollisionFeature(collisionBoxArray, line, anchor, 0, 0, 0, shapedText, 1, 0, true, 1);
-    t.ok(cf.boxEndIndex - cf.boxStartIndex < 45);
+    t.assert.ok(cf.boxEndIndex - cf.boxStartIndex < 45);
   });
 
   await t.test('height is big enough that first box can be placed *after* anchor', t => {
@@ -139,7 +139,7 @@ test('CollisionFeature', async t => {
     const anchor = new Anchor(3144.5959947505007, 4077.498298013894, 0.22449735614507618, 0);
     const shaping = { right: 256, left: 0, bottom: 256, top: 0 };
     const cf = new CollisionFeature(collisionBoxArray, line, anchor, 0, 0, 0, shaping, 1, 0, true, 1);
-    t.equal(cf.boxEndIndex - cf.boxStartIndex, 1);
+    t.assert.equal(cf.boxEndIndex - cf.boxStartIndex, 1);
   });
 
   function pluckAnchorPoints(cf) {

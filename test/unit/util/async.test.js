@@ -9,8 +9,8 @@ test('async', async t => {
         callback(null, data);
       },
       (err, results) => {
-        t.ifError(err);
-        t.deepEqual(results, [0, 1, 2]);
+        t.assert.ifError(err);
+        t.assert.deepEqual(results, [0, 1, 2]);
         done();
       }
     );
@@ -25,8 +25,8 @@ test('async', async t => {
         }, data);
       },
       (err, results) => {
-        t.ifError(err);
-        t.deepEqual(results, [4, 0, 1, 2]);
+        t.assert.ifError(err);
+        t.assert.deepEqual(results, [4, 0, 1, 2]);
         done();
       }
     );
@@ -41,8 +41,8 @@ test('async', async t => {
         }, data);
       },
       (err, results) => {
-        t.equal(err?.message, 'hi');
-        t.deepEqual(results, [4, 0, 1, 2]);
+        t.assert.equal(err?.message, 'hi');
+        t.assert.deepEqual(results, [4, 0, 1, 2]);
         done();
       }
     );
@@ -55,8 +55,8 @@ test('async', async t => {
         callback(null, 'foo');
       },
       (err, results) => {
-        t.ifError(err);
-        t.deepEqual(results, []);
+        t.assert.ifError(err);
+        t.assert.deepEqual(results, []);
         done();
       }
     );
@@ -70,14 +70,14 @@ test('async', async t => {
         callback();
       },
       () => {
-        t.ok('immediate callback');
+        t.assert.ok('immediate callback');
       }
     );
     async.all(
       [1, 2, 3],
       (number, callback) => {
-        t.equal(number, expect++);
-        t.ok(callback instanceof Function);
+        t.assert.equal(number, expect++);
+        t.assert.ok(callback instanceof Function);
         callback(null, 0);
       },
       () => {

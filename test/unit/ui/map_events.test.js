@@ -22,14 +22,14 @@ test('map events', async t => {
   await test('Map#on adds a non-delegated event listener', t => {
     const map = createMap();
     const spy = t.spy(function (e) {
-      t.equal(this, map);
-      t.equal(e.type, 'click');
+      t.assert.equal(this, map);
+      t.assert.equal(e.type, 'click');
     });
 
     map.on('click', spy);
     simulate.click(map.getCanvas());
 
-    t.ok(spy.calledOnce);
+    t.assert.ok(spy.calledOnce);
   });
 
   await test('Map#off removes a non-delegated event listener', t => {
@@ -40,7 +40,7 @@ test('map events', async t => {
     map.off('click', spy);
     simulate.click(map.getCanvas());
 
-    t.ok(spy.notCalled);
+    t.assert.ok(spy.notCalled);
   });
 
   await test('Map#on mousedown can have default behavior prevented and still fire subsequent click event', t => {
@@ -52,7 +52,7 @@ test('map events', async t => {
     map.on('click', click);
 
     simulate.click(map.getCanvas());
-    t.ok(click.callCount, 1);
+    t.assert.ok(click.callCount, 1);
 
     map.remove();
   });
@@ -67,7 +67,7 @@ test('map events', async t => {
     const canvas = map.getCanvas();
 
     simulate.drag(canvas, {}, { clientX: 100, clientY: 100 });
-    t.ok(click.notCalled);
+    t.assert.ok(click.notCalled);
 
     map.remove();
   });
@@ -82,7 +82,7 @@ test('map events', async t => {
     const canvas = map.getCanvas();
 
     simulate.drag(canvas, { clientX: 100, clientY: 100 }, { clientX: 100, clientY: 103 });
-    t.ok(click.called);
+    t.assert.ok(click.called);
 
     map.remove();
   });
@@ -97,7 +97,7 @@ test('map events', async t => {
     const canvas = map.getCanvas();
 
     simulate.drag(canvas, { clientX: 100, clientY: 100 }, { clientX: 100, clientY: 104 });
-    t.ok(click.notCalled);
+    t.assert.ok(click.notCalled);
 
     map.remove();
   });

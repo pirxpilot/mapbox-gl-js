@@ -36,8 +36,8 @@ test('CrossTileSymbolIndex.addLayer', async t => {
 
     index.addLayer(styleLayer, [mainTile], 0);
     // Assigned new IDs
-    t.equal(mainInstances[0].crossTileID, 1);
-    t.equal(mainInstances[1].crossTileID, 2);
+    t.assert.equal(mainInstances[0].crossTileID, 1);
+    t.assert.equal(mainInstances[1].crossTileID, 2);
 
     const childID = new OverscaledTileID(7, 0, 7, 16, 16);
     const childInstances = [
@@ -50,13 +50,13 @@ test('CrossTileSymbolIndex.addLayer', async t => {
 
     index.addLayer(styleLayer, [mainTile, childTile], 0);
     // matched parent tile
-    t.equal(childInstances[0].crossTileID, 1);
+    t.assert.equal(childInstances[0].crossTileID, 1);
     // does not match because of different key
-    t.equal(childInstances[1].crossTileID, 3);
+    t.assert.equal(childInstances[1].crossTileID, 3);
     // does not match because of different location
-    t.equal(childInstances[2].crossTileID, 4);
+    t.assert.equal(childInstances[2].crossTileID, 4);
     // matches with a slightly different location
-    t.equal(childInstances[3].crossTileID, 2);
+    t.assert.equal(childInstances[3].crossTileID, 2);
 
     const parentID = new OverscaledTileID(5, 0, 5, 4, 4);
     const parentInstances = [makeSymbolInstance(500, 500, 'Detroit')];
@@ -64,7 +64,7 @@ test('CrossTileSymbolIndex.addLayer', async t => {
 
     index.addLayer(styleLayer, [mainTile, childTile, parentTile], 0);
     // matched child tile
-    t.equal(parentInstances[0].crossTileID, 1);
+    t.assert.equal(parentInstances[0].crossTileID, 1);
 
     const grandchildID = new OverscaledTileID(8, 0, 8, 32, 32);
     const grandchildInstances = [makeSymbolInstance(4000, 4000, 'Detroit'), makeSymbolInstance(4000, 4000, 'Windsor')];
@@ -73,9 +73,9 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     index.addLayer(styleLayer, [mainTile], 0);
     index.addLayer(styleLayer, [mainTile, grandchildTile], 0);
     // Matches the symbol in `mainBucket`
-    t.equal(grandchildInstances[0].crossTileID, 1);
+    t.assert.equal(grandchildInstances[0].crossTileID, 1);
     // Does not match the previous value for Windsor because that tile was removed
-    t.equal(grandchildInstances[1].crossTileID, 5);
+    t.assert.equal(grandchildInstances[1].crossTileID, 5);
   });
 
   await t.test('overwrites ids when re-adding', t => {
@@ -91,19 +91,19 @@ test('CrossTileSymbolIndex.addLayer', async t => {
 
     // assigns a new id
     index.addLayer(styleLayer, [mainTile], 0);
-    t.equal(mainInstances[0].crossTileID, 1);
+    t.assert.equal(mainInstances[0].crossTileID, 1);
 
     // removes the tile
     index.addLayer(styleLayer, [], 0);
 
     // assigns a new id
     index.addLayer(styleLayer, [childTile], 0);
-    t.equal(childInstances[0].crossTileID, 2);
+    t.assert.equal(childInstances[0].crossTileID, 2);
 
     // overwrites the old id to match the already-added tile
     index.addLayer(styleLayer, [mainTile, childTile], 0);
-    t.equal(mainInstances[0].crossTileID, 2);
-    t.equal(childInstances[0].crossTileID, 2);
+    t.assert.equal(mainInstances[0].crossTileID, 2);
+    t.assert.equal(childInstances[0].crossTileID, 2);
   });
 
   await t.test('does not duplicate ids within one zoom level', t => {
@@ -126,21 +126,21 @@ test('CrossTileSymbolIndex.addLayer', async t => {
 
     // assigns new ids
     index.addLayer(styleLayer, [mainTile], 0);
-    t.equal(mainInstances[0].crossTileID, 1);
-    t.equal(mainInstances[1].crossTileID, 2);
+    t.assert.equal(mainInstances[0].crossTileID, 1);
+    t.assert.equal(mainInstances[1].crossTileID, 2);
 
     const layerIndex = index.layerIndexes[styleLayer.id];
-    t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), [1, 2]);
+    t.assert.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), [1, 2]);
 
     // copies parent ids without duplicate ids in this tile
     index.addLayer(styleLayer, [childTile], 0);
-    t.equal(childInstances[0].crossTileID, 1); // A' copies from A
-    t.equal(childInstances[1].crossTileID, 2); // B' copies from B
-    t.equal(childInstances[2].crossTileID, 3); // C' gets new ID
+    t.assert.equal(childInstances[0].crossTileID, 1); // A' copies from A
+    t.assert.equal(childInstances[1].crossTileID, 2); // B' copies from B
+    t.assert.equal(childInstances[2].crossTileID, 3); // C' gets new ID
 
     // Updates per-zoom usedCrossTileIDs
-    t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), []);
-    t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[7]), [1, 2, 3]);
+    t.assert.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), []);
+    t.assert.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[7]), [1, 2, 3]);
   });
 
   await t.test('does not regenerate ids for same zoom', t => {
@@ -162,19 +162,19 @@ test('CrossTileSymbolIndex.addLayer', async t => {
 
     // assigns new ids
     index.addLayer(styleLayer, [firstTile], 0);
-    t.equal(firstInstances[0].crossTileID, 1);
-    t.equal(firstInstances[1].crossTileID, 2);
+    t.assert.equal(firstInstances[0].crossTileID, 1);
+    t.assert.equal(firstInstances[1].crossTileID, 2);
 
     const layerIndex = index.layerIndexes[styleLayer.id];
-    t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), [1, 2]);
+    t.assert.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), [1, 2]);
 
     // uses same ids when tile gets updated
     index.addLayer(styleLayer, [secondTile], 0);
-    t.equal(secondInstances[0].crossTileID, 1); // A' copies from A
-    t.equal(secondInstances[1].crossTileID, 2); // B' copies from B
-    t.equal(secondInstances[2].crossTileID, 3); // C' gets new ID
+    t.assert.equal(secondInstances[0].crossTileID, 1); // A' copies from A
+    t.assert.equal(secondInstances[1].crossTileID, 2); // B' copies from B
+    t.assert.equal(secondInstances[2].crossTileID, 3); // C' gets new ID
 
-    t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), [1, 2, 3]);
+    t.assert.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), [1, 2, 3]);
   });
 
   await t.test('reuses indexes when longitude is wrapped', t => {
@@ -188,12 +188,12 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     const tile = makeTile(tileID, firstInstances);
 
     index.addLayer(styleLayer, [tile], longitude);
-    t.equal(firstInstances[0].crossTileID, 1); // A
+    t.assert.equal(firstInstances[0].crossTileID, 1); // A
 
     tile.tileID = tileID.wrapped();
 
     index.addLayer(styleLayer, [tile], longitude % 360);
-    t.equal(firstInstances[0].crossTileID, 1);
+    t.assert.equal(firstInstances[0].crossTileID, 1);
   });
 });
 
@@ -209,11 +209,11 @@ test('CrossTileSymbolIndex.pruneUnusedLayers', t => {
 
   // assigns new ids
   index.addLayer(styleLayer, [tile], 0);
-  t.equal(instances[0].crossTileID, 1);
-  t.equal(instances[1].crossTileID, 2);
-  t.ok(index.layerIndexes[styleLayer.id]);
+  t.assert.equal(instances[0].crossTileID, 1);
+  t.assert.equal(instances[1].crossTileID, 2);
+  t.assert.ok(index.layerIndexes[styleLayer.id]);
 
   // remove styleLayer
   index.pruneUnusedLayers([]);
-  t.notOk(index.layerIndexes[styleLayer.id]);
+  t.assert.notOk(index.layerIndexes[styleLayer.id]);
 });

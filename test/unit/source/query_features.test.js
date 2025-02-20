@@ -12,7 +12,7 @@ test('QueryFeatures#rendered', async t => {
     };
     const transform = new Transform();
     const result = queryRenderedFeatures(mockSourceCache, undefined, {}, undefined, transform);
-    t.deepEqual(result, {});
+    t.assert.deepEqual(result, {});
   });
 });
 
@@ -31,6 +31,6 @@ test('QueryFeatures#source', async t => {
       }
     );
     const result = querySourceFeatures(sourceCache, {});
-    t.deepEqual(result, []);
+    t.assert.deepEqual(result, []);
   });
 });

@@ -28,7 +28,7 @@ test('getIconQuads', async t => {
     const layer = createLayer({
       layout: { 'icon-rotate': 0 }
     });
-    t.deepEqual(getIconQuads(anchor, createShapedIcon(), layer, false), [
+    t.assert.deepEqual(getIconQuads(anchor, createShapedIcon(), layer, false), [
       {
         tl: { x: -8, y: -6 },
         tr: { x: 9, y: -6 },
@@ -46,7 +46,7 @@ test('getIconQuads', async t => {
     const layer = createLayer({
       layout: { 'icon-rotate': 0 }
     });
-    t.deepEqual(getIconQuads(anchor, createShapedIcon(), layer, false), [
+    t.assert.deepEqual(getIconQuads(anchor, createShapedIcon(), layer, false), [
       {
         tl: { x: -8, y: -6 },
         tr: { x: 9, y: -6 },
@@ -96,12 +96,12 @@ test('getIconQuads text-fit', async t => {
       false,
       createshapedText()
     );
-    t.deepEqual(quads[0].tl, { x: -11, y: -11 });
-    t.deepEqual(quads[0].tr, { x: 11, y: -11 });
-    t.deepEqual(quads[0].bl, { x: -11, y: 11 });
-    t.deepEqual(quads[0].br, { x: 11, y: 11 });
+    t.assert.deepEqual(quads[0].tl, { x: -11, y: -11 });
+    t.assert.deepEqual(quads[0].tr, { x: 11, y: -11 });
+    t.assert.deepEqual(quads[0].bl, { x: -11, y: 11 });
+    t.assert.deepEqual(quads[0].br, { x: 11, y: 11 });
 
-    t.deepEqual(
+    t.assert.deepEqual(
       quads,
       getIconQuads(
         anchor,
@@ -135,10 +135,10 @@ test('getIconQuads text-fit', async t => {
       false,
       createshapedText()
     );
-    t.deepEqual(quads[0].tl, { x: -60, y: -1 });
-    t.deepEqual(quads[0].tr, { x: 20, y: -1 });
-    t.deepEqual(quads[0].bl, { x: -60, y: 21 });
-    t.deepEqual(quads[0].br, { x: 20, y: 21 });
+    t.assert.deepEqual(quads[0].tl, { x: -60, y: -1 });
+    t.assert.deepEqual(quads[0].tr, { x: 20, y: -1 });
+    t.assert.deepEqual(quads[0].bl, { x: -60, y: 21 });
+    t.assert.deepEqual(quads[0].br, { x: 20, y: 21 });
   });
 
   await t.test('icon-text-fit: width, x textSize', t => {
@@ -157,10 +157,10 @@ test('getIconQuads text-fit', async t => {
       false,
       createshapedText()
     );
-    t.deepEqual(quads[0].tl, { x: -30, y: -6 });
-    t.deepEqual(quads[0].tr, { x: 10, y: -6 });
-    t.deepEqual(quads[0].bl, { x: -30, y: 16 });
-    t.deepEqual(quads[0].br, { x: 10, y: 16 });
+    t.assert.deepEqual(quads[0].tl, { x: -30, y: -6 });
+    t.assert.deepEqual(quads[0].tr, { x: 10, y: -6 });
+    t.assert.deepEqual(quads[0].bl, { x: -30, y: 16 });
+    t.assert.deepEqual(quads[0].br, { x: 10, y: 16 });
   });
 
   await t.test('icon-text-fit: width, x textSize, + padding', t => {
@@ -180,10 +180,10 @@ test('getIconQuads text-fit', async t => {
       false,
       createshapedText()
     );
-    t.deepEqual(quads[0].tl, { x: -40, y: -11 });
-    t.deepEqual(quads[0].tr, { x: 20, y: -11 });
-    t.deepEqual(quads[0].bl, { x: -40, y: 21 });
-    t.deepEqual(quads[0].br, { x: 20, y: 21 });
+    t.assert.deepEqual(quads[0].tl, { x: -40, y: -11 });
+    t.assert.deepEqual(quads[0].tr, { x: 20, y: -11 });
+    t.assert.deepEqual(quads[0].bl, { x: -40, y: 21 });
+    t.assert.deepEqual(quads[0].br, { x: 20, y: 21 });
   });
 
   await t.test('icon-text-fit: height', t => {
@@ -202,10 +202,10 @@ test('getIconQuads text-fit', async t => {
       false,
       createshapedText()
     );
-    t.deepEqual(quads[0].tl, { x: -31, y: -10 });
-    t.deepEqual(quads[0].tr, { x: -9, y: -10 });
-    t.deepEqual(quads[0].bl, { x: -31, y: 30 });
-    t.deepEqual(quads[0].br, { x: -9, y: 30 });
+    t.assert.deepEqual(quads[0].tl, { x: -31, y: -10 });
+    t.assert.deepEqual(quads[0].tr, { x: -9, y: -10 });
+    t.assert.deepEqual(quads[0].bl, { x: -31, y: 30 });
+    t.assert.deepEqual(quads[0].br, { x: -9, y: 30 });
   });
 
   await t.test('icon-text-fit: height, x textSize', t => {
@@ -224,10 +224,10 @@ test('getIconQuads text-fit', async t => {
       false,
       createshapedText()
     );
-    t.deepEqual(quads[0].tl, { x: -21, y: -5 });
-    t.deepEqual(quads[0].tr, { x: 1, y: -5 });
-    t.deepEqual(quads[0].bl, { x: -21, y: 15 });
-    t.deepEqual(quads[0].br, { x: 1, y: 15 });
+    t.assert.deepEqual(quads[0].tl, { x: -21, y: -5 });
+    t.assert.deepEqual(quads[0].tr, { x: 1, y: -5 });
+    t.assert.deepEqual(quads[0].bl, { x: -21, y: 15 });
+    t.assert.deepEqual(quads[0].br, { x: 1, y: 15 });
   });
 
   await t.test('icon-text-fit: height, x textSize, + padding', t => {
@@ -247,10 +247,10 @@ test('getIconQuads text-fit', async t => {
       false,
       createshapedText()
     );
-    t.deepEqual(quads[0].tl, { x: -31, y: -10 });
-    t.deepEqual(quads[0].tr, { x: 11, y: -10 });
-    t.deepEqual(quads[0].bl, { x: -31, y: 20 });
-    t.deepEqual(quads[0].br, { x: 11, y: 20 });
+    t.assert.deepEqual(quads[0].tl, { x: -31, y: -10 });
+    t.assert.deepEqual(quads[0].tr, { x: 11, y: -10 });
+    t.assert.deepEqual(quads[0].bl, { x: -31, y: 20 });
+    t.assert.deepEqual(quads[0].br, { x: 11, y: 20 });
   });
 
   await t.test('icon-text-fit: both', t => {
@@ -268,10 +268,10 @@ test('getIconQuads text-fit', async t => {
       false,
       createshapedText()
     );
-    t.deepEqual(quads[0].tl, { x: -60, y: -10 });
-    t.deepEqual(quads[0].tr, { x: 20, y: -10 });
-    t.deepEqual(quads[0].bl, { x: -60, y: 30 });
-    t.deepEqual(quads[0].br, { x: 20, y: 30 });
+    t.assert.deepEqual(quads[0].tl, { x: -60, y: -10 });
+    t.assert.deepEqual(quads[0].tr, { x: 20, y: -10 });
+    t.assert.deepEqual(quads[0].bl, { x: -60, y: 30 });
+    t.assert.deepEqual(quads[0].br, { x: 20, y: 30 });
   });
 
   await t.test('icon-text-fit: both, x textSize', t => {
@@ -289,10 +289,10 @@ test('getIconQuads text-fit', async t => {
       false,
       createshapedText()
     );
-    t.deepEqual(quads[0].tl, { x: -30, y: -5 });
-    t.deepEqual(quads[0].tr, { x: 10, y: -5 });
-    t.deepEqual(quads[0].bl, { x: -30, y: 15 });
-    t.deepEqual(quads[0].br, { x: 10, y: 15 });
+    t.assert.deepEqual(quads[0].tl, { x: -30, y: -5 });
+    t.assert.deepEqual(quads[0].tr, { x: 10, y: -5 });
+    t.assert.deepEqual(quads[0].bl, { x: -30, y: 15 });
+    t.assert.deepEqual(quads[0].br, { x: 10, y: 15 });
   });
 
   await t.test('icon-text-fit: both, x textSize, + padding', t => {
@@ -311,10 +311,10 @@ test('getIconQuads text-fit', async t => {
       false,
       createshapedText()
     );
-    t.deepEqual(quads[0].tl, { x: -40, y: -10 });
-    t.deepEqual(quads[0].tr, { x: 20, y: -10 });
-    t.deepEqual(quads[0].bl, { x: -40, y: 20 });
-    t.deepEqual(quads[0].br, { x: 20, y: 20 });
+    t.assert.deepEqual(quads[0].tl, { x: -40, y: -10 });
+    t.assert.deepEqual(quads[0].tr, { x: 20, y: -10 });
+    t.assert.deepEqual(quads[0].bl, { x: -40, y: 20 });
+    t.assert.deepEqual(quads[0].br, { x: 20, y: 20 });
   });
 
   await t.test('icon-text-fit: both, padding t/r/b/l', t => {
@@ -333,9 +333,9 @@ test('getIconQuads text-fit', async t => {
       false,
       createshapedText()
     );
-    t.deepEqual(quads[0].tl, { x: -45, y: -5 });
-    t.deepEqual(quads[0].tr, { x: 15, y: -5 });
-    t.deepEqual(quads[0].bl, { x: -45, y: 25 });
-    t.deepEqual(quads[0].br, { x: 15, y: 25 });
+    t.assert.deepEqual(quads[0].tl, { x: -45, y: -5 });
+    t.assert.deepEqual(quads[0].tr, { x: 15, y: -5 });
+    t.assert.deepEqual(quads[0].bl, { x: -45, y: 25 });
+    t.assert.deepEqual(quads[0].br, { x: 15, y: 25 });
   });
 });

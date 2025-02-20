@@ -25,15 +25,15 @@ test('computeTileMasks', async t => {
   await t.test('no children', t => {
     const renderables = [new Tile(0, 0, 0)];
     updateTileMasks(renderables);
-    t.deepEqual(Object.keys(renderables[0].mask), [new OverscaledTileID(0, 0, 0, 0, 0).key]);
+    t.assert.deepEqual(Object.keys(renderables[0].mask), [new OverscaledTileID(0, 0, 0, 0, 0).key]);
 
     const renderables2 = [new Tile(4, 3, 8)];
     updateTileMasks(renderables2);
-    t.deepEqual(Object.keys(renderables2[0].mask), [new OverscaledTileID(0, 0, 0, 0, 0).key]);
+    t.assert.deepEqual(Object.keys(renderables2[0].mask), [new OverscaledTileID(0, 0, 0, 0, 0).key]);
 
     const renderables3 = [new Tile(1, 0, 0), new Tile(1, 1, 1)];
     updateTileMasks(renderables3);
-    t.deepEqual(
+    t.assert.deepEqual(
       renderables3.map(r => {
         return Object.keys(r.mask);
       }),
@@ -42,7 +42,7 @@ test('computeTileMasks', async t => {
 
     const renderables4 = [new Tile(1, 0, 0), new Tile(2, 2, 3)];
     updateTileMasks(renderables4);
-    t.deepEqual(
+    t.assert.deepEqual(
       renderables4.map(r => {
         return Object.keys(r.mask);
       }),
@@ -53,7 +53,7 @@ test('computeTileMasks', async t => {
   await t.test('parents with all four children', t => {
     const renderables = [new Tile(0, 0, 0), new Tile(1, 0, 0), new Tile(1, 0, 1), new Tile(1, 1, 0), new Tile(1, 1, 1)];
     updateTileMasks(renderables);
-    t.deepEqual(
+    t.assert.deepEqual(
       renderables.map(r => {
         return Object.keys(r.mask);
       }),
@@ -71,7 +71,7 @@ test('computeTileMasks', async t => {
   await t.test('parent and one child', t => {
     const renderables = [new Tile(0, 0, 0), new Tile(1, 0, 0)];
     updateTileMasks(renderables);
-    t.deepEqual(
+    t.assert.deepEqual(
       renderables.map(r => {
         return Object.keys(r.mask);
       }),
@@ -97,7 +97,7 @@ test('computeTileMasks', async t => {
       new Tile(14, 4114, 5825)
     ];
     updateTileMasks(renderables);
-    t.deepEqual(
+    t.assert.deepEqual(
       renderables.map(r => {
         return Object.keys(r.mask);
       }),
@@ -128,7 +128,7 @@ test('computeTileMasks', async t => {
   await t.test('deep descendent masks', t => {
     const renderables = [new Tile(0, 0, 0), new Tile(4, 4, 4)];
     updateTileMasks(renderables);
-    t.deepEqual(
+    t.assert.deepEqual(
       renderables.map(r => {
         return Object.keys(r.mask);
       }),
@@ -161,7 +161,7 @@ test('computeTileMasks', async t => {
       new Tile(3, 6, 6, 1)
     ];
     updateTileMasks(renderables);
-    t.deepEqual(
+    t.assert.deepEqual(
       renderables.map(r => {
         return Object.keys(r.mask);
       }),

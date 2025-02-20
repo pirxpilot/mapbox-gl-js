@@ -40,10 +40,10 @@ test('Dispatcher', async t => {
     };
 
     const dispatcher = makeDispatcher(workerPool, {}, Actor);
-    t.same(targets, workers);
+    t.assert.deepEqual(targets, workers);
     dispatcher.remove();
-    t.same(releaseCalled, [dispatcher.id]);
-    t.equal(removeCalled, workers.length);
+    t.assert.deepEqual(releaseCalled, [dispatcher.id]);
+    t.assert.equal(removeCalled, workers.length);
   });
 
   await t.test('creates Actors with unique map id', t => {
@@ -54,7 +54,7 @@ test('Dispatcher', async t => {
 
     const workerPool = makeWorkerPool(1);
     const dispatchers = [makeDispatcher(workerPool, {}, Actor), makeDispatcher(workerPool, {}, Actor)];
-    t.same(
+    t.assert.deepEqual(
       ids,
       dispatchers.map(d => d.id)
     );
@@ -73,6 +73,6 @@ test('Dispatcher', async t => {
     const workerPool = makeWorkerPool(4);
     const dispatcher = makeDispatcher(workerPool, {}, Actor);
     dispatcher.remove();
-    t.equal(actorsRemoved.length, 4);
+    t.assert.equal(actorsRemoved.length, 4);
   });
 });

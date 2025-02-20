@@ -19,15 +19,15 @@ test('geojsonwrapper', async t => {
     const wrap = new Wrapper(features);
     const feature = wrap.feature(0);
 
-    t.ok(feature, 'gets a feature');
-    t.deepEqual(feature.loadGeometry(), [
+    t.assert.ok(feature, 'gets a feature');
+    t.assert.deepEqual(feature.loadGeometry(), [
       [
         { x: 0, y: 0 },
         { x: 10, y: 10 }
       ]
     ]);
-    t.equal(feature.type, 2, 'type');
-    t.deepEqual(feature.properties, { hello: 'world' }, 'properties');
+    t.assert.equal(feature.type, 2, 'type');
+    t.assert.deepEqual(feature.properties, { hello: 'world' }, 'properties');
   });
 
   await t.test('point', t => {
@@ -41,6 +41,6 @@ test('geojsonwrapper', async t => {
 
     const wrap = new Wrapper(features);
     const feature = wrap.feature(0);
-    t.deepEqual(feature.loadGeometry(), [[{ x: 0, y: 1 }]]);
+    t.assert.deepEqual(feature.loadGeometry(), [[{ x: 0, y: 1 }]]);
   });
 });

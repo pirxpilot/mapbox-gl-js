@@ -6,7 +6,7 @@ function roundtrip(style) {
 }
 
 test('orders top-level keys', t => {
-  t.deepEqual(
+  t.assert.deepEqual(
     Object.keys(
       roundtrip({
         layers: [],
@@ -22,7 +22,7 @@ test('orders top-level keys', t => {
 });
 
 test('orders layer keys', t => {
-  t.deepEqual(
+  t.assert.deepEqual(
     Object.keys(
       roundtrip({
         layers: [

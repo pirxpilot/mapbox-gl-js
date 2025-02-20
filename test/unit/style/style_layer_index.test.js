@@ -10,15 +10,15 @@ test('StyleLayerIndex#replace', t => {
   ]);
 
   const families = index.familiesBySource['source']['layer'];
-  t.equal(families.length, 2);
-  t.equal(families[0].length, 1);
-  t.equal(families[0][0].id, '1');
-  t.equal(families[1].length, 2);
-  t.equal(families[1][0].id, '2');
-  t.equal(families[1][1].id, '3');
+  t.assert.equal(families.length, 2);
+  t.assert.equal(families[0].length, 1);
+  t.assert.equal(families[0][0].id, '1');
+  t.assert.equal(families[1].length, 2);
+  t.assert.equal(families[1][0].id, '2');
+  t.assert.equal(families[1][1].id, '3');
 
   index.replace([]);
-  t.deepEqual(index.familiesBySource, {});
+  t.assert.deepEqual(index.familiesBySource, {});
 });
 
 test('StyleLayerIndex#update', t => {
@@ -38,14 +38,14 @@ test('StyleLayerIndex#update', t => {
   );
 
   const families = index.familiesBySource['bar']['layer'];
-  t.equal(families.length, 2);
-  t.equal(families[0].length, 1);
-  t.equal(families[0][0].getPaintProperty('fill-color'), 'cyan');
-  t.equal(families[1].length, 2);
-  t.equal(families[1][0].getPaintProperty('circle-color'), 'magenta');
-  t.equal(families[1][0].source, 'bar');
-  t.equal(families[1][1].getPaintProperty('circle-color'), 'yellow');
-  t.equal(families[1][1].source, 'bar');
+  t.assert.equal(families.length, 2);
+  t.assert.equal(families[0].length, 1);
+  t.assert.equal(families[0][0].getPaintProperty('fill-color'), 'cyan');
+  t.assert.equal(families[1].length, 2);
+  t.assert.equal(families[1][0].getPaintProperty('circle-color'), 'magenta');
+  t.assert.equal(families[1][0].source, 'bar');
+  t.assert.equal(families[1][1].getPaintProperty('circle-color'), 'yellow');
+  t.assert.equal(families[1][1].source, 'bar');
 });
 
 test('StyleLayerIndex#familiesBySource', t => {
@@ -67,7 +67,7 @@ test('StyleLayerIndex#familiesBySource', t => {
     });
   });
 
-  t.deepEqual(ids, {
+  t.assert.deepEqual(ids, {
     A: {
       foo: [['0', '1'], ['2']],
       bar: [['3']]
@@ -103,5 +103,5 @@ test('StyleLayerIndex groups families even if layout key order differs', t => {
   ]);
 
   const families = index.familiesBySource['source']['layer'];
-  t.equal(families[0].length, 2);
+  t.assert.equal(families[0].length, 2);
 });

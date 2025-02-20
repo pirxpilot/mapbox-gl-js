@@ -60,7 +60,7 @@ test('GeoJSONSource#setData', async t => {
 
   await t.test('returns self', t => {
     const source = createSource();
-    t.equal(source.setData({}), source);
+    t.assert.equal(source.setData({}), source);
   });
 
   await t.test('fires "data" event', (t, done) => {
@@ -86,9 +86,9 @@ test('GeoJSONSource#onRemove', async t => {
       { data: {} },
       {
         send: function (type, data, callback) {
-          t.false(callback);
-          t.equal(type, 'removeSource');
-          t.deepEqual(data, { type: 'geojson', source: 'id' });
+          t.assert.notOk(callback);
+          t.assert.equal(type, 'removeSource');
+          t.assert.deepEqual(data, { type: 'geojson', source: 'id' });
           done();
         },
         broadcast: function () {
@@ -111,7 +111,7 @@ test('GeoJSONSource#update', async t => {
   await t.test('sends initial loadData request to dispatcher', (t, done) => {
     const mockDispatcher = {
       send: function (message) {
-        t.equal(message, 'geojson.loadData');
+        t.assert.equal(message, 'geojson.loadData');
         done();
       }
     };
@@ -123,8 +123,8 @@ test('GeoJSONSource#update', async t => {
   await t.test('forwards geojson-vt options with worker request', (t, done) => {
     const mockDispatcher = {
       send: function (message, params) {
-        t.equal(message, 'geojson.loadData');
-        t.deepEqual(params.geojsonVtOptions, {
+        t.assert.equal(message, 'geojson.loadData');
+        t.assert.deepEqual(params.geojsonVtOptions, {
           extent: 8192,
           maxZoom: 10,
           tolerance: 4,
@@ -179,7 +179,7 @@ test('GeoJSONSource#update', async t => {
     const source = new GeoJSONSource('id', { data: {} }, mockDispatcher);
 
     source.on('error', err => {
-      t.equal(err.error, 'error');
+      t.assert.equal(err.error, 'error');
       done();
     });
 
@@ -219,7 +219,7 @@ test('GeoJSONSource#serialize', async t => {
   await t.test('serialize source with inline data', t => {
     const source = new GeoJSONSource('id', { data: hawkHill }, mockDispatcher);
     source.load();
-    t.deepEqual(source.serialize(), {
+    t.assert.deepEqual(source.serialize(), {
       type: 'geojson',
       data: hawkHill
     });
@@ -228,7 +228,7 @@ test('GeoJSONSource#serialize', async t => {
   await t.test('serialize source with url', t => {
     const source = new GeoJSONSource('id', { data: 'local://data.json' }, mockDispatcher);
     source.load();
-    t.deepEqual(source.serialize(), {
+    t.assert.deepEqual(source.serialize(), {
       type: 'geojson',
       data: 'local://data.json'
     });
@@ -238,7 +238,7 @@ test('GeoJSONSource#serialize', async t => {
     const source = new GeoJSONSource('id', { data: {} }, mockDispatcher);
     source.load();
     source.setData(hawkHill);
-    t.deepEqual(source.serialize(), {
+    t.assert.deepEqual(source.serialize(), {
       type: 'geojson',
       data: hawkHill
     });
@@ -246,7 +246,7 @@ test('GeoJSONSource#serialize', async t => {
 
   await t.test('serialize source with additional options', t => {
     const source = new GeoJSONSource('id', { data: {}, cluster: true }, mockDispatcher);
-    t.deepEqual(source.serialize(), {
+    t.assert.deepEqual(source.serialize(), {
       type: 'geojson',
       data: {},
       cluster: true

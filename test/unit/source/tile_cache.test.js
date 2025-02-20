@@ -13,7 +13,7 @@ const tileC = { tileID: idC };
 const tileD = { tileID: idD };
 
 function keysExpected(t, cache, ids) {
-  t.deepEqual(
+  t.assert.deepEqual(
     cache.order,
     ids.map(id => id.key),
     'keys'
@@ -22,47 +22,47 @@ function keysExpected(t, cache, ids) {
 
 test('TileCache', t => {
   const cache = new TileCache(10, removed => {
-    t.equal(removed, 'dc');
+    t.assert.equal(removed, 'dc');
   });
-  t.equal(cache.getAndRemove(idC), null, '.getAndRemove() to null');
-  t.equal(cache.add(idA, tileA), cache, '.add()');
+  t.assert.equal(cache.getAndRemove(idC), null, '.getAndRemove() to null');
+  t.assert.equal(cache.add(idA, tileA), cache, '.add()');
   keysExpected(t, cache, [idA]);
-  t.equal(cache.has(idA), true, '.has()');
-  t.equal(cache.getAndRemove(idA), tileA, '.getAndRemove()');
-  t.equal(cache.getAndRemove(idA), null, '.getAndRemove()');
-  t.equal(cache.has(idA), false, '.has()');
+  t.assert.equal(cache.has(idA), true, '.has()');
+  t.assert.equal(cache.getAndRemove(idA), tileA, '.getAndRemove()');
+  t.assert.equal(cache.getAndRemove(idA), null, '.getAndRemove()');
+  t.assert.equal(cache.has(idA), false, '.has()');
   keysExpected(t, cache, []);
 });
 
 test('TileCache - getWithoutRemoving', t => {
   const cache = new TileCache(10, () => {
-    t.fail();
+    t.assert.fail();
   });
-  t.equal(cache.add(idA, tileA), cache, '.add()');
-  t.equal(cache.get(idA), tileA, '.get()');
+  t.assert.equal(cache.add(idA, tileA), cache, '.add()');
+  t.assert.equal(cache.get(idA), tileA, '.get()');
   keysExpected(t, cache, [idA]);
-  t.equal(cache.get(idA), tileA, '.get()');
+  t.assert.equal(cache.get(idA), tileA, '.get()');
 });
 
 test('TileCache - duplicate add', t => {
   const cache = new TileCache(10, () => {
-    t.fail();
+    t.assert.fail();
   });
 
   cache.add(idA, tileA);
   cache.add(idA, tileA2);
 
   keysExpected(t, cache, [idA, idA]);
-  t.ok(cache.has(idA));
-  t.equal(cache.getAndRemove(idA), tileA);
-  t.ok(cache.has(idA));
-  t.equal(cache.getAndRemove(idA), tileA2);
+  t.assert.ok(cache.has(idA));
+  t.assert.equal(cache.getAndRemove(idA), tileA);
+  t.assert.ok(cache.has(idA));
+  t.assert.equal(cache.getAndRemove(idA), tileA2);
 });
 
 test('TileCache - expiry', (t, done) => {
   const cache = new TileCache(10, removed => {
-    t.ok(cache.has(idB));
-    t.equal(removed, tileA2);
+    t.assert.ok(cache.has(idB));
+    t.assert.equal(removed, tileA2);
     done();
   });
 
@@ -83,37 +83,37 @@ test('TileCache - remove', t => {
   cache.add(idC, tileC);
 
   keysExpected(t, cache, [idA, idB, idC]);
-  t.ok(cache.has(idB));
+  t.assert.ok(cache.has(idB));
 
   cache.remove(idB);
 
   keysExpected(t, cache, [idA, idC]);
-  t.notOk(cache.has(idB));
+  t.assert.notOk(cache.has(idB));
 
-  t.ok(cache.remove(idB));
+  t.assert.ok(cache.remove(idB));
 });
 
 test('TileCache - overflow', t => {
   const cache = new TileCache(1, removed => {
-    t.equal(removed, tileA);
+    t.assert.equal(removed, tileA);
   });
   cache.add(idA, tileA);
   cache.add(idB, tileB);
 
-  t.ok(cache.has(idB));
-  t.notOk(cache.has(idA));
+  t.assert.ok(cache.has(idB));
+  t.assert.notOk(cache.has(idA));
 });
 
 test('TileCache#reset', t => {
   let called;
   const cache = new TileCache(10, removed => {
-    t.equal(removed, tileA);
+    t.assert.equal(removed, tileA);
     called = true;
   });
   cache.add(idA, tileA);
-  t.equal(cache.reset(), cache);
-  t.equal(cache.has(idA), false);
-  t.ok(called);
+  t.assert.equal(cache.reset(), cache);
+  t.assert.equal(cache.has(idA), false);
+  t.assert.ok(called);
 });
 
 test('TileCache#setMaxSize', t => {
@@ -124,11 +124,11 @@ test('TileCache#setMaxSize', t => {
   cache.add(idA, tileA);
   cache.add(idB, tileB);
   cache.add(idC, tileC);
-  t.equal(numRemoved, 0);
+  t.assert.equal(numRemoved, 0);
   cache.setMaxSize(15);
-  t.equal(numRemoved, 0);
+  t.assert.equal(numRemoved, 0);
   cache.setMaxSize(1);
-  t.equal(numRemoved, 2);
+  t.assert.equal(numRemoved, 2);
   cache.add(idD, tileD);
-  t.equal(numRemoved, 3);
+  t.assert.equal(numRemoved, 3);
 });

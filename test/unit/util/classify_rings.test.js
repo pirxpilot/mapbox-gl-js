@@ -25,8 +25,8 @@ test('classifyRings', t => {
     ]
   ];
   classified = classifyRings(geometry);
-  t.equal(classified.length, 1, '1 polygon');
-  t.equal(classified[0].length, 1, 'polygon 1 has 1 exterior');
+  t.assert.equal(classified.length, 1, '1 polygon');
+  t.assert.equal(classified[0].length, 1, 'polygon 1 has 1 exterior');
 
   geometry = [
     [
@@ -45,9 +45,9 @@ test('classifyRings', t => {
     ]
   ];
   classified = classifyRings(geometry);
-  t.equal(classified.length, 2, '2 polygons');
-  t.equal(classified[0].length, 1, 'polygon 1 has 1 exterior');
-  t.equal(classified[1].length, 1, 'polygon 2 has 1 exterior');
+  t.assert.equal(classified.length, 2, '2 polygons');
+  t.assert.equal(classified[0].length, 1, 'polygon 1 has 1 exterior');
+  t.assert.equal(classified[1].length, 1, 'polygon 2 has 1 exterior');
 
   geometry = [
     [
@@ -65,14 +65,14 @@ test('classifyRings', t => {
     ]
   ];
   classified = classifyRings(geometry);
-  t.equal(classified.length, 1, '1 polygon');
-  t.equal(classified[0].length, 2, 'polygon 1 has 1 exterior, 1 interior');
+  t.assert.equal(classified.length, 1, '1 polygon');
+  t.assert.equal(classified[0].length, 2, 'polygon 1 has 1 exterior, 1 interior');
 
   geometry = feature.loadGeometry();
   classified = classifyRings(geometry);
-  t.equal(classified.length, 2, '2 polygons');
-  t.equal(classified[0].length, 1, 'polygon 1 has 1 exterior');
-  t.equal(classified[1].length, 10, 'polygon 2 has 1 exterior, 9 interior');
+  t.assert.equal(classified.length, 2, '2 polygons');
+  t.assert.equal(classified[0].length, 1, 'polygon 1 has 1 exterior');
+  t.assert.equal(classified[1].length, 10, 'polygon 2 has 1 exterior, 9 interior');
 });
 
 test('classifyRings + maxRings', async t => {
@@ -111,39 +111,39 @@ test('classifyRings + maxRings', async t => {
 
   await t.test('maxRings=undefined', t => {
     const geometry = sortRings(classifyRings(createGeometry()));
-    t.equal(geometry.length, 1);
-    t.equal(geometry[0].length, 3);
-    t.equal(geometry[0][0].area, 3200);
-    t.equal(geometry[0][1].area, 100);
-    t.equal(geometry[0][2].area, 4);
+    t.assert.equal(geometry.length, 1);
+    t.assert.equal(geometry[0].length, 3);
+    t.assert.equal(geometry[0][0].area, 3200);
+    t.assert.equal(geometry[0][1].area, 100);
+    t.assert.equal(geometry[0][2].area, 4);
   });
 
   await t.test('maxRings=2', t => {
     const geometry = sortRings(classifyRings(createGeometry(), 2));
-    t.equal(geometry.length, 1);
-    t.equal(geometry[0].length, 2);
-    t.equal(geometry[0][0].area, 3200);
-    t.equal(geometry[0][1].area, 100);
+    t.assert.equal(geometry.length, 1);
+    t.assert.equal(geometry[0].length, 2);
+    t.assert.equal(geometry[0][0].area, 3200);
+    t.assert.equal(geometry[0][1].area, 100);
   });
 
   await t.test('maxRings=2, reversed geometry', t => {
     const geometry = sortRings(classifyRings(createGeometry({ reverse: true }), 2));
-    t.equal(geometry.length, 1);
-    t.equal(geometry[0].length, 2);
-    t.equal(geometry[0][0].area, 3200);
-    t.equal(geometry[0][1].area, 100);
+    t.assert.equal(geometry.length, 1);
+    t.assert.equal(geometry[0].length, 2);
+    t.assert.equal(geometry[0][0].area, 3200);
+    t.assert.equal(geometry[0][1].area, 100);
   });
 
   await t.test('maxRings=5, geometry from fixture', t => {
     const geometry = sortRings(classifyRings(feature.loadGeometry(), 5));
-    t.equal(geometry.length, 2);
-    t.equal(geometry[0].length, 1);
-    t.equal(geometry[1].length, 5);
+    t.assert.equal(geometry.length, 2);
+    t.assert.equal(geometry[0].length, 1);
+    t.assert.equal(geometry[1].length, 5);
 
     const areas = geometry[1].map(ring => {
       return ring.area;
     });
-    t.deepEqual(areas, [2763951, 21600, 8298, 4758, 3411]);
+    t.assert.deepEqual(areas, [2763951, 21600, 8298, 4758, 3411]);
   });
 });
 

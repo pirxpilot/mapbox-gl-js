@@ -29,18 +29,18 @@ test('BoxZoomHandler', async t => {
 
     simulate.mousedown(map.getCanvas(), { shiftKey: true, clientX: 0, clientY: 0 });
     map._renderTaskQueue.run();
-    t.equal(boxzoomstart.callCount, 0);
-    t.equal(boxzoomend.callCount, 0);
+    t.assert.equal(boxzoomstart.callCount, 0);
+    t.assert.equal(boxzoomend.callCount, 0);
 
     simulate.mousemove(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
     map._renderTaskQueue.run();
-    t.equal(boxzoomstart.callCount, 1);
-    t.equal(boxzoomend.callCount, 0);
+    t.assert.equal(boxzoomstart.callCount, 1);
+    t.assert.equal(boxzoomend.callCount, 0);
 
     simulate.mouseup(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
     map._renderTaskQueue.run();
-    t.equal(boxzoomstart.callCount, 1);
-    t.equal(boxzoomend.callCount, 1);
+    t.assert.equal(boxzoomstart.callCount, 1);
+    t.assert.equal(boxzoomend.callCount, 1);
 
     map.remove();
   });
@@ -67,22 +67,22 @@ test('BoxZoomHandler', async t => {
 
     simulate.mousedown(map.getCanvas(), { shiftKey: true, clientX: 0, clientY: 0 });
     map._renderTaskQueue.run();
-    t.equal(boxzoomstart.callCount, 0);
-    t.equal(boxzoomend.callCount, 0);
+    t.assert.equal(boxzoomstart.callCount, 0);
+    t.assert.equal(boxzoomend.callCount, 0);
 
     simulate.mousemove(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
     map._renderTaskQueue.run();
-    t.equal(boxzoomstart.callCount, 1);
-    t.equal(boxzoomend.callCount, 0);
+    t.assert.equal(boxzoomstart.callCount, 1);
+    t.assert.equal(boxzoomend.callCount, 0);
 
     simulate.mouseup(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
     map._renderTaskQueue.run();
-    t.equal(boxzoomstart.callCount, 1);
-    t.equal(boxzoomend.callCount, 1);
+    t.assert.equal(boxzoomstart.callCount, 1);
+    t.assert.equal(boxzoomend.callCount, 1);
 
-    t.equal(dragstart.callCount, 0);
-    t.equal(drag.callCount, 0);
-    t.equal(dragend.callCount, 0);
+    t.assert.equal(dragstart.callCount, 0);
+    t.assert.equal(drag.callCount, 0);
+    t.assert.equal(dragend.callCount, 0);
 
     map.remove();
   });
@@ -107,8 +107,8 @@ test('BoxZoomHandler', async t => {
     simulate.mouseup(map.getCanvas(), { shiftKey: true, clientX: 5, clientY: 5 });
     map._renderTaskQueue.run();
 
-    t.equal(boxzoomstart.callCount, 0);
-    t.equal(boxzoomend.callCount, 0);
+    t.assert.equal(boxzoomstart.callCount, 0);
+    t.assert.equal(boxzoomend.callCount, 0);
 
     map.remove();
   });

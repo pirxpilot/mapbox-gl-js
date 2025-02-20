@@ -28,7 +28,7 @@ test('Map#_requestRenderFrame', async t => {
     const map = createMap();
     t.stub(map, '_rerender');
     map._requestRenderFrame(() => {});
-    t.equal(map._rerender.callCount, 1);
+    t.assert.equal(map._rerender.callCount, 1);
     map.remove();
   });
 
@@ -37,7 +37,7 @@ test('Map#_requestRenderFrame', async t => {
     const cb = t.spy();
     map._requestRenderFrame(cb);
     map.once('render', () => {
-      t.equal(cb.callCount, 1);
+      t.assert.equal(cb.callCount, 1);
       map.remove();
       done();
     });
@@ -49,7 +49,7 @@ test('Map#_requestRenderFrame', async t => {
     const id = map._requestRenderFrame(cb);
     map._cancelRenderFrame(id);
     map.once('render', () => {
-      t.equal(cb.callCount, 0);
+      t.assert.equal(cb.callCount, 0);
       map.remove();
       done();
     });

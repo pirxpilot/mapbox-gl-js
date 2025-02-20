@@ -13,7 +13,7 @@ test('tileCover', async t => {
         { column: 0, row: 2, zoom: 2 }
       ];
       const res = tileCover(z, coords, z);
-      t.deepEqual(res, [new OverscaledTileID(2, 0, 2, 0, 1)]);
+      t.assert.deepEqual(res, [new OverscaledTileID(2, 0, 2, 0, 1)]);
     });
 
     await t.test('calculates tile coverage at w > 0', t => {
@@ -25,7 +25,7 @@ test('tileCover', async t => {
         { column: 12, row: 2, zoom: 2 }
       ];
       const res = tileCover(z, coords, z);
-      t.deepEqual(res, [new OverscaledTileID(2, 3, 2, 0, 1)]);
+      t.assert.deepEqual(res, [new OverscaledTileID(2, 3, 2, 0, 1)]);
     });
 
     await t.test('calculates tile coverage at w = -1', t => {
@@ -37,7 +37,7 @@ test('tileCover', async t => {
         { column: -1, row: 2, zoom: 2 }
       ];
       const res = tileCover(z, coords, z);
-      t.deepEqual(res, [new OverscaledTileID(2, -1, 2, 3, 1)]);
+      t.assert.deepEqual(res, [new OverscaledTileID(2, -1, 2, 3, 1)]);
     });
 
     await t.test('calculates tile coverage at w < -1', t => {
@@ -49,7 +49,7 @@ test('tileCover', async t => {
         { column: -13, row: 2, zoom: 2 }
       ];
       const res = tileCover(z, coords, z);
-      t.deepEqual(res, [new OverscaledTileID(2, -4, 2, 3, 1)]);
+      t.assert.deepEqual(res, [new OverscaledTileID(2, -4, 2, 3, 1)]);
     });
 
     await t.test('calculates tile coverage across meridian', t => {
@@ -61,7 +61,7 @@ test('tileCover', async t => {
         { column: -0.5, row: 2, zoom: 2 }
       ];
       const res = tileCover(z, coords, z);
-      t.deepEqual(res, [new OverscaledTileID(2, 0, 2, 0, 1), new OverscaledTileID(2, -1, 2, 3, 1)]);
+      t.assert.deepEqual(res, [new OverscaledTileID(2, 0, 2, 0, 1), new OverscaledTileID(2, -1, 2, 3, 1)]);
     });
 
     await t.test('only includes tiles for a single world, if renderWorldCopies is set to false', t => {
@@ -74,7 +74,7 @@ test('tileCover', async t => {
       ];
       const renderWorldCopies = false;
       const res = tileCover(z, coords, z, renderWorldCopies);
-      t.deepEqual(res, [new OverscaledTileID(2, 0, 2, 0, 1)]);
+      t.assert.deepEqual(res, [new OverscaledTileID(2, 0, 2, 0, 1)]);
     });
   });
 });

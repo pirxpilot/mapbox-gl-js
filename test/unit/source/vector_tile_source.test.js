@@ -49,10 +49,10 @@ test('VectorTileSource', async t => {
 
     source.on('data', e => {
       if (e.sourceDataType === 'metadata') {
-        t.deepEqual(typeof source.tiles, 'function');
-        t.deepEqual(source.minzoom, 1);
-        t.deepEqual(source.maxzoom, 10);
-        t.deepEqual(source.attribution, 'Mapbox');
+        t.assert.deepEqual(typeof source.tiles, 'function');
+        t.assert.deepEqual(source.minzoom, 1);
+        t.assert.deepEqual(source.maxzoom, 10);
+        t.assert.deepEqual(source.attribution, 'Mapbox');
         done();
       }
     });
@@ -77,7 +77,7 @@ test('VectorTileSource', async t => {
     source.on('data', e => {
       if (e.sourceDataType === 'metadata') {
         if (!dataloadingFired) {
-          t.fail();
+          t.assert.fail();
         }
         done();
       }
@@ -95,7 +95,7 @@ test('VectorTileSource', async t => {
       attribution: 'Mapbox',
       tiles: loadTile
     });
-    t.deepEqual(source.serialize(), {
+    t.assert.deepEqual(source.serialize(), {
       type: 'vector',
       minzoom: 1,
       maxzoom: 10,
@@ -125,9 +125,9 @@ test('VectorTileSource', async t => {
           setExpiryData: function () {}
         };
         source.loadTile(tile, () => {});
-        t.equal(tile.state, 'loading');
+        t.assert.equal(tile.state, 'loading');
         source.loadTile(tile, () => {
-          t.same(events, ['loadTile', 'tileLoaded', 'reloadTile', 'tileLoaded']);
+          t.assert.deepEqual(events, ['loadTile', 'tileLoaded', 'reloadTile', 'tileLoaded']);
           done();
         });
       }
@@ -143,8 +143,11 @@ test('VectorTileSource', async t => {
     });
     source.on('data', e => {
       if (e.sourceDataType === 'metadata') {
-        t.false(source.hasTile(new OverscaledTileID(8, 0, 8, 96, 132)), 'returns false for tiles outside bounds');
-        t.true(source.hasTile(new OverscaledTileID(8, 0, 8, 95, 132)), 'returns true for tiles inside bounds');
+        t.assert.notOk(
+          source.hasTile(new OverscaledTileID(8, 0, 8, 96, 132)),
+          'returns false for tiles outside bounds'
+        );
+        t.assert.ok(source.hasTile(new OverscaledTileID(8, 0, 8, 95, 132)), 'returns true for tiles inside bounds');
         done();
       }
     });
@@ -160,7 +163,7 @@ test('VectorTileSource', async t => {
 
     source.on('data', e => {
       if (e.sourceDataType === 'metadata') {
-        t.deepEqual(
+        t.assert.deepEqual(
           source.tileBounds.bounds,
           { _sw: { lng: -47, lat: -7 }, _ne: { lng: -45, lat: 90 } },
           'converts invalid bounds to closest valid bounds'

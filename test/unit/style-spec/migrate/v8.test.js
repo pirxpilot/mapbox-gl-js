@@ -46,7 +46,7 @@ test('split text-font', t => {
     ]
   };
 
-  t.deepEqual(migrate(input), output, 'splits text-font');
+  t.assert.deepEqual(migrate(input), output, 'splits text-font');
 });
 
 test('rename symbol-min-distance', t => {
@@ -92,7 +92,7 @@ test('rename symbol-min-distance', t => {
     ]
   };
 
-  t.deepEqual(migrate(input), output, 'renames symbol-min-distance');
+  t.assert.deepEqual(migrate(input), output, 'renames symbol-min-distance');
 });
 
 test('renames urls', t => {
@@ -130,7 +130,7 @@ test('renames urls', t => {
     layers: []
   };
 
-  t.deepEqual(migrate(input), output, 'renames url and flips coordinates of of video');
+  t.assert.deepEqual(migrate(input), output, 'renames url and flips coordinates of of video');
 });
 
 test('not migrate interpolated functions', t => {
@@ -188,7 +188,7 @@ test('not migrate interpolated functions', t => {
     ]
   };
 
-  t.deepEqual(migrate(input), output);
+  t.assert.deepEqual(migrate(input), output);
 });
 
 test('not migrate piecewise-constant functions', t => {
@@ -244,7 +244,7 @@ test('not migrate piecewise-constant functions', t => {
     ]
   };
 
-  t.deepEqual(migrate(input), output);
+  t.assert.deepEqual(migrate(input), output);
 });
 
 test('inline constants', t => {
@@ -287,7 +287,7 @@ test('inline constants', t => {
     ]
   };
 
-  t.deepEqual(migrate(input), output, 'infers opacity type');
+  t.assert.deepEqual(migrate(input), output, 'infers opacity type');
 });
 
 test('migrate and inline fontstack constants', t => {
@@ -330,7 +330,7 @@ test('migrate and inline fontstack constants', t => {
     ]
   };
 
-  t.deepEqual(migrate(input), output, 'infers opacity type');
+  t.assert.deepEqual(migrate(input), output, 'infers opacity type');
 });
 
 test('update fontstack function', t => {
@@ -382,7 +382,7 @@ test('update fontstack function', t => {
     ]
   };
 
-  t.deepEqual(migrate(input), output);
+  t.assert.deepEqual(migrate(input), output);
 });
 
 test('inline and migrate fontstack constant function', t => {
@@ -437,7 +437,7 @@ test('inline and migrate fontstack constant function', t => {
     ]
   };
 
-  t.deepEqual(migrate(input), output);
+  t.assert.deepEqual(migrate(input), output);
 });
 
 test('update fontstack function constant', t => {
@@ -493,7 +493,7 @@ test('update fontstack function constant', t => {
     ]
   };
 
-  t.deepEqual(migrate(input), output);
+  t.assert.deepEqual(migrate(input), output);
 });
 
 test('migrate UNversioned fontstack urls', t => {
@@ -509,7 +509,7 @@ test('migrate UNversioned fontstack urls', t => {
     layers: []
   };
 
-  t.deepEqual(migrate(input), output);
+  t.assert.deepEqual(migrate(input), output);
 });
 
 test('migrate versioned fontstack urls', t => {
@@ -525,5 +525,5 @@ test('migrate versioned fontstack urls', t => {
     layers: []
   };
 
-  t.deepEqual(migrate(input), output);
+  t.assert.deepEqual(migrate(input), output);
 });

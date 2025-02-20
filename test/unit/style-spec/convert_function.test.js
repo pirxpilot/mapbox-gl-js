@@ -13,7 +13,7 @@ test('convertFunction', async t => {
       default: 'default'
     };
 
-    t.deepEqual(convertFunction(fn, {}), [
+    t.assert.deepEqual(convertFunction(fn, {}), [
       'case',
       ['==', ['get', 'p'], true],
       'true',
@@ -34,7 +34,7 @@ test('convertFunction', async t => {
       default: 'default'
     };
 
-    t.deepEqual(convertFunction(fn, {}), ['match', ['get', 'p'], 0, '0', 1, '1', 'default']);
+    t.assert.deepEqual(convertFunction(fn, {}), ['match', ['get', 'p'], 0, '0', 1, '1', 'default']);
   });
 
   await t.test('feature-constant text-field with token replacement', t => {
@@ -58,7 +58,7 @@ test('convertFunction', async t => {
       },
       tokens: true
     });
-    t.deepEqual(expression, [
+    t.assert.deepEqual(expression, [
       'step',
       ['zoom'],
       ['concat', 'my name is ', ['to-string', ['get', 'name']], '.'],
@@ -93,7 +93,7 @@ test('convertFunction', async t => {
         parameters: ['zoom']
       }
     });
-    t.deepEqual(expression, ['step', ['zoom'], 'a', 1, 'b', 2, 'd']);
+    t.assert.deepEqual(expression, ['step', ['zoom'], 'a', 1, 'b', 2, 'd']);
   });
 
   await t.test('duplicate interpolate function stops', t => {
@@ -114,6 +114,6 @@ test('convertFunction', async t => {
         parameters: ['zoom']
       }
     });
-    t.deepEqual(expression, ['interpolate', ['exponential', 1], ['zoom'], 0, 'a', 1, 'b', 2, 'd']);
+    t.assert.deepEqual(expression, ['interpolate', ['exponential', 1], ['zoom'], 0, 'a', 1, 'b', 2, 'd']);
   });
 });

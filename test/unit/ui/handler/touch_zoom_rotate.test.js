@@ -38,9 +38,9 @@ test('TouchZoomRotateHandler', async t => {
         ]
       });
       map._renderTaskQueue.run();
-      t.equal(zoomstart.callCount, 0);
-      t.equal(zoom.callCount, 0);
-      t.equal(zoomend.callCount, 0);
+      t.assert.equal(zoomstart.callCount, 0);
+      t.assert.equal(zoom.callCount, 0);
+      t.assert.equal(zoomend.callCount, 0);
 
       simulate.touchmove(map.getCanvas(), {
         touches: [
@@ -49,9 +49,9 @@ test('TouchZoomRotateHandler', async t => {
         ]
       });
       map._renderTaskQueue.run();
-      t.equal(zoomstart.callCount, 1);
-      t.equal(zoom.callCount, 1);
-      t.equal(zoomend.callCount, 0);
+      t.assert.equal(zoomstart.callCount, 1);
+      t.assert.equal(zoom.callCount, 1);
+      t.assert.equal(zoomend.callCount, 0);
 
       simulate.touchmove(map.getCanvas(), {
         touches: [
@@ -60,15 +60,15 @@ test('TouchZoomRotateHandler', async t => {
         ]
       });
       map._renderTaskQueue.run();
-      t.equal(zoomstart.callCount, 1);
-      t.equal(zoom.callCount, 2);
-      t.equal(zoomend.callCount, 0);
+      t.assert.equal(zoomstart.callCount, 1);
+      t.assert.equal(zoom.callCount, 2);
+      t.assert.equal(zoomend.callCount, 0);
 
       simulate.touchend(map.getCanvas(), { touches: [] });
       map._renderTaskQueue.run();
-      t.equal(zoomstart.callCount, 1);
-      t.equal(zoom.callCount, 2);
-      t.equal(zoomend.callCount, 1);
+      t.assert.equal(zoomstart.callCount, 1);
+      t.assert.equal(zoom.callCount, 2);
+      t.assert.equal(zoomend.callCount, 1);
 
       map.remove();
     }
@@ -94,9 +94,9 @@ test('TouchZoomRotateHandler', async t => {
         ]
       });
       map._renderTaskQueue.run();
-      t.equal(rotatestart.callCount, 0);
-      t.equal(rotate.callCount, 0);
-      t.equal(rotateend.callCount, 0);
+      t.assert.equal(rotatestart.callCount, 0);
+      t.assert.equal(rotate.callCount, 0);
+      t.assert.equal(rotateend.callCount, 0);
 
       simulate.touchmove(map.getCanvas(), {
         touches: [
@@ -105,9 +105,9 @@ test('TouchZoomRotateHandler', async t => {
         ]
       });
       map._renderTaskQueue.run();
-      t.equal(rotatestart.callCount, 1);
-      t.equal(rotate.callCount, 1);
-      t.equal(rotateend.callCount, 0);
+      t.assert.equal(rotatestart.callCount, 1);
+      t.assert.equal(rotate.callCount, 1);
+      t.assert.equal(rotateend.callCount, 0);
 
       simulate.touchmove(map.getCanvas(), {
         touches: [
@@ -116,15 +116,15 @@ test('TouchZoomRotateHandler', async t => {
         ]
       });
       map._renderTaskQueue.run();
-      t.equal(rotatestart.callCount, 1);
-      t.equal(rotate.callCount, 2);
-      t.equal(rotateend.callCount, 0);
+      t.assert.equal(rotatestart.callCount, 1);
+      t.assert.equal(rotate.callCount, 2);
+      t.assert.equal(rotateend.callCount, 0);
 
       simulate.touchend(map.getCanvas(), { touches: [] });
       map._renderTaskQueue.run();
-      t.equal(rotatestart.callCount, 1);
-      t.equal(rotate.callCount, 2);
-      t.equal(rotateend.callCount, 1);
+      t.assert.equal(rotatestart.callCount, 1);
+      t.assert.equal(rotate.callCount, 2);
+      t.assert.equal(rotateend.callCount, 1);
 
       map.remove();
     }
@@ -159,7 +159,7 @@ test('TouchZoomRotateHandler', async t => {
       simulate.touchend(map.getCanvas(), { touches: [] });
       map._renderTaskQueue.run();
 
-      t.equal(move.callCount, 0);
+      t.assert.equal(move.callCount, 0);
 
       map.remove();
     }
@@ -184,9 +184,9 @@ test('TouchZoomRotateHandler', async t => {
       ]
     });
     map._renderTaskQueue.run();
-    t.equal(zoomstart.callCount, 0);
-    t.equal(zoom.callCount, 0);
-    t.equal(zoomend.callCount, 0);
+    t.assert.equal(zoomstart.callCount, 0);
+    t.assert.equal(zoom.callCount, 0);
+    t.assert.equal(zoomend.callCount, 0);
 
     simulate.touchmove(map.getCanvas(), {
       touches: [
@@ -195,9 +195,9 @@ test('TouchZoomRotateHandler', async t => {
       ]
     });
     map._renderTaskQueue.run();
-    t.equal(zoomstart.callCount, 1);
-    t.equal(zoom.callCount, 1);
-    t.equal(zoomend.callCount, 0);
+    t.assert.equal(zoomstart.callCount, 1);
+    t.assert.equal(zoom.callCount, 1);
+    t.assert.equal(zoomend.callCount, 0);
 
     simulate.touchmove(map.getCanvas(), {
       touches: [
@@ -206,15 +206,15 @@ test('TouchZoomRotateHandler', async t => {
       ]
     });
     map._renderTaskQueue.run();
-    t.equal(zoomstart.callCount, 1);
-    t.equal(zoom.callCount, 2);
-    t.equal(zoomend.callCount, 0);
+    t.assert.equal(zoomstart.callCount, 1);
+    t.assert.equal(zoom.callCount, 2);
+    t.assert.equal(zoomend.callCount, 0);
 
     simulate.touchend(map.getCanvas(), { touches: [] });
     map._renderTaskQueue.run();
-    t.equal(zoomstart.callCount, 1);
-    t.equal(zoom.callCount, 2);
-    t.equal(zoomend.callCount, 1);
+    t.assert.equal(zoomstart.callCount, 1);
+    t.assert.equal(zoom.callCount, 2);
+    t.assert.equal(zoomend.callCount, 1);
 
     map.remove();
   });
