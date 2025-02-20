@@ -4,7 +4,6 @@ const browser = require('../../../src/util/browser');
 test('browser', async t => {
   await t.test('frame', (t, done) => {
     const id = browser.frame(() => {
-      t.pass('called frame');
       t.assert.ok(id, 'returns id');
       done();
     });

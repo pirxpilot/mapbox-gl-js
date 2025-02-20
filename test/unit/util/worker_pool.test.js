@@ -38,11 +38,9 @@ test('WorkerPool', async t => {
     });
 
     pool.release('map-2');
-    t.comment('keeps workers if a dispatcher is still active');
-    t.assert.equal(workersTerminated, 0);
+    t.assert.equal(workersTerminated, 0, 'keeps workers if a dispatcher is still active');
 
-    t.comment('terminates workers if no dispatchers are active');
     pool.release('map-1');
-    t.assert.equal(workersTerminated, 4);
+    t.assert.equal(workersTerminated, 4, 'terminates workers if no dispatchers are active');
   });
 });

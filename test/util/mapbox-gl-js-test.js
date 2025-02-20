@@ -9,14 +9,12 @@ module.exports = {
 
 test.beforeEach(t => {
   t.assert.notOk = (cond, ...args) => t.assert.ok(!cond, ...args);
-  t.comment = () => {};
   t.throws = (fn, error, ...args) => {
     if (args.length > 0 && typeof error === 'string') {
       error = { message: error };
     }
     return t.assert.throws(fn, error, ...args);
   };
-  t.pass = () => t.assert.ok(true);
   t.equalWithPrecision = assertEqualWithPrecision;
 });
 

@@ -146,7 +146,6 @@ test('getAnchors', async t => {
       }
       t.assert.ok(found);
     }
-    t.pass();
   });
 
   await t.test('use middle point as a fallback position for short non-continued lines', t => {
