@@ -4,14 +4,13 @@ const { StructArrayLayout3i6, FeatureIndexArray } = require('../../../src/data/a
 test('StructArray', async t => {
   class TestArray extends StructArrayLayout3i6 {}
 
-  await t.test('array constructs itself', async t => {
+  await t.test('array constructs itself', t => {
     const array = new TestArray();
     t.equal(array.length, 0);
     t.ok(array.arrayBuffer);
-    t.end();
   });
 
-  await t.test('emplaceBack', async t => {
+  await t.test('emplaceBack', t => {
     const array = new TestArray();
 
     t.equal(0, array.emplaceBack(1, 7, 3));
@@ -20,11 +19,9 @@ test('StructArray', async t => {
     t.equal(array.length, 2);
 
     t.deepEqual(array.int16.slice(0, 6), Int16Array.from([1, 7, 3, 4, 2, 5]));
-
-    t.end();
   });
 
-  await t.test('emplaceBack gracefully accepts extra arguments', async t => {
+  await t.test('emplaceBack gracefully accepts extra arguments', t => {
     // emplaceBack is typically used in fairly hot code paths, where
     // conditionally varying the number of arguments can be expensive.
     const array = new TestArray();
@@ -35,10 +32,9 @@ test('StructArray', async t => {
     );
     t.equal(array.length, 1);
     t.deepEqual(array.int16.slice(0, 3), Int16Array.from([3, 1, 4]));
-    t.end();
   });
 
-  await t.test('reserve', async t => {
+  await t.test('reserve', t => {
     const array = new TestArray();
 
     array.reserve(100);
@@ -48,11 +44,9 @@ test('StructArray', async t => {
       array.emplaceBack(1, 1, 1);
       t.equal(array.capacity, initialCapacity);
     }
-
-    t.end();
   });
 
-  await t.test('automatically resizes', async t => {
+  await t.test('automatically resizes', t => {
     const array = new TestArray();
     const initialCapacity = array.capacity;
 
@@ -64,11 +58,9 @@ test('StructArray', async t => {
 
     array.emplaceBack(1, 1, 1);
     t.ok(array.capacity > initialCapacity);
-
-    t.end();
   });
 
-  await t.test('trims', async t => {
+  await t.test('trims', t => {
     const array = new TestArray();
     const capacityInitial = array.capacity;
 
@@ -78,24 +70,19 @@ test('StructArray', async t => {
     array._trim();
     t.equal(array.capacity, 1);
     t.equal(array.arrayBuffer.byteLength, array.bytesPerElement);
-
-    t.end();
   });
-
-  t.end();
 });
 
 test('FeatureIndexArray', async t => {
   class TestArray extends FeatureIndexArray {}
 
-  await t.test('array constructs itself', async t => {
+  await t.test('array constructs itself', t => {
     const array = new TestArray();
     t.equal(array.length, 0);
     t.ok(array.arrayBuffer);
-    t.end();
   });
 
-  await t.test('emplace and retrieve', async t => {
+  await t.test('emplace and retrieve', t => {
     const array = new TestArray();
     t.equal(0, array.emplaceBack(1, 7, 3));
     t.equal(1, array.emplaceBack(4, 2, 5));
@@ -115,9 +102,5 @@ test('FeatureIndexArray', async t => {
     t.equal(elem1.featureIndex, 4, 'returns correct featureIndex');
     t.equal(elem1.sourceLayerIndex, 2, 'returns correct sourceLayerIndex');
     t.equal(elem1.bucketIndex, 5, 'returns correct bucketIndex');
-
-    t.end();
   });
-
-  t.end();
 });

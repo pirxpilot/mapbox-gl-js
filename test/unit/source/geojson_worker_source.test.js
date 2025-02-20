@@ -4,7 +4,7 @@ const StyleLayerIndex = require('../../../src/style/style_layer_index');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
 
 test('reloadTile', async t => {
-  await t.test('does not rebuild vector data unless data has changed', async t => {
+  await t.test('does not rebuild vector data unless data has changed', t => {
     const layers = [
       {
         id: 'mylayer',
@@ -79,8 +79,6 @@ test('reloadTile', async t => {
       });
     });
   });
-
-  t.end();
 });
 
 test('resourceTiming', async t => {
@@ -99,7 +97,7 @@ test('resourceTiming', async t => {
     }
   };
 
-  await t.test('loadData - data', async t => {
+  await t.test('loadData - data', t => {
     const layerIndex = new StyleLayerIndex(layers);
     const source = new GeoJSONWorkerSource(null, layerIndex);
 
@@ -109,8 +107,6 @@ test('resourceTiming', async t => {
       t.end();
     });
   });
-
-  t.end();
 });
 
 test('loadData', async t => {
@@ -151,7 +147,7 @@ test('loadData', async t => {
     return worker;
   }
 
-  await t.test('abandons coalesced callbacks', async t => {
+  await t.test('abandons coalesced callbacks', t => {
     // Expect first call to run, second to be abandoned,
     // and third to run in response to coalesce
     const worker = createWorker();
@@ -173,7 +169,7 @@ test('loadData', async t => {
     });
   });
 
-  await t.test('removeSource aborts callbacks', async t => {
+  await t.test('removeSource aborts callbacks', t => {
     // Expect:
     // First loadData starts running before removeSource arrives
     // Second loadData is pending when removeSource arrives, gets cancelled
@@ -195,6 +191,4 @@ test('loadData', async t => {
       t.notOk(err);
     });
   });
-
-  t.end();
 });

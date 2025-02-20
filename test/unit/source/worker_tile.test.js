@@ -26,7 +26,7 @@ function createWrapper() {
   ]);
 }
 
-test('WorkerTile#parse', async t => {
+test('WorkerTile#parse', t => {
   const layerIndex = new StyleLayerIndex([
     {
       id: 'test',
@@ -43,7 +43,7 @@ test('WorkerTile#parse', async t => {
   });
 });
 
-test('WorkerTile#parse skips hidden layers', async t => {
+test('WorkerTile#parse skips hidden layers', t => {
   const layerIndex = new StyleLayerIndex([
     {
       id: 'test-hidden',
@@ -61,7 +61,7 @@ test('WorkerTile#parse skips hidden layers', async t => {
   });
 });
 
-test('WorkerTile#parse skips layers without a corresponding source layer', async t => {
+test('WorkerTile#parse skips layers without a corresponding source layer', t => {
   const layerIndex = new StyleLayerIndex([
     {
       id: 'test',
@@ -79,7 +79,7 @@ test('WorkerTile#parse skips layers without a corresponding source layer', async
   });
 });
 
-test('WorkerTile#parse warns once when encountering a v1 vector tile layer', async t => {
+test('WorkerTile#parse warns once when encountering a v1 vector tile layer', t => {
   const layerIndex = new StyleLayerIndex([
     {
       id: 'test',

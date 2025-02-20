@@ -30,7 +30,7 @@ test('Tile', async t => {
       }
     ];
 
-    await t.test('geojson tile', async t => {
+    await t.test('geojson tile', t => {
       const tile = new Tile(new OverscaledTileID(3, 0, 2, 1, 2));
       let result;
 
@@ -61,7 +61,7 @@ test('Tile', async t => {
       t.equal(result.length, 0);
     });
 
-    await t.test('empty geojson tile', async t => {
+    await t.test('empty geojson tile', t => {
       const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
       let result;
 
@@ -79,7 +79,7 @@ test('Tile', async t => {
       t.equal(result.length, 0);
     });
 
-    await t.test('vector tile', async t => {
+    await t.test('vector tile', t => {
       const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
       let result;
 
@@ -105,7 +105,7 @@ test('Tile', async t => {
       t.equal(result.length, 2);
     });
 
-    await t.test('loadVectorData unloads existing data before overwriting it', async t => {
+    await t.test('loadVectorData unloads existing data before overwriting it', t => {
       const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
       tile.state = 'loaded';
       t.stub(tile, 'unloadVectorData');
@@ -116,7 +116,7 @@ test('Tile', async t => {
       t.ok(tile.unloadVectorData.calledWith());
     });
 
-    await t.test('loadVectorData preserves the most recent rawTileData', async t => {
+    await t.test('loadVectorData preserves the most recent rawTileData', t => {
       const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
       tile.state = 'loaded';
 
@@ -142,7 +142,7 @@ test('Tile', async t => {
       t.deepEqual(tile.mask, mask);
     });
 
-    await t.test('complex mask', async t => {
+    await t.test('complex mask', t => {
       const tile = new Tile(0, 0, 0);
       const context = new Context(require('gl')(10, 10));
       const a = new OverscaledTileID(1, 0, 1, 0, 1);
@@ -210,7 +210,7 @@ test('Tile', async t => {
   });
 
   await t.test('expiring tiles', async t => {
-    await t.test('regular tiles do not expire', async t => {
+    await t.test('regular tiles do not expire', t => {
       const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
       tile.state = 'loaded';
       tile.timeAdded = Date.now();
@@ -219,7 +219,7 @@ test('Tile', async t => {
       t.notOk(tile.expires);
     });
 
-    await t.test('set, get expiry', async t => {
+    await t.test('set, get expiry', t => {
       const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
       tile.state = 'loaded';
       tile.timeAdded = Date.now();
@@ -247,7 +247,7 @@ test('Tile', async t => {
       t.ok(expiryTimeout > 598000 && expiryTimeout < 600000, 'expires header set date as expected');
     });
 
-    await t.test('exponential backoff handling', async t => {
+    await t.test('exponential backoff handling', t => {
       const tile = new Tile(new OverscaledTileID(1, 0, 1, 1, 1));
       tile.state = 'loaded';
       tile.timeAdded = Date.now();

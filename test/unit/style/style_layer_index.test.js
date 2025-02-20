@@ -2,7 +2,7 @@ const { test } = require('../../util/mapbox-gl-js-test');
 const { mapObject } = require('../../../src/util/object');
 const StyleLayerIndex = require('../../../src/style/style_layer_index');
 
-test('StyleLayerIndex#replace', async t => {
+test('StyleLayerIndex#replace', t => {
   const index = new StyleLayerIndex([
     { id: '1', type: 'fill', source: 'source', 'source-layer': 'layer', paint: { 'fill-color': 'red' } },
     { id: '2', type: 'circle', source: 'source', 'source-layer': 'layer', paint: { 'circle-color': 'green' } },
@@ -19,11 +19,9 @@ test('StyleLayerIndex#replace', async t => {
 
   index.replace([]);
   t.deepEqual(index.familiesBySource, {});
-
-  t.end();
 });
 
-test('StyleLayerIndex#update', async t => {
+test('StyleLayerIndex#update', t => {
   const index = new StyleLayerIndex([
     { id: '1', type: 'fill', source: 'foo', 'source-layer': 'layer', paint: { 'fill-color': 'red' } },
     { id: '2', type: 'circle', source: 'foo', 'source-layer': 'layer', paint: { 'circle-color': 'green' } },
@@ -48,11 +46,9 @@ test('StyleLayerIndex#update', async t => {
   t.equal(families[1][0].source, 'bar');
   t.equal(families[1][1].getPaintProperty('circle-color'), 'yellow');
   t.equal(families[1][1].source, 'bar');
-
-  t.end();
 });
 
-test('StyleLayerIndex#familiesBySource', async t => {
+test('StyleLayerIndex#familiesBySource', t => {
   const index = new StyleLayerIndex([
     { id: '0', type: 'fill', source: 'A', 'source-layer': 'foo' },
     { id: '1', type: 'fill', source: 'A', 'source-layer': 'foo' },
@@ -86,11 +82,9 @@ test('StyleLayerIndex#familiesBySource', async t => {
       _geojsonTileLayer: [['6']]
     }
   });
-
-  t.end();
 });
 
-test('StyleLayerIndex groups families even if layout key order differs', async t => {
+test('StyleLayerIndex groups families even if layout key order differs', t => {
   const index = new StyleLayerIndex([
     {
       id: '0',
@@ -110,6 +104,4 @@ test('StyleLayerIndex groups families even if layout key order differs', async t
 
   const families = index.familiesBySource['source']['layer'];
   t.equal(families[0].length, 2);
-
-  t.end();
 });

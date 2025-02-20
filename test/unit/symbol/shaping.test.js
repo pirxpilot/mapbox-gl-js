@@ -9,7 +9,7 @@ if (typeof process !== 'undefined' && process.env !== undefined) {
   UPDATE = !!process.env.UPDATE;
 }
 
-test('shaping', async t => {
+test('shaping', t => {
   const oneEm = 24;
   const name = 'Test';
   const stacks = {
@@ -212,6 +212,4 @@ test('shaping', async t => {
     WritingMode.horizontal
   );
   t.same(shaped.positionedGlyphs, shaped2.positionedGlyphs);
-
-  t.end();
 });

@@ -53,8 +53,6 @@ test('DEMData', async t => {
     t.ok(console.warn.calledOnce);
     t.ok(console.warn.getCall(0).calledWithMatch(/"derp" is not a valid encoding type/));
   });
-
-  t.end();
 });
 
 test('DEMData#backfillBorder', async t => {
@@ -176,6 +174,4 @@ test('DEMData#backfillBorder', async t => {
     const deserialized = deserialize(serialized);
     t.deepEqual(deserialized, dem0, 'deserializes serialized DEMData instance');
   });
-
-  t.end();
 });

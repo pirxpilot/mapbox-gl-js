@@ -1,7 +1,7 @@
 const { test } = require('../../util/mapbox-gl-js-test');
 const composite = require('../../../src/style-spec/composite');
 
-test('composites Mapbox vector sources', async t => {
+test('composites Mapbox vector sources', t => {
   const result = composite({
     version: 7,
     sources: {
@@ -37,10 +37,9 @@ test('composites Mapbox vector sources', async t => {
 
   t.equal(result.layers[0].source, 'a,b');
   t.equal(result.layers[1].source, 'a,b');
-  t.end();
 });
 
-test('does not composite vector + raster', async t => {
+test('does not composite vector + raster', t => {
   const result = composite({
     version: 7,
     sources: {
@@ -57,10 +56,9 @@ test('does not composite vector + raster', async t => {
   });
 
   t.deepEqual(Object.keys(result.sources), ['a', 'b']);
-  t.end();
 });
 
-test('incorrect url match', async t => {
+test('incorrect url match', t => {
   const result = composite({
     version: 7,
     sources: {
@@ -77,10 +75,9 @@ test('incorrect url match', async t => {
   });
 
   t.deepEqual(Object.keys(result.sources), ['a', 'b']);
-  t.end();
 });
 
-test('composites Mapbox vector sources with conflicting source layer names', async t => {
+test('composites Mapbox vector sources with conflicting source layer names', t => {
   t.throws(
     () => {
       composite({
@@ -114,6 +111,4 @@ test('composites Mapbox vector sources with conflicting source layer names', asy
     /Conflicting source layer names/,
     'throws error on conflicting source layer names'
   );
-
-  t.end();
 });

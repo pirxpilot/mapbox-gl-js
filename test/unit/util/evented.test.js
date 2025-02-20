@@ -2,17 +2,16 @@ const { test } = require('../../util/mapbox-gl-js-test');
 const { Event, Evented } = require('../../../src/util/evented');
 
 test('Evented', async t => {
-  await t.test('calls listeners added with "on"', async t => {
+  await t.test('calls listeners added with "on"', t => {
     const evented = new Evented();
     const listener = t.spy();
     evented.on('a', listener);
     evented.fire(new Event('a'));
     evented.fire(new Event('a'));
     t.ok(listener.calledTwice);
-    t.end();
   });
 
-  await t.test('calls listeners added with "once" once', async t => {
+  await t.test('calls listeners added with "once" once', t => {
     const evented = new Evented();
     const listener = t.spy();
     evented.once('a', listener);
@@ -20,57 +19,51 @@ test('Evented', async t => {
     evented.fire(new Event('a'));
     t.ok(listener.calledOnce);
     t.notOk(evented.listens('a'));
-    t.end();
   });
 
-  await t.test('passes data to listeners', async t => {
+  await t.test('passes data to listeners', t => {
     const evented = new Evented();
     evented.on('a', data => {
       t.equal(data.foo, 'bar');
     });
     evented.fire(new Event('a', { foo: 'bar' }));
-    t.end();
   });
 
-  await t.test('passes "target" to listeners', async t => {
+  await t.test('passes "target" to listeners', t => {
     const evented = new Evented();
     evented.on('a', data => {
       t.equal(data.target, evented);
     });
     evented.fire(new Event('a'));
-    t.end();
   });
 
-  await t.test('passes "type" to listeners', async t => {
+  await t.test('passes "type" to listeners', t => {
     const evented = new Evented();
     evented.on('a', data => {
       t.deepEqual(data.type, 'a');
     });
     evented.fire(new Event('a'));
-    t.end();
   });
 
-  await t.test('removes listeners with "off"', async t => {
+  await t.test('removes listeners with "off"', t => {
     const evented = new Evented();
     const listener = t.spy();
     evented.on('a', listener);
     evented.off('a', listener);
     evented.fire(new Event('a'));
     t.ok(listener.notCalled);
-    t.end();
   });
 
-  await t.test('removes one-time listeners with "off"', async t => {
+  await t.test('removes one-time listeners with "off"', t => {
     const evented = new Evented();
     const listener = t.spy();
     evented.once('a', listener);
     evented.off('a', listener);
     evented.fire(new Event('a'));
     t.ok(listener.notCalled);
-    t.end();
   });
 
-  await t.test('once listener is removed prior to call', async t => {
+  await t.test('once listener is removed prior to call', t => {
     const evented = new Evented();
     const listener = t.spy();
     evented.once('a', () => {
@@ -79,46 +72,41 @@ test('Evented', async t => {
     });
     evented.fire(new Event('a'));
     t.ok(listener.calledOnce);
-    t.end();
   });
 
-  await t.test('reports if an event has listeners with "listens"', async t => {
+  await t.test('reports if an event has listeners with "listens"', t => {
     const evented = new Evented();
     evented.on('a', () => {});
     t.ok(evented.listens('a'));
     t.notOk(evented.listens('b'));
-    t.end();
   });
 
-  await t.test('does not report true to "listens" if all listeners have been removed', async t => {
+  await t.test('does not report true to "listens" if all listeners have been removed', t => {
     const evented = new Evented();
     const listener = () => {};
     evented.on('a', listener);
     evented.off('a', listener);
     t.notOk(evented.listens('a'));
-    t.end();
   });
 
-  await t.test('does not immediately call listeners added within another listener', async t => {
+  await t.test('does not immediately call listeners added within another listener', t => {
     const evented = new Evented();
     evented.on('a', () => {
       evented.on('a', t.fail.bind(t));
     });
     evented.fire(new Event('a'));
-    t.end();
   });
 
-  await t.test('has backward compatibility for fire(string, object) API', async t => {
+  await t.test('has backward compatibility for fire(string, object) API', t => {
     const evented = new Evented();
     const listener = t.spy();
     evented.on('a', listener);
     evented.fire('a', { foo: 'bar' });
     t.ok(listener.calledOnce);
     t.ok(listener.firstCall.args[0].foo, 'bar');
-    t.end();
   });
 
-  await t.test('on is idempotent', async t => {
+  await t.test('on is idempotent', t => {
     const evented = new Evented();
     const listenerA = t.spy();
     const listenerB = t.spy();
@@ -128,11 +116,10 @@ test('Evented', async t => {
     evented.fire(new Event('a'));
     t.ok(listenerA.calledOnce);
     t.ok(listenerA.calledBefore(listenerB));
-    t.end();
   });
 
   await t.test('evented parents', async t => {
-    await t.test('adds parents with "setEventedParent"', async t => {
+    await t.test('adds parents with "setEventedParent"', t => {
       const listener = t.spy();
       const eventedSource = new Evented();
       const eventedSink = new Evented();
@@ -141,10 +128,9 @@ test('Evented', async t => {
       eventedSource.fire(new Event('a'));
       eventedSource.fire(new Event('a'));
       t.ok(listener.calledTwice);
-      t.end();
     });
 
-    await t.test('passes original data to parent listeners', async t => {
+    await t.test('passes original data to parent listeners', t => {
       const eventedSource = new Evented();
       const eventedSink = new Evented();
       eventedSource.setEventedParent(eventedSink);
@@ -152,10 +138,9 @@ test('Evented', async t => {
         t.equal(data.foo, 'bar');
       });
       eventedSource.fire(new Event('a', { foo: 'bar' }));
-      t.end();
     });
 
-    await t.test('attaches parent data to parent listeners', async t => {
+    await t.test('attaches parent data to parent listeners', t => {
       const eventedSource = new Evented();
       const eventedSink = new Evented();
       eventedSource.setEventedParent(eventedSink, { foz: 'baz' });
@@ -163,10 +148,9 @@ test('Evented', async t => {
         t.equal(data.foz, 'baz');
       });
       eventedSource.fire(new Event('a', { foo: 'bar' }));
-      t.end();
     });
 
-    await t.test('attaches parent data from a function to parent listeners', async t => {
+    await t.test('attaches parent data from a function to parent listeners', t => {
       const eventedSource = new Evented();
       const eventedSink = new Evented();
       eventedSource.setEventedParent(eventedSink, () => ({ foz: 'baz' }));
@@ -174,10 +158,9 @@ test('Evented', async t => {
         t.equal(data.foz, 'baz');
       });
       eventedSource.fire(new Event('a', { foo: 'bar' }));
-      t.end();
     });
 
-    await t.test('passes original "target" to parent listeners', async t => {
+    await t.test('passes original "target" to parent listeners', t => {
       const eventedSource = new Evented();
       const eventedSink = new Evented();
       eventedSource.setEventedParent(eventedSink);
@@ -186,10 +169,9 @@ test('Evented', async t => {
         t.equal(data.target, eventedSource);
       });
       eventedSource.fire(new Event('a'));
-      t.end();
     });
 
-    await t.test('removes parents with "setEventedParent(null)"', async t => {
+    await t.test('removes parents with "setEventedParent(null)"', t => {
       const listener = t.spy();
       const eventedSource = new Evented();
       const eventedSink = new Evented();
@@ -198,19 +180,17 @@ test('Evented', async t => {
       eventedSource.setEventedParent(null);
       eventedSource.fire(new Event('a'));
       t.ok(listener.notCalled);
-      t.end();
     });
 
-    await t.test('reports if an event has parent listeners with "listens"', async t => {
+    await t.test('reports if an event has parent listeners with "listens"', t => {
       const eventedSource = new Evented();
       const eventedSink = new Evented();
       eventedSink.on('a', () => {});
       eventedSource.setEventedParent(eventedSink);
       t.ok(eventedSink.listens('a'));
-      t.end();
     });
 
-    await t.test('eventedParent data function is evaluated on every fire', async t => {
+    await t.test('eventedParent data function is evaluated on every fire', t => {
       const eventedSource = new Evented();
       const eventedParent = new Evented();
       let i = 0;
@@ -220,11 +200,6 @@ test('Evented', async t => {
       t.equal(i, 1);
       eventedSource.fire(new Event('a'));
       t.equal(i, 2);
-      t.end();
     });
-
-    t.end();
   });
-
-  t.end();
 });

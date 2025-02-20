@@ -12,7 +12,7 @@ test('WorkerPool', async t => {
     globalThis.window = globalWindow;
   });
 
-  await t.test('#acquire', async t => {
+  await t.test('#acquire', t => {
     const pool = makeWorkerPool(4);
 
     t.notOk(pool.workers);
@@ -23,10 +23,9 @@ test('WorkerPool', async t => {
 
     // check that the two different dispatchers' workers arrays correspond
     workers1.forEach((w, i) => t.equal(w, workers2[i]));
-    t.end();
   });
 
-  await t.test('#release', async t => {
+  await t.test('#release', t => {
     let workersTerminated = 0;
 
     const pool = makeWorkerPool(4);
@@ -45,9 +44,5 @@ test('WorkerPool', async t => {
     t.comment('terminates workers if no dispatchers are active');
     pool.release('map-1');
     t.equal(workersTerminated, 4);
-
-    t.end();
   });
-
-  t.end();
 });

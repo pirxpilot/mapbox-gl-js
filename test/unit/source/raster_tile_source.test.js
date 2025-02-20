@@ -16,8 +16,8 @@ function createSource(options) {
 
   return source;
 
-  async function loadTile() {
-    return new ArrayBuffer(1);
+  function loadTile() {
+    return Promise.resolve(new ArrayBuffer(1));
   }
 }
 
@@ -66,6 +66,4 @@ test('RasterTileSource', async t => {
       }
     });
   });
-
-  t.end();
 });

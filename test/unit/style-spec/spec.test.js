@@ -6,7 +6,7 @@ const spec = require('../../../src/style-spec/style-spec');
 ['v8', 'latest'].forEach(version => {
   ['', 'min'].forEach(kind => {
     const v = version + kind;
-    test(v, async t => {
+    test(v, t => {
       for (const k in spec[v]) {
         // Exception for version.
         if (k === '$version') {

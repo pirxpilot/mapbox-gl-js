@@ -27,7 +27,7 @@ function makeTile(tileID, symbolInstances) {
 }
 
 test('CrossTileSymbolIndex.addLayer', async t => {
-  await t.test('matches ids', async t => {
+  await t.test('matches ids', t => {
     const index = new CrossTileSymbolIndex();
 
     const mainID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -76,11 +76,9 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     t.equal(grandchildInstances[0].crossTileID, 1);
     // Does not match the previous value for Windsor because that tile was removed
     t.equal(grandchildInstances[1].crossTileID, 5);
-
-    t.end();
   });
 
-  await t.test('overwrites ids when re-adding', async t => {
+  await t.test('overwrites ids when re-adding', t => {
     const index = new CrossTileSymbolIndex();
 
     const mainID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -106,11 +104,9 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     index.addLayer(styleLayer, [mainTile, childTile], 0);
     t.equal(mainInstances[0].crossTileID, 2);
     t.equal(childInstances[0].crossTileID, 2);
-
-    t.end();
   });
 
-  await t.test('does not duplicate ids within one zoom level', async t => {
+  await t.test('does not duplicate ids within one zoom level', t => {
     const index = new CrossTileSymbolIndex();
 
     const mainID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -145,11 +141,9 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     // Updates per-zoom usedCrossTileIDs
     t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), []);
     t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[7]), [1, 2, 3]);
-
-    t.end();
   });
 
-  await t.test('does not regenerate ids for same zoom', async t => {
+  await t.test('does not regenerate ids for same zoom', t => {
     const index = new CrossTileSymbolIndex();
 
     const tileID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -181,11 +175,9 @@ test('CrossTileSymbolIndex.addLayer', async t => {
     t.equal(secondInstances[2].crossTileID, 3); // C' gets new ID
 
     t.deepEqual(Object.keys(layerIndex.usedCrossTileIDs[6]), [1, 2, 3]);
-
-    t.end();
   });
 
-  await t.test('reuses indexes when longitude is wrapped', async t => {
+  await t.test('reuses indexes when longitude is wrapped', t => {
     const index = new CrossTileSymbolIndex();
     const longitude = 370;
 
@@ -202,13 +194,10 @@ test('CrossTileSymbolIndex.addLayer', async t => {
 
     index.addLayer(styleLayer, [tile], longitude % 360);
     t.equal(firstInstances[0].crossTileID, 1);
-    t.end();
   });
-
-  t.end();
 });
 
-test('CrossTileSymbolIndex.pruneUnusedLayers', async t => {
+test('CrossTileSymbolIndex.pruneUnusedLayers', t => {
   const index = new CrossTileSymbolIndex();
 
   const tileID = new OverscaledTileID(6, 0, 6, 8, 8);
@@ -227,6 +216,4 @@ test('CrossTileSymbolIndex.pruneUnusedLayers', async t => {
   // remove styleLayer
   index.pruneUnusedLayers([]);
   t.notOk(index.layerIndexes[styleLayer.id]);
-
-  t.end();
 });

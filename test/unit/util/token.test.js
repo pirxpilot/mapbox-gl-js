@@ -1,7 +1,7 @@
 const { test } = require('../../util/mapbox-gl-js-test');
 const resolveTokens = require('../../../src/util/token');
 
-test('resolveToken', async t => {
+test('resolveToken', t => {
   t.equal('3 Fine Fields', resolveTokens({ a: 3, b: 'Fine', c: 'Fields' }, '{a} {b} {c}'));
 
   // No tokens.
@@ -36,11 +36,9 @@ test('resolveToken', async t => {
   t.equal(resolveTokens({ 'dashed-property': 'dashed' }, '{dashed-property}'), 'dashed');
   t.equal(resolveTokens({ HØYDE: 150 }, '{HØYDE} m'), '150 m');
   t.equal(resolveTokens({ '$special:characters;': 'mapbox' }, '{$special:characters;}'), 'mapbox');
-
-  t.end();
 });
 
-test('resolveToken with language', async t => {
+test('resolveToken with language', t => {
   const properties = {
     a: 100,
     'a:pl': 200,
@@ -57,6 +55,4 @@ test('resolveToken with language', async t => {
   // ignores language for other properties
   t.equal('100', resolveTokens(properties, '{a}'));
   t.equal('100', resolveTokens(properties, '{a}', 'pl'));
-
-  t.end();
 });

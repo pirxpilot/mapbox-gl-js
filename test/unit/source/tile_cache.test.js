@@ -20,7 +20,7 @@ function keysExpected(t, cache, ids) {
   );
 }
 
-test('TileCache', async t => {
+test('TileCache', t => {
   const cache = new TileCache(10, removed => {
     t.equal(removed, 'dc');
   });
@@ -32,10 +32,9 @@ test('TileCache', async t => {
   t.equal(cache.getAndRemove(idA), null, '.getAndRemove()');
   t.equal(cache.has(idA), false, '.has()');
   keysExpected(t, cache, []);
-  t.end();
 });
 
-test('TileCache - getWithoutRemoving', async t => {
+test('TileCache - getWithoutRemoving', t => {
   const cache = new TileCache(10, () => {
     t.fail();
   });
@@ -43,10 +42,9 @@ test('TileCache - getWithoutRemoving', async t => {
   t.equal(cache.get(idA), tileA, '.get()');
   keysExpected(t, cache, [idA]);
   t.equal(cache.get(idA), tileA, '.get()');
-  t.end();
 });
 
-test('TileCache - duplicate add', async t => {
+test('TileCache - duplicate add', t => {
   const cache = new TileCache(10, () => {
     t.fail();
   });
@@ -59,10 +57,9 @@ test('TileCache - duplicate add', async t => {
   t.equal(cache.getAndRemove(idA), tileA);
   t.ok(cache.has(idA));
   t.equal(cache.getAndRemove(idA), tileA2);
-  t.end();
 });
 
-test('TileCache - expiry', async t => {
+test('TileCache - expiry', t => {
   const cache = new TileCache(10, removed => {
     t.ok(cache.has(idB));
     t.equal(removed, tileA2);
@@ -78,7 +75,7 @@ test('TileCache - expiry', async t => {
   cache.add(idA, tileA2, 0); // expires immediately and `onRemove` is called.
 });
 
-test('TileCache - remove', async t => {
+test('TileCache - remove', t => {
   const cache = new TileCache(10, () => {});
 
   cache.add(idA, tileA);
@@ -94,11 +91,9 @@ test('TileCache - remove', async t => {
   t.notOk(cache.has(idB));
 
   t.ok(cache.remove(idB));
-
-  t.end();
 });
 
-test('TileCache - overflow', async t => {
+test('TileCache - overflow', t => {
   const cache = new TileCache(1, removed => {
     t.equal(removed, tileA);
   });
@@ -107,10 +102,9 @@ test('TileCache - overflow', async t => {
 
   t.ok(cache.has(idB));
   t.notOk(cache.has(idA));
-  t.end();
 });
 
-test('TileCache#reset', async t => {
+test('TileCache#reset', t => {
   let called;
   const cache = new TileCache(10, removed => {
     t.equal(removed, tileA);
@@ -120,10 +114,9 @@ test('TileCache#reset', async t => {
   t.equal(cache.reset(), cache);
   t.equal(cache.has(idA), false);
   t.ok(called);
-  t.end();
 });
 
-test('TileCache#setMaxSize', async t => {
+test('TileCache#setMaxSize', t => {
   let numRemoved = 0;
   const cache = new TileCache(10, () => {
     numRemoved++;
@@ -138,5 +131,4 @@ test('TileCache#setMaxSize', async t => {
   t.equal(numRemoved, 2);
   cache.add(idD, tileD);
   t.equal(numRemoved, 3);
-  t.end();
 });
