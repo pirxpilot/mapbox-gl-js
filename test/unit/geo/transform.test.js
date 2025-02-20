@@ -100,7 +100,7 @@ test('transform', async t => {
     t.same(transform.center, new LngLat(-4.828338623046875, -4.828969771321582));
   });
 
-  test('coveringTiles', t => {
+  await t.test('coveringTiles', t => {
     const options = {
       minzoom: 1,
       maxzoom: 10,
@@ -147,11 +147,9 @@ test('transform', async t => {
       new OverscaledTileID(10, 0, 10, 511, 512),
       new OverscaledTileID(10, 0, 10, 512, 512)
     ]);
-
-    t.end();
   });
 
-  test('coveringZoomLevel', t => {
+  await t.test('coveringZoomLevel', t => {
     const options = {
       minzoom: 1,
       maxzoom: 10,
@@ -207,8 +205,6 @@ test('transform', async t => {
     options.roundZoom = true;
 
     t.deepEqual(transform.coveringZoomLevel(options), 13);
-
-    t.end();
   });
 
   await t.test('clamps pitch', t => {

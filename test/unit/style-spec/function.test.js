@@ -490,7 +490,7 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 2.1 }, { properties: { prop: 1 } }), 8);
   });
 
-  test('zoom-and-property function, four stops, integer and fractional zooms', t => {
+  await test('zoom-and-property function, four stops, integer and fractional zooms', t => {
     const f = createFunction(
       {
         type: 'exponential',
@@ -512,8 +512,6 @@ test('exponential function', async t => {
     t.equal(f({ zoom: 1.5 }, { properties: { prop: 0 } }), 1);
     t.equal(f({ zoom: 2 }, { properties: { prop: 0 } }), 10);
     t.equal(f({ zoom: 2.5 }, { properties: { prop: 0 } }), 20);
-
-    t.end();
   });
 
   await t.test('zoom-and-property function, no default', t => {
