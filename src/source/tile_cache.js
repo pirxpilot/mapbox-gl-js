@@ -36,7 +36,7 @@ class TileCache {
    * @returns {TileCache} this cache
    */
   add(tileID, data) {
-    const { key } = tileID.wrapped();
+    const key = tileID.cacheKey;
     const items = this.#data.get(key);
     if (items) {
       items.push(data);
@@ -59,7 +59,7 @@ class TileCache {
    * @returns {boolean} whether the cache has this value
    */
   has(tileID) {
-    return this.#data.has(tileID.wrapped().key);
+    return this.#data.has(tileID.cacheKey);
   }
 
   /**
@@ -70,7 +70,7 @@ class TileCache {
    * @returns {*} the data, or null if it isn't found
    */
   getAndRemove(tileID) {
-    return this.#getAndRemoveByKey(tileID.wrapped().key);
+    return this.#getAndRemoveByKey(tileID.cacheKey);
   }
 
   /*
@@ -96,7 +96,7 @@ class TileCache {
    * @returns {*} the data, or null if it isn't found
    */
   get(tileID) {
-    return this.#data.get(tileID.wrapped().key)?.[0];
+    return this.#data.get(tileID.cacheKey)?.[0];
   }
 
   /**
@@ -107,7 +107,7 @@ class TileCache {
    * @returns {TileCache} this cache
    */
   remove(tileID, value) {
-    const key = tileID.wrapped().key;
+    const key = tileID.cacheKey;
     const items = this.#data.get(key);
     if (!items) {
       return this;

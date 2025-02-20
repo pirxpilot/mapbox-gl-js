@@ -18,6 +18,10 @@ class CanonicalTileID {
   equals(id) {
     return this.z === id.z && this.x === id.x && this.y === id.y;
   }
+
+  get cacheKey() {
+    return this.key;
+  }
 }
 
 class UnwrappedTileID {
@@ -98,6 +102,10 @@ class OverscaledTileID {
 
     if (this.canonical.y < rhs.canonical.y) return true;
     return false;
+  }
+
+  get cacheKey() {
+    return calculateKey(this.wrap, this.overscaledZ, this.canonical.x, this.canonical.y);
   }
 
   wrapped() {
