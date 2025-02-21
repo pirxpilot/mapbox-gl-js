@@ -61,7 +61,7 @@ dist: DEBUG_FLAG=false
 dist: build
 .PHONY: dist
 
-DEPENDENCIES = meta/node_modules $(CURDIR)/node_modules src/style-spec/node_modules
+DEPENDENCIES = meta/node_modules $(CURDIR)/node_modules
 
 dependencies: | $(DEPENDENCIES)
 
