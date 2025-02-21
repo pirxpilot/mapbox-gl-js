@@ -95,63 +95,12 @@ class WorkerTile {
       }
     }
 
-    let error;
-    let glyphMap;
-    let imageMap;
-
     const stacks = mapObject(options.glyphDependencies, glyphs => Object.keys(glyphs).map(Number));
-    if (Object.keys(stacks).length) {
-      actor.send('getGlyphs', { uid: this.uid, stacks }, (err, result) => {
-        if (!error) {
-          error = err;
-          glyphMap = result;
-          maybePrepare.call(this);
-        }
-      });
-    } else {
-      glyphMap = {};
-    }
-
     const icons = Object.keys(options.iconDependencies);
-    if (icons.length) {
-      actor.send('getImages', { icons }, (err, result) => {
-        if (!error) {
-          error = err;
-          imageMap = result;
-          maybePrepare.call(this);
-        }
-      });
-    } else {
-      imageMap = {};
-    }
 
-    maybePrepare.call(this);
-
-    function maybePrepare() {
-      if (error) {
-        return callback(error);
-      }
-      if (glyphMap && imageMap) {
-        const glyphAtlas = new GlyphAtlas(glyphMap);
-        const imageAtlas = new ImageAtlas(imageMap);
-
-        for (const key in buckets) {
-          const bucket = buckets[key];
-          if (bucket instanceof SymbolBucket) {
-            recalculateLayers(bucket.layers, this.zoom);
-            performSymbolLayout(
-              bucket,
-              glyphMap,
-              glyphAtlas.positions,
-              imageMap,
-              imageAtlas.positions,
-              this.showCollisionBoxes
-            );
-          }
-        }
-
+    loadGlypshsAndImages(this)
+      .then(({ glyphAtlas, imageAtlas }) => {
         this.status = 'done';
-
         callback(null, {
           buckets: values(buckets).filter(b => !b.isEmpty()),
           featureIndex,
@@ -159,7 +108,33 @@ class WorkerTile {
           glyphAtlasImage: glyphAtlas.image,
           iconAtlasImage: imageAtlas.image
         });
+      })
+      .catch(callback);
+
+    async function loadGlypshsAndImages({ uid, zoom, showCollisionBoxes }) {
+      const tasks = [
+        Object.keys(stacks).length ? actor.send('getGlyphs', { uid, stacks }) : {},
+        icons.length ? actor.send('getImages', { icons }) : {}
+      ];
+      const [glyphMap, imageMap] = await Promise.all(tasks);
+      const glyphAtlas = new GlyphAtlas(glyphMap);
+      const imageAtlas = new ImageAtlas(imageMap);
+
+      for (const key in buckets) {
+        const bucket = buckets[key];
+        if (bucket instanceof SymbolBucket) {
+          recalculateLayers(bucket.layers, zoom);
+          performSymbolLayout(
+            bucket,
+            glyphMap,
+            glyphAtlas.positions,
+            imageMap,
+            imageAtlas.positions,
+            showCollisionBoxes
+          );
+        }
       }
+      return { glyphAtlas, imageAtlas };
     }
   }
 }
