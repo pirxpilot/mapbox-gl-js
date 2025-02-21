@@ -1,6 +1,5 @@
 const { test } = require('../../util/mapbox-gl-js-test');
 const _window = require('../../util/window');
-const assert = require('assert');
 const Style = require('../../../src/style/style');
 const SourceCache = require('../../../src/source/source_cache');
 const StyleLayer = require('../../../src/style/style_layer');
@@ -12,9 +11,7 @@ const {
   clearRTLTextPlugin,
   evented: rtlTextPluginEvented
 } = require('../../../src/source/rtl_text_plugin');
-const browser = require('../../../src/util/browser');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
-const { on } = require('events');
 
 function createStyleJSON(properties) {
   return Object.assign(
@@ -33,7 +30,7 @@ function createSource() {
     minzoom: 1,
     maxzoom: 10,
     attribution: 'Mapbox',
-    tiles: ['http://example.com/{z}/{x}/{y}.png']
+    tiles: []
   };
 }
 
@@ -83,10 +80,8 @@ test('Style', async t => {
       t.assert.ok(style.dispatcher.broadcast.calledWith('loadRTLTextPlugin', 'some bogus url'));
     });
 
-    await t.test('loads plugin immediately if already registered', { skip: true }, (t, done) => {
+    await t.test('loads plugin immediately if already registered', (t, done) => {
       clearRTLTextPlugin();
-      window.useFakeXMLHttpRequest(); // this is no longer implemented, hence skipping the test
-      window.server.respondWith('/plugin.js', "doesn't matter");
       let firstError = true;
       setRTLTextPlugin('/plugin.js', error => {
         // Getting this error message shows the bogus URL was succesfully passed to the worker
@@ -97,7 +92,6 @@ test('Style', async t => {
           firstError = false;
         }
       });
-      window.server.respond();
       style = new Style(createStyleJSON());
     });
   });
@@ -132,68 +126,30 @@ test('Style', async t => {
       });
     });
 
-    await t.test('fires "data" when the sprite finishes loading', { skip: true }, async t => {
-      const img = {};
+    await t.test('fires "data" when the sprite finishes loading', (t, done) => {
+      style = new Style(new StubMap());
 
-      t.before(() => {
-        // Stubbing to bypass Web APIs that supported by jsdom:
-        // * `URL.createObjectURL` in ajax.getImage (https://github.com/tmpvar/jsdom/issues/1721)
-        // * `canvas.getContext('2d')` in browser.getImageData
-        t.stub(window.URL, 'revokeObjectURL');
-        t.stub(browser, 'getImageData');
-        // stub Image so we can invoke 'onload'
-        // https://github.com/jsdom/jsdom/commit/58a7028d0d5b6aacc5b435daee9fd8f9eacbb14c
-        t.stub(window, 'Image').returns(img);
-        // stub this manually because sinon does not stub non-existent methods
-        assert(!window.URL.createObjectURL);
-        window.URL.createObjectURL = () => 'blob:';
-      });
+      style.once('error', e => t.assert.ifError(e));
 
-      t.after(() => delete window.URL.createObjectURL);
-
-      await t.test((t, done) => {
-        // fake the image request (sinon doesn't allow non-string data for
-        // server.respondWith, so we do so manually)
-        const requests = [];
-        window.XMLHttpRequest.onCreate = req => {
-          requests.push(req);
-        };
-        const respond = () => {
-          let req = requests.find(req => req.url === 'http://example.com/sprite.png');
-          req.setStatus(200);
-          req.response = new ArrayBuffer(8);
-          req.onload();
-          img.onload();
-
-          req = requests.find(req => req.url === 'http://example.com/sprite.json');
-          req.setStatus(200);
-          req.response = '{}';
-          req.onload();
-        };
-
-        style = new Style(new StubMap());
-
-        style.loadJSON({
-          version: 8,
-          sources: {},
-          layers: [],
-          sprite: 'http://example.com/sprite'
-        });
-
-        style.once('error', e => t.assert.ifError(e));
+      style.once('data', e => {
+        t.assert.equal(e.target, style);
+        t.assert.equal(e.dataType, 'style');
 
         style.once('data', e => {
           t.assert.equal(e.target, style);
           t.assert.equal(e.dataType, 'style');
-
-          style.once('data', e => {
-            t.assert.equal(e.target, style);
-            t.assert.equal(e.dataType, 'style');
-            done();
-          });
-
-          respond();
+          done();
         });
+      });
+
+      style.loadJSON({
+        version: 8,
+        sources: {},
+        layers: [],
+        sprite: {
+          json: {},
+          image: new ArrayBuffer(0)
+        }
       });
     });
 
