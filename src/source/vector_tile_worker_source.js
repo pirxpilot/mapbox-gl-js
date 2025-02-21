@@ -6,15 +6,13 @@ function loadVectorTile(params, callback) {
   if (!params.response) {
     return callback(new Error('no tile data'));
   }
-  const { data, cacheControl, expires } = params.response;
+  const { data } = params.response;
   if (!data) {
     return callback();
   }
   callback(null, {
     vectorTile: new vt.VectorTile(new Protobuf(data)),
-    rawData: data,
-    cacheControl,
-    expires
+    rawData: data
   });
 }
 
@@ -58,16 +56,12 @@ class VectorTileWorkerSource {
       }
 
       const rawTileData = response.rawData;
-      const cacheControl = {};
-      if (response.expires) cacheControl.expires = response.expires;
-      if (response.cacheControl) cacheControl.cacheControl = response.cacheControl;
-
       workerTile.vectorTile = response.vectorTile;
       workerTile.parse(response.vectorTile, this.layerIndex, this.actor, this.lang, (err, result) => {
         if (err || !result) return callback(err);
 
         // Transferring a copy of rawTileData because the worker needs to retain its copy.
-        callback(null, Object.assign({ rawTileData: rawTileData.slice(0) }, result, cacheControl));
+        callback(null, Object.assign({ rawTileData: rawTileData.slice(0) }, result));
       });
 
       this.loaded = this.loaded || {};

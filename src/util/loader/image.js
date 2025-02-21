@@ -7,8 +7,7 @@ function image(data, fn) {
   if (data.byteLength === 0) {
     transparentImage(fn);
   } else {
-    // 24 hours for cached tiles
-    imageFromData({ data, cacheControl: 'max-age=3600' }, fn);
+    imageFromData({ data }, fn);
   }
 }
 
@@ -20,8 +19,6 @@ async function imageFromData(imgData, fn) {
     fn(null, img);
     window.URL.revokeObjectURL(img.src);
   };
-  img.cacheControl = imgData.cacheControl;
-  img.expires = imgData.expires;
   img.src = await window.URL.createObjectURL(blob);
 }
 

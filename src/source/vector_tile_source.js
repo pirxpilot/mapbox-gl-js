@@ -81,10 +81,8 @@ class VectorTileSource extends Evented {
           err.status = 404; // will try to use the parent/child tile
           return done(err);
         }
-        // 24 hours for cached tiles
-        const response = { data, cacheControl: 'max-age=3600' };
         const params = {
-          response,
+          response: { data },
           uid: tile.uid,
           tileID: tile.tileID,
           zoom: tile.tileID.overscaledZ,
