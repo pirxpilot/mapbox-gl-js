@@ -107,7 +107,6 @@ class GlyphManager {
     }
 
     if (!isChar['CJK Unified Ideographs'](id) && !isChar['Hangul Syllables'](id)) {
-      // eslint-disable-line new-cap
       return;
     }
 

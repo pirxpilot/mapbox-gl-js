@@ -105,14 +105,14 @@ class TransitionablePropertyValue {
     return new TransitioningPropertyValue(
       this.property,
       this.value,
-      prior, // eslint-disable-line no-use-before-define
+      prior,
       Object.assign({}, parameters.transition, this.transition),
       parameters.now
     );
   }
 
   untransitioned() {
-    return new TransitioningPropertyValue(this.property, this.value, null, {}, 0); // eslint-disable-line no-use-before-define
+    return new TransitioningPropertyValue(this.property, this.value, null, {}, 0);
   }
 }
 
@@ -180,7 +180,7 @@ class Transitionable {
   }
 
   transitioned(parameters, prior) {
-    const result = new Transitioning(this._properties); // eslint-disable-line no-use-before-define
+    const result = new Transitioning(this._properties);
     for (const property of Object.keys(this._values)) {
       result._values[property] = this._values[property].transitioned(parameters, prior._values[property]);
     }
@@ -188,7 +188,7 @@ class Transitionable {
   }
 
   untransitioned() {
-    const result = new Transitioning(this._properties); // eslint-disable-line no-use-before-define
+    const result = new Transitioning(this._properties);
     for (const property of Object.keys(this._values)) {
       result._values[property] = this._values[property].untransitioned();
     }
@@ -269,7 +269,7 @@ class Transitioning {
   }
 
   possiblyEvaluate(parameters) {
-    const result = new PossiblyEvaluated(this._properties); // eslint-disable-line no-use-before-define
+    const result = new PossiblyEvaluated(this._properties);
     for (const property of Object.keys(this._values)) {
       result._values[property] = this._values[property].possiblyEvaluate(parameters);
     }
@@ -332,7 +332,7 @@ class Layout {
   }
 
   possiblyEvaluate(parameters) {
-    const result = new PossiblyEvaluated(this._properties); // eslint-disable-line no-use-before-define
+    const result = new PossiblyEvaluated(this._properties);
     for (const property of Object.keys(this._values)) {
       result._values[property] = this._values[property].possiblyEvaluate(parameters);
     }

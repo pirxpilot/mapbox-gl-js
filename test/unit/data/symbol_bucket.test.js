@@ -22,7 +22,6 @@ const vt = new VectorTile(
 const feature = vt.layers.place_label.feature(10);
 const glyphs = JSON.parse(fs.readFileSync(path.join(__dirname, '/../../fixtures/fontstack-glyphs.json')));
 
-/*eslint new-cap: 0*/
 const collisionBoxArray = new CollisionBoxArray();
 const transform = new Transform();
 transform.width = 100;

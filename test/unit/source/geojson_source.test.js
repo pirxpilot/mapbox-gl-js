@@ -116,7 +116,6 @@ test('GeoJSONSource#update', async t => {
       }
     };
 
-    /* eslint-disable no-new */
     new GeoJSONSource('id', { data: {} }, mockDispatcher).load();
   });
 

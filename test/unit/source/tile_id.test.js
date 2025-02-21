@@ -4,19 +4,15 @@ const { CanonicalTileID, OverscaledTileID } = require('../../../src/source/tile_
 test('CanonicalTileID', async t => {
   await t.test('#constructor', t => {
     t.assert.throws(() => {
-      /*eslint no-new: 0*/
       new CanonicalTileID(-1, 0, 0);
     });
     t.assert.throws(() => {
-      /*eslint no-new: 0*/
       new CanonicalTileID(26, 0, 0);
     });
     t.assert.throws(() => {
-      /*eslint no-new: 0*/
       new CanonicalTileID(2, 4, 0);
     });
     t.assert.throws(() => {
-      /*eslint no-new: 0*/
       new CanonicalTileID(2, 0, 4);
     });
   });
@@ -38,7 +34,6 @@ test('OverscaledTileID', async t => {
   await t.test('#constructor', t => {
     t.assert.ok(new OverscaledTileID(0, 0, 0, 0, 0) instanceof OverscaledTileID);
     t.assert.throws(() => {
-      /*eslint no-new: 0*/
       new OverscaledTileID(7, 0, 8, 0, 0);
     });
   });

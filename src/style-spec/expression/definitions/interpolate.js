@@ -147,7 +147,7 @@ class Interpolate {
     const outputLower = outputs[index].evaluate(ctx);
     const outputUpper = outputs[index + 1].evaluate(ctx);
 
-    return interpolate[this.type.kind.toLowerCase()](outputLower, outputUpper, t); // eslint-disable-line import/namespace
+    return interpolate[this.type.kind.toLowerCase()](outputLower, outputUpper, t);
   }
 
   eachChild(fn) {
