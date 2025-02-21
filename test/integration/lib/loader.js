@@ -9,7 +9,7 @@ module.exports = function () {
   // mapbox-gl-styles -> /test/integration/node_modules/mapbox-gl-styles
   const mapboxGLStylesPath = path.join(path.dirname(require.resolve('mapbox-gl-styles')), '..');
   // mvt-fixtures -> /test/integration/node_modules/@mapbox/mvt-fixtures
-  const mapboxMVTFixturesPath = path.dirname(require.resolve('@mapbox/mvt-fixtures'));
+  const mapboxMVTFixturesPath = path.join(path.dirname(require.resolve('@mapbox/mvt-fixtures')), '..');
 
   function localizeURL(url) {
     return url.replace(/^local:\/\//, '');
@@ -76,7 +76,7 @@ module.exports = function () {
     if (style.sprite) {
       style.sprite = localizeMapboxSpriteURL(style.sprite);
       style.sprite = localizeURL(style.sprite);
-      style.sprite = await loadSprite(style.sprite);
+      style.sprite = await loadSprite(style.sprite, style.metadata?.test?.pixelRatio);
     }
   }
 
@@ -105,7 +105,10 @@ module.exports = function () {
     };
   }
 
-  async function loadSprite(sprite) {
+  async function loadSprite(sprite, pixelRatio) {
+    if (pixelRatio === 2) {
+      sprite += '@2x';
+    }
     const [json, image] = await Promise.all([
       load(integrationPath, sprite + '.json'),
       load(integrationPath, sprite + '.png')
