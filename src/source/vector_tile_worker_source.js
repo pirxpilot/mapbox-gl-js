@@ -37,7 +37,6 @@ class VectorTileWorkerSource {
     this.layerIndex = layerIndex;
     this.loadVectorData = loadVectorData || loadVectorTile.bind(this);
     this.loaded = {};
-    this.strategies = {};
     this.lang = false;
   }
 
@@ -122,8 +121,7 @@ class VectorTileWorkerSource {
     callback();
   }
 
-  updateConfig({ strategy, lang }) {
-    this.strategies = strategy;
+  updateConfig({ lang }) {
     this.lang = lang;
   }
 }
