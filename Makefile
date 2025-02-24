@@ -74,7 +74,7 @@ build/$(PROJECT).js: $(SRC) | dependencies
 		--outfile=$@
 
 build/$(PROJECT)-worker.js: $(SRC) | dependencies
-	esbuild --bundle src/source/worker.js  \
+	esbuild --bundle src/worker/index.js  \
 		$(ESBUILD_OPTIONS) \
 		--outfile=$@
 
