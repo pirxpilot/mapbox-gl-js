@@ -48,9 +48,6 @@ class RasterDEMTileSource extends RasterTileSource {
         tile.state = 'errored';
         callback(err);
       } else if (img) {
-        delete img.cacheControl;
-        delete img.expires;
-
         const rawImageData = browser.getImageData(img);
         const params = {
           uid: tile.uid,

@@ -66,9 +66,6 @@ class RasterTileSource extends Evented {
         tile.state = 'errored';
         callback(err);
       } else if (img) {
-        delete img.cacheControl;
-        delete img.expires;
-
         const context = this.map.painter.context;
         const gl = context.gl;
         tile.texture = this.map.painter.getTileTexture(img.width);
