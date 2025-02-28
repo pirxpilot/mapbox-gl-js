@@ -13,11 +13,6 @@
   "render-tests/runtime-styling/image-update-icon": "skip - https://github.com/mapbox/mapbox-gl-js/issues/4804",
   "render-tests/runtime-styling/image-update-pattern": "skip - https://github.com/mapbox/mapbox-gl-js/issues/4804",
 
-  "render-tests/text-arabic/multi-paragraph": "skip: unknown",
-  "render-tests/text-arabic/mixed-numeric": "skip: unknown",
-  "render-tests/text-arabic/line-break-mixed": "skip: unknown",
-  "render-tests/text-arabic/line-break": "skip: unknown",
-  "render-tests/text-arabic/letter-spacing": "skip: unknown",
   "render-tests/regressions/mapbox-gl-js#6919": "skip: unknown",
   "render-tests/real-world/uruguay": "skip: unknown",
   "render-tests/real-world/sanfrancisco": "skip: unknown",
