@@ -928,7 +928,7 @@ class Style extends Evented {
   }
 
   getGlyphs(mapId, params, callback) {
-    this.glyphManager.getGlyphs(params.stacks, callback);
+    return this.glyphManager.getGlyphs(params.stacks, callback);
   }
 }
 
