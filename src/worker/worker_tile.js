@@ -13,6 +13,8 @@ const EvaluationParameters = require('../style/evaluation_parameters');
 const { OverscaledTileID } = require('../source/tile_id');
 
 class WorkerTile {
+  #parsingInProgress = false;
+
   constructor(params) {
     this.tileID = new OverscaledTileID(
       params.tileID.overscaledZ,
@@ -30,7 +32,12 @@ class WorkerTile {
     this.showCollisionBoxes = params.showCollisionBoxes;
   }
 
-  parse(data, layerIndex, actor, callback) {
+  async parse(data, layerIndex, actor) {
+    // Wait for any previous parsing to finish before starting a new one.
+    await this.#parsingInProgress;
+
+    const { promise, resolve } = Promise.withResolvers();
+    this.#parsingInProgress = promise;
     this.status = 'parsing';
     this.data = data;
 
@@ -98,18 +105,17 @@ class WorkerTile {
     const stacks = mapObject(options.glyphDependencies, glyphs => Object.keys(glyphs).map(Number));
     const icons = Object.keys(options.iconDependencies);
 
-    loadGlypshsAndImages(this)
-      .then(({ glyphAtlas, imageAtlas }) => {
-        this.status = 'done';
-        callback(null, {
-          buckets: values(buckets).filter(b => !b.isEmpty()),
-          featureIndex,
-          collisionBoxArray: this.collisionBoxArray,
-          glyphAtlasImage: glyphAtlas.image,
-          iconAtlasImage: imageAtlas.image
-        });
-      })
-      .catch(callback);
+    const { glyphAtlas, imageAtlas } = await loadGlypshsAndImages(this);
+    this.status = 'done';
+    this.#parsingInProgress = false;
+    resolve();
+    return {
+      buckets: values(buckets).filter(b => !b.isEmpty()),
+      featureIndex,
+      collisionBoxArray: this.collisionBoxArray,
+      glyphAtlasImage: glyphAtlas.image,
+      iconAtlasImage: imageAtlas.image
+    };
 
     async function loadGlypshsAndImages({ uid, zoom, showCollisionBoxes }) {
       const tasks = [
