@@ -96,7 +96,7 @@ test-unit test-render test-query: export NODE_PATH = meta/node_modules
 TEST_REPORTER ?= --test-reporter dot
 
 test-unit: dependencies
-	node --test $(TEST_REPORTER) test/unit/**/*.test.js
+	node --test $(TEST_REPORTER) "test/unit/**/*.test.js"
 
 test-expression: dependencies dependencies-integration
 	node test/expression.test.js
