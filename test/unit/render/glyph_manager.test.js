@@ -8,39 +8,33 @@ for (const glyph of parseGlyphPBF(fs.readFileSync('./test/fixtures/0-255.pbf')))
   glyphs[glyph.id] = glyph;
 }
 
-test('GlyphManager requests 0-255 PBF', (t, done) => {
+test('GlyphManager requests 0-255 PBF', async t => {
   function glyphLoader() {}
 
-  t.stub(GlyphManager, 'loadGlyphRange').callsFake((stack, range, load, callback) => {
+  t.stub(GlyphManager, 'loadGlyphRange').callsFake((stack, range, load) => {
     t.assert.equal(stack, 'Arial Unicode MS');
     t.assert.equal(range, 0);
     t.assert.equal(load, glyphLoader);
-    setImmediate(() => callback(null, glyphs));
+    return Promise.resolve(glyphs);
   });
 
   const manager = new GlyphManager();
   manager.setGlyphsLoader(glyphLoader);
 
-  manager.getGlyphs({ 'Arial Unicode MS': [55] }, (err, glyphs) => {
-    t.assert.ifError(err);
-    t.assert.equal(glyphs['Arial Unicode MS']['55'].metrics.advance, 12);
-    done();
-  });
+  const result = await manager.getGlyphs({ 'Arial Unicode MS': [55] });
+  t.assert.equal(result['Arial Unicode MS']['55'].metrics.advance, 12);
 });
 
-test('GlyphManager requests remote CJK PBF', (t, done) => {
-  t.stub(GlyphManager, 'loadGlyphRange').callsFake((stack, range, load, callback) => {
-    setImmediate(() => callback(null, glyphs));
+test('GlyphManager requests remote CJK PBF', async t => {
+  t.stub(GlyphManager, 'loadGlyphRange').callsFake(() => {
+    return Promise.resolve(glyphs);
   });
 
   const manager = new GlyphManager();
   manager.setGlyphsLoader(() => {});
 
-  manager.getGlyphs({ 'Arial Unicode MS': [0x5e73] }, (err, glyphs) => {
-    t.assert.ifError(err);
-    t.assert.equal(glyphs['Arial Unicode MS'][0x5e73], null); // The fixture returns a PBF without the glyph we requested
-    done();
-  });
+  const result = await manager.getGlyphs({ 'Arial Unicode MS': [0x5e73] });
+  t.assert.equal(result['Arial Unicode MS'][0x5e73], null, 'The fixture returns a PBF without the glyph we requested');
 });
 
 test('GlyphManager generates CJK PBF locally', (t, done) => {

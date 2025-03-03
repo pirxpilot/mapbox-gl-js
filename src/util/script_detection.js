@@ -1,5 +1,3 @@
-/* eslint-disable new-cap */
-
 const isChar = require('./is_char_in_unicode_block');
 
 module.exports = {
