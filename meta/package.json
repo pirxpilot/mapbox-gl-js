@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@mapbox/mapbox-gl-rtl-text": "^0.3.0",
+    "@mapbox/mapbox-gl-rtl-text": "^0.2.3",
     "canvas": "~3",
     "ejs": "^3.1.10",
     "gl": "~8",

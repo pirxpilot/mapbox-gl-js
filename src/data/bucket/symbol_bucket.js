@@ -284,7 +284,7 @@ class SymbolBucket {
         const fontStack = textFont.evaluate(feature, {}).join(',');
         const stack = (stacks[fontStack] = stacks[fontStack] || {});
         const textAlongLine =
-          layout.get('text-rotation-alignment') === 'map' && layout.get('symbol-placement') === 'line';
+          layout.get('text-rotation-alignment') === 'map' && layout.get('symbol-placement') !== 'point';
         const doesAllowVerticalWritingMode = allowsVerticalWritingMode(text);
         for (let i = 0; i < text.length; i++) {
           stack[text.charCodeAt(i)] = true;

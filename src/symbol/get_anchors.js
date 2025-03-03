@@ -3,19 +3,67 @@ const interpolate = require('../util/interpolate');
 const Anchor = require('../symbol/anchor');
 const checkMaxAngle = require('./check_max_angle');
 
-module.exports = getAnchors;
+module.exports = { getAnchors, getCenterAnchor };
+
+function getLineLength(line) {
+  let lineLength = 0;
+  for (let k = 0; k < line.length - 1; k++) {
+    lineLength += line[k].dist(line[k + 1]);
+  }
+  return lineLength;
+}
+
+function getAngleWindowSize(shapedText, glyphSize, boxScale) {
+  return shapedText ? (3 / 5) * glyphSize * boxScale : 0;
+}
+
+function getLabelLength(shapedText, shapedIcon) {
+  return Math.max(
+    shapedText ? shapedText.right - shapedText.left : 0,
+    shapedIcon ? shapedIcon.right - shapedIcon.left : 0
+  );
+}
+
+function getCenterAnchor(line, maxAngle, shapedText, shapedIcon, glyphSize, boxScale) {
+  const angleWindowSize = getAngleWindowSize(shapedText, glyphSize, boxScale);
+  const labelLength = getLabelLength(shapedText, shapedIcon);
+
+  let prevDistance = 0;
+  const centerDistance = getLineLength(line) / 2;
+
+  for (let i = 0; i < line.length - 1; i++) {
+    const a = line[i];
+    const b = line[i + 1];
+
+    const segmentDistance = a.dist(b);
+
+    if (prevDistance + segmentDistance > centerDistance) {
+      // The center is on this segment
+      const t = (centerDistance - prevDistance) / segmentDistance;
+      const x = interpolate(a.x, b.x, t);
+      const y = interpolate(a.y, b.y, t);
+
+      const anchor = new Anchor(x, y, b.angleTo(a), i);
+      anchor._round();
+      if (angleWindowSize && !checkMaxAngle(line, anchor, labelLength, angleWindowSize, maxAngle)) {
+        return;
+      }
+
+      return anchor;
+    }
+
+    prevDistance += segmentDistance;
+  }
+}
 
 function getAnchors(line, spacing, maxAngle, shapedText, shapedIcon, glyphSize, boxScale, overscaling, tileExtent) {
   // Resample a line to get anchor points for labels and check that each
   // potential label passes text-max-angle check and has enough froom to fit
   // on the line.
 
-  const angleWindowSize = shapedText ? (3 / 5) * glyphSize * boxScale : 0;
+  const angleWindowSize = getAngleWindowSize(shapedText, glyphSize, boxScale);
 
-  const labelLength = Math.max(
-    shapedText ? shapedText.right - shapedText.left : 0,
-    shapedIcon ? shapedIcon.right - shapedIcon.left : 0
-  );
+  const labelLength = getLabelLength(shapedText, shapedIcon);
 
   // Is the line continued from outside the tile boundary?
   const isLineContinued = line[0].x === 0 || line[0].x === tileExtent || line[0].y === 0 || line[0].y === tileExtent;
@@ -62,10 +110,7 @@ function resample(
   tileExtent
 ) {
   const halfLabelLength = labelLength / 2;
-  let lineLength = 0;
-  for (let k = 0; k < line.length - 1; k++) {
-    lineLength += line[k].dist(line[k + 1]);
-  }
+  const lineLength = getLineLength(line);
 
   let distance = 0;
   let markedDistance = offset - spacing;

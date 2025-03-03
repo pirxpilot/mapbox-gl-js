@@ -2,14 +2,12 @@
   "version": 8,
   "metadata": {
     "test": {
-      "mapMode": "tile",
-      "height": 512,
-      "width": 512
+      "height": 256
     }
   },
   "center": [
-      13.414306640625,
-      52.502847659403955
+    13.418056,
+    52.499167
   ],
   "zoom": 14,
   "sources": {
@@ -31,26 +29,24 @@
       }
     },
     {
-      "id": "text",
+      "id": "literal",
       "type": "symbol",
       "source": "mapbox",
-      "source-layer": "poi_label",
-      "filter": [
-        "==",
-        "maki",
-        "restaurant"
-      ],
+      "source-layer": "road",
       "layout": {
-        "symbol-placement": "point",
+        "symbol-placement": "line-center",
         "text-allow-overlap": true,
         "text-ignore-placement": true,
-        "text-field": "A B C D\nE F G H",
+        "text-field": "{class} {class}",
         "text-font": [
           "Open Sans Semibold",
           "Arial Unicode MS Bold"
-        ]
+        ],
+        "text-max-angle": 60
       },
-      "paint": {}
+      "paint": {
+        "text-opacity": 1
+      }
     }
   ]
 }
