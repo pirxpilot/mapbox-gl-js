@@ -1,12 +1,4 @@
 {
-  "query-tests/regressions/mapbox-gl-js#4494": "https://github.com/mapbox/mapbox-gl-js/issues/2716",
   "render-tests/combinations/fill-extrusion-translucent--background-opaque": "https://github.com/mapbox/mapbox-gl-js/issues/5831",
-  "render-tests/combinations/fill-extrusion-translucent--fill-opaque": "https://github.com/mapbox/mapbox-gl-js/issues/5831",
-  "render-tests/map-mode/static": "https://github.com/mapbox/mapbox-gl-js/issues/5649",
-  "render-tests/map-mode/tile": "skip - mapbox-gl-js does not need to render tiles",
-  "render-tests/projection/axonometric": "axonometric rendering in gl-js tbd",
-  "render-tests/projection/axonometric-multiple": "axonometric rendering in gl-js tbd",
-  "render-tests/projection/skew": "axonometric rendering in gl-js tbd",
-  "render-tests/runtime-styling/image-update-icon": "skip - https://github.com/mapbox/mapbox-gl-js/issues/4804",
-  "render-tests/runtime-styling/image-update-pattern": "skip - https://github.com/mapbox/mapbox-gl-js/issues/4804"
+  "render-tests/combinations/fill-extrusion-translucent--fill-opaque": "https://github.com/mapbox/mapbox-gl-js/issues/5831"
 }
