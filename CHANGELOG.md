@@ -1,4 +1,19 @@
 
+0.46.2 / 2025-03-03
+===================
+
+ * extensive test and test-integration cleanup
+ * reformat code and enforce lint rules
+ * rewrite Glyph Manager
+ * rewrite tile cache - remove support for tile expiration
+ * remove utilities to manipulate and validate map style:
+ * modernize evented
+ * remove `DOM.remove` function
+ * use standard add/removeEventListener
+ * move build tools to `meta` directory
+ * Fix issue #6919: bring gl-js collision handling closer to gl-native - Don't place features that _have_ text but don't have collision boxes - Create a single collision box even when the length of a label is less than half the box size
+ * Add 'symbol-placement: line-center'. With this placement option, we will attempt to place a single label in the center of each "line" geometry of a feature. If the label doesn't fit or the 'text-max-angle' check fails, we don't place anything. Labels using 'line-center' are allowed to extend past the edge of the tile they're centered in, following line geometry included in the tile's buffers.
+
 0.46.1 / 2025-02-13
 ===================
 
