@@ -71,11 +71,17 @@ build/$(PROJECT).js: $(SRC) | dependencies
 	esbuild --bundle src/index.js \
 		$(ESBUILD_OPTIONS) \
 		--global-name=mapboxgl \
+		--minify \
+		--target=es2020 \
+		--metafile=${@:.js=.meta.json} \
 		--outfile=$@
 
 build/$(PROJECT)-worker.js: $(SRC) | dependencies
 	esbuild --bundle src/source/worker.js  \
 		$(ESBUILD_OPTIONS) \
+		--minify \
+		--target=es2020 \
+		--metafile=${@:.js=.meta.json} \
 		--outfile=$@
 
 lint: | meta/node_modules
