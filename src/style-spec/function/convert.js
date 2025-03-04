@@ -1,13 +1,11 @@
 const assert = require('assert');
 
-const extend = require('../util/extend');
-
 module.exports = convertFunction;
 
 function convertFunction(parameters, propertySpec) {
   let expression;
 
-  parameters = extend({}, parameters);
+  parameters = { ...parameters };
   let defaultExpression;
   if (typeof parameters.default !== 'undefined') {
     defaultExpression = convertValue(parameters.default, propertySpec);

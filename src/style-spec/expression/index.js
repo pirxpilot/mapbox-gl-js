@@ -1,6 +1,5 @@
 const assert = require('assert');
 
-const extend = require('../util/extend');
 const ParsingError = require('./parsing_error');
 const ParsingContext = require('./parsing_context');
 const EvaluationContext = require('./evaluation_context');
@@ -201,7 +200,7 @@ class StylePropertyFunction {
   constructor(parameters, specification) {
     this._parameters = parameters;
     this._specification = specification;
-    extend(this, createFunction(this._parameters, this._specification));
+    Object.assign(this, createFunction(this._parameters, this._specification));
   }
 
   static deserialize(serialized) {

@@ -1,6 +1,5 @@
 const colorSpaces = require('../util/color_spaces');
 const Color = require('../util/color');
-const extend = require('../util/extend');
 const getType = require('../util/get_type');
 const interpolate = require('../util/interpolate');
 const Interpolate = require('../expression/definitions/interpolate');
@@ -27,7 +26,7 @@ function createFunction(parameters, propertySpec) {
   const type = parameters.type || (supportsInterpolation(propertySpec) ? 'exponential' : 'interval');
 
   if (isColor) {
-    parameters = extend({}, parameters);
+    parameters = { ...parameters };
 
     if (parameters.stops) {
       parameters.stops = parameters.stops.map(stop => {
