@@ -1,6 +1,5 @@
 const colorSpaces = require('../util/color_spaces');
 const Color = require('../util/color');
-const extend = require('../util/extend');
 const getType = require('../util/get_type');
 const interpolate = require('../util/interpolate');
 const Interpolate = require('../expression/definitions/interpolate');
@@ -27,7 +26,7 @@ function createFunction(parameters, propertySpec) {
   const type = parameters.type || (supportsInterpolation(propertySpec) ? 'exponential' : 'interval');
 
   if (isColor) {
-    parameters = extend({}, parameters);
+    parameters = { ...parameters };
 
     if (parameters.stops) {
       parameters.stops = parameters.stops.map(stop => {
@@ -200,10 +199,19 @@ function evaluateExponentialFunction(parameters, propertySpec, input) {
 }
 
 function evaluateIdentityFunction(parameters, propertySpec, input) {
-  if (propertySpec.type === 'color') {
-    input = Color.parse(input);
-  } else if (getType(input) !== propertySpec.type && (propertySpec.type !== 'enum' || !propertySpec.values[input])) {
-    input = undefined;
+  switch (propertySpec.type) {
+    case 'color':
+      input = Color.parse(input);
+      break;
+    case 'enum':
+      if (!propertySpec.values.includes(input)) {
+        input = undefined;
+      }
+      break;
+    default:
+      if (getType(input) !== propertySpec.type) {
+        input = undefined;
+      }
   }
   return coalesce(input, parameters.default, propertySpec.default);
 }

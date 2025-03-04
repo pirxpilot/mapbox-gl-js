@@ -1,6 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const ejs = require('ejs');
+const styleSpec = require('../../src/style-spec/reference/v8.json');
 
 const spec = require('../../src/style-spec/reference/v8');
 
@@ -20,9 +21,39 @@ function typeToClass(property) {
   }
 }
 
+const PROPERTY_SPEC_KEYS = new Set([
+  'default',
+  'expression',
+  'length',
+  'tokens',
+  'transition',
+  'type',
+  'value',
+  'values'
+]);
+
+function getPropertySpec(property, type) {
+  const spec = styleSpec[`${type}_${property.layerType}`][property.name];
+  // filter out keys that are not part of the property spec
+  if (spec.values) {
+    // we only need the values not their properties
+    spec.values = Object.keys(spec.values);
+  }
+  if (spec.transition === false) {
+    // we don't need the transition flag if it's false
+    delete spec.transition;
+  }
+  if (spec.expression?.interpolated === false) {
+    // we don't need the interpolated flag if it's false
+    delete spec.expression.interpolated;
+  }
+  return Object.fromEntries(Object.entries(spec).filter(([key]) => PROPERTY_SPEC_KEYS.has(key)));
+}
+
 function propertyValue(property, type) {
   const klass = typeToClass(property);
-  return `new ${klass}(styleSpec['${type}_${property.layerType}']['${property.name}'])`;
+  const propertySpec = getPropertySpec(property, type);
+  return `new ${klass}(${JSON.stringify(propertySpec)})`;
 }
 
 const propertiesJs = ejs.compile(fs.readFileSync(resolve('../layout/layer_properties.js.ejs'), 'utf8'), {

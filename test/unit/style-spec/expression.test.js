@@ -36,7 +36,7 @@ test('evaluate expression', async t => {
   await t.test('warns and falls back to default for invalid enum values', t => {
     const { value } = createPropertyExpression(['get', 'x'], {
       type: 'enum',
-      values: { a: {}, b: {}, c: {} },
+      values: ['a', 'b', 'c'],
       default: 'a',
       'property-type': 'data-driven',
       expression: {

@@ -1,17 +1,41 @@
 // This file is generated. Edit layer-properties.js.ejs, then run `make generate-style-code`.
 
-const styleSpec = require('../../style-spec/reference/latest');
-
 const { Properties, CrossFadedProperty, DataConstantProperty, DataDrivenProperty } = require('../properties');
 
 const paint = new Properties({
-  'fill-antialias': new DataConstantProperty(styleSpec['paint_fill']['fill-antialias']),
-  'fill-opacity': new DataDrivenProperty(styleSpec['paint_fill']['fill-opacity']),
-  'fill-color': new DataDrivenProperty(styleSpec['paint_fill']['fill-color']),
-  'fill-outline-color': new DataDrivenProperty(styleSpec['paint_fill']['fill-outline-color']),
-  'fill-translate': new DataConstantProperty(styleSpec['paint_fill']['fill-translate']),
-  'fill-translate-anchor': new DataConstantProperty(styleSpec['paint_fill']['fill-translate-anchor']),
-  'fill-pattern': new CrossFadedProperty(styleSpec['paint_fill']['fill-pattern'])
+  'fill-antialias': new DataConstantProperty({ type: 'boolean', default: true, expression: { parameters: ['zoom'] } }),
+  'fill-opacity': new DataDrivenProperty({
+    type: 'number',
+    default: 1,
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom', 'feature'] }
+  }),
+  'fill-color': new DataDrivenProperty({
+    type: 'color',
+    default: '#000000',
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom', 'feature'] }
+  }),
+  'fill-outline-color': new DataDrivenProperty({
+    type: 'color',
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom', 'feature'] }
+  }),
+  'fill-translate': new DataConstantProperty({
+    type: 'array',
+    value: 'number',
+    length: 2,
+    default: [0, 0],
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom'] }
+  }),
+  'fill-translate-anchor': new DataConstantProperty({
+    type: 'enum',
+    values: ['map', 'viewport'],
+    default: 'map',
+    expression: { parameters: ['zoom'] }
+  }),
+  'fill-pattern': new CrossFadedProperty({ type: 'string', transition: true, expression: { parameters: ['zoom'] } })
 });
 
 module.exports = { paint };

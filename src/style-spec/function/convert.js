@@ -1,13 +1,11 @@
 const assert = require('assert');
 
-const extend = require('../util/extend');
-
 module.exports = convertFunction;
 
 function convertFunction(parameters, propertySpec) {
   let expression;
 
-  parameters = extend({}, parameters);
+  parameters = { ...parameters };
   let defaultExpression;
   if (typeof parameters.default !== 'undefined') {
     defaultExpression = convertValue(parameters.default, propertySpec);
@@ -66,13 +64,7 @@ function convertIdentityFunction(parameters, propertySpec, defaultExpression) {
       'let',
       'property_value',
       ['string', get],
-      [
-        'match',
-        ['var', 'property_value'],
-        Object.keys(propertySpec.values),
-        ['var', 'property_value'],
-        defaultExpression
-      ]
+      ['match', ['var', 'property_value'], propertySpec.values, ['var', 'property_value'], defaultExpression]
     ];
   }
   return parameters.default === undefined ? get : [propertySpec.type, get, parameters.default];

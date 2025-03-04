@@ -1,6 +1,5 @@
 const assert = require('assert');
 
-const extend = require('../util/extend');
 const ParsingError = require('./parsing_error');
 const ParsingContext = require('./parsing_context');
 const EvaluationContext = require('./evaluation_context');
@@ -51,9 +50,9 @@ class StyleExpression {
       if (val === null || val === undefined) {
         return this._defaultValue;
       }
-      if (this._enumValues && !(val in this._enumValues)) {
+      if (this._enumValues && !this._enumValues.includes(val)) {
         throw new RuntimeError(
-          `Expected value to be one of ${Object.keys(this._enumValues)
+          `Expected value to be one of ${this._enumValues
             .map(v => JSON.stringify(v))
             .join(', ')}, but found ${JSON.stringify(val)} instead.`
         );
@@ -201,7 +200,7 @@ class StylePropertyFunction {
   constructor(parameters, specification) {
     this._parameters = parameters;
     this._specification = specification;
-    extend(this, createFunction(this._parameters, this._specification));
+    Object.assign(this, createFunction(this._parameters, this._specification));
   }
 
   static deserialize(serialized) {

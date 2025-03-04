@@ -1,20 +1,43 @@
 // This file is generated. Edit layer-properties.js.ejs, then run `make generate-style-code`.
 
-const styleSpec = require('../../style-spec/reference/latest');
-
 const { Properties, DataConstantProperty } = require('../properties');
 
 const paint = new Properties({
-  'hillshade-illumination-direction': new DataConstantProperty(
-    styleSpec['paint_hillshade']['hillshade-illumination-direction']
-  ),
-  'hillshade-illumination-anchor': new DataConstantProperty(
-    styleSpec['paint_hillshade']['hillshade-illumination-anchor']
-  ),
-  'hillshade-exaggeration': new DataConstantProperty(styleSpec['paint_hillshade']['hillshade-exaggeration']),
-  'hillshade-shadow-color': new DataConstantProperty(styleSpec['paint_hillshade']['hillshade-shadow-color']),
-  'hillshade-highlight-color': new DataConstantProperty(styleSpec['paint_hillshade']['hillshade-highlight-color']),
-  'hillshade-accent-color': new DataConstantProperty(styleSpec['paint_hillshade']['hillshade-accent-color'])
+  'hillshade-illumination-direction': new DataConstantProperty({
+    type: 'number',
+    default: 335,
+    expression: { interpolated: true, parameters: ['zoom'] }
+  }),
+  'hillshade-illumination-anchor': new DataConstantProperty({
+    type: 'enum',
+    values: ['map', 'viewport'],
+    default: 'viewport',
+    expression: { parameters: ['zoom'] }
+  }),
+  'hillshade-exaggeration': new DataConstantProperty({
+    type: 'number',
+    default: 0.5,
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom'] }
+  }),
+  'hillshade-shadow-color': new DataConstantProperty({
+    type: 'color',
+    default: '#000000',
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom'] }
+  }),
+  'hillshade-highlight-color': new DataConstantProperty({
+    type: 'color',
+    default: '#FFFFFF',
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom'] }
+  }),
+  'hillshade-accent-color': new DataConstantProperty({
+    type: 'color',
+    default: '#000000',
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom'] }
+  })
 });
 
 module.exports = { paint };
