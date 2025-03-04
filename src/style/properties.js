@@ -465,6 +465,7 @@ class DataConstantProperty {
 class DataDrivenProperty {
   constructor(specification) {
     this.specification = specification;
+    this.specification['property-type'] ??= 'data-driven';
   }
 
   possiblyEvaluate(value, parameters) {
