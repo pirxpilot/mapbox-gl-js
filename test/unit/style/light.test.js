@@ -1,10 +1,22 @@
 const { test } = require('../../util/mapbox-gl-js-test');
 const Light = require('../../../src/style/light');
-const styleSpec = require('../../../src/style-spec/reference/latest');
 const Color = require('../../../src/style-spec/util/color');
 const { sphericalToCartesian } = require('../../../src/util/util');
 
-const spec = styleSpec.light;
+const spec = {
+  anchor: {
+    default: 'viewport'
+  },
+  position: {
+    default: [1.15, 210, 30]
+  },
+  color: {
+    default: '#ffffff'
+  },
+  intensity: {
+    default: 0.5
+  }
+};
 
 test('Light with defaults', t => {
   const light = new Light({});

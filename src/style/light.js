@@ -1,14 +1,50 @@
-const styleSpec = require('../style-spec/reference/latest');
-
 const { sphericalToCartesian } = require('../util/util');
 const { Evented } = require('../util/evented');
 const interpolate = require('../util/interpolate');
 
+const lightSpec = {
+  anchor: {
+    type: 'enum',
+    default: 'viewport',
+    values: ['map', 'viewport'],
+    expression: {
+      parameters: ['zoom']
+    }
+  },
+  position: {
+    type: 'array',
+    default: [1.15, 210, 30],
+    transition: true,
+    expression: {
+      interpolated: true,
+      parameters: ['zoom']
+    }
+  },
+  color: {
+    type: 'color',
+    default: '#ffffff',
+    transition: true,
+    expression: {
+      interpolated: true,
+      parameters: ['zoom']
+    }
+  },
+  intensity: {
+    type: 'number',
+    default: 0.5,
+    transition: true,
+    expression: {
+      interpolated: true,
+      parameters: ['zoom']
+    }
+  }
+};
+
 const { Properties, Transitionable, DataConstantProperty } = require('./properties');
 
 class LightPositionProperty {
-  constructor() {
-    this.specification = styleSpec.light.position;
+  constructor(specification) {
+    this.specification = specification;
   }
 
   possiblyEvaluate(value, parameters) {
@@ -25,10 +61,10 @@ class LightPositionProperty {
 }
 
 const properties = new Properties({
-  anchor: new DataConstantProperty(styleSpec.light.anchor),
-  position: new LightPositionProperty(),
-  color: new DataConstantProperty(styleSpec.light.color),
-  intensity: new DataConstantProperty(styleSpec.light.intensity)
+  anchor: new DataConstantProperty(lightSpec.anchor),
+  position: new LightPositionProperty(lightSpec.position),
+  color: new DataConstantProperty(lightSpec.color),
+  intensity: new DataConstantProperty(lightSpec.intensity)
 });
 
 const TRANSITION_SUFFIX = '-transition';
