@@ -1,21 +1,76 @@
 // This file is generated. Edit layer-properties.js.ejs, then run `make generate-style-code`.
 
-const styleSpec = require('../../style-spec/reference/latest');
-
 const { Properties, DataConstantProperty, DataDrivenProperty } = require('../properties');
 
 const paint = new Properties({
-  'circle-radius': new DataDrivenProperty(styleSpec['paint_circle']['circle-radius']),
-  'circle-color': new DataDrivenProperty(styleSpec['paint_circle']['circle-color']),
-  'circle-blur': new DataDrivenProperty(styleSpec['paint_circle']['circle-blur']),
-  'circle-opacity': new DataDrivenProperty(styleSpec['paint_circle']['circle-opacity']),
-  'circle-translate': new DataConstantProperty(styleSpec['paint_circle']['circle-translate']),
-  'circle-translate-anchor': new DataConstantProperty(styleSpec['paint_circle']['circle-translate-anchor']),
-  'circle-pitch-scale': new DataConstantProperty(styleSpec['paint_circle']['circle-pitch-scale']),
-  'circle-pitch-alignment': new DataConstantProperty(styleSpec['paint_circle']['circle-pitch-alignment']),
-  'circle-stroke-width': new DataDrivenProperty(styleSpec['paint_circle']['circle-stroke-width']),
-  'circle-stroke-color': new DataDrivenProperty(styleSpec['paint_circle']['circle-stroke-color']),
-  'circle-stroke-opacity': new DataDrivenProperty(styleSpec['paint_circle']['circle-stroke-opacity'])
+  'circle-radius': new DataDrivenProperty({
+    type: 'number',
+    default: 5,
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom', 'feature'] }
+  }),
+  'circle-color': new DataDrivenProperty({
+    type: 'color',
+    default: '#000000',
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom', 'feature'] }
+  }),
+  'circle-blur': new DataDrivenProperty({
+    type: 'number',
+    default: 0,
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom', 'feature'] }
+  }),
+  'circle-opacity': new DataDrivenProperty({
+    type: 'number',
+    default: 1,
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom', 'feature'] }
+  }),
+  'circle-translate': new DataConstantProperty({
+    type: 'array',
+    value: 'number',
+    length: 2,
+    default: [0, 0],
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom'] }
+  }),
+  'circle-translate-anchor': new DataConstantProperty({
+    type: 'enum',
+    values: ['map', 'viewport'],
+    default: 'map',
+    expression: { parameters: ['zoom'] }
+  }),
+  'circle-pitch-scale': new DataConstantProperty({
+    type: 'enum',
+    values: ['map', 'viewport'],
+    default: 'map',
+    expression: { parameters: ['zoom'] }
+  }),
+  'circle-pitch-alignment': new DataConstantProperty({
+    type: 'enum',
+    values: ['map', 'viewport'],
+    default: 'viewport',
+    expression: { parameters: ['zoom'] }
+  }),
+  'circle-stroke-width': new DataDrivenProperty({
+    type: 'number',
+    default: 0,
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom', 'feature'] }
+  }),
+  'circle-stroke-color': new DataDrivenProperty({
+    type: 'color',
+    default: '#000000',
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom', 'feature'] }
+  }),
+  'circle-stroke-opacity': new DataDrivenProperty({
+    type: 'number',
+    default: 1,
+    transition: true,
+    expression: { interpolated: true, parameters: ['zoom', 'feature'] }
+  })
 });
 
 module.exports = { paint };
