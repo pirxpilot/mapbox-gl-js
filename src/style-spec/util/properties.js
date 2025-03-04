@@ -1,13 +1,13 @@
-function supportsPropertyExpression(spec) {
-  return spec['property-type'] === 'data-driven' || spec['property-type'] === 'cross-faded-data-driven';
+function supportsPropertyExpression({ ['property-type']: propertyType }) {
+  return propertyType === 'data-driven' || propertyType === 'cross-faded-data-driven';
 }
 
 function supportsZoomExpression(spec) {
-  return !!spec.expression && spec.expression.parameters.indexOf('zoom') > -1;
+  return !!spec.expression?.parameters.includes('zoom');
 }
 
 function supportsInterpolation(spec) {
-  return !!spec.expression && spec.expression.interpolated;
+  return !!spec.expression?.interpolated;
 }
 
 module.exports = {
