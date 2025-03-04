@@ -28,8 +28,7 @@
   },
   "browser": {
     "assert": "@pirxpilot/nanoassert",
-    "./package.json": "./build/min/package.json",
-    "./src/style-spec/reference/v8.json": "./build/min/style-spec/reference/v8.json"
+    "./package.json": "./build/min/package.json"
   },
   "scripts": {
     "test": "make check",
