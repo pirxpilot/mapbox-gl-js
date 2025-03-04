@@ -39,11 +39,11 @@ class SymbolStyleLayer extends StyleLayer {
     }
   }
 
-  getValueAndResolveTokens(name, feature, lang) {
+  getValueAndResolveTokens(name, feature) {
     const value = this.layout.get(name).evaluate(feature, {});
     const unevaluated = this._unevaluatedLayout._values[name];
     if (!unevaluated.isDataDriven() && !isExpression(unevaluated.value)) {
-      return resolveTokens(feature.properties, value, lang);
+      return resolveTokens(feature.properties, value);
     }
 
     return value;

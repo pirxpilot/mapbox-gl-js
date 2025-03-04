@@ -249,13 +249,13 @@ class SymbolBucket {
 
       let text;
       if (hasText) {
-        text = layer.getValueAndResolveTokens('text-field', feature, options.lang);
+        text = layer.getValueAndResolveTokens('text-field', feature);
         text = transformText(text, layer, feature);
       }
 
       let icon;
       if (hasIcon) {
-        icon = layer.getValueAndResolveTokens('icon-image', feature, options.lang);
+        icon = layer.getValueAndResolveTokens('icon-image', feature);
       }
 
       if (!text && !icon) {

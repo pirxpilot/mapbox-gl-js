@@ -8,10 +8,6 @@ const browser = require('../util/browser');
 // register feature index for worker transfer
 require('../data/feature_index');
 
-function getLanguage() {
-  return window.document.documentElement.lang.split(/[_\-]/)[0] || 'en';
-}
-
 class VectorTileSource extends Evented {
   constructor(id, options, dispatcher, eventedParent) {
     super();
@@ -138,10 +134,8 @@ class VectorTileSource extends Evented {
     return false;
   }
 
-  updateWorkerConfig(config) {
-    const lang = config.LOCALIZED_NAMES && getLanguage();
+  updateWorkerConfig() {
     this.dispatcher.broadcast('vector.updateConfig', {
-      lang,
       source: this.id
     });
   }
