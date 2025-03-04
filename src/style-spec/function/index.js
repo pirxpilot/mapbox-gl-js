@@ -199,10 +199,19 @@ function evaluateExponentialFunction(parameters, propertySpec, input) {
 }
 
 function evaluateIdentityFunction(parameters, propertySpec, input) {
-  if (propertySpec.type === 'color') {
-    input = Color.parse(input);
-  } else if (getType(input) !== propertySpec.type && (propertySpec.type !== 'enum' || !propertySpec.values[input])) {
-    input = undefined;
+  switch (propertySpec.type) {
+    case 'color':
+      input = Color.parse(input);
+      break;
+    case 'enum':
+      if (!propertySpec.values.includes(input)) {
+        input = undefined;
+      }
+      break;
+    default:
+      if (getType(input) !== propertySpec.type) {
+        input = undefined;
+      }
   }
   return coalesce(input, parameters.default, propertySpec.default);
 }

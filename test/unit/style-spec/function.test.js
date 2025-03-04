@@ -1118,9 +1118,7 @@ test('identity function', async t => {
       },
       {
         type: 'enum',
-        values: {
-          bar: {}
-        },
+        values: ['bar'],
         default: 'def'
       }
     ).evaluate;
@@ -1136,9 +1134,7 @@ test('identity function', async t => {
       },
       {
         type: 'enum',
-        values: {
-          bar: {}
-        },
+        values: ['bar'],
         default: 'def'
       }
     ).evaluate;
@@ -1154,9 +1150,7 @@ test('identity function', async t => {
       },
       {
         type: 'enum',
-        values: {
-          bar: {}
-        },
+        values: ['bar'],
         default: 'def'
       }
     ).evaluate;

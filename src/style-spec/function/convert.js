@@ -64,13 +64,7 @@ function convertIdentityFunction(parameters, propertySpec, defaultExpression) {
       'let',
       'property_value',
       ['string', get],
-      [
-        'match',
-        ['var', 'property_value'],
-        Object.keys(propertySpec.values),
-        ['var', 'property_value'],
-        defaultExpression
-      ]
+      ['match', ['var', 'property_value'], propertySpec.values, ['var', 'property_value'], defaultExpression]
     ];
   }
   return parameters.default === undefined ? get : [propertySpec.type, get, parameters.default];
