@@ -71,11 +71,13 @@ build/$(PROJECT).js: $(SRC) | dependencies
 	esbuild --bundle src/index.js \
 		$(ESBUILD_OPTIONS) \
 		--global-name=mapboxgl \
+		--metafile=${@:.js=.meta.json} \
 		--outfile=$@
 
 build/$(PROJECT)-worker.js: $(SRC) | dependencies
 	esbuild --bundle src/source/worker.js  \
 		$(ESBUILD_OPTIONS) \
+		--metafile=${@:.js=.meta.json} \
 		--outfile=$@
 
 lint: | meta/node_modules
