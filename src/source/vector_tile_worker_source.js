@@ -37,7 +37,6 @@ class VectorTileWorkerSource {
     this.layerIndex = layerIndex;
     this.loadVectorData = loadVectorData || loadVectorTile.bind(this);
     this.loaded = {};
-    this.lang = false;
   }
 
   /**
@@ -56,7 +55,7 @@ class VectorTileWorkerSource {
 
       const rawTileData = response.rawData;
       workerTile.vectorTile = response.vectorTile;
-      workerTile.parse(response.vectorTile, this.layerIndex, this.actor, this.lang, (err, result) => {
+      workerTile.parse(response.vectorTile, this.layerIndex, this.actor, (err, result) => {
         if (err || !result) return callback(err);
 
         // Transferring a copy of rawTileData because the worker needs to retain its copy.
@@ -83,7 +82,7 @@ class VectorTileWorkerSource {
         const reloadCallback = workerTile.reloadCallback;
         if (reloadCallback) {
           delete workerTile.reloadCallback;
-          workerTile.parse(workerTile.vectorTile, vtSource.layerIndex, vtSource.actor, this.lang, reloadCallback);
+          workerTile.parse(workerTile.vectorTile, vtSource.layerIndex, vtSource.actor, reloadCallback);
         }
         callback(err, data);
       };
@@ -91,7 +90,7 @@ class VectorTileWorkerSource {
       if (workerTile.status === 'parsing') {
         workerTile.reloadCallback = done;
       } else if (workerTile.status === 'done') {
-        workerTile.parse(workerTile.vectorTile, this.layerIndex, this.actor, this.lang, done);
+        workerTile.parse(workerTile.vectorTile, this.layerIndex, this.actor, done);
       }
     }
   }
@@ -121,9 +120,7 @@ class VectorTileWorkerSource {
     callback();
   }
 
-  updateConfig({ lang }) {
-    this.lang = lang;
-  }
+  updateConfig() {}
 }
 
 module.exports = VectorTileWorkerSource;

@@ -17,7 +17,6 @@ config.notify = function () {
 };
 
 config.set({
-  LOCALIZED_NAMES: true,
   WORKER_COUNT: getDefaultWorkerCount(),
   WORKER_URL: ''
 });

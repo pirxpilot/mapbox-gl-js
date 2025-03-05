@@ -37,22 +37,3 @@ test('resolveToken', t => {
   t.assert.equal(resolveTokens({ HØYDE: 150 }, '{HØYDE} m'), '150 m');
   t.assert.equal(resolveTokens({ '$special:characters;': 'mapbox' }, '{$special:characters;}'), 'mapbox');
 });
-
-test('resolveToken with language', t => {
-  const properties = {
-    a: 100,
-    'a:pl': 200,
-    name: 'Warsaw',
-    'name:pl': 'Warszawa',
-    name_fr: 'Varsovie'
-  };
-  // takes language into account for name
-  t.assert.equal('Warsaw', resolveTokens(properties, '{name}'));
-  t.assert.equal('Warsaw', resolveTokens(properties, '{name}', 'en'));
-  t.assert.equal('Warszawa', resolveTokens(properties, '{name}', 'pl'));
-  t.assert.equal('Varsovie', resolveTokens(properties, '{name}', 'fr'));
-
-  // ignores language for other properties
-  t.assert.equal('100', resolveTokens(properties, '{a}'));
-  t.assert.equal('100', resolveTokens(properties, '{a}', 'pl'));
-});
