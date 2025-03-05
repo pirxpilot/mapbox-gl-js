@@ -7,7 +7,7 @@ const vt = require('@mapbox/vector-tile');
 const Protobuf = require('@mapwhit/pbf');
 const GeoJSONFeature = require('../util/vectortile_to_geojson');
 const { arraysIntersect } = require('../util/object');
-const { register } = require('../util/web_worker_transfer');
+const { register } = require('../util/transfer_registry');
 const EvaluationParameters = require('../style/evaluation_parameters');
 
 const { FeatureIndexArray } = require('./array_types');

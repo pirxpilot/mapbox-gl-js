@@ -9,7 +9,7 @@ const earcut = require('earcut');
 const classifyRings = require('../../util/classify_rings');
 const assert = require('assert');
 const EARCUT_MAX_RINGS = 500;
-const { register } = require('../../util/web_worker_transfer');
+const { register } = require('../../util/transfer_registry');
 const EvaluationParameters = require('../../style/evaluation_parameters');
 
 class FillBucket {

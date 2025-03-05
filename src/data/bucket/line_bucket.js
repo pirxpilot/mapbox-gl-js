@@ -8,7 +8,7 @@ const loadGeometry = require('../load_geometry');
 const EXTENT = require('../extent');
 const mvt = require('@mapbox/vector-tile');
 const vectorTileFeatureTypes = mvt.VectorTileFeature.types;
-const { register } = require('../../util/web_worker_transfer');
+const { register } = require('../../util/transfer_registry');
 const EvaluationParameters = require('../../style/evaluation_parameters');
 
 // NOTE ON EXTRUDE SCALE:
