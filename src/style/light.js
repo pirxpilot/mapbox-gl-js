@@ -45,6 +45,7 @@ const { Properties, Transitionable, DataConstantProperty } = require('./properti
 class LightPositionProperty {
   constructor(specification) {
     this.specification = specification;
+    this.specification['property-type'] = 'data-constant';
   }
 
   possiblyEvaluate(value, parameters) {
