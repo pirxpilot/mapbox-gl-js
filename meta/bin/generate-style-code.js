@@ -25,6 +25,7 @@ const PROPERTY_SPEC_KEYS = new Set([
   'default',
   'expression',
   'length',
+  'property-type',
   'tokens',
   'transition',
   'type',
@@ -46,6 +47,10 @@ function getPropertySpec(property, type) {
   if (spec.expression?.interpolated === false) {
     // we don't need the interpolated flag if it's false
     delete spec.expression.interpolated;
+  }
+  if (spec['property-type'] !== 'constant') {
+    // all other property types are set by property classes
+    delete spec['property-type'];
   }
   return Object.fromEntries(Object.entries(spec).filter(([key]) => PROPERTY_SPEC_KEYS.has(key)));
 }

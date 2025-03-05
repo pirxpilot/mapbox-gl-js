@@ -439,6 +439,7 @@ class PossiblyEvaluated {
 class DataConstantProperty {
   constructor(specification) {
     this.specification = specification;
+    this.specification['property-type'] ??= 'data-constant';
   }
 
   possiblyEvaluate(value, parameters) {
@@ -524,6 +525,7 @@ class DataDrivenProperty {
 class CrossFadedProperty {
   constructor(specification) {
     this.specification = specification;
+    this.specification['property-type'] ??= 'cross-faded';
   }
 
   possiblyEvaluate(value, parameters) {
@@ -568,6 +570,7 @@ class CrossFadedProperty {
 class ColorRampProperty {
   constructor(specification) {
     this.specification = specification;
+    this.specification['property-type'] ??= 'color-ramp';
   }
 
   possiblyEvaluate(value, parameters) {
