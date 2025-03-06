@@ -298,6 +298,90 @@ class BlendColor {
   }
 }
 
+class CullFace {
+  constructor(context) {
+    this.context = context;
+    this.default = false;
+    this.current = this.default;
+    this.dirty = false;
+  }
+
+  get() {
+    return this.current;
+  }
+
+  setDefault() {
+    this.set(this.default);
+  }
+
+  set(v) {
+    if (this.current !== v || this.dirty === true) {
+      const gl = this.context.gl;
+      if (v) {
+        gl.enable(gl.CULL_FACE);
+      } else {
+        gl.disable(gl.CULL_FACE);
+      }
+      this.current = v;
+      this.dirty = false;
+    }
+  }
+}
+
+class CullFaceSide {
+  constructor(context) {
+    this.context = context;
+    const gl = this.context.gl;
+    this.default = gl.BACK;
+    this.current = this.default;
+    this.dirty = false;
+  }
+
+  get() {
+    return this.current;
+  }
+
+  setDefault() {
+    this.set(this.default);
+  }
+
+  set(v) {
+    if (this.current !== v || this.dirty === true) {
+      const gl = this.context.gl;
+      gl.cullFace(v);
+      this.current = v;
+      this.dirty = false;
+    }
+  }
+}
+
+class FrontFace {
+  constructor(context) {
+    this.context = context;
+    const gl = this.context.gl;
+    this.default = gl.CCW;
+    this.current = this.default;
+    this.dirty = false;
+  }
+
+  get() {
+    return this.current;
+  }
+
+  setDefault() {
+    this.set(this.default);
+  }
+
+  set(v) {
+    if (this.current !== v || this.dirty === true) {
+      const gl = this.context.gl;
+      gl.frontFace(v);
+      this.current = v;
+      this.dirty = false;
+    }
+  }
+}
+
 class Program {
   constructor(context) {
     this.context = context;
@@ -572,6 +656,9 @@ module.exports = {
   Blend,
   BlendFunc,
   BlendColor,
+  CullFace,
+  CullFaceSide,
+  FrontFace,
   Program,
   ActiveTextureUnit,
   Viewport,

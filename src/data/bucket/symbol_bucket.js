@@ -180,6 +180,7 @@ class SymbolBucket {
     this.index = options.index;
     this.pixelRatio = options.pixelRatio;
     this.sourceLayerIndex = options.sourceLayerIndex;
+    this.hasPattern = false;
 
     const layer = this.layers[0];
     const unevaluatedLayoutValues = layer._unevaluatedLayout._values;
@@ -305,10 +306,10 @@ class SymbolBucket {
     }
   }
 
-  update(states, vtLayer) {
+  update(states, vtLayer, imagePositions) {
     if (!this.stateDependentLayers.length) return;
-    this.text.programConfigurations.updatePaintArrays(states, vtLayer, this.layers);
-    this.icon.programConfigurations.updatePaintArrays(states, vtLayer, this.layers);
+    this.text.programConfigurations.updatePaintArrays(states, vtLayer, this.layers, imagePositions);
+    this.icon.programConfigurations.updatePaintArrays(states, vtLayer, this.layers, imagePositions);
   }
 
   isEmpty() {
@@ -437,7 +438,7 @@ class SymbolBucket {
       false
     );
 
-    arrays.programConfigurations.populatePaintArrays(arrays.layoutVertexArray.length, feature, feature.index);
+    arrays.programConfigurations.populatePaintArrays(arrays.layoutVertexArray.length, feature, feature.index, {});
   }
 
   _addCollisionDebugVertex(layoutVertexArray, collisionVertexArray, point, anchor, extrude) {

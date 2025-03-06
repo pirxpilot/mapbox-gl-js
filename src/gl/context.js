@@ -20,6 +20,9 @@ const {
   Blend,
   BlendFunc,
   BlendColor,
+  CullFace,
+  CullFaceSide,
+  FrontFace,
   Program,
   ActiveTextureUnit,
   Viewport,
@@ -53,6 +56,9 @@ class Context {
     this.blend = new Blend(this);
     this.blendFunc = new BlendFunc(this);
     this.blendColor = new BlendColor(this);
+    this.cullFace = new CullFace(this);
+    this.cullFaceSide = new CullFaceSide(this);
+    this.frontFace = new FrontFace(this);
     this.program = new Program(this);
     this.activeTexture = new ActiveTextureUnit(this);
     this.viewport = new Viewport(this);
@@ -133,6 +139,16 @@ class Context {
     // }
 
     gl.clear(mask);
+  }
+
+  setCullFace(cullFaceMode) {
+    if (cullFaceMode.enable === false) {
+      this.cullFace.set(false);
+    } else {
+      this.cullFace.set(true);
+      this.cullFaceSide.set(cullFaceMode.mode);
+      this.frontFace.set(cullFaceMode.frontFace);
+    }
   }
 
   setDepthMode(depthMode) {

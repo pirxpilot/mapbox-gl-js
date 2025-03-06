@@ -3414,15 +3414,18 @@
           "ios": "2.0.0",
           "macos": "0.1.0"
         },
-        "data-driven styling": {}
+        "data-driven styling": {
+          "js": "0.46.0"
+        }
       },
       "expression": {
         "interpolated": false,
         "parameters": [
-          "zoom"
+          "zoom",
+          "feature"
         ]
       },
-      "property-type": "cross-faded"
+      "property-type": "cross-faded-data-driven"
     }
   },
   "paint_fill-extrusion": {
@@ -3558,10 +3561,11 @@
       "expression": {
         "interpolated": false,
         "parameters": [
-          "zoom"
+          "zoom",
+          "feature"
         ]
       },
-      "property-type": "cross-faded"
+      "property-type": "cross-faded-data-driven"
     },
     "fill-extrusion-height": {
       "type": "number",
@@ -3625,6 +3629,22 @@
         ]
       },
       "property-type": "data-driven"
+    },
+    "fill-extrusion-vertical-gradient": {
+      "type": "boolean",
+      "default": true,
+      "doc": "Whether to apply a vertical gradient to the sides of a fill-extrusion layer. If true, sides will be shaded slightly darker farther down.",
+      "transition": false,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.50.0"
+        }
+      },
+      "expression": {
+        "interpolated": false,
+        "parameters": ["zoom"]
+      },
+      "property-type": "data-constant"
     }
   },
   "paint_line": {
@@ -3907,15 +3927,18 @@
           "ios": "2.0.0",
           "macos": "0.1.0"
         },
-        "data-driven styling": {}
+        "data-driven styling": {
+          "js": "0.46.0"
+        }
       },
       "expression": {
         "interpolated": false,
         "parameters": [
-          "zoom"
+          "zoom",
+          "feature"
         ]
       },
-      "property-type": "cross-faded"
+      "property-type": "cross-faded-data-driven"
     },
     "line-gradient": {
       "type": "color",

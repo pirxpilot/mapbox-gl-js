@@ -660,11 +660,22 @@ class SourceCache extends Evented {
   /**
    * Search through our current tiles and attempt to find the tiles that
    * cover the given bounds.
-   * @param queryGeometry coordinates of the corners of bounding rectangle
+   * @param pointQueryGeometry coordinates of the corners of bounding rectangle
    * @returns {Array<Object>} result items have {tile, minX, maxX, minY, maxY}, where min/max bounding values are the given bounds transformed in into the coordinate space of this tile.
    */
-  tilesIn(queryGeometry, maxPitchScaleFactor) {
+  tilesIn(pointQueryGeometry, maxPitchScaleFactor, has3DLayer) {
     const tileResults = [];
+
+    const transform = this.transform;
+    if (!transform) return tileResults;
+
+    const cameraPointQueryGeometry = has3DLayer
+      ? transform.getCameraQueryGeometry(pointQueryGeometry)
+      : pointQueryGeometry;
+
+    const queryGeometry = pointQueryGeometry.map(p => transform.pointCoordinate(p));
+    const cameraQueryGeometry = cameraPointQueryGeometry.map(p => transform.pointCoordinate(p));
+
     const ids = this.getIds();
 
     let minX = Number.POSITIVE_INFINITY;
@@ -673,8 +684,7 @@ class SourceCache extends Evented {
     let maxY = Number.NEGATIVE_INFINITY;
     const z = queryGeometry[0].zoom;
 
-    for (let k = 0; k < queryGeometry.length; k++) {
-      const p = queryGeometry[k];
+    for (const p of cameraQueryGeometry) {
       minX = Math.min(minX, p.column);
       minY = Math.min(minY, p.row);
       maxX = Math.max(maxX, p.column);
@@ -688,7 +698,7 @@ class SourceCache extends Evented {
         continue;
       }
       const tileID = tile.tileID;
-      const scale = 2 ** (this.transform.zoom - tile.tileID.overscaledZ);
+      const scale = 2 ** (transform.zoom - tile.tileID.overscaledZ);
       const queryPadding = (maxPitchScaleFactor * tile.queryPadding * EXTENT) / tile.tileSize / scale;
 
       const tileSpaceBounds = [
@@ -702,16 +712,15 @@ class SourceCache extends Evented {
         tileSpaceBounds[1].x + queryPadding >= 0 &&
         tileSpaceBounds[1].y + queryPadding >= 0
       ) {
-        const tileSpaceQueryGeometry = [];
-        for (let j = 0; j < queryGeometry.length; j++) {
-          tileSpaceQueryGeometry.push(coordinateToTilePoint(tileID, queryGeometry[j]));
-        }
+        const tileSpaceQueryGeometry = queryGeometry.map(c => coordinateToTilePoint(tileID, c));
+        const tileSpaceCameraQueryGeometry = cameraQueryGeometry.map(c => coordinateToTilePoint(tileID, c));
 
         tileResults.push({
-          tile: tile,
-          tileID: tileID,
-          queryGeometry: [tileSpaceQueryGeometry],
-          scale: scale
+          tile,
+          tileID,
+          queryGeometry: tileSpaceQueryGeometry,
+          cameraQueryGeometry: tileSpaceCameraQueryGeometry,
+          scale
         });
       }
     }

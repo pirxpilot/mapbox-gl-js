@@ -9,6 +9,7 @@ const properties = require('../style/style_layer/symbol_style_layer_properties')
 const symbolLayoutProperties = properties.layout;
 const StencilMode = require('../gl/stencil_mode');
 const DepthMode = require('../gl/depth_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const { symbolIconUniformValues, symbolSDFUniformValues } = require('./program/symbol_program');
 
 module.exports = drawSymbols;
@@ -121,14 +122,14 @@ function drawLayerSymbols(
       const iconScaled = layer.layout.get('icon-size').constantOr(0) !== 1 || bucket.iconsNeedLinear;
       const iconTransformed = pitchWithMap || tr.pitch !== 0;
 
-      tile.iconAtlasTexture.bind(
+      tile.imageAtlasTexture.bind(
         isSDF || painter.options.rotating || painter.options.zooming || iconScaled || iconTransformed
           ? gl.LINEAR
           : gl.NEAREST,
         gl.CLAMP_TO_EDGE
       );
 
-      texSize = tile.iconAtlasTexture.size;
+      texSize = tile.imageAtlasTexture.size;
     }
 
     const s = pixelsToTileUnits(tile, 1, painter.transform.zoom);
@@ -215,6 +216,7 @@ function drawSymbolElements(buffers, layer, painter, program, depthMode, stencil
     depthMode,
     stencilMode,
     colorMode,
+    CullFaceMode.disabled,
     uniformValues,
     layer.id,
     buffers.layoutVertexBuffer,

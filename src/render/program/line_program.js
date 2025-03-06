@@ -1,4 +1,4 @@
-const { Uniform1i, Uniform1f, Uniform2f, UniformMatrix4f } = require('../uniform_binding');
+const { Uniform1i, Uniform1f, Uniform2f, Uniform4f, UniformMatrix4f } = require('../uniform_binding');
 const pixelsToTileUnits = require('../../source/pixels_to_tile_units');
 const browser = require('../../util/browser');
 
@@ -17,16 +17,11 @@ const lineGradientUniforms = (context, locations) => ({
 
 const linePatternUniforms = (context, locations) => ({
   u_matrix: new UniformMatrix4f(context, locations.u_matrix),
-  u_ratio: new Uniform1f(context, locations.u_ratio),
-  u_gl_units_to_pixels: new Uniform2f(context, locations.u_gl_units_to_pixels),
-  u_pattern_size_a: new Uniform2f(context, locations.u_pattern_size_a),
-  u_pattern_size_b: new Uniform2f(context, locations.u_pattern_size_b),
   u_texsize: new Uniform2f(context, locations.u_texsize),
+  u_ratio: new Uniform1f(context, locations.u_ratio),
   u_image: new Uniform1i(context, locations.u_image),
-  u_pattern_tl_a: new Uniform2f(context, locations.u_pattern_tl_a),
-  u_pattern_br_a: new Uniform2f(context, locations.u_pattern_br_a),
-  u_pattern_tl_b: new Uniform2f(context, locations.u_pattern_tl_b),
-  u_pattern_br_b: new Uniform2f(context, locations.u_pattern_br_b),
+  u_gl_units_to_pixels: new Uniform2f(context, locations.u_gl_units_to_pixels),
+  u_scale: new Uniform4f(context, locations.u_scale),
   u_fade: new Uniform1f(context, locations.u_fade)
 });
 
@@ -59,27 +54,23 @@ const lineGradientUniformValues = (painter, tile, layer) => {
   });
 };
 
-const linePatternUniformValues = (painter, tile, layer, image) => {
-  const pixelSize = painter.imageManager.getPixelSize();
-  const tileRatio = calculateTileRatio(tile, painter.transform);
-
-  const imagePosA = painter.imageManager.getPattern(image.from);
-  const imagePosB = painter.imageManager.getPattern(image.to);
-
-  return Object.assign(lineUniformValues(painter, tile, layer), {
-    u_pattern_size_a: [(imagePosA.displaySize[0] * image.fromScale) / tileRatio, imagePosA.displaySize[1]],
-    u_pattern_size_b: [(imagePosB.displaySize[0] * image.toScale) / tileRatio, imagePosB.displaySize[1]],
-    u_texsize: [pixelSize.width, pixelSize.height],
+const linePatternUniformValues = (painter, tile, layer, crossfade) => {
+  const transform = painter.transform;
+  const tileZoomRatio = calculateTileRatio(tile, transform);
+  return {
+    u_matrix: calculateMatrix(painter, tile, layer),
+    u_texsize: tile.imageAtlasTexture.size,
+    // camera zoom ratio
+    u_ratio: 1 / pixelsToTileUnits(tile, 1, transform.zoom),
     u_image: 0,
-    u_pattern_tl_a: imagePosA.tl,
-    u_pattern_br_a: imagePosA.br,
-    u_pattern_tl_b: imagePosB.tl,
-    u_pattern_br_b: imagePosB.br,
-    u_fade: image.t
-  });
+    // this assumes all images in the icon atlas texture have the same pixel ratio
+    u_scale: [browser.devicePixelRatio, tileZoomRatio, crossfade.fromScale, crossfade.toScale],
+    u_fade: crossfade.t,
+    u_gl_units_to_pixels: [1 / transform.pixelsToGLUnits[0], 1 / transform.pixelsToGLUnits[1]]
+  };
 };
 
-const lineSDFUniformValues = (painter, tile, layer, dasharray) => {
+const lineSDFUniformValues = (painter, tile, layer, dasharray, crossfade) => {
   const transform = painter.transform;
   const lineAtlas = painter.lineAtlas;
   const tileRatio = calculateTileRatio(tile, transform);
@@ -89,8 +80,8 @@ const lineSDFUniformValues = (painter, tile, layer, dasharray) => {
   const posA = lineAtlas.getDash(dasharray.from, round);
   const posB = lineAtlas.getDash(dasharray.to, round);
 
-  const widthA = posA.width * dasharray.fromScale;
-  const widthB = posB.width * dasharray.toScale;
+  const widthA = posA.width * crossfade.fromScale;
+  const widthB = posB.width * crossfade.toScale;
 
   return Object.assign(lineUniformValues(painter, tile, layer), {
     u_patternscale_a: [tileRatio / widthA, -posA.height / 2],
@@ -99,7 +90,7 @@ const lineSDFUniformValues = (painter, tile, layer, dasharray) => {
     u_image: 0,
     u_tex_y_a: posA.y,
     u_tex_y_b: posB.y,
-    u_mix: dasharray.t
+    u_mix: crossfade.t
   });
 };
 

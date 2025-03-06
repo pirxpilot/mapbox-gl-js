@@ -32,12 +32,8 @@ function translate(queryGeometry, translate, translateAnchor, bearing, pixelsToT
 
   const translated = [];
   for (let i = 0; i < queryGeometry.length; i++) {
-    const ring = queryGeometry[i];
-    const translatedRing = [];
-    for (let k = 0; k < ring.length; k++) {
-      translatedRing.push(ring[k].sub(pt._mult(pixelsToTileUnits)));
-    }
-    translated.push(translatedRing);
+    const point = queryGeometry[i];
+    translated.push(point.sub(pt._mult(pixelsToTileUnits)));
   }
   return translated;
 }

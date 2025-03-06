@@ -4,7 +4,6 @@ const Style = require('../../../src/style/style');
 const SourceCache = require('../../../src/source/source_cache');
 const StyleLayer = require('../../../src/style/style_layer');
 const Transform = require('../../../src/geo/transform');
-const EvaluationParameters = require('../../../src/style/evaluation_parameters');
 const { Event, Evented } = require('../../../src/util/evented');
 const {
   setRTLTextPlugin,
@@ -1510,7 +1509,7 @@ test('Style', async t => {
     const transform = new Transform();
     transform.resize(512, 512);
 
-    function queryMapboxFeatures(layers, getFeatureState, queryGeom, scale, params) {
+    function queryMapboxFeatures(layers, getFeatureState, queryGeom, cameraQueryGeom, scale, params) {
       const features = {
         land: [
           {
@@ -1626,7 +1625,7 @@ test('Style', async t => {
       style.sourceCaches.mapbox.transform = transform;
       style.sourceCaches.other.transform = transform;
 
-      style.update(new EvaluationParameters(0));
+      style.update(0);
       style._updateSources(transform);
 
       await t.test('returns feature type', (t, done) => {

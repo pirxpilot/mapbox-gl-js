@@ -1,4 +1,4 @@
-const { patternUniformValues } = require('./pattern');
+const { bgPatternUniformValues } = require('./pattern');
 const { Uniform1i, Uniform1f, Uniform2f, UniformColor, UniformMatrix4f } = require('../uniform_binding');
 
 const backgroundUniforms = (context, locations) => ({
@@ -32,8 +32,8 @@ const backgroundUniformValues = (matrix, opacity, color) => ({
   u_color: color
 });
 
-const backgroundPatternUniformValues = (matrix, opacity, painter, image, tile) =>
-  Object.assign(patternUniformValues(image, painter, tile), {
+const backgroundPatternUniformValues = (matrix, opacity, painter, image, tile, crossfade) =>
+  Object.assign(bgPatternUniformValues(image, crossfade, painter, tile), {
     u_matrix: matrix,
     u_opacity: opacity
   });

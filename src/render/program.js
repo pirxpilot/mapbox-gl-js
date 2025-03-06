@@ -71,6 +71,7 @@ class Program {
     depthMode,
     stencilMode,
     colorMode,
+    cullFaceMode,
     uniformValues,
     layerID,
     layoutVertexBuffer,
@@ -88,6 +89,7 @@ class Program {
     context.setDepthMode(depthMode);
     context.setStencilMode(stencilMode);
     context.setColorMode(colorMode);
+    context.setCullFace(cullFaceMode);
 
     for (const name in this.fixedUniforms) {
       this.fixedUniforms[name].set(uniformValues[name]);

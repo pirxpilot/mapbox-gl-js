@@ -1,6 +1,6 @@
 // This file is generated. Edit layer-properties.js.ejs, then run `make generate-style-code`.
 
-const { Properties, CrossFadedProperty, DataConstantProperty, DataDrivenProperty } = require('../properties');
+const { Properties, CrossFadedDataDrivenProperty, DataConstantProperty, DataDrivenProperty } = require('../properties');
 
 const paint = new Properties({
   'fill-extrusion-opacity': new DataConstantProperty({
@@ -29,10 +29,10 @@ const paint = new Properties({
     default: 'map',
     expression: { parameters: ['zoom'] }
   }),
-  'fill-extrusion-pattern': new CrossFadedProperty({
+  'fill-extrusion-pattern': new CrossFadedDataDrivenProperty({
     type: 'string',
     transition: true,
-    expression: { parameters: ['zoom'] }
+    expression: { parameters: ['zoom', 'feature'] }
   }),
   'fill-extrusion-height': new DataDrivenProperty({
     type: 'number',
@@ -45,6 +45,11 @@ const paint = new Properties({
     default: 0,
     transition: true,
     expression: { interpolated: true, parameters: ['zoom', 'feature'] }
+  }),
+  'fill-extrusion-vertical-gradient': new DataConstantProperty({
+    type: 'boolean',
+    default: true,
+    expression: { parameters: ['zoom'] }
   })
 });
 

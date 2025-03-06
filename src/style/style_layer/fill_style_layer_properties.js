@@ -1,6 +1,6 @@
 // This file is generated. Edit layer-properties.js.ejs, then run `make generate-style-code`.
 
-const { Properties, CrossFadedProperty, DataConstantProperty, DataDrivenProperty } = require('../properties');
+const { Properties, CrossFadedDataDrivenProperty, DataConstantProperty, DataDrivenProperty } = require('../properties');
 
 const paint = new Properties({
   'fill-antialias': new DataConstantProperty({ type: 'boolean', default: true, expression: { parameters: ['zoom'] } }),
@@ -35,7 +35,11 @@ const paint = new Properties({
     default: 'map',
     expression: { parameters: ['zoom'] }
   }),
-  'fill-pattern': new CrossFadedProperty({ type: 'string', transition: true, expression: { parameters: ['zoom'] } })
+  'fill-pattern': new CrossFadedDataDrivenProperty({
+    type: 'string',
+    transition: true,
+    expression: { parameters: ['zoom', 'feature'] }
+  })
 });
 
 module.exports = { paint };

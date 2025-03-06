@@ -1,7 +1,7 @@
 const StyleLayer = require('../style_layer');
 
 const FillBucket = require('../../data/bucket/fill_bucket');
-const { multiPolygonIntersectsMultiPolygon } = require('../../util/intersection_tests');
+const { polygonIntersectsMultiPolygon } = require('../../util/intersection_tests');
 const { translateDistance, translate } = require('../query_utils');
 const properties = require('./fill_style_layer_properties');
 
@@ -11,7 +11,7 @@ class FillStyleLayer extends StyleLayer {
   }
 
   recalculate(parameters) {
-    this.paint = this._transitioningPaint.possiblyEvaluate(parameters);
+    super.recalculate(parameters);
 
     const outlineColor = this.paint._values['fill-outline-color'];
     if (outlineColor.value.kind === 'constant' && outlineColor.value.value === undefined) {
@@ -35,7 +35,11 @@ class FillStyleLayer extends StyleLayer {
       transform.angle,
       pixelsToTileUnits
     );
-    return multiPolygonIntersectsMultiPolygon(translatedPolygon, geometry);
+    return polygonIntersectsMultiPolygon(translatedPolygon, geometry);
+  }
+
+  isTileClipped() {
+    return true;
   }
 }
 

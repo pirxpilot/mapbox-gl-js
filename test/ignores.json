@@ -1,4 +1,2 @@
 {
-  "render-tests/combinations/fill-extrusion-translucent--background-opaque": "https://github.com/mapbox/mapbox-gl-js/issues/5831",
-  "render-tests/combinations/fill-extrusion-translucent--fill-opaque": "https://github.com/mapbox/mapbox-gl-js/issues/5831"
 }

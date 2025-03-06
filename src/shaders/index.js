@@ -63,10 +63,6 @@ const shaders = {
     fragmentSource: require('../../build/min/src/shaders/fill_extrusion_pattern.fragment.glsl.txt'),
     vertexSource: require('../../build/min/src/shaders/fill_extrusion_pattern.vertex.glsl.txt')
   },
-  extrusionTexture: {
-    fragmentSource: require('../../build/min/src/shaders/extrusion_texture.fragment.glsl.txt'),
-    vertexSource: require('../../build/min/src/shaders/extrusion_texture.vertex.glsl.txt')
-  },
   hillshadePrepare: {
     fragmentSource: require('../../build/min/src/shaders/hillshade_prepare.fragment.glsl.txt'),
     vertexSource: require('../../build/min/src/shaders/hillshade_prepare.vertex.glsl.txt')
@@ -133,6 +129,8 @@ uniform ${precision} ${type} u_${name};
 
   program.vertexSource = program.vertexSource.replace(re, (match, operation, precision, type, name) => {
     const attrType = type === 'float' ? 'vec2' : 'vec4';
+    const unpackType = name.match(/color/) ? 'color' : attrType;
+
     if (fragmentPragmas[name]) {
       if (operation === 'define') {
         return `
@@ -145,9 +143,19 @@ uniform ${precision} ${type} u_${name};
 #endif
 `;
       }
+      if (unpackType === 'vec4') {
+        // vec4 attributes are only used for cross-faded properties, and are not packed
+        return `
+#ifndef HAS_UNIFORM_u_${name}
+${name} = a_${name};
+#else
+${precision} ${type} ${name} = u_${name};
+#endif
+`;
+      }
       return `
 #ifndef HAS_UNIFORM_u_${name}
-    ${name} = unpack_mix_${attrType}(a_${name}, a_${name}_t);
+    ${name} = unpack_mix_${unpackType}(a_${name}, a_${name}_t);
 #else
     ${precision} ${type} ${name} = u_${name};
 #endif
@@ -163,9 +171,19 @@ uniform ${precision} ${type} u_${name};
 #endif
 `;
     }
+    if (unpackType === 'vec4') {
+      // vec4 attributes are only used for cross-faded properties, and are not packed
+      return `
+#ifndef HAS_UNIFORM_u_${name}
+${precision} ${type} ${name} = a_${name};
+#else
+${precision} ${type} ${name} = u_${name};
+#endif
+`;
+    }
     return `
 #ifndef HAS_UNIFORM_u_${name}
-    ${precision} ${type} ${name} = unpack_mix_${attrType}(a_${name}, a_${name}_t);
+    ${precision} ${type} ${name} = unpack_mix_${unpackType}(a_${name}, a_${name}_t);
 #else
     ${precision} ${type} ${name} = u_${name};
 #endif

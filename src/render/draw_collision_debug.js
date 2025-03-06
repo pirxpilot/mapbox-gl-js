@@ -1,5 +1,6 @@
 const DepthMode = require('../gl/depth_mode');
 const StencilMode = require('../gl/stencil_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const { collisionUniformValues } = require('./program/collision_program');
 
 module.exports = drawCollisionDebug;
@@ -23,6 +24,7 @@ function drawCollisionDebugGeometry(painter, sourceCache, layer, coords, drawCir
       DepthMode.disabled,
       StencilMode.disabled,
       painter.colorModeForRenderPass(),
+      CullFaceMode.disabled,
       collisionUniformValues(coord.posMatrix, painter.transform, tile),
       layer.id,
       buffers.layoutVertexBuffer,

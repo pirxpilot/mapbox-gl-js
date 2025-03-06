@@ -5,7 +5,7 @@ const Tile = require('../../../src/source/tile');
 const { OverscaledTileID } = require('../../../src/source/tile_id');
 const Transform = require('../../../src/geo/transform');
 const LngLat = require('../../../src/geo/lng_lat');
-const Coordinate = require('../../../src/geo/coordinate');
+const Point = require('@mapbox/point-geometry');
 const { Event, ErrorEvent, Evented } = require('../../../src/util/evented');
 const browser = require('../../../src/util/browser');
 
@@ -1196,15 +1196,26 @@ test('SourceCache#clearTiles', async t => {
 
 test('SourceCache#tilesIn', async t => {
   await t.test('graceful response before source loaded', t => {
+    const tr = new Transform();
+    tr.width = 512;
+    tr.height = 512;
+    tr._calcMatrices();
     const sourceCache = createSourceCache({ noLoad: true });
+    sourceCache.transform = tr;
     sourceCache.onAdd();
-    t.assert.deepEqual(sourceCache.tilesIn([new Coordinate(0.5, 0.25, 1), new Coordinate(1.5, 0.75, 1)]), []);
+    t.assert.deepEqual(sourceCache.tilesIn([new Point(0, 0), new Point(512, 256)], 10, tr), []);
   });
 
+  function round(queryGeometry) {
+    return queryGeometry.map(p => {
+      return p.round();
+    });
+  }
   await t.test('regular tiles', (t, done) => {
     const transform = new Transform();
-    transform.resize(511, 511);
+    transform.resize(512, 512);
     transform.zoom = 1;
+    transform.center = new LngLat(0, 1);
 
     const sourceCache = createSourceCache({
       loadTile: function (tile, callback) {
@@ -1225,7 +1236,8 @@ test('SourceCache#tilesIn', async t => {
           new OverscaledTileID(1, 0, 1, 0, 0).key
         ]);
 
-        const tiles = sourceCache.tilesIn([new Coordinate(0.5, 0.25, 1), new Coordinate(1.5, 0.75, 1)], 1);
+        transform._calcMatrices();
+        const tiles = sourceCache.tilesIn([new Point(0, 0), new Point(512, 256)], 1, transform);
 
         tiles.sort((a, b) => {
           return a.tile.tileID.canonical.x - b.tile.tileID.canonical.x;
@@ -1237,21 +1249,17 @@ test('SourceCache#tilesIn', async t => {
         t.assert.equal(tiles[0].tile.tileID.key, 1);
         t.assert.equal(tiles[0].tile.tileSize, 512);
         t.assert.equal(tiles[0].scale, 1);
-        t.assert.deepEqual(tiles[0].queryGeometry, [
-          [
-            { x: 4096, y: 2048 },
-            { x: 12288, y: 6144 }
-          ]
+        t.assert.deepEqual(round(tiles[0].queryGeometry), [
+          { x: 4096, y: 4050 },
+          { x: 12288, y: 8146 }
         ]);
 
         t.assert.equal(tiles[1].tile.tileID.key, 33);
         t.assert.equal(tiles[1].tile.tileSize, 512);
         t.assert.equal(tiles[1].scale, 1);
-        t.assert.deepEqual(tiles[1].queryGeometry, [
-          [
-            { x: -4096, y: 2048 },
-            { x: 4096, y: 6144 }
-          ]
+        t.assert.deepEqual(round(tiles[1].queryGeometry), [
+          { x: -4096, y: 4050 },
+          { x: 4096, y: 8146 }
         ]);
 
         done();
@@ -1276,8 +1284,9 @@ test('SourceCache#tilesIn', async t => {
     sourceCache.on('data', e => {
       if (e.sourceDataType === 'metadata') {
         const transform = new Transform();
-        transform.resize(512, 512);
+        transform.resize(1024, 1024);
         transform.zoom = 2.0;
+        transform.center = new LngLat(0, 1);
         sourceCache.update(transform);
 
         t.assert.deepEqual(sourceCache.getIds(), [
@@ -1287,7 +1296,7 @@ test('SourceCache#tilesIn', async t => {
           new OverscaledTileID(2, 0, 2, 0, 0).key
         ]);
 
-        const tiles = sourceCache.tilesIn([new Coordinate(0.5, 0.25, 1), new Coordinate(1.5, 0.75, 1)], 1);
+        const tiles = sourceCache.tilesIn([new Point(0, 0), new Point(1024, 512)], 1, transform);
 
         tiles.sort((a, b) => {
           return a.tile.tileID.canonical.x - b.tile.tileID.canonical.x;
@@ -1299,21 +1308,17 @@ test('SourceCache#tilesIn', async t => {
         t.assert.equal(tiles[0].tile.tileID.key, 2);
         t.assert.equal(tiles[0].tile.tileSize, 1024);
         t.assert.equal(tiles[0].scale, 1);
-        t.assert.deepEqual(tiles[0].queryGeometry, [
-          [
-            { x: 4096, y: 2048 },
-            { x: 12288, y: 6144 }
-          ]
+        t.assert.deepEqual(round(tiles[0].queryGeometry), [
+          { x: 4096, y: 4050 },
+          { x: 12288, y: 8146 }
         ]);
 
         t.assert.equal(tiles[1].tile.tileID.key, 34);
         t.assert.equal(tiles[1].tile.tileSize, 1024);
         t.assert.equal(tiles[1].scale, 1);
-        t.assert.deepEqual(tiles[1].queryGeometry, [
-          [
-            { x: -4096, y: 2048 },
-            { x: 4096, y: 6144 }
-          ]
+        t.assert.deepEqual(round(tiles[1].queryGeometry), [
+          { x: -4096, y: 4050 },
+          { x: 4096, y: 8146 }
         ]);
 
         done();

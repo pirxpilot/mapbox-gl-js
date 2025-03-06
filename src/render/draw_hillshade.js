@@ -1,6 +1,7 @@
 const Texture = require('./texture');
 const StencilMode = require('../gl/stencil_mode');
 const DepthMode = require('../gl/depth_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const { hillshadeUniformValues, hillshadeUniformPrepareValues } = require('./program/hillshade_program');
 
 module.exports = drawHillshade;
@@ -47,6 +48,7 @@ function renderHillshade(painter, tile, layer, depthMode, stencilMode, colorMode
       depthMode,
       stencilMode,
       colorMode,
+      CullFaceMode.disabled,
       uniformValues,
       layer.id,
       tile.maskedBoundsBuffer,
@@ -60,6 +62,7 @@ function renderHillshade(painter, tile, layer, depthMode, stencilMode, colorMode
       depthMode,
       stencilMode,
       colorMode,
+      CullFaceMode.disabled,
       uniformValues,
       layer.id,
       painter.rasterBoundsBuffer,
@@ -128,6 +131,7 @@ function prepareHillshade(painter, tile, layer, sourceMaxZoom, depthMode, stenci
         depthMode,
         stencilMode,
         colorMode,
+        CullFaceMode.disabled,
         hillshadeUniformPrepareValues(tile, sourceMaxZoom),
         layer.id,
         painter.rasterBoundsBuffer,

@@ -1,5 +1,6 @@
 const StencilMode = require('../gl/stencil_mode');
 const DepthMode = require('../gl/depth_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const { backgroundUniformValues, backgroundPatternUniformValues } = require('./program/background_program');
 
 module.exports = drawBackground;
@@ -17,7 +18,8 @@ function drawBackground(painter, sourceCache, layer) {
   const image = layer.paint.get('background-pattern');
   if (painter.isPatternMissing(image)) return;
 
-  const pass = !image && color.a === 1 && opacity === 1 ? 'opaque' : 'translucent';
+  const pass =
+    !image && color.a === 1 && opacity === 1 && painter.opaquePassEnabledForLayer() ? 'opaque' : 'translucent';
   if (painter.renderPass !== pass) return;
 
   const stencilMode = StencilMode.disabled;
@@ -33,11 +35,12 @@ function drawBackground(painter, sourceCache, layer) {
     painter.imageManager.bind(painter.context);
   }
 
+  const crossfade = layer.getCrossfadeParameters();
   for (const tileID of tileIDs) {
     const matrix = painter.transform.calculatePosMatrix(tileID.toUnwrapped());
 
     const uniformValues = image
-      ? backgroundPatternUniformValues(matrix, opacity, painter, image, { tileID, tileSize })
+      ? backgroundPatternUniformValues(matrix, opacity, painter, image, { tileID, tileSize }, crossfade)
       : backgroundUniformValues(matrix, opacity, color);
 
     program.draw(
@@ -46,6 +49,7 @@ function drawBackground(painter, sourceCache, layer) {
       depthMode,
       stencilMode,
       colorMode,
+      CullFaceMode.disabled,
       uniformValues,
       layer.id,
       painter.tileExtentBuffer,

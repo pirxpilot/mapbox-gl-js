@@ -688,19 +688,35 @@ class Style extends Evented {
     this._changed = true;
   }
 
-  _flattenRenderedFeatures(sourceResults) {
+  _flattenAndSortRenderedFeatures(sourceResults) {
     const features = [];
+    const features3D = [];
     for (let l = this._order.length - 1; l >= 0; l--) {
       const layerId = this._order[l];
       for (const sourceResult of sourceResults) {
         const layerFeatures = sourceResult[layerId];
         if (layerFeatures) {
-          for (const feature of layerFeatures) {
-            features.push(feature);
+          if (this._layers[layerId].type === 'fill-extrusion') {
+            for (const featureWrapper of layerFeatures) {
+              features3D.push(featureWrapper);
+            }
+          } else {
+            for (const featureWrapper of layerFeatures) {
+              features.push(featureWrapper.feature);
+            }
           }
         }
       }
     }
+
+    features3D.sort((a, b) => {
+      return a.intersectionZ - b.intersectionZ;
+    });
+
+    for (const featureWrapper of features3D) {
+      features.push(featureWrapper.feature);
+    }
+
     return features;
   }
 
@@ -723,7 +739,7 @@ class Style extends Evented {
     for (const id in this.sourceCaches) {
       if (params.layers && !includedSources[id]) continue;
       sourceResults.push(
-        queryRenderedFeatures(this.sourceCaches[id], this._layers, queryGeometry.worldCoordinate, params, transform)
+        queryRenderedFeatures(this.sourceCaches[id], this._layers, queryGeometry.viewport, params, transform)
       );
     }
 
@@ -741,7 +757,7 @@ class Style extends Evented {
         )
       );
     }
-    return this._flattenRenderedFeatures(sourceResults);
+    return this._flattenAndSortRenderedFeatures(sourceResults);
   }
 
   querySourceFeatures(sourceID, params) {

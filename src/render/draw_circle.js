@@ -1,5 +1,6 @@
 const StencilMode = require('../gl/stencil_mode');
 const DepthMode = require('../gl/depth_mode');
+const CullFaceMode = require('../gl/cull_face_mode');
 const { circleUniformValues } = require('./program/circle_program');
 
 module.exports = drawCircles;
@@ -40,6 +41,7 @@ function drawCircles(painter, sourceCache, layer, coords) {
       depthMode,
       stencilMode,
       colorMode,
+      CullFaceMode.disabled,
       circleUniformValues(painter, coord, tile, layer),
       layer.id,
       bucket.layoutVertexBuffer,

@@ -1,4 +1,5 @@
 const assert = require('assert');
+const { mat4 } = require('@mapbox/gl-matrix');
 
 module.exports = {
   queryRenderedFeatures,
@@ -6,9 +7,39 @@ module.exports = {
   querySourceFeatures
 };
 
+/*
+ * Returns a matrix that can be used to convert from tile coordinates to viewport pixel coordinates.
+ */
+function getPixelPosMatrix(transform, tileID) {
+  const t = mat4.identity([]);
+  mat4.translate(t, t, [1, 1, 0]);
+  mat4.scale(t, t, [transform.width * 0.5, transform.height * 0.5, 1]);
+  return mat4.multiply(t, t, transform.calculatePosMatrix(tileID.toUnwrapped()));
+}
+
+function queryIncludes3DLayer(layers, styleLayers, sourceID) {
+  if (layers) {
+    for (const layerID of layers) {
+      const layer = styleLayers[layerID];
+      if (layer && layer.source === sourceID && layer.type === 'fill-extrusion') {
+        return true;
+      }
+    }
+  } else {
+    for (const key in styleLayers) {
+      const layer = styleLayers[key];
+      if (layer.source === sourceID && layer.type === 'fill-extrusion') {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 function queryRenderedFeatures(sourceCache, styleLayers, queryGeometry, params, transform) {
+  const has3DLayer = queryIncludes3DLayer(params?.layers, styleLayers, sourceCache.id);
   const maxPitchScaleFactor = transform.maxPitchScaleFactor();
-  const tilesIn = sourceCache.tilesIn(queryGeometry, maxPitchScaleFactor);
+  const tilesIn = sourceCache.tilesIn(queryGeometry, maxPitchScaleFactor, has3DLayer);
 
   tilesIn.sort(sortTilesIn);
 
@@ -20,11 +51,12 @@ function queryRenderedFeatures(sourceCache, styleLayers, queryGeometry, params, 
         styleLayers,
         sourceCache._state,
         tileIn.queryGeometry,
+        tileIn.cameraQueryGeometry,
         tileIn.scale,
         params,
         transform,
         maxPitchScaleFactor,
-        sourceCache.transform.calculatePosMatrix(tileIn.tileID.toUnwrapped())
+        getPixelPosMatrix(sourceCache.transform, tileIn.tileID)
       )
     });
   }
@@ -33,7 +65,8 @@ function queryRenderedFeatures(sourceCache, styleLayers, queryGeometry, params, 
 
   // Merge state from SourceCache into the results
   for (const layerID in result) {
-    result[layerID].forEach(feature => {
+    result[layerID].forEach(featureWrapper => {
+      const feature = featureWrapper.feature;
       const state = sourceCache.getFeatureState(feature.layer['source-layer'], feature.id);
       feature.source = feature.layer.source;
       if (feature.layer['source-layer']) {
@@ -87,14 +120,15 @@ function queryRenderedSymbols(styleLayers, sourceCaches, queryGeometry, params, 
         return b.featureIndex - a.featureIndex;
       });
       for (const symbolFeature of layerSymbols) {
-        resultFeatures.push(symbolFeature.feature);
+        resultFeatures.push(symbolFeature);
       }
     }
   }
 
   // Merge state from SourceCache into the results
   for (const layerName in result) {
-    result[layerName].forEach(feature => {
+    result[layerName].forEach(featureWrapper => {
+      const feature = featureWrapper.feature;
       const layer = styleLayers[layerName];
       const sourceCache = sourceCaches[layer.source];
       const state = sourceCache.getFeatureState(feature.layer['source-layer'], feature.id);
@@ -155,7 +189,7 @@ function mergeRenderedFeatureLayers(tiles) {
       for (const tileFeature of tileFeatures) {
         if (!wrappedIDFeatures[tileFeature.featureIndex]) {
           wrappedIDFeatures[tileFeature.featureIndex] = true;
-          resultFeatures.push(tileFeature.feature);
+          resultFeatures.push(tileFeature);
         }
       }
     }
