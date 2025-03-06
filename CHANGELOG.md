@@ -1,4 +1,17 @@
 
+0.47.0 / 2025-03-06
+===================
+
+ * Enable combinations/fill-extrusion-translucent--background-opaque
+ * Extrusions: Do not try to triangulate non-polygon type features (#7685)
+ * draw extrusions and custom layers into main framebuffer
+ * fix fill-extrusion querying (#7499)
+ * Add fill-extrusion-vertical-gradient property (#6841)
+ * Enable face culling for fill-extrusion layers. (#7178)
+ * add feature expression support for line-pattern, fill-pattern, and fill-extrusion-pattern properties
+ * remove handling language
+ * use style spec JSON to generate layer properties
+
 0.46.2 / 2025-03-03
 ===================
 
